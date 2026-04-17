@@ -3,308 +3,516 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dinamo Zagreb · Statistika Utakmica</title>
+<title>GNK Dinamo Zagreb · Statistika</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+/* ===== SHARED ===== */
+:root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-  .topnav{display:flex;align-items:center;justify-content:space-between;padding:11px 40px;background:#060C1A;border-bottom:1px solid var(--border);}
-  .topnav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#fff;}
-  .topnav-logo span{color:#4D9FFF;}
-  .topnav-links{display:flex;gap:6px;}
-  .topnav a{color:var(--text-muted);text-decoration:none;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 14px;border-radius:8px;transition:all 0.2s;}
-  .topnav a:hover{color:#fff;background:rgba(255,255,255,0.07);}
-  .topnav a.active{color:#4D9FFF;background:rgba(0,100,220,0.15);}
+/* NAV */
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:11px 40px;background:#060C1A;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.topnav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#fff;cursor:pointer;}
+.topnav-logo span{color:#4D9FFF;}
+.topnav-links{display:flex;gap:6px;}
+.nav-btn{color:var(--text-muted);background:none;border:none;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 14px;border-radius:8px;transition:all 0.2s;cursor:pointer;}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,0.07);}
+.nav-btn.active{color:#4D9FFF;background:rgba(0,100,220,0.15);}
 
-  .header{position:relative;padding:40px 40px 30px;background:linear-gradient(135deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border-bottom:1px solid var(--border);overflow:hidden;}
-  .header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,100,220,0.18) 0%,transparent 70%);pointer-events:none;}
-  .header::after{content:'GNK';position:absolute;bottom:-20px;right:30px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(255,255,255,0.03);letter-spacing:10px;pointer-events:none;}
-  .header-inner{position:relative;z-index:1;}
-  .header h1{font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:4px;color:#fff;line-height:1;margin-bottom:6px;}
-  .header h1 span{color:#4D9FFF;}
-  .header p{font-size:13px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
 
-  .legend{display:flex;flex-wrap:wrap;gap:7px;padding:14px 40px;background:var(--surface);border-bottom:1px solid var(--border);}
-  .legend-item{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:2px solid transparent;}
-  .legend-item:hover{transform:translateY(-1px);}
-  .legend-item.active{border-color:rgba(255,255,255,0.4);}
-  .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-  .leg-all{background:rgba(255,255,255,0.08);color:#ccc;}.leg-all .legend-dot{background:#888;}
-  .leg-hnl{background:rgba(0,63,142,0.35);color:#7FB5FF;}.leg-hnl .legend-dot{background:#4D9FFF;}
-  .leg-ucl{background:rgba(0,27,94,0.5);color:#F0C030;}.leg-ucl .legend-dot{background:#F0C030;}
-  .leg-uel{background:rgba(232,100,12,0.25);color:#FF9A5C;}.leg-uel .legend-dot{background:#E8640C;}
-  .leg-ecl{background:rgba(0,135,90,0.25);color:#4DC99A;}.leg-ecl .legend-dot{background:#00AD72;}
-  .leg-rep{background:rgba(204,0,0,0.25);color:#FF7070;}.leg-rep .legend-dot{background:#CC0000;}
-  .leg-kup{background:rgba(91,45,142,0.35);color:#B88EFF;}.leg-kup .legend-dot{background:#7B4DB5;}
-  .leg-superkup{background:rgba(193,122,0,0.3);color:#FFCC44;}.leg-superkup .legend-dot{background:#E8A800;}
+/* HEADER */
+.header{position:relative;padding:40px 40px 30px;background:linear-gradient(135deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border-bottom:1px solid var(--border);overflow:hidden;}
+.header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;pointer-events:none;}
+.header-stat::before{background:radial-gradient(circle,rgba(0,100,220,0.18) 0%,transparent 70%);}
+.header-pred::before{background:radial-gradient(circle,rgba(100,0,220,0.15) 0%,transparent 70%);}
+.header::after{position:absolute;bottom:-20px;right:30px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(255,255,255,0.03);letter-spacing:10px;pointer-events:none;}
+.header-stat::after{content:'GNK';}
+.header-pred::after{content:'PRED';font-size:160px;}
+.header-inner{position:relative;z-index:1;}
+.header h1{font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:4px;color:#fff;line-height:1;margin-bottom:6px;}
+.header-stat h1 span{color:#4D9FFF;}
+.header-pred h1 span{color:#A78BFA;}
+.header p{font-size:13px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
 
-  .main{padding:26px 40px;display:grid;grid-template-columns:1fr 340px;gap:26px;}
+/* ===== STATISTIKA PAGE ===== */
+.legend{display:flex;flex-wrap:wrap;gap:7px;padding:14px 40px;background:var(--surface);border-bottom:1px solid var(--border);}
+.legend-item{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:2px solid transparent;}
+.legend-item:hover{transform:translateY(-1px);}
+.legend-item.active{border-color:rgba(255,255,255,0.4);}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.leg-all{background:rgba(255,255,255,0.08);color:#ccc;}.leg-all .legend-dot{background:#888;}
+.leg-hnl{background:rgba(0,63,142,0.35);color:#7FB5FF;}.leg-hnl .legend-dot{background:#4D9FFF;}
+.leg-ucl{background:rgba(0,27,94,0.5);color:#F0C030;}.leg-ucl .legend-dot{background:#F0C030;}
+.leg-uel{background:rgba(232,100,12,0.25);color:#FF9A5C;}.leg-uel .legend-dot{background:#E8640C;}
+.leg-ecl{background:rgba(0,135,90,0.25);color:#4DC99A;}.leg-ecl .legend-dot{background:#00AD72;}
+.leg-rep{background:rgba(204,0,0,0.25);color:#FF7070;}.leg-rep .legend-dot{background:#CC0000;}
+.leg-kup{background:rgba(91,45,142,0.35);color:#B88EFF;}.leg-kup .legend-dot{background:#7B4DB5;}
+.leg-superkup{background:rgba(193,122,0,0.3);color:#FFCC44;}.leg-superkup .legend-dot{background:#E8A800;}
 
-  .stats-bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px 19px;position:relative;overflow:hidden;}
-  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-  .sc-total::before{background:linear-gradient(90deg,#444,#777);}
-  .sc-wdl::before{background:linear-gradient(90deg,#003F8E,#0066CC);}
-  .sc-views::before{background:linear-gradient(90deg,#0A7A5E,#14B884);}
-  .sc-avg::before{background:linear-gradient(90deg,#6B21A8,#9333EA);}
-  .sc-best::before{background:linear-gradient(90deg,#B45309,#F59E0B);}
-  .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:7px;}
-  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:1px;}
-  .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.s-main{padding:26px 40px;display:grid;grid-template-columns:1fr 340px;gap:26px;}
+.stats-bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px 19px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.sc-total::before{background:linear-gradient(90deg,#444,#777);}
+.sc-wdl::before{background:linear-gradient(90deg,#003F8E,#0066CC);}
+.sc-views::before{background:linear-gradient(90deg,#0A7A5E,#14B884);}
+.sc-avg::before{background:linear-gradient(90deg,#6B21A8,#9333EA);}
+.sc-best::before{background:linear-gradient(90deg,#B45309,#F59E0B);}
+.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:7px;}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:1px;}
+.stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
 
-  .table-section{min-width:0;}
-  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:8px;flex-wrap:wrap;}
-  .section-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
-  .header-right{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
-  .view-tabs{display:flex;gap:5px;}
-  .view-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 11px;color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
-  .view-tab.active{background:rgba(0,102,204,0.25);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
-  .search-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;width:180px;transition:border-color 0.2s;}
-  .search-box:focus{border-color:rgba(77,159,255,0.5);}
-  .search-box::placeholder{color:var(--text-muted);}
+.table-section{min-width:0;}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:8px;flex-wrap:wrap;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
+.header-right{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+.view-tabs{display:flex;gap:5px;}
+.view-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 11px;color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.view-tab.active{background:rgba(0,102,204,0.25);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
+.search-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;width:180px;transition:border-color 0.2s;}
+.search-box:focus{border-color:rgba(77,159,255,0.5);}
+.search-box::placeholder{color:var(--text-muted);}
 
-  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-  table{width:100%;border-collapse:collapse;}
-  thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
-  thead th:hover{color:#7FB5FF;}
-  .si{font-size:10px;margin-left:3px;opacity:0.5;}
-  tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer;}
-  tbody tr:last-child{border-bottom:none;}
-  tbody tr:hover{background:rgba(77,159,255,0.07);}
-  tbody td{padding:10px 13px;font-size:14px;white-space:nowrap;}
-  tbody td:last-child{text-align:right;}
-  .empty-row td{text-align:center;padding:36px;color:var(--text-muted);font-style:italic;cursor:default;}
-  tbody .opp-table tr{cursor:default;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{color:#7FB5FF;}
+.si{font-size:10px;margin-left:3px;opacity:0.5;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:rgba(77,159,255,0.07);}
+tbody td{padding:10px 13px;font-size:14px;white-space:nowrap;}
+tbody td:last-child{text-align:right;}
+.empty-row td{text-align:center;padding:36px;color:var(--text-muted);font-style:italic;cursor:default;}
 
-  .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
-  .badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
-  .badge-ucl{background:rgba(0,27,94,0.6);color:#F0C030;border:1px solid rgba(240,192,48,0.4);}
-  .badge-uel{background:rgba(232,100,12,0.2);color:#FFAA70;border:1px solid rgba(232,100,12,0.4);}
-  .badge-ecl{background:rgba(0,135,90,0.2);color:#50D49A;border:1px solid rgba(0,135,90,0.4);}
-  .badge-rep{background:rgba(204,0,0,0.2);color:#FF7070;border:1px solid rgba(204,0,0,0.4);}
-  .badge-kup{background:rgba(91,45,142,0.3);color:#C09AFF;border:1px solid rgba(91,45,142,0.5);}
-  .badge-superkup{background:rgba(193,122,0,0.25);color:#FFCC44;border:1px solid rgba(193,122,0,0.5);}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
+.badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
+.badge-ucl{background:rgba(0,27,94,0.6);color:#F0C030;border:1px solid rgba(240,192,48,0.4);}
+.badge-uel{background:rgba(232,100,12,0.2);color:#FFAA70;border:1px solid rgba(232,100,12,0.4);}
+.badge-ecl{background:rgba(0,135,90,0.2);color:#50D49A;border:1px solid rgba(0,135,90,0.4);}
+.badge-rep{background:rgba(204,0,0,0.2);color:#FF7070;border:1px solid rgba(204,0,0,0.4);}
+.badge-kup{background:rgba(91,45,142,0.3);color:#C09AFF;border:1px solid rgba(91,45,142,0.5);}
+.badge-superkup{background:rgba(193,122,0,0.25);color:#FFCC44;border:1px solid rgba(193,122,0,0.5);}
 
-  .result-pill{display:inline-block;padding:3px 9px;border-radius:100px;font-size:13px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
-  .win{background:rgba(0,180,90,0.2);color:#4ADE80;}
-  .draw{background:rgba(120,120,120,0.2);color:#AAA;}
-  .loss{background:rgba(220,0,0,0.2);color:#F87171;}
-  .viewers-num{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;}
-  .date-cell{color:var(--text-muted);font-size:13px;}
-  .opponent-cell{font-weight:600;}
+.result-pill{display:inline-block;padding:3px 9px;border-radius:100px;font-size:13px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
+.win{background:rgba(0,180,90,0.2);color:#4ADE80;}
+.draw{background:rgba(120,120,120,0.2);color:#AAA;}
+.loss{background:rgba(220,0,0,0.2);color:#F87171;}
+.viewers-num{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;}
+.date-cell{color:var(--text-muted);font-size:13px;}
+.opponent-cell{font-weight:600;}
 
-  tbody tr.row-hnl{border-left:3px solid #003F8E;}
-  tbody tr.row-ucl{border-left:3px solid #F0C030;}
-  tbody tr.row-uel{border-left:3px solid #E8640C;}
-  tbody tr.row-ecl{border-left:3px solid #00AD72;}
-  tbody tr.row-rep{border-left:3px solid #CC0000;}
-  tbody tr.row-kup{border-left:3px solid #7B4DB5;}
-  tbody tr.row-superkup{border-left:3px solid #E8A800;}
+tbody tr.row-hnl{border-left:3px solid #003F8E;}
+tbody tr.row-ucl{border-left:3px solid #F0C030;}
+tbody tr.row-uel{border-left:3px solid #E8640C;}
+tbody tr.row-ecl{border-left:3px solid #00AD72;}
+tbody tr.row-rep{border-left:3px solid #CC0000;}
+tbody tr.row-kup{border-left:3px solid #7B4DB5;}
+tbody tr.row-superkup{border-left:3px solid #E8A800;}
 
-  .opp-mini-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;width:70px;gap:1px;margin-top:4px;}
-  .opp-bar-w{background:#4ADE80;}.opp-bar-d{background:#666;}.opp-bar-l{background:#F87171;}
-  tr.opp-win{border-left:3px solid #4ADE80;}
-  tr.opp-mix{border-left:3px solid #F0C030;}
-  tr.opp-loss{border-left:3px solid #F87171;}
+.opp-mini-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;width:70px;gap:1px;margin-top:4px;}
+.opp-bar-w{background:#4ADE80;}.opp-bar-d{background:#666;}.opp-bar-l{background:#F87171;}
+tr.opp-win{border-left:3px solid #4ADE80;}
+tr.opp-mix{border-left:3px solid #F0C030;}
+tr.opp-loss{border-left:3px solid #F87171;}
 
-  .pagination{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);}
-  .page-btns{display:flex;gap:4px;}
-  .page-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;}
-  .page-btn:hover{border-color:rgba(77,159,255,0.5);}
-  .page-btn.active{background:rgba(0,102,204,0.3);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
+.pagination{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);}
+.page-btns{display:flex;gap:4px;flex-wrap:wrap;}
+.page-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;}
+.page-btn:hover{border-color:rgba(77,159,255,0.5);}
+.page-btn.active{background:rgba(0,102,204,0.3);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
 
-  .sidebar{display:flex;flex-direction:column;gap:17px;}
-  .side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-  .side-card-header{padding:13px 17px 10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
-  .comp-list{padding:11px 17px;display:flex;flex-direction:column;gap:9px;}
-  .comp-meta{display:flex;justify-content:space-between;margin-bottom:4px;}
-  .comp-name{font-size:13px;font-weight:600;}
-  .comp-val{font-size:12px;color:var(--text-muted);}
-  .comp-bar-bg{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
-  .comp-bar{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
+.sidebar{display:flex;flex-direction:column;gap:17px;}
+.side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.side-card-header{padding:13px 17px 10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.comp-list{padding:11px 17px;display:flex;flex-direction:column;gap:9px;}
+.comp-meta{display:flex;justify-content:space-between;margin-bottom:4px;}
+.comp-name{font-size:13px;font-weight:600;}
+.comp-val{font-size:12px;color:var(--text-muted);}
+.comp-bar-bg{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.comp-bar{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
 
-  .add-form{padding:15px 17px;display:flex;flex-direction:column;gap:9px;}
-  .form-row{display:flex;flex-direction:column;gap:4px;}
-  .form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
-  .form-input,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;-webkit-appearance:none;}
-  .form-input:focus,.form-select:focus{border-color:rgba(77,159,255,0.5);}
-  .form-select option{background:#1C2439;}
-  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .btn-add{border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;margin-top:3px;background:linear-gradient(135deg,#003F8E,#0066CC);}
-  .btn-add:hover{transform:translateY(-1px);filter:brightness(1.1);}
-  .btn-add.ucl{background:linear-gradient(135deg,#001B5E,#1B6AC9);}
-  .btn-add.uel{background:linear-gradient(135deg,#B54800,#E8640C);}
-  .btn-add.ecl{background:linear-gradient(135deg,#005C3C,#00875A);}
-  .btn-add.rep{background:linear-gradient(135deg,#990000,#CC0000);}
-  .btn-add.kup{background:linear-gradient(135deg,#3B1A6E,#5B2D8E);}
-  .btn-add.superkup{background:linear-gradient(135deg,#8B5800,#C17A00);}
+.add-form{padding:15px 17px;display:flex;flex-direction:column;gap:9px;}
+.form-row{display:flex;flex-direction:column;gap:4px;}
+.form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+.form-input,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus{border-color:rgba(77,159,255,0.5);}
+.form-select option{background:#1C2439;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-add{border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;margin-top:3px;background:linear-gradient(135deg,#003F8E,#0066CC);}
+.btn-add:hover{transform:translateY(-1px);filter:brightness(1.1);}
+.btn-add.ucl{background:linear-gradient(135deg,#001B5E,#1B6AC9);}
+.btn-add.uel{background:linear-gradient(135deg,#B54800,#E8640C);}
+.btn-add.ecl{background:linear-gradient(135deg,#005C3C,#00875A);}
+.btn-add.rep{background:linear-gradient(135deg,#990000,#CC0000);}
+.btn-add.kup{background:linear-gradient(135deg,#3B1A6E,#5B2D8E);}
+.btn-add.superkup{background:linear-gradient(135deg,#8B5800,#C17A00);}
 
-  .toast{position:fixed;bottom:26px;right:26px;background:#0A3A0A;border:1px solid #1A7A1A;color:#4ADE80;padding:11px 17px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);}
-  .toast.show{transform:translateY(0);opacity:1;}
+/* ===== PREDIKTOR PAGE ===== */
+.p-main{padding:26px 40px;display:grid;grid-template-columns:400px 1fr;gap:26px;}
+.leaderboard{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.lb-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center;position:relative;overflow:hidden;}
+.lb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.lb-luka::before{background:linear-gradient(90deg,#1D4ED8,#60A5FA);}
+.lb-lovro::before{background:linear-gradient(90deg,#7C3AED,#C084FC);}
+.lb-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;margin-bottom:2px;}
+.lb-luka .lb-name{color:#60A5FA;}
+.lb-lovro .lb-name{color:#C084FC;}
+.lb-score{font-family:'Bebas Neue',sans-serif;font-size:54px;line-height:1;letter-spacing:2px;}
+.lb-sub{font-size:11px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px;}
+.lb-pct{font-size:20px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-top:6px;}
+.lb-luka .lb-pct{color:#60A5FA;}
+.lb-lovro .lb-pct{color:#C084FC;}
+.score-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;color:var(--text-muted);}
+.score-legend-item{display:flex;align-items:center;gap:5px;}
+.sl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;width:350px;max-width:90vw;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);}
-  @keyframes mIn{from{transform:scale(0.95) translateY(10px);opacity:0;}to{transform:none;opacity:1;}}
-  .modal h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:5px;}
-  .comp-indicator{font-size:12px;color:var(--text-muted);margin-bottom:16px;}
-  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .m-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;}
-  .m-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;}
-  .modal-close{margin-top:20px;width:100%;background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;cursor:pointer;transition:background 0.2s;}
-  .modal-close:hover{background:rgba(255,255,255,0.13);}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:20px;}
+.card-header{padding:14px 18px 11px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;border-bottom:1px solid var(--border);}
+.form-body{padding:16px 18px;display:flex;flex-direction:column;gap:11px;}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;}
+.form-input-pred{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;-webkit-appearance:none;}
+.form-input-pred:focus{border-color:rgba(167,139,250,0.5);}
+.form-input-pred::placeholder{color:var(--text-muted);}
+.predictors-wrap{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.predictor-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;}
+.predictor-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.pl-luka{color:#60A5FA;}
+.pl-lovro{color:#C084FC;}
+.pred-row{display:flex;gap:8px;}
+.pred-inp{flex:1;}
+.btn-pred{border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#4C1D95,#7C3AED);margin-top:2px;width:100%;}
+.btn-pred:hover{transform:translateY(-1px);filter:brightness(1.1);}
 
-  @media(max-width:900px){.main{grid-template-columns:1fr;padding:16px;}.header,.legend,.topnav{padding-left:16px;padding-right:16px;}}
+.btn-sm{border:none;border-radius:6px;padding:5px 11px;font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all 0.2s;}
+.btn-confirm{background:linear-gradient(135deg,#065F46,#059669);color:#fff;}
+.btn-confirm:hover{filter:brightness(1.15);}
+.btn-delete{background:rgba(220,0,0,0.15);color:#F87171;border:1px solid rgba(220,0,0,0.3);}
+.btn-delete:hover{background:rgba(220,0,0,0.25);}
+
+.preds-section{min-width:0;}
+.preds-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.filter-tabs{display:flex;gap:5px;}
+.filter-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 11px;color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+.filter-tab.active{background:rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.5);color:#C084FC;}
+
+.pred-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:border-color 0.2s;}
+.pred-card:hover{border-color:rgba(124,58,237,0.3);}
+.pred-card.resolved{border-color:rgba(74,222,128,0.2);}
+.pred-card.resolved-loss{border-color:rgba(248,113,113,0.2);}
+.pred-top{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+.pred-match-info{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px;}
+.pred-opponent{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+.pred-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.pred-date{font-size:12px;color:var(--text-muted);}
+.pred-comp-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
+.pred-guesses{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.guess-box{background:var(--surface2);border-radius:10px;padding:11px 14px;position:relative;border:1px solid transparent;}
+.guess-who{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.guess-rez{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;line-height:1;}
+.guess-gle{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.guess-hit{position:absolute;top:8px;right:10px;font-size:18px;}
+.guess-box.hit-both{background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.3);}
+.guess-box.hit-rez{background:rgba(250,204,21,0.1);border-color:rgba(250,204,21,0.3);}
+.guess-box.hit-gle{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.3);}
+.guess-box.no-hit{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);}
+.guess-box.pending{background:var(--surface2);border-color:var(--border);}
+
+.pred-bottom{padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.actual-result{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.actual-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;}
+.actual-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#4ADE80;}
+.actual-gle{font-size:12px;color:var(--text-muted);}
+.pred-actions{display:flex;gap:7px;align-items:center;}
+.empty-preds{text-align:center;padding:50px 20px;color:var(--text-muted);}
+.empty-preds .big{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;opacity:0.3;margin-bottom:8px;}
+
+/* MODALS */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;width:360px;max-width:92vw;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);}
+@keyframes mIn{from{transform:scale(0.95) translateY(10px);opacity:0;}to{transform:none;opacity:1;}}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:5px;color:#fff;}
+.modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:16px;}
+.modal-inputs{display:flex;flex-direction:column;gap:10px;margin-bottom:18px;}
+.modal-row{display:flex;flex-direction:column;gap:4px;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.m-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;}
+.m-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;}
+.comp-indicator{font-size:12px;color:var(--text-muted);margin-bottom:16px;}
+.modal-btns{display:flex;gap:9px;}
+.modal-btn-ok{flex:1;border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;background:linear-gradient(135deg,#065F46,#059669);transition:all 0.2s;}
+.modal-btn-ok:hover{filter:brightness(1.1);}
+.modal-btn-cancel{flex:1;background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:13px;cursor:pointer;}
+.modal-close{margin-top:4px;width:100%;background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;cursor:pointer;transition:background 0.2s;}
+.modal-close:hover{background:rgba(255,255,255,0.13);}
+
+/* TOAST */
+.toast{position:fixed;bottom:26px;right:26px;padding:11px 17px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);border:1px solid transparent;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:960px){
+  .s-main,.p-main{grid-template-columns:1fr;padding:16px;}
+  .p-main>div:first-child{order:2;}
+  .p-main>div:last-child{order:1;}
+  .topnav{padding:10px 16px;}
+  .legend{padding:12px 16px;}
+  .header{padding:28px 16px 22px;}
+}
 </style>
 </head>
 <body>
 
-<div class="topnav">
-  <span class="topnav-logo">GNK <span>Dinamo</span></span>
+<!-- NAV -->
+<nav class="topnav">
+  <span class="topnav-logo" onclick="goTo('statistika')">GNK <span>Dinamo</span></span>
   <div class="topnav-links">
-    <a href="statistika_utakmica.html" class="active">📊 Statistika</a>
-    <a href="prediktor.html">🔮 Prediktor</a>
+    <button class="nav-btn active" id="nav-statistika" onclick="goTo('statistika')">📊 Statistika</button>
+    <button class="nav-btn" id="nav-prediktor" onclick="goTo('prediktor')">🔮 Prediktor</button>
   </div>
-</div>
+</nav>
 
-<div class="header">
-  <div class="header-inner">
-    <h1>GNK Dinamo <span>Zagreb</span></h1>
-    <p>Hrvatska &nbsp;·&nbsp; Statistika svih utakmica</p>
-  </div>
-</div>
-
-<div class="legend">
-  <div class="legend-item leg-all active" onclick="filterComp('all',this)"><span class="legend-dot"></span>Sve</div>
-  <div class="legend-item leg-hnl" onclick="filterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
-  <div class="legend-item leg-ucl" onclick="filterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
-  <div class="legend-item leg-uel" onclick="filterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
-  <div class="legend-item leg-ecl" onclick="filterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
-  <div class="legend-item leg-rep" onclick="filterComp('rep',this)"><span class="legend-dot"></span>Reprezentacija</div>
-  <div class="legend-item leg-kup" onclick="filterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
-  <div class="legend-item leg-superkup" onclick="filterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
-</div>
-
-<div class="main">
-  <div class="stats-bar">
-    <div class="stat-card sc-total">
-      <div class="stat-label">Ukupno utakmica</div>
-      <div class="stat-value" id="stat-total">0</div>
-      <div class="stat-sub" id="stat-comp-label">svih natjecanja</div>
-    </div>
-    <div class="stat-card sc-wdl">
-      <div class="stat-label">Pobjede / Remiji / Porazi</div>
-      <div class="stat-value" id="stat-wdl">0/0/0</div>
-      <div class="stat-sub" id="stat-wdl-pct">—</div>
-    </div>
-    <div class="stat-card sc-views">
-      <div class="stat-label">Ukupno gledatelja</div>
-      <div class="stat-value" id="stat-viewers">0</div>
-      <div class="stat-sub">svi stadioni</div>
-    </div>
-    <div class="stat-card sc-avg">
-      <div class="stat-label">Prosjek gledatelja</div>
-      <div class="stat-value" id="stat-avg">0</div>
-      <div class="stat-sub">po utakmici</div>
-    </div>
-    <div class="stat-card sc-best">
-      <div class="stat-label">Najviše gledatelja</div>
-      <div class="stat-value" id="stat-best">0</div>
-      <div class="stat-sub" id="stat-best-match">rekord</div>
+<!-- ======== PAGE: STATISTIKA ======== -->
+<div class="page active" id="page-statistika">
+  <div class="header header-stat">
+    <div class="header-inner">
+      <h1>GNK Dinamo <span>Zagreb</span></h1>
+      <p>Hrvatska &nbsp;·&nbsp; Statistika svih utakmica</p>
     </div>
   </div>
 
-  <div class="table-section">
-    <div class="section-header">
-      <span class="section-title" id="section-title">Sve utakmice</span>
-      <div class="header-right">
-        <div class="view-tabs">
-          <button class="view-tab active" onclick="switchView('matches',this)">Utakmice</button>
-          <button class="view-tab" onclick="switchView('opponents',this)">Protivnici</button>
+  <div class="legend">
+    <div class="legend-item leg-all active" onclick="filterComp('all',this)"><span class="legend-dot"></span>Sve</div>
+    <div class="legend-item leg-hnl" onclick="filterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
+    <div class="legend-item leg-ucl" onclick="filterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
+    <div class="legend-item leg-uel" onclick="filterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
+    <div class="legend-item leg-ecl" onclick="filterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
+    <div class="legend-item leg-rep" onclick="filterComp('rep',this)"><span class="legend-dot"></span>Reprezentacija</div>
+    <div class="legend-item leg-kup" onclick="filterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
+    <div class="legend-item leg-superkup" onclick="filterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+  </div>
+
+  <div class="s-main">
+    <div class="stats-bar">
+      <div class="stat-card sc-total"><div class="stat-label">Ukupno utakmica</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub" id="stat-comp-label">svih natjecanja</div></div>
+      <div class="stat-card sc-wdl"><div class="stat-label">Pobjede / Remiji / Porazi</div><div class="stat-value" id="stat-wdl">0/0/0</div><div class="stat-sub" id="stat-wdl-pct">—</div></div>
+      <div class="stat-card sc-views"><div class="stat-label">Ukupno gledatelja</div><div class="stat-value" id="stat-viewers">0</div><div class="stat-sub">svi stadioni</div></div>
+      <div class="stat-card sc-avg"><div class="stat-label">Prosjek gledatelja</div><div class="stat-value" id="stat-avg">0</div><div class="stat-sub">po utakmici</div></div>
+      <div class="stat-card sc-best"><div class="stat-label">Najviše gledatelja</div><div class="stat-value" id="stat-best">0</div><div class="stat-sub" id="stat-best-match">rekord</div></div>
+    </div>
+
+    <div class="table-section">
+      <div class="section-header">
+        <span class="section-title" id="section-title">Sve utakmice</span>
+        <div class="header-right">
+          <div class="view-tabs">
+            <button class="view-tab active" onclick="switchView('matches',this)">Utakmice</button>
+            <button class="view-tab" onclick="switchView('opponents',this)">Protivnici</button>
+          </div>
+          <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="search" oninput="renderActive()">
         </div>
-        <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="search" oninput="renderActive()">
+      </div>
+      <div class="table-wrap">
+        <div id="view-matches">
+          <table>
+            <thead><tr>
+              <th onclick="sortBy('datum')">Datum <span class="si" id="sort-datum">↓</span></th>
+              <th onclick="sortBy('natjecanje')">Natjecanje <span class="si" id="sort-natjecanje">↕</span></th>
+              <th onclick="sortBy('protivnik')">Protivnik <span class="si" id="sort-protivnik">↕</span></th>
+              <th onclick="sortBy('rezultat')">Rezultat <span class="si" id="sort-rezultat">↕</span></th>
+              <th onclick="sortBy('gledatelji')">Gledatelji <span class="si" id="sort-gledatelji">↕</span></th>
+            </tr></thead>
+            <tbody id="match-tbody"></tbody>
+          </table>
+          <div class="pagination"><span id="page-info"></span><div class="page-btns" id="page-btns"></div></div>
+        </div>
+        <div id="view-opponents" style="display:none;">
+          <table>
+            <thead><tr>
+              <th onclick="sortOpp('protivnik')">Protivnik <span class="si" id="osort-protivnik">↕</span></th>
+              <th onclick="sortOpp('utakmice')">Uta. <span class="si" id="osort-utakmice">↓</span></th>
+              <th onclick="sortOpp('wins')">P / R / P <span class="si" id="osort-wins">↕</span></th>
+              <th onclick="sortOpp('winPct')">% Win <span class="si" id="osort-winPct">↕</span></th>
+              <th onclick="sortOpp('avgGle')">Prosjek gle. <span class="si" id="osort-avgGle">↕</span></th>
+            </tr></thead>
+            <tbody id="opp-tbody"></tbody>
+          </table>
+          <div class="pagination"><span id="opp-page-info"></span><div class="page-btns" id="opp-page-btns"></div></div>
+        </div>
       </div>
     </div>
-    <div class="table-wrap">
-      <div id="view-matches">
-        <table>
-          <thead><tr>
-            <th onclick="sortBy('datum')">Datum <span class="si" id="sort-datum">↓</span></th>
-            <th onclick="sortBy('natjecanje')">Natjecanje <span class="si" id="sort-natjecanje">↕</span></th>
-            <th onclick="sortBy('protivnik')">Protivnik <span class="si" id="sort-protivnik">↕</span></th>
-            <th onclick="sortBy('rezultat')">Rezultat <span class="si" id="sort-rezultat">↕</span></th>
-            <th onclick="sortBy('gledatelji')">Gledatelji <span class="si" id="sort-gledatelji">↕</span></th>
-          </tr></thead>
-          <tbody id="match-tbody"></tbody>
-        </table>
-        <div class="pagination"><span id="page-info"></span><div class="page-btns" id="page-btns"></div></div>
+
+    <div class="sidebar">
+      <div class="side-card">
+        <div class="side-card-header">➕ Nova utakmica</div>
+        <div class="add-form">
+          <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="f-datum"></div>
+          <div class="form-row"><label class="form-label">Natjecanje</label>
+            <select class="form-select" id="f-natjecanje" onchange="updateBtnColor()">
+              <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+              <option>Liga Nacija</option><option>FIFA Kvale</option><option>EURO Kvale</option>
+              <option>Super kup</option><option>Kup</option>
+            </select>
+          </div>
+          <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="f-protivnik" placeholder="Npr. Hajduk"></div>
+          <div class="form-row-2">
+            <div class="form-row"><label class="form-label">Rezultat</label><input class="form-input" type="text" id="f-rezultat" placeholder="2-1"></div>
+            <div class="form-row"><label class="form-label">Gledatelji</label><input class="form-input" type="number" id="f-gledatelji" placeholder="12000"></div>
+          </div>
+          <button class="btn-add" id="btn-add" onclick="addMatch()">Dodaj utakmicu</button>
+        </div>
       </div>
-      <div id="view-opponents" style="display:none;">
-        <table>
-          <thead><tr>
-            <th onclick="sortOpp('protivnik')">Protivnik <span class="si" id="osort-protivnik">↕</span></th>
-            <th onclick="sortOpp('utakmice')">Uta. <span class="si" id="osort-utakmice">↓</span></th>
-            <th onclick="sortOpp('wins')">P / R / P <span class="si" id="osort-wins">↕</span></th>
-            <th onclick="sortOpp('winPct')">% Win <span class="si" id="osort-winPct">↕</span></th>
-            <th onclick="sortOpp('avgGle')">Prosjek gle. <span class="si" id="osort-avgGle">↕</span></th>
-          </tr></thead>
-          <tbody id="opp-tbody"></tbody>
-        </table>
-        <div class="pagination"><span id="opp-page-info"></span><div class="page-btns" id="opp-page-btns"></div></div>
-      </div>
+      <div class="side-card"><div class="side-card-header">📊 Prosjek po natjecanju</div><div class="comp-list" id="comp-stats"></div></div>
+      <div class="side-card"><div class="side-card-header">⚽ Omjer pobjeda</div><div class="comp-list" id="win-stats"></div></div>
     </div>
   </div>
 
-  <div class="sidebar">
-    <div class="side-card">
-      <div class="side-card-header">➕ Nova utakmica</div>
-      <div class="add-form">
-        <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="f-datum"></div>
-        <div class="form-row">
-          <label class="form-label">Natjecanje</label>
-          <select class="form-select" id="f-natjecanje" onchange="updateBtnColor()">
-            <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
-            <option>Liga Nacija</option><option>FIFA Kvale</option><option>EURO Kvale</option>
-            <option>Super kup</option><option>Kup</option>
-          </select>
-        </div>
-        <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="f-protivnik" placeholder="Npr. Hajduk"></div>
-        <div class="form-row-2">
-          <div class="form-row"><label class="form-label">Rezultat</label><input class="form-input" type="text" id="f-rezultat" placeholder="2-1"></div>
-          <div class="form-row"><label class="form-label">Gledatelji</label><input class="form-input" type="number" id="f-gledatelji" placeholder="12000"></div>
-        </div>
-        <button class="btn-add" id="btn-add" onclick="addMatch()">Dodaj utakmicu</button>
+  <!-- Match detail modal -->
+  <div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h3 id="m-title"></h3>
+      <div class="comp-indicator" id="m-comp"></div>
+      <div class="modal-grid">
+        <div><div class="m-label">Datum</div><div class="m-val" id="m-datum"></div></div>
+        <div><div class="m-label">Natjecanje</div><div class="m-val" id="m-nat"></div></div>
+        <div><div class="m-label">Rezultat</div><div class="m-val" id="m-rez"></div></div>
+        <div><div class="m-label">Gledatelji</div><div class="m-val" id="m-gle"></div></div>
       </div>
-    </div>
-    <div class="side-card">
-      <div class="side-card-header">📊 Prosjek po natjecanju</div>
-      <div class="comp-list" id="comp-stats"></div>
-    </div>
-    <div class="side-card">
-      <div class="side-card-header">⚽ Omjer pobjeda</div>
-      <div class="comp-list" id="win-stats"></div>
+      <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Zatvori</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <h3 id="m-title"></h3>
-    <div class="comp-indicator" id="m-comp"></div>
-    <div class="modal-grid">
-      <div><div class="m-label">Datum</div><div class="m-val" id="m-datum"></div></div>
-      <div><div class="m-label">Natjecanje</div><div class="m-val" id="m-nat"></div></div>
-      <div><div class="m-label">Rezultat</div><div class="m-val" id="m-rez"></div></div>
-      <div><div class="m-label">Gledatelji</div><div class="m-val" id="m-gle"></div></div>
+<!-- ======== PAGE: PREDIKTOR ======== -->
+<div class="page" id="page-prediktor">
+  <div class="header header-pred">
+    <div class="header-inner">
+      <h1>🔮 <span>Prediktor</span></h1>
+      <p>GNK Dinamo Zagreb · Hrvatska · Tko bolje pogađa?</p>
     </div>
-    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Zatvori</button>
+  </div>
+
+  <div class="p-main">
+    <div>
+      <div class="leaderboard">
+        <div class="lb-card lb-luka">
+          <div class="lb-name">Luka</div>
+          <div class="lb-score" id="lb-luka-score">0</div>
+          <div class="lb-sub">bodova</div>
+          <div class="lb-pct" id="lb-luka-pct">—</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;" id="lb-luka-detail">0 od 0</div>
+        </div>
+        <div class="lb-card lb-lovro">
+          <div class="lb-name">Lovro</div>
+          <div class="lb-score" id="lb-lovro-score">0</div>
+          <div class="lb-sub">bodova</div>
+          <div class="lb-pct" id="lb-lovro-pct">—</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:3px;" id="lb-lovro-detail">0 od 0</div>
+        </div>
+      </div>
+      <div class="score-legend">
+        <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>3 boda — rezultat + gledatelji (±1000)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — samo rezultat</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1 bod — samo gledatelji</div>
+      </div>
+      <div class="form-card">
+        <div class="card-header">➕ Nova predikcija</div>
+        <div class="form-body">
+          <div class="form-grid-2">
+            <div class="form-group"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="p-datum"></div>
+            <div class="form-group"><label class="form-label">Natjecanje</label>
+              <select class="form-input-pred" id="p-natjecanje">
+                <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+                <option>Liga Nacija</option><option>FIFA Kvale</option><option>EURO Kvale</option>
+                <option>Super kup</option><option>Kup</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label class="form-label">Protivnik</label><input class="form-input-pred" type="text" id="p-protivnik" placeholder="Npr. Hajduk"></div>
+          <div class="predictors-wrap">
+            <div class="predictor-box">
+              <div class="predictor-name pl-luka">🔵 Luka predviđa</div>
+              <div class="pred-row">
+                <div class="pred-inp form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="l-rez" placeholder="2-1"></div>
+                <div class="pred-inp form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="l-gle" placeholder="15000"></div>
+              </div>
+            </div>
+            <div class="predictor-box">
+              <div class="predictor-name pl-lovro">🟣 Lovro predviđa</div>
+              <div class="pred-row">
+                <div class="pred-inp form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="lo-rez" placeholder="2-1"></div>
+                <div class="pred-inp form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="lo-gle" placeholder="15000"></div>
+              </div>
+            </div>
+          </div>
+          <button class="btn-pred" onclick="addPrediction()">💾 Spremi predikciju</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="preds-section">
+      <div class="preds-header">
+        <span class="section-title" style="color:#fff">Predikcije</span>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter('all',this)">Sve</button>
+          <button class="filter-tab" onclick="setFilter('pending',this)">Na čekanju</button>
+          <button class="filter-tab" onclick="setFilter('resolved',this)">Završene</button>
+        </div>
+      </div>
+      <div id="preds-list"></div>
+    </div>
+  </div>
+
+  <!-- Confirm result modal -->
+  <div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal">
+      <h3>✅ Unesi stvarni rezultat</h3>
+      <div class="modal-sub" id="cm-sub"></div>
+      <div class="modal-inputs">
+        <div class="modal-row"><label class="form-label">Stvarni rezultat</label><input class="form-input-pred" type="text" id="cm-rez" placeholder="2-1"></div>
+        <div class="modal-row"><label class="form-label">Stvarni broj gledatelja</label><input class="form-input-pred" type="number" id="cm-gle" placeholder="15000"></div>
+      </div>
+      <div class="modal-btns">
+        <button class="modal-btn-ok" onclick="confirmResult()">Potvrdi</button>
+        <button class="modal-btn-cancel" onclick="document.getElementById('confirm-modal').classList.remove('open')">Odustani</button>
+      </div>
+    </div>
   </div>
 </div>
-<div class="toast" id="toast">✅ Utakmica dodana!</div>
+
+<!-- TOAST (shared) -->
+<div class="toast" id="toast"></div>
 
 <script>
+/* ===== NAVIGATION ===== */
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.location.hash = page;
+  window.scrollTo(0, 0);
+}
+
+// On load, read hash
+window.addEventListener('load', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === 'prediktor') goTo('prediktor');
+  else goTo('statistika');
+});
+
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.replace('#', '');
+  if (hash === 'prediktor') goTo('prediktor');
+  else if (hash === 'statistika') goTo('statistika');
+});
+
+/* ===== SHARED HELPERS ===== */
 const REP_COMPS=['Liga Nacija','FIFA Kvale','EURO Kvale','WC Kvale','Reprezentacija'];
 const EUR_MAP={UCL:'ucl',UEL:'uel',ECL:'ecl'};
 const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030',uel:'#FF8C3E',ecl:'#4DC99A',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
@@ -317,7 +525,16 @@ function getCompClass(nat){
   if(nat==='Super kup')return'superkup';
   return'hnl';
 }
+function getResult(r){const p=r.split('-').map(Number);return p[0]>p[1]?'win':p[0]<p[1]?'loss':'draw';}
+function fmtDate(d){const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
+function fmtNum(n){return Number(n).toLocaleString('hr-HR');}
+function showToast(msg,bg,color){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.background=bg;t.style.borderColor=color;t.style.color=color;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
 
+/* ===== STATISTIKA LOGIC ===== */
 let matches=[
   {datum:'2008-08-31',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:3000},
   {datum:'2009-05-17',natjecanje:'HNL',protivnik:'Slaven',rezultat:'2-1',gledatelji:25000},
@@ -373,10 +590,6 @@ let currentFilter='all',sortKey='datum',sortDir='desc',oppSortKey='utakmice',opp
 let currentPage=1,oppPage=1,activeView='matches';
 const PER_PAGE=15;
 
-function getResult(r){const p=r.split('-').map(Number);return p[0]>p[1]?'win':p[0]<p[1]?'loss':'draw';}
-function fmtDate(d){const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
-function fmtNum(n){return Number(n).toLocaleString('hr-HR');}
-
 function switchView(v,el){
   activeView=v;
   document.getElementById('view-matches').style.display=v==='matches'?'':'none';
@@ -398,7 +611,6 @@ function filterMatches(){
     return true;
   });
 }
-
 function sortMatches(arr){
   return[...arr].sort((a,b)=>{
     let va=a[sortKey],vb=b[sortKey];
@@ -408,16 +620,13 @@ function sortMatches(arr){
     return 0;
   });
 }
-
 function sortBy(key){
   if(sortKey===key)sortDir=sortDir==='asc'?'desc':'asc';
   else{sortKey=key;sortDir=key==='datum'?'desc':'asc';}
   document.querySelectorAll('.si').forEach(e=>e.textContent='↕');
-  const el=document.getElementById('sort-'+key);
-  if(el)el.textContent=sortDir==='asc'?'↑':'↓';
+  const el=document.getElementById('sort-'+key);if(el)el.textContent=sortDir==='asc'?'↑':'↓';
   currentPage=1;renderTable();
 }
-
 function renderTable(){
   const filtered=filterMatches();
   const sorted=sortMatches(filtered);
@@ -443,35 +652,28 @@ function renderTable(){
   renderPageBtns('page-btns',pages,currentPage,p=>{currentPage=p;renderTable();});
   updateStats(filtered);
 }
-
 function buildOppData(filtered){
   const g={};
   filtered.forEach(m=>{
     if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[]};
     const r=getResult(m.rezultat);
-    if(r==='win')g[m.protivnik].wins++;
-    else if(r==='draw')g[m.protivnik].draws++;
-    else g[m.protivnik].losses++;
+    if(r==='win')g[m.protivnik].wins++;else if(r==='draw')g[m.protivnik].draws++;else g[m.protivnik].losses++;
     g[m.protivnik].gle.push(m.gledatelji);
   });
   return Object.entries(g).map(([p,d])=>({
-    protivnik:p,
-    utakmice:d.wins+d.draws+d.losses,
+    protivnik:p,utakmice:d.wins+d.draws+d.losses,
     wins:d.wins,draws:d.draws,losses:d.losses,
     winPct:d.wins/(d.wins+d.draws+d.losses)*100,
     avgGle:Math.round(d.gle.reduce((a,b)=>a+b,0)/d.gle.length)
   }));
 }
-
 function sortOpp(key){
   if(oppSortKey===key)oppSortDir=oppSortDir==='asc'?'desc':'asc';
   else{oppSortKey=key;oppSortDir=key==='protivnik'?'asc':'desc';}
   document.querySelectorAll('[id^="osort-"]').forEach(e=>e.textContent='↕');
-  const el=document.getElementById('osort-'+key);
-  if(el)el.textContent=oppSortDir==='asc'?'↑':'↓';
+  const el=document.getElementById('osort-'+key);if(el)el.textContent=oppSortDir==='asc'?'↑':'↓';
   oppPage=1;renderOpponents();
 }
-
 function renderOpponents(){
   const filtered=filterMatches();
   let opps=buildOppData(filtered);
@@ -490,18 +692,14 @@ function renderOpponents(){
     ?'<tr class="empty-row"><td colspan="5">Nema rezultata</td></tr>'
     :slice.map(o=>{
       const t=o.utakmice||1;
-      const wP=(o.wins/t*100).toFixed(0);
-      const dP=(o.draws/t*100).toFixed(0);
-      const lP=(o.losses/t*100).toFixed(0);
+      const wP=(o.wins/t*100).toFixed(0),dP=(o.draws/t*100).toFixed(0),lP=(o.losses/t*100).toFixed(0);
       const rc=o.winPct>55?'opp-win':o.losses>o.wins?'opp-loss':'opp-mix';
       const wc=o.winPct>=60?'#4ADE80':o.winPct>=40?'#F0C030':'#F87171';
       return`<tr class="${rc}">
         <td class="opponent-cell">${o.protivnik}</td>
         <td style="color:var(--text-muted)">${o.utakmice}</td>
-        <td>
-          <span style="color:#4ADE80;font-weight:700">${o.wins}</span> / <span style="color:#888">${o.draws}</span> / <span style="color:#F87171">${o.losses}</span>
-          <div class="opp-mini-bar"><div class="opp-bar-w" style="width:${wP}%"></div><div class="opp-bar-d" style="width:${dP}%"></div><div class="opp-bar-l" style="width:${lP}%"></div></div>
-        </td>
+        <td><span style="color:#4ADE80;font-weight:700">${o.wins}</span> / <span style="color:#888">${o.draws}</span> / <span style="color:#F87171">${o.losses}</span>
+          <div class="opp-mini-bar"><div class="opp-bar-w" style="width:${wP}%"></div><div class="opp-bar-d" style="width:${dP}%"></div><div class="opp-bar-l" style="width:${lP}%"></div></div></td>
         <td><span style="color:${wc};font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:16px;">${wP}%</span></td>
         <td class="viewers-num">${fmtNum(o.avgGle)}</td>
       </tr>`;
@@ -510,18 +708,14 @@ function renderOpponents(){
   renderPageBtns('opp-page-btns',pages,oppPage,p=>{oppPage=p;renderOpponents();});
   updateStats(filtered);
 }
-
 function renderPageBtns(id,pages,cur,cb){
   const pb=document.getElementById(id);pb.innerHTML='';
   for(let p=1;p<=pages;p++){
     const btn=document.createElement('button');
-    btn.className='page-btn'+(p===cur?' active':'');
-    btn.textContent=p;
-    btn.onclick=()=>cb(p);
-    pb.appendChild(btn);
+    btn.className='page-btn'+(p===cur?' active':'');btn.textContent=p;
+    btn.onclick=()=>cb(p);pb.appendChild(btn);
   }
 }
-
 function updateStats(filtered){
   const total=filtered.length;
   const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
@@ -540,20 +734,17 @@ function updateStats(filtered){
   document.getElementById('stat-avg').textContent=fmtNum(avg);
   document.getElementById('stat-best').textContent=best?fmtNum(best.gledatelji):'—';
   document.getElementById('stat-best-match').textContent=best?`vs ${best.protivnik}`:'rekord';
-  renderCompStats();
-  renderWinStats(filtered);
+  renderCompStats();renderWinStats(filtered);
 }
-
 function renderCompStats(){
   const g={};
   matches.forEach(m=>{if(!g[m.natjecanje])g[m.natjecanje]=[];g[m.natjecanje].push(m.gledatelji);});
   const avgs=Object.entries(g).map(([k,v])=>({name:k,avg:Math.round(v.reduce((a,b)=>a+b,0)/v.length),count:v.length,cls:getCompClass(k)})).sort((a,b)=>b.avg-a.avg);
   const max=Math.max(...avgs.map(a=>a.avg));
-  document.getElementById('comp-stats').innerHTML=avgs.map(a=>`
-    <div><div class="comp-meta"><span class="comp-name">${a.name} <span style="opacity:0.45;font-size:11px">(${a.count})</span></span><span class="comp-val">${fmtNum(a.avg)}</span></div>
+  document.getElementById('comp-stats').innerHTML=avgs.map(a=>`<div>
+    <div class="comp-meta"><span class="comp-name">${a.name} <span style="opacity:0.45;font-size:11px">(${a.count})</span></span><span class="comp-val">${fmtNum(a.avg)}</span></div>
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${(a.avg/max*100).toFixed(1)}%;background:${COMP_COLORS[a.cls]||'#888'}"></div></div></div>`).join('');
 }
-
 function renderWinStats(filtered){
   const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
   const draws=filtered.filter(m=>getResult(m.rezultat)==='draw').length;
@@ -566,19 +757,14 @@ function renderWinStats(filtered){
   ].map(it=>`<div><div class="comp-meta"><span class="comp-name">${it.label}</span><span class="comp-val" style="color:${it.color}">${it.count} (${it.pct}%)</span></div>
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${it.pct}%;background:${it.color}"></div></div></div>`).join('');
 }
-
 function filterComp(filter,el){
   currentFilter=filter;currentPage=1;oppPage=1;
   document.querySelectorAll('.legend-item').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  renderActive();
+  el.classList.add('active');renderActive();
 }
-
 function updateBtnColor(){
-  const nat=document.getElementById('f-natjecanje').value;
-  document.getElementById('btn-add').className='btn-add '+getCompClass(nat);
+  document.getElementById('btn-add').className='btn-add '+getCompClass(document.getElementById('f-natjecanje').value);
 }
-
 function addMatch(){
   const datum=document.getElementById('f-datum').value;
   const nat=document.getElementById('f-natjecanje').value;
@@ -589,15 +775,12 @@ function addMatch(){
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
   matches.push({datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle});
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
-  ['f-datum','f-protivnik','f-rezultat','f-gledatelji'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(id==='f-datum')el.value=new Date().toISOString().split('T')[0];
-    else el.value='';
-  });
+  document.getElementById('f-protivnik').value='';
+  document.getElementById('f-rezultat').value='';
+  document.getElementById('f-gledatelji').value='';
   renderActive();renderCompStats();
-  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+  showToast('✅ Utakmica dodana!','#0A3A0A','#4ADE80');
 }
-
 function showModal(idx){
   const m=matches[idx];
   const labels={win:'✅ Pobjeda',draw:'🤝 Remi',loss:'❌ Poraz'};
@@ -610,8 +793,124 @@ function showModal(idx){
   document.getElementById('modal').classList.add('open');
 }
 
-document.getElementById('f-datum').value=new Date().toISOString().split('T')[0];
-renderTable();renderCompStats();
+/* ===== PREDIKTOR LOGIC ===== */
+let predictions=JSON.parse(localStorage.getItem('dinamo_preds')||'[]');
+let listFilter='all';
+let confirmIdx=null;
+
+function savePreds(){localStorage.setItem('dinamo_preds',JSON.stringify(predictions));}
+
+function scoreCalc(gRez,gGle,aRez,aGle){
+  const rezHit=gRez===aRez;
+  const gleHit=Math.abs(Number(gGle)-Number(aGle))<=1000;
+  let pts=0;
+  if(rezHit)pts+=1;
+  if(gleHit)pts+=1;
+  if(rezHit&&gleHit)pts+=1;
+  return{pts,rezHit,gleHit};
+}
+function addPrediction(){
+  const datum=document.getElementById('p-datum').value;
+  const prot=document.getElementById('p-protivnik').value.trim();
+  const nat=document.getElementById('p-natjecanje').value;
+  const lRez=document.getElementById('l-rez').value.trim();
+  const lGle=parseInt(document.getElementById('l-gle').value);
+  const loRez=document.getElementById('lo-rez').value.trim();
+  const loGle=parseInt(document.getElementById('lo-gle').value);
+  if(!datum||!prot||!lRez||isNaN(lGle)||!loRez||isNaN(loGle)){alert('Molimo ispunite sva polja!');return;}
+  if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  predictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,
+    luka:{rez:lRez,gle:lGle},lovro:{rez:loRez,gle:loGle},actual:null,resolved:false});
+  savePreds();
+  ['p-protivnik','l-rez','l-gle','lo-rez','lo-gle'].forEach(id=>document.getElementById(id).value='');
+  renderPreds();
+  showToast('🔮 Predikcija dodana!','#1A1A4A','#A78BFA');
+}
+function openConfirm(idx){
+  confirmIdx=idx;
+  const p=predictions[idx];
+  document.getElementById('cm-sub').textContent=`Dinamo vs ${p.protivnik} · ${fmtDate(p.datum)}`;
+  document.getElementById('cm-rez').value='';
+  document.getElementById('cm-gle').value='';
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function confirmResult(){
+  const rez=document.getElementById('cm-rez').value.trim();
+  const gle=parseInt(document.getElementById('cm-gle').value);
+  if(!rez||isNaN(gle)){alert('Unesite stvarni rezultat i gledatelje!');return;}
+  if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  const p=predictions[confirmIdx];
+  p.actual={rez,gle};p.resolved=true;
+  p.luka.score=scoreCalc(p.luka.rez,p.luka.gle,rez,gle);
+  p.lovro.score=scoreCalc(p.lovro.rez,p.lovro.gle,rez,gle);
+  savePreds();
+  document.getElementById('confirm-modal').classList.remove('open');
+  renderPreds();
+  showToast('✅ Rezultat potvrđen!','#0A3A0A','#4ADE80');
+}
+function deletePred(idx){
+  if(!confirm('Obriši ovu predikciju?'))return;
+  predictions.splice(idx,1);savePreds();renderPreds();
+}
+function setFilter(f,el){
+  listFilter=f;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');renderPreds();
+}
+function renderPreds(){
+  const lb=calcLB();
+  document.getElementById('lb-luka-score').textContent=lb.lPts;
+  document.getElementById('lb-lovro-score').textContent=lb.loPts;
+  document.getElementById('lb-luka-pct').textContent=lb.lTotal?`${(lb.lHits/lb.lTotal*100).toFixed(0)}% rez.`:'—';
+  document.getElementById('lb-lovro-pct').textContent=lb.loTotal?`${(lb.loHits/lb.loTotal*100).toFixed(0)}% rez.`:'—';
+  document.getElementById('lb-luka-detail').textContent=`${lb.lHits} točnih od ${lb.lTotal}`;
+  document.getElementById('lb-lovro-detail').textContent=`${lb.loHits} točnih od ${lb.loTotal}`;
+  const filtered=predictions.filter(p=>listFilter==='all'||( listFilter==='pending'&&!p.resolved)||(listFilter==='resolved'&&p.resolved));
+  const container=document.getElementById('preds-list');
+  if(filtered.length===0){
+    container.innerHTML=`<div class="empty-preds"><div class="big">🔮</div><div>Nema predikcija za prikaz</div><div style="margin-top:8px;font-size:13px;">Dodaj prvu predikciju ←</div></div>`;
+    return;
+  }
+  container.innerHTML=filtered.map(p=>{
+    const idx=predictions.indexOf(p);
+    const cls=getCompClass(p.natjecanje);
+    let lBox,loBox;
+    if(p.resolved){
+      const l=p.luka.score,lo=p.lovro.score;
+      const lC=l.rezHit&&l.gleHit?'hit-both':l.rezHit?'hit-rez':l.gleHit?'hit-gle':'no-hit';
+      const loC=lo.rezHit&&lo.gleHit?'hit-both':lo.rezHit?'hit-rez':lo.gleHit?'hit-gle':'no-hit';
+      const lE=l.rezHit&&l.gleHit?'🎯':l.rezHit?'✅':l.gleHit?'👁️':'❌';
+      const loE=lo.rezHit&&lo.gleHit?'🎯':lo.rezHit?'✅':lo.gleHit?'👁️':'❌';
+      lBox=`<div class="guess-box ${lC}"><div class="guess-who pl-luka">🔵 Luka <span style="font-weight:400;color:var(--text-muted)">(${l.pts} bod${l.pts===1?'':'a'})</span></div><div class="guess-rez">${p.luka.rez}</div><div class="guess-gle">${fmtNum(p.luka.gle)} gle.</div><div class="guess-hit">${lE}</div></div>`;
+      loBox=`<div class="guess-box ${loC}"><div class="guess-who pl-lovro">🟣 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod${lo.pts===1?'':'a'})</span></div><div class="guess-rez">${p.lovro.rez}</div><div class="guess-gle">${fmtNum(p.lovro.gle)} gle.</div><div class="guess-hit">${loE}</div></div>`;
+    }else{
+      lBox=`<div class="guess-box pending"><div class="guess-who pl-luka">🔵 Luka</div><div class="guess-rez">${p.luka.rez}</div><div class="guess-gle">${fmtNum(p.luka.gle)} gle.</div></div>`;
+      loBox=`<div class="guess-box pending"><div class="guess-who pl-lovro">🟣 Lovro</div><div class="guess-rez">${p.lovro.rez}</div><div class="guess-gle">${fmtNum(p.lovro.gle)} gle.</div></div>`;
+    }
+    const cardCls=p.resolved?(p.luka.score.pts>0||p.lovro.score.pts>0?'resolved':'resolved-loss'):'';
+    const bottom=p.resolved
+      ?`<div class="pred-bottom"><div class="actual-result"><span class="actual-label">Stvarni:</span><span class="actual-val">${p.actual.rez}</span><span class="actual-gle">${fmtNum(p.actual.gle)} gledatelja</span></div><div class="pred-actions"><button class="btn-sm btn-delete" onclick="deletePred(${idx})">🗑️ Briši</button></div></div>`
+      :`<div class="pred-bottom"><span style="font-size:12px;color:var(--text-muted);">⏳ Čeka se rezultat</span><div class="pred-actions"><button class="btn-sm btn-confirm" onclick="openConfirm(${idx})">✅ Unesi rezultat</button><button class="btn-sm btn-delete" onclick="deletePred(${idx})">🗑️</button></div></div>`;
+    return`<div class="pred-card ${cardCls}"><div class="pred-top"><div class="pred-match-info"><span class="pred-opponent">Dinamo vs ${p.protivnik}</span><div class="pred-meta"><span class="pred-comp-badge badge-${cls}">${p.natjecanje}</span><span class="pred-date">${fmtDate(p.datum)}</span></div></div><div class="pred-guesses">${lBox}${loBox}</div></div>${bottom}</div>`;
+  }).join('');
+}
+function calcLB(){
+  let lPts=0,lHits=0,lTotal=0,loPts=0,loHits=0,loTotal=0;
+  predictions.filter(p=>p.resolved).forEach(p=>{
+    lPts+=p.luka.score.pts;loPts+=p.lovro.score.pts;
+    if(p.luka.score.rezHit)lHits++;if(p.lovro.score.rezHit)loHits++;
+    lTotal++;loTotal++;
+  });
+  return{lPts,lHits,lTotal,loPts,loHits,loTotal};
+}
+
+/* ===== INIT ===== */
+const today=new Date().toISOString().split('T')[0];
+document.getElementById('f-datum').value=today;
+document.getElementById('p-datum').value=today;
+renderTable();
+renderCompStats();
+renderPreds();
 </script>
 </body>
 </html>
