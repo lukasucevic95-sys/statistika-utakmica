@@ -256,6 +256,11 @@ tr.opp-loss{border-left:3px solid #F87171;}
 .toast{position:fixed;bottom:26px;right:26px;padding:11px 17px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);border:1px solid transparent;}
 .toast.show{transform:translateY(0);opacity:1;}
 
+/* LOADING */
+.fb-loading{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(10,15,30,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:#4D9FFF;}
+.fb-spinner{width:40px;height:40px;border:3px solid rgba(77,159,255,0.2);border-top-color:#4D9FFF;border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
 @media(max-width:960px){
   .s-main,.p-main{grid-template-columns:1fr;padding:16px;}
   .p-main>div:first-child{order:2;}
@@ -267,6 +272,12 @@ tr.opp-loss{border-left:3px solid #F87171;}
 </style>
 </head>
 <body>
+
+<!-- Loading overlay -->
+<div class="fb-loading" id="fb-loading">
+  <div class="fb-spinner"></div>
+  <div>Učitavanje podataka...</div>
+</div>
 
 <!-- NAV -->
 <nav class="topnav">
@@ -489,7 +500,17 @@ tr.opp-loss{border-left:3px solid #F87171;}
 <!-- TOAST (shared) -->
 <div class="toast" id="toast"></div>
 
-<script>
+<!-- ===== FIREBASE SDK ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  databaseURL: "https://statistika-utakmica-default-rtdb.europe-west1.firebasedatabase.app"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
 /* ===== NAVIGATION ===== */
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -499,13 +520,7 @@ function goTo(page) {
   window.location.hash = page;
   window.scrollTo(0, 0);
 }
-
-// On load, read hash
-window.addEventListener('load', () => {
-  const hash = window.location.hash.replace('#', '');
-  if (hash === 'prediktor') goTo('prediktor');
-  else goTo('statistika');
-});
+window.goTo = goTo;
 
 window.addEventListener('hashchange', () => {
   const hash = window.location.hash.replace('#', '');
@@ -535,8 +550,12 @@ function showToast(msg,bg,color){
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* ===== STATISTIKA LOGIC ===== */
-let matches=[
+window.getCompClass = getCompClass;
+window.fmtDate = fmtDate;
+window.fmtNum = fmtNum;
+
+/* ===== POČETNI PODACI (samo ako Firebase nema ništa) ===== */
+const INITIAL_MATCHES = [
   {datum:'2008-08-31',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:3000},
   {datum:'2009-05-17',natjecanje:'HNL',protivnik:'Slaven',rezultat:'2-1',gledatelji:25000},
   {datum:'2009-08-01',natjecanje:'HNL',protivnik:'Međimurje',rezultat:'4-0',gledatelji:6000},
@@ -587,10 +606,18 @@ let matches=[
   {datum:'2026-04-04',natjecanje:'HNL',protivnik:'Osijek',rezultat:'7-0',gledatelji:9109},
 ];
 
+/* ===== STATISTIKA STATE ===== */
+let matches = [];
 let currentFilter='all',sortKey='datum',sortDir='desc',oppSortKey='utakmice',oppSortDir='desc';
 let currentPage=1,oppPage=1,activeView='matches';
 const PER_PAGE=15;
 
+/* ===== FIREBASE: SPREMI UTAKMICE ===== */
+async function saveMatches() {
+  await set(ref(db, 'matches'), matches);
+}
+
+/* ===== STATISTIKA LOGIC ===== */
 function switchView(v,el){
   activeView=v;
   document.getElementById('view-matches').style.display=v==='matches'?'':'none';
@@ -599,7 +626,10 @@ function switchView(v,el){
   el.classList.add('active');
   renderActive();
 }
+window.switchView = switchView;
+
 function renderActive(){activeView==='matches'?renderTable():renderOpponents();}
+window.renderActive = renderActive;
 
 function filterMatches(){
   const q=document.getElementById('search').value.toLowerCase();
@@ -628,6 +658,8 @@ function sortBy(key){
   const el=document.getElementById('sort-'+key);if(el)el.textContent=sortDir==='asc'?'↑':'↓';
   currentPage=1;renderTable();
 }
+window.sortBy = sortBy;
+
 function renderTable(){
   const filtered=filterMatches();
   const sorted=sortMatches(filtered);
@@ -675,6 +707,8 @@ function sortOpp(key){
   const el=document.getElementById('osort-'+key);if(el)el.textContent=oppSortDir==='asc'?'↑':'↓';
   oppPage=1;renderOpponents();
 }
+window.sortOpp = sortOpp;
+
 function renderOpponents(){
   const filtered=filterMatches();
   let opps=buildOppData(filtered);
@@ -763,10 +797,14 @@ function filterComp(filter,el){
   document.querySelectorAll('.legend-item').forEach(e=>e.classList.remove('active'));
   el.classList.add('active');renderActive();
 }
+window.filterComp = filterComp;
+
 function updateBtnColor(){
   document.getElementById('btn-add').className='btn-add '+getCompClass(document.getElementById('f-natjecanje').value);
 }
-function addMatch(){
+window.updateBtnColor = updateBtnColor;
+
+async function addMatch(){
   const datum=document.getElementById('f-datum').value;
   const nat=document.getElementById('f-natjecanje').value;
   const prot=document.getElementById('f-protivnik').value.trim();
@@ -779,9 +817,12 @@ function addMatch(){
   document.getElementById('f-protivnik').value='';
   document.getElementById('f-rezultat').value='';
   document.getElementById('f-gledatelji').value='';
+  await saveMatches();
   renderActive();renderCompStats();
   showToast('✅ Utakmica dodana!','#0A3A0A','#4ADE80');
 }
+window.addMatch = addMatch;
+
 function showModal(idx){
   const m=matches[idx];
   const labels={win:'✅ Pobjeda',draw:'🤝 Remi',loss:'❌ Poraz'};
@@ -793,13 +834,17 @@ function showModal(idx){
   document.getElementById('m-gle').textContent=fmtNum(m.gledatelji);
   document.getElementById('modal').classList.add('open');
 }
+window.showModal = showModal;
 
-/* ===== PREDIKTOR LOGIC ===== */
-let predictions=JSON.parse(localStorage.getItem('dinamo_preds')||'[]');
+/* ===== PREDIKTOR STATE ===== */
+let predictions = [];
 let listFilter='all';
 let confirmIdx=null;
 
-function savePreds(){localStorage.setItem('dinamo_preds',JSON.stringify(predictions));}
+/* ===== FIREBASE: SPREMI PREDIKCIJE ===== */
+async function savePreds(){
+  await set(ref(db, 'predictions'), predictions);
+}
 
 function scoreCalc(gRez,gGle,aRez,aGle){
   const rezHit=gRez===aRez;
@@ -810,7 +855,7 @@ function scoreCalc(gRez,gGle,aRez,aGle){
   if(rezHit&&gleHit)pts+=1;
   return{pts,rezHit,gleHit};
 }
-function addPrediction(){
+async function addPrediction(){
   const datum=document.getElementById('p-datum').value;
   const prot=document.getElementById('p-protivnik').value.trim();
   const nat=document.getElementById('p-natjecanje').value;
@@ -822,11 +867,13 @@ function addPrediction(){
   if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
   predictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,
     luka:{rez:lRez,gle:lGle},lovro:{rez:loRez,gle:loGle},actual:null,resolved:false});
-  savePreds();
+  await savePreds();
   ['p-protivnik','l-rez','l-gle','lo-rez','lo-gle'].forEach(id=>document.getElementById(id).value='');
   renderPreds();
   showToast('🔮 Predikcija dodana!','#1A1A4A','#A78BFA');
 }
+window.addPrediction = addPrediction;
+
 function openConfirm(idx){
   confirmIdx=idx;
   const p=predictions[idx];
@@ -835,7 +882,9 @@ function openConfirm(idx){
   document.getElementById('cm-gle').value='';
   document.getElementById('confirm-modal').classList.add('open');
 }
-function confirmResult(){
+window.openConfirm = openConfirm;
+
+async function confirmResult(){
   const rez=document.getElementById('cm-rez').value.trim();
   const gle=parseInt(document.getElementById('cm-gle').value);
   if(!rez||isNaN(gle)){alert('Unesite stvarni rezultat i gledatelje!');return;}
@@ -844,20 +893,28 @@ function confirmResult(){
   p.actual={rez,gle};p.resolved=true;
   p.luka.score=scoreCalc(p.luka.rez,p.luka.gle,rez,gle);
   p.lovro.score=scoreCalc(p.lovro.rez,p.lovro.gle,rez,gle);
-  savePreds();
+  await savePreds();
   document.getElementById('confirm-modal').classList.remove('open');
   renderPreds();
   showToast('✅ Rezultat potvrđen!','#0A3A0A','#4ADE80');
 }
-function deletePred(idx){
+window.confirmResult = confirmResult;
+
+async function deletePred(idx){
   if(!confirm('Obriši ovu predikciju?'))return;
-  predictions.splice(idx,1);savePreds();renderPreds();
+  predictions.splice(idx,1);
+  await savePreds();
+  renderPreds();
 }
+window.deletePred = deletePred;
+
 function setFilter(f,el){
   listFilter=f;
   document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');renderPreds();
 }
+window.setFilter = setFilter;
+
 function renderPreds(){
   const lb=calcLB();
   document.getElementById('lb-luka-score').textContent=lb.lPts;
@@ -905,13 +962,68 @@ function calcLB(){
   return{lPts,lHits,lTotal,loPts,loHits,loTotal};
 }
 
-/* ===== INIT ===== */
-const today=new Date().toISOString().split('T')[0];
-document.getElementById('f-datum').value=today;
-document.getElementById('p-datum').value=today;
-renderTable();
-renderCompStats();
-renderPreds();
+/* ===== INIT: UČITAJ IZ FIREBASEA ===== */
+async function init() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-datum').value = today;
+  document.getElementById('p-datum').value = today;
+
+  try {
+    // Učitaj utakmice
+    const matchSnap = await get(ref(db, 'matches'));
+    if (matchSnap.exists() && Array.isArray(matchSnap.val()) && matchSnap.val().length > 0) {
+      matches = matchSnap.val();
+    } else {
+      // Prvi put — spremi početne podatke u Firebase
+      matches = INITIAL_MATCHES;
+      await set(ref(db, 'matches'), matches);
+    }
+
+    // Učitaj predikcije
+    const predSnap = await get(ref(db, 'predictions'));
+    if (predSnap.exists() && Array.isArray(predSnap.val())) {
+      predictions = predSnap.val();
+    } else {
+      predictions = [];
+    }
+
+    // Real-time listener za utakmice (ako netko drugi doda)
+    onValue(ref(db, 'matches'), (snapshot) => {
+      if (snapshot.exists() && Array.isArray(snapshot.val())) {
+        matches = snapshot.val();
+        renderActive();
+        renderCompStats();
+      }
+    });
+
+    // Real-time listener za predikcije
+    onValue(ref(db, 'predictions'), (snapshot) => {
+      if (snapshot.exists() && Array.isArray(snapshot.val())) {
+        predictions = snapshot.val();
+        renderPreds();
+      }
+    });
+
+  } catch(e) {
+    console.error('Firebase greška:', e);
+    matches = INITIAL_MATCHES;
+    predictions = [];
+  }
+
+  // Sakrij loading, pokaži sadržaj
+  document.getElementById('fb-loading').style.display = 'none';
+
+  // Navigacija
+  const hash = window.location.hash.replace('#', '');
+  if (hash === 'prediktor') goTo('prediktor');
+  else goTo('statistika');
+
+  renderTable();
+  renderCompStats();
+  renderPreds();
+}
+
+init();
 </script>
 </body>
 </html>
