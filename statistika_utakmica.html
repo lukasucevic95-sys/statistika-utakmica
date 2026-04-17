@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinamo Zagreb · Statistika Utakmica</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+  .topnav{display:flex;align-items:center;justify-content:space-between;padding:11px 40px;background:#060C1A;border-bottom:1px solid var(--border);}
+  .topnav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:#fff;}
+  .topnav-logo span{color:#4D9FFF;}
+  .topnav-links{display:flex;gap:6px;}
+  .topnav a{color:var(--text-muted);text-decoration:none;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:7px 14px;border-radius:8px;transition:all 0.2s;}
+  .topnav a:hover{color:#fff;background:rgba(255,255,255,0.07);}
+  .topnav a.active{color:#4D9FFF;background:rgba(0,100,220,0.15);}
+
+  .header{position:relative;padding:40px 40px 30px;background:linear-gradient(135deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border-bottom:1px solid var(--border);overflow:hidden;}
+  .header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(0,100,220,0.18) 0%,transparent 70%);pointer-events:none;}
+  .header::after{content:'GNK';position:absolute;bottom:-20px;right:30px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(255,255,255,0.03);letter-spacing:10px;pointer-events:none;}
+  .header-inner{position:relative;z-index:1;}
+  .header h1{font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:4px;color:#fff;line-height:1;margin-bottom:6px;}
+  .header h1 span{color:#4D9FFF;}
+  .header p{font-size:13px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
+
+  .legend{display:flex;flex-wrap:wrap;gap:7px;padding:14px 40px;background:var(--surface);border-bottom:1px solid var(--border);}
+  .legend-item{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:2px solid transparent;}
+  .legend-item:hover{transform:translateY(-1px);}
+  .legend-item.active{border-color:rgba(255,255,255,0.4);}
+  .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .leg-all{background:rgba(255,255,255,0.08);color:#ccc;}.leg-all .legend-dot{background:#888;}
+  .leg-hnl{background:rgba(0,63,142,0.35);color:#7FB5FF;}.leg-hnl .legend-dot{background:#4D9FFF;}
+  .leg-ucl{background:rgba(0,27,94,0.5);color:#F0C030;}.leg-ucl .legend-dot{background:#F0C030;}
+  .leg-uel{background:rgba(232,100,12,0.25);color:#FF9A5C;}.leg-uel .legend-dot{background:#E8640C;}
+  .leg-ecl{background:rgba(0,135,90,0.25);color:#4DC99A;}.leg-ecl .legend-dot{background:#00AD72;}
+  .leg-rep{background:rgba(204,0,0,0.25);color:#FF7070;}.leg-rep .legend-dot{background:#CC0000;}
+  .leg-kup{background:rgba(91,45,142,0.35);color:#B88EFF;}.leg-kup .legend-dot{background:#7B4DB5;}
+  .leg-superkup{background:rgba(193,122,0,0.3);color:#FFCC44;}.leg-superkup .legend-dot{background:#E8A800;}
+
+  .main{padding:26px 40px;display:grid;grid-template-columns:1fr 340px;gap:26px;}
+
+  .stats-bar{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:17px 19px;position:relative;overflow:hidden;}
+  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+  .sc-total::before{background:linear-gradient(90deg,#444,#777);}
+  .sc-wdl::before{background:linear-gradient(90deg,#003F8E,#0066CC);}
+  .sc-views::before{background:linear-gradient(90deg,#0A7A5E,#14B884);}
+  .sc-avg::before{background:linear-gradient(90deg,#6B21A8,#9333EA);}
+  .sc-best::before{background:linear-gradient(90deg,#B45309,#F59E0B);}
+  .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:7px;}
+  .stat-value{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:1px;}
+  .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
+
+  .table-section{min-width:0;}
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;gap:8px;flex-wrap:wrap;}
+  .section-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
+  .header-right{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
+  .view-tabs{display:flex;gap:5px;}
+  .view-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 11px;color:var(--text-muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
+  .view-tab.active{background:rgba(0,102,204,0.25);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
+  .search-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;width:180px;transition:border-color 0.2s;}
+  .search-box:focus{border-color:rgba(77,159,255,0.5);}
+  .search-box::placeholder{color:var(--text-muted);}
+
+  .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
+  thead th:hover{color:#7FB5FF;}
+  .si{font-size:10px;margin-left:3px;opacity:0.5;}
+  tbody tr{border-bottom:1px solid var(--border);transition:background 0.15s;cursor:pointer;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:rgba(77,159,255,0.07);}
+  tbody td{padding:10px 13px;font-size:14px;white-space:nowrap;}
+  tbody td:last-child{text-align:right;}
+  .empty-row td{text-align:center;padding:36px;color:var(--text-muted);font-style:italic;cursor:default;}
+  tbody .opp-table tr{cursor:default;}
+
+  .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
+  .badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
+  .badge-ucl{background:rgba(0,27,94,0.6);color:#F0C030;border:1px solid rgba(240,192,48,0.4);}
+  .badge-uel{background:rgba(232,100,12,0.2);color:#FFAA70;border:1px solid rgba(232,100,12,0.4);}
+  .badge-ecl{background:rgba(0,135,90,0.2);color:#50D49A;border:1px solid rgba(0,135,90,0.4);}
+  .badge-rep{background:rgba(204,0,0,0.2);color:#FF7070;border:1px solid rgba(204,0,0,0.4);}
+  .badge-kup{background:rgba(91,45,142,0.3);color:#C09AFF;border:1px solid rgba(91,45,142,0.5);}
+  .badge-superkup{background:rgba(193,122,0,0.25);color:#FFCC44;border:1px solid rgba(193,122,0,0.5);}
+
+  .result-pill{display:inline-block;padding:3px 9px;border-radius:100px;font-size:13px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
+  .win{background:rgba(0,180,90,0.2);color:#4ADE80;}
+  .draw{background:rgba(120,120,120,0.2);color:#AAA;}
+  .loss{background:rgba(220,0,0,0.2);color:#F87171;}
+  .viewers-num{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;}
+  .date-cell{color:var(--text-muted);font-size:13px;}
+  .opponent-cell{font-weight:600;}
+
+  tbody tr.row-hnl{border-left:3px solid #003F8E;}
+  tbody tr.row-ucl{border-left:3px solid #F0C030;}
+  tbody tr.row-uel{border-left:3px solid #E8640C;}
+  tbody tr.row-ecl{border-left:3px solid #00AD72;}
+  tbody tr.row-rep{border-left:3px solid #CC0000;}
+  tbody tr.row-kup{border-left:3px solid #7B4DB5;}
+  tbody tr.row-superkup{border-left:3px solid #E8A800;}
+
+  .opp-mini-bar{display:flex;height:5px;border-radius:3px;overflow:hidden;width:70px;gap:1px;margin-top:4px;}
+  .opp-bar-w{background:#4ADE80;}.opp-bar-d{background:#666;}.opp-bar-l{background:#F87171;}
+  tr.opp-win{border-left:3px solid #4ADE80;}
+  tr.opp-mix{border-left:3px solid #F0C030;}
+  tr.opp-loss{border-left:3px solid #F87171;}
+
+  .pagination{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);}
+  .page-btns{display:flex;gap:4px;}
+  .page-btn{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;cursor:pointer;transition:all 0.15s;}
+  .page-btn:hover{border-color:rgba(77,159,255,0.5);}
+  .page-btn.active{background:rgba(0,102,204,0.3);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
+
+  .sidebar{display:flex;flex-direction:column;gap:17px;}
+  .side-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .side-card-header{padding:13px 17px 10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+  .comp-list{padding:11px 17px;display:flex;flex-direction:column;gap:9px;}
+  .comp-meta{display:flex;justify-content:space-between;margin-bottom:4px;}
+  .comp-name{font-size:13px;font-weight:600;}
+  .comp-val{font-size:12px;color:var(--text-muted);}
+  .comp-bar-bg{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+  .comp-bar{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
+
+  .add-form{padding:15px 17px;display:flex;flex-direction:column;gap:9px;}
+  .form-row{display:flex;flex-direction:column;gap:4px;}
+  .form-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+  .form-input,.form-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;width:100%;-webkit-appearance:none;}
+  .form-input:focus,.form-select:focus{border-color:rgba(77,159,255,0.5);}
+  .form-select option{background:#1C2439;}
+  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .btn-add{border:none;border-radius:8px;padding:10px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;margin-top:3px;background:linear-gradient(135deg,#003F8E,#0066CC);}
+  .btn-add:hover{transform:translateY(-1px);filter:brightness(1.1);}
+  .btn-add.ucl{background:linear-gradient(135deg,#001B5E,#1B6AC9);}
+  .btn-add.uel{background:linear-gradient(135deg,#B54800,#E8640C);}
+  .btn-add.ecl{background:linear-gradient(135deg,#005C3C,#00875A);}
+  .btn-add.rep{background:linear-gradient(135deg,#990000,#CC0000);}
+  .btn-add.kup{background:linear-gradient(135deg,#3B1A6E,#5B2D8E);}
+  .btn-add.superkup{background:linear-gradient(135deg,#8B5800,#C17A00);}
+
+  .toast{position:fixed;bottom:26px;right:26px;background:#0A3A0A;border:1px solid #1A7A1A;color:#4ADE80;padding:11px 17px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);}
+  .toast.show{transform:translateY(0);opacity:1;}
+
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:26px;width:350px;max-width:90vw;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);}
+  @keyframes mIn{from{transform:scale(0.95) translateY(10px);opacity:0;}to{transform:none;opacity:1;}}
+  .modal h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;margin-bottom:5px;}
+  .comp-indicator{font-size:12px;color:var(--text-muted);margin-bottom:16px;}
+  .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .m-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:3px;}
+  .m-val{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:600;}
+  .modal-close{margin-top:20px;width:100%;background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:8px;padding:9px;color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;cursor:pointer;transition:background 0.2s;}
+  .modal-close:hover{background:rgba(255,255,255,0.13);}
+
+  @media(max-width:900px){.main{grid-template-columns:1fr;padding:16px;}.header,.legend,.topnav{padding-left:16px;padding-right:16px;}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <span class="topnav-logo">GNK <span>Dinamo</span></span>
+  <div class="topnav-links">
+    <a href="statistika_utakmica.html" class="active">📊 Statistika</a>
+    <a href="prediktor.html">🔮 Prediktor</a>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <h1>GNK Dinamo <span>Zagreb</span></h1>
+    <p>Hrvatska &nbsp;·&nbsp; Statistika svih utakmica</p>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item leg-all active" onclick="filterComp('all',this)"><span class="legend-dot"></span>Sve</div>
+  <div class="legend-item leg-hnl" onclick="filterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
+  <div class="legend-item leg-ucl" onclick="filterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
+  <div class="legend-item leg-uel" onclick="filterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
+  <div class="legend-item leg-ecl" onclick="filterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
+  <div class="legend-item leg-rep" onclick="filterComp('rep',this)"><span class="legend-dot"></span>Reprezentacija</div>
+  <div class="legend-item leg-kup" onclick="filterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
+  <div class="legend-item leg-superkup" onclick="filterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+</div>
+
+<div class="main">
+  <div class="stats-bar">
+    <div class="stat-card sc-total">
+      <div class="stat-label">Ukupno utakmica</div>
+      <div class="stat-value" id="stat-total">0</div>
+      <div class="stat-sub" id="stat-comp-label">svih natjecanja</div>
+    </div>
+    <div class="stat-card sc-wdl">
+      <div class="stat-label">Pobjede / Remiji / Porazi</div>
+      <div class="stat-value" id="stat-wdl">0/0/0</div>
+      <div class="stat-sub" id="stat-wdl-pct">—</div>
+    </div>
+    <div class="stat-card sc-views">
+      <div class="stat-label">Ukupno gledatelja</div>
+      <div class="stat-value" id="stat-viewers">0</div>
+      <div class="stat-sub">svi stadioni</div>
+    </div>
+    <div class="stat-card sc-avg">
+      <div class="stat-label">Prosjek gledatelja</div>
+      <div class="stat-value" id="stat-avg">0</div>
+      <div class="stat-sub">po utakmici</div>
+    </div>
+    <div class="stat-card sc-best">
+      <div class="stat-label">Najviše gledatelja</div>
+      <div class="stat-value" id="stat-best">0</div>
+      <div class="stat-sub" id="stat-best-match">rekord</div>
+    </div>
+  </div>
+
+  <div class="table-section">
+    <div class="section-header">
+      <span class="section-title" id="section-title">Sve utakmice</span>
+      <div class="header-right">
+        <div class="view-tabs">
+          <button class="view-tab active" onclick="switchView('matches',this)">Utakmice</button>
+          <button class="view-tab" onclick="switchView('opponents',this)">Protivnici</button>
+        </div>
+        <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="search" oninput="renderActive()">
+      </div>
+    </div>
+    <div class="table-wrap">
+      <div id="view-matches">
+        <table>
+          <thead><tr>
+            <th onclick="sortBy('datum')">Datum <span class="si" id="sort-datum">↓</span></th>
+            <th onclick="sortBy('natjecanje')">Natjecanje <span class="si" id="sort-natjecanje">↕</span></th>
+            <th onclick="sortBy('protivnik')">Protivnik <span class="si" id="sort-protivnik">↕</span></th>
+            <th onclick="sortBy('rezultat')">Rezultat <span class="si" id="sort-rezultat">↕</span></th>
+            <th onclick="sortBy('gledatelji')">Gledatelji <span class="si" id="sort-gledatelji">↕</span></th>
+          </tr></thead>
+          <tbody id="match-tbody"></tbody>
+        </table>
+        <div class="pagination"><span id="page-info"></span><div class="page-btns" id="page-btns"></div></div>
+      </div>
+      <div id="view-opponents" style="display:none;">
+        <table>
+          <thead><tr>
+            <th onclick="sortOpp('protivnik')">Protivnik <span class="si" id="osort-protivnik">↕</span></th>
+            <th onclick="sortOpp('utakmice')">Uta. <span class="si" id="osort-utakmice">↓</span></th>
+            <th onclick="sortOpp('wins')">P / R / P <span class="si" id="osort-wins">↕</span></th>
+            <th onclick="sortOpp('winPct')">% Win <span class="si" id="osort-winPct">↕</span></th>
+            <th onclick="sortOpp('avgGle')">Prosjek gle. <span class="si" id="osort-avgGle">↕</span></th>
+          </tr></thead>
+          <tbody id="opp-tbody"></tbody>
+        </table>
+        <div class="pagination"><span id="opp-page-info"></span><div class="page-btns" id="opp-page-btns"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <div class="side-card">
+      <div class="side-card-header">➕ Nova utakmica</div>
+      <div class="add-form">
+        <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="f-datum"></div>
+        <div class="form-row">
+          <label class="form-label">Natjecanje</label>
+          <select class="form-select" id="f-natjecanje" onchange="updateBtnColor()">
+            <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+            <option>Liga Nacija</option><option>FIFA Kvale</option><option>EURO Kvale</option>
+            <option>Super kup</option><option>Kup</option>
+          </select>
+        </div>
+        <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="f-protivnik" placeholder="Npr. Hajduk"></div>
+        <div class="form-row-2">
+          <div class="form-row"><label class="form-label">Rezultat</label><input class="form-input" type="text" id="f-rezultat" placeholder="2-1"></div>
+          <div class="form-row"><label class="form-label">Gledatelji</label><input class="form-input" type="number" id="f-gledatelji" placeholder="12000"></div>
+        </div>
+        <button class="btn-add" id="btn-add" onclick="addMatch()">Dodaj utakmicu</button>
+      </div>
+    </div>
+    <div class="side-card">
+      <div class="side-card-header">📊 Prosjek po natjecanju</div>
+      <div class="comp-list" id="comp-stats"></div>
+    </div>
+    <div class="side-card">
+      <div class="side-card-header">⚽ Omjer pobjeda</div>
+      <div class="comp-list" id="win-stats"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3 id="m-title"></h3>
+    <div class="comp-indicator" id="m-comp"></div>
+    <div class="modal-grid">
+      <div><div class="m-label">Datum</div><div class="m-val" id="m-datum"></div></div>
+      <div><div class="m-label">Natjecanje</div><div class="m-val" id="m-nat"></div></div>
+      <div><div class="m-label">Rezultat</div><div class="m-val" id="m-rez"></div></div>
+      <div><div class="m-label">Gledatelji</div><div class="m-val" id="m-gle"></div></div>
+    </div>
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Zatvori</button>
+  </div>
+</div>
+<div class="toast" id="toast">✅ Utakmica dodana!</div>
+
+<script>
+const REP_COMPS=['Liga Nacija','FIFA Kvale','EURO Kvale','WC Kvale','Reprezentacija'];
+const EUR_MAP={UCL:'ucl',UEL:'uel',ECL:'ecl'};
+const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030',uel:'#FF8C3E',ecl:'#4DC99A',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
+
+function getCompClass(nat){
+  if(nat==='HNL')return'hnl';
+  if(EUR_MAP[nat])return EUR_MAP[nat];
+  if(REP_COMPS.includes(nat))return'rep';
+  if(nat==='Kup')return'kup';
+  if(nat==='Super kup')return'superkup';
+  return'hnl';
+}
+
+let matches=[
+  {datum:'2008-08-31',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:3000},
+  {datum:'2009-05-17',natjecanje:'HNL',protivnik:'Slaven',rezultat:'2-1',gledatelji:25000},
+  {datum:'2009-08-01',natjecanje:'HNL',protivnik:'Međimurje',rezultat:'4-0',gledatelji:6000},
+  {datum:'2015-05-29',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'4-0',gledatelji:15000},
+  {datum:'2022-05-08',natjecanje:'HNL',protivnik:'Osijek',rezultat:'3-0',gledatelji:13901},
+  {datum:'2022-05-21',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'3-1',gledatelji:18353},
+  {datum:'2022-09-06',natjecanje:'UCL',protivnik:'Chelsea',rezultat:'1-0',gledatelji:20607},
+  {datum:'2022-09-22',natjecanje:'Liga Nacija',protivnik:'Danska',rezultat:'2-1',gledatelji:22715},
+  {datum:'2022-10-11',natjecanje:'UCL',protivnik:'Salzburg',rezultat:'1-1',gledatelji:20779},
+  {datum:'2023-07-15',natjecanje:'Super kup',protivnik:'Hajduk',rezultat:'1-0',gledatelji:17707},
+  {datum:'2023-08-27',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-1',gledatelji:9305},
+  {datum:'2023-12-17',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'0-0',gledatelji:18313},
+  {datum:'2024-02-22',natjecanje:'ECL',protivnik:'Betis',rezultat:'1-1',gledatelji:18082},
+  {datum:'2024-02-25',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'1-0',gledatelji:17269},
+  {datum:'2024-03-07',natjecanje:'ECL',protivnik:'PAOK',rezultat:'2-0',gledatelji:18562},
+  {datum:'2024-05-15',natjecanje:'Kup',protivnik:'Rijeka',rezultat:'0-0',gledatelji:18709},
+  {datum:'2024-10-02',natjecanje:'UCL',protivnik:'Monaco',rezultat:'2-2',gledatelji:12426},
+  {datum:'2024-10-27',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-4',gledatelji:13477},
+  {datum:'2024-11-23',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'0-0',gledatelji:12066},
+  {datum:'2024-11-27',natjecanje:'UCL',protivnik:'Borussia',rezultat:'0-3',gledatelji:20019},
+  {datum:'2024-12-10',natjecanje:'UCL',protivnik:'Celtic',rezultat:'0-0',gledatelji:18158},
+  {datum:'2025-01-29',natjecanje:'UCL',protivnik:'Milan',rezultat:'2-1',gledatelji:18856},
+  {datum:'2025-02-07',natjecanje:'HNL',protivnik:'Šibenik',rezultat:'3-0',gledatelji:8191},
+  {datum:'2025-02-15',natjecanje:'HNL',protivnik:'Gorica',rezultat:'3-1',gledatelji:8368},
+  {datum:'2025-03-02',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'2-2',gledatelji:16901},
+  {datum:'2025-04-12',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-0',gledatelji:7497},
+  {datum:'2025-04-27',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'1-0',gledatelji:15711},
+  {datum:'2025-05-25',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'1-0',gledatelji:23756},
+  {datum:'2025-08-23',natjecanje:'HNL',protivnik:'Istra',rezultat:'3-0',gledatelji:11461},
+  {datum:'2025-09-08',natjecanje:'FIFA Kvale',protivnik:'Crna Gora',rezultat:'4-0',gledatelji:21209},
+  {datum:'2025-09-14',natjecanje:'HNL',protivnik:'Gorica',rezultat:'1-2',gledatelji:9670},
+  {datum:'2025-09-24',natjecanje:'UEL',protivnik:'Fenerbahce',rezultat:'3-1',gledatelji:13926},
+  {datum:'2025-09-28',natjecanje:'HNL',protivnik:'Slaven',rezultat:'4-1',gledatelji:9012},
+  {datum:'2025-10-18',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-1',gledatelji:13836},
+  {datum:'2025-11-01',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-1',gledatelji:10237},
+  {datum:'2025-11-06',natjecanje:'UEL',protivnik:'Celta',rezultat:'0-3',gledatelji:19431},
+  {datum:'2025-11-22',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'3-1',gledatelji:4022},
+  {datum:'2025-12-06',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'1-1',gledatelji:17028},
+  {datum:'2025-12-11',natjecanje:'UEL',protivnik:'Betis',rezultat:'1-3',gledatelji:11437},
+  {datum:'2025-12-20',natjecanje:'HNL',protivnik:'Lokomotiva',rezultat:'2-0',gledatelji:6270},
+  {datum:'2026-01-22',natjecanje:'UEL',protivnik:'FCSB',rezultat:'4-1',gledatelji:9040},
+  {datum:'2026-02-02',natjecanje:'HNL',protivnik:'Vukovar',rezultat:'3-1',gledatelji:4500},
+  {datum:'2026-02-14',natjecanje:'HNL',protivnik:'Istra',rezultat:'4-0',gledatelji:5600},
+  {datum:'2026-02-19',natjecanje:'UEL',protivnik:'Genk',rezultat:'1-3',gledatelji:10554},
+  {datum:'2026-03-01',natjecanje:'HNL',protivnik:'Gorica',rezultat:'4-2',gledatelji:7548},
+  {datum:'2026-03-04',natjecanje:'Kup',protivnik:'Kurilovec',rezultat:'2-0',gledatelji:4605},
+  {datum:'2026-03-14',natjecanje:'HNL',protivnik:'Slaven',rezultat:'4-2',gledatelji:7752},
+  {datum:'2026-04-04',natjecanje:'HNL',protivnik:'Osijek',rezultat:'7-0',gledatelji:9109},
+];
+
+let currentFilter='all',sortKey='datum',sortDir='desc',oppSortKey='utakmice',oppSortDir='desc';
+let currentPage=1,oppPage=1,activeView='matches';
+const PER_PAGE=15;
+
+function getResult(r){const p=r.split('-').map(Number);return p[0]>p[1]?'win':p[0]<p[1]?'loss':'draw';}
+function fmtDate(d){const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;}
+function fmtNum(n){return Number(n).toLocaleString('hr-HR');}
+
+function switchView(v,el){
+  activeView=v;
+  document.getElementById('view-matches').style.display=v==='matches'?'':'none';
+  document.getElementById('view-opponents').style.display=v==='opponents'?'':'none';
+  document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderActive();
+}
+function renderActive(){activeView==='matches'?renderTable():renderOpponents();}
+
+function filterMatches(){
+  const q=document.getElementById('search').value.toLowerCase();
+  return matches.filter(m=>{
+    let pass=true;
+    if(currentFilter==='rep')pass=REP_COMPS.includes(m.natjecanje);
+    else if(currentFilter!=='all')pass=m.natjecanje===currentFilter;
+    if(!pass)return false;
+    if(q)return m.protivnik.toLowerCase().includes(q)||m.natjecanje.toLowerCase().includes(q)||m.rezultat.includes(q)||m.datum.includes(q);
+    return true;
+  });
+}
+
+function sortMatches(arr){
+  return[...arr].sort((a,b)=>{
+    let va=a[sortKey],vb=b[sortKey];
+    if(sortKey==='gledatelji'){va=+va;vb=+vb;}
+    if(va<vb)return sortDir==='asc'?-1:1;
+    if(va>vb)return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+function sortBy(key){
+  if(sortKey===key)sortDir=sortDir==='asc'?'desc':'asc';
+  else{sortKey=key;sortDir=key==='datum'?'desc':'asc';}
+  document.querySelectorAll('.si').forEach(e=>e.textContent='↕');
+  const el=document.getElementById('sort-'+key);
+  if(el)el.textContent=sortDir==='asc'?'↑':'↓';
+  currentPage=1;renderTable();
+}
+
+function renderTable(){
+  const filtered=filterMatches();
+  const sorted=sortMatches(filtered);
+  const total=sorted.length;
+  const pages=Math.max(1,Math.ceil(total/PER_PAGE));
+  if(currentPage>pages)currentPage=pages;
+  const slice=sorted.slice((currentPage-1)*PER_PAGE,currentPage*PER_PAGE);
+  document.getElementById('match-tbody').innerHTML=slice.length===0
+    ?'<tr class="empty-row"><td colspan="5">Nema rezultata</td></tr>'
+    :slice.map(m=>{
+      const cls=getCompClass(m.natjecanje);
+      const res=getResult(m.rezultat);
+      const idx=matches.indexOf(m);
+      return`<tr class="row-${cls}" onclick="showModal(${idx})">
+        <td class="date-cell">${fmtDate(m.datum)}</td>
+        <td><span class="badge badge-${cls}">${m.natjecanje}</span></td>
+        <td class="opponent-cell">${m.protivnik}</td>
+        <td><span class="result-pill ${res}">${m.rezultat}</span></td>
+        <td class="viewers-num">${fmtNum(m.gledatelji)}</td>
+      </tr>`;
+    }).join('');
+  document.getElementById('page-info').textContent=`${total} utakmice · Str. ${currentPage}/${pages}`;
+  renderPageBtns('page-btns',pages,currentPage,p=>{currentPage=p;renderTable();});
+  updateStats(filtered);
+}
+
+function buildOppData(filtered){
+  const g={};
+  filtered.forEach(m=>{
+    if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[]};
+    const r=getResult(m.rezultat);
+    if(r==='win')g[m.protivnik].wins++;
+    else if(r==='draw')g[m.protivnik].draws++;
+    else g[m.protivnik].losses++;
+    g[m.protivnik].gle.push(m.gledatelji);
+  });
+  return Object.entries(g).map(([p,d])=>({
+    protivnik:p,
+    utakmice:d.wins+d.draws+d.losses,
+    wins:d.wins,draws:d.draws,losses:d.losses,
+    winPct:d.wins/(d.wins+d.draws+d.losses)*100,
+    avgGle:Math.round(d.gle.reduce((a,b)=>a+b,0)/d.gle.length)
+  }));
+}
+
+function sortOpp(key){
+  if(oppSortKey===key)oppSortDir=oppSortDir==='asc'?'desc':'asc';
+  else{oppSortKey=key;oppSortDir=key==='protivnik'?'asc':'desc';}
+  document.querySelectorAll('[id^="osort-"]').forEach(e=>e.textContent='↕');
+  const el=document.getElementById('osort-'+key);
+  if(el)el.textContent=oppSortDir==='asc'?'↑':'↓';
+  oppPage=1;renderOpponents();
+}
+
+function renderOpponents(){
+  const filtered=filterMatches();
+  let opps=buildOppData(filtered);
+  opps.sort((a,b)=>{
+    let va=a[oppSortKey],vb=b[oppSortKey];
+    if(typeof va==='string'){va=va.toLowerCase();vb=vb.toLowerCase();}
+    if(va<vb)return oppSortDir==='asc'?-1:1;
+    if(va>vb)return oppSortDir==='asc'?1:-1;
+    return 0;
+  });
+  const total=opps.length;
+  const pages=Math.max(1,Math.ceil(total/PER_PAGE));
+  if(oppPage>pages)oppPage=pages;
+  const slice=opps.slice((oppPage-1)*PER_PAGE,oppPage*PER_PAGE);
+  document.getElementById('opp-tbody').innerHTML=slice.length===0
+    ?'<tr class="empty-row"><td colspan="5">Nema rezultata</td></tr>'
+    :slice.map(o=>{
+      const t=o.utakmice||1;
+      const wP=(o.wins/t*100).toFixed(0);
+      const dP=(o.draws/t*100).toFixed(0);
+      const lP=(o.losses/t*100).toFixed(0);
+      const rc=o.winPct>55?'opp-win':o.losses>o.wins?'opp-loss':'opp-mix';
+      const wc=o.winPct>=60?'#4ADE80':o.winPct>=40?'#F0C030':'#F87171';
+      return`<tr class="${rc}">
+        <td class="opponent-cell">${o.protivnik}</td>
+        <td style="color:var(--text-muted)">${o.utakmice}</td>
+        <td>
+          <span style="color:#4ADE80;font-weight:700">${o.wins}</span> / <span style="color:#888">${o.draws}</span> / <span style="color:#F87171">${o.losses}</span>
+          <div class="opp-mini-bar"><div class="opp-bar-w" style="width:${wP}%"></div><div class="opp-bar-d" style="width:${dP}%"></div><div class="opp-bar-l" style="width:${lP}%"></div></div>
+        </td>
+        <td><span style="color:${wc};font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:16px;">${wP}%</span></td>
+        <td class="viewers-num">${fmtNum(o.avgGle)}</td>
+      </tr>`;
+    }).join('');
+  document.getElementById('opp-page-info').textContent=`${total} protivnika · Str. ${oppPage}/${pages}`;
+  renderPageBtns('opp-page-btns',pages,oppPage,p=>{oppPage=p;renderOpponents();});
+  updateStats(filtered);
+}
+
+function renderPageBtns(id,pages,cur,cb){
+  const pb=document.getElementById(id);pb.innerHTML='';
+  for(let p=1;p<=pages;p++){
+    const btn=document.createElement('button');
+    btn.className='page-btn'+(p===cur?' active':'');
+    btn.textContent=p;
+    btn.onclick=()=>cb(p);
+    pb.appendChild(btn);
+  }
+}
+
+function updateStats(filtered){
+  const total=filtered.length;
+  const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
+  const draws=filtered.filter(m=>getResult(m.rezultat)==='draw').length;
+  const losses=filtered.filter(m=>getResult(m.rezultat)==='loss').length;
+  const totalViews=filtered.reduce((s,m)=>s+m.gledatelji,0);
+  const avg=total?Math.round(totalViews/total):0;
+  const best=filtered.reduce((b,m)=>m.gledatelji>(b?.gledatelji||0)?m:b,null);
+  const label=currentFilter==='all'?'svih natjecanja':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-comp-label').textContent=label;
+  document.getElementById('stat-wdl').textContent=`${wins}/${draws}/${losses}`;
+  document.getElementById('stat-wdl-pct').textContent=total?`${(wins/total*100).toFixed(0)}% pobjeda`:'—';
+  document.getElementById('section-title').textContent=currentFilter==='all'?'Sve utakmice':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  document.getElementById('stat-viewers').textContent=fmtNum(totalViews);
+  document.getElementById('stat-avg').textContent=fmtNum(avg);
+  document.getElementById('stat-best').textContent=best?fmtNum(best.gledatelji):'—';
+  document.getElementById('stat-best-match').textContent=best?`vs ${best.protivnik}`:'rekord';
+  renderCompStats();
+  renderWinStats(filtered);
+}
+
+function renderCompStats(){
+  const g={};
+  matches.forEach(m=>{if(!g[m.natjecanje])g[m.natjecanje]=[];g[m.natjecanje].push(m.gledatelji);});
+  const avgs=Object.entries(g).map(([k,v])=>({name:k,avg:Math.round(v.reduce((a,b)=>a+b,0)/v.length),count:v.length,cls:getCompClass(k)})).sort((a,b)=>b.avg-a.avg);
+  const max=Math.max(...avgs.map(a=>a.avg));
+  document.getElementById('comp-stats').innerHTML=avgs.map(a=>`
+    <div><div class="comp-meta"><span class="comp-name">${a.name} <span style="opacity:0.45;font-size:11px">(${a.count})</span></span><span class="comp-val">${fmtNum(a.avg)}</span></div>
+    <div class="comp-bar-bg"><div class="comp-bar" style="width:${(a.avg/max*100).toFixed(1)}%;background:${COMP_COLORS[a.cls]||'#888'}"></div></div></div>`).join('');
+}
+
+function renderWinStats(filtered){
+  const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
+  const draws=filtered.filter(m=>getResult(m.rezultat)==='draw').length;
+  const losses=filtered.filter(m=>getResult(m.rezultat)==='loss').length;
+  const t=filtered.length||1;
+  document.getElementById('win-stats').innerHTML=[
+    {label:'Pobjede',count:wins,color:'#4ADE80',pct:(wins/t*100).toFixed(0)},
+    {label:'Remiji',count:draws,color:'#888',pct:(draws/t*100).toFixed(0)},
+    {label:'Porazi',count:losses,color:'#F87171',pct:(losses/t*100).toFixed(0)},
+  ].map(it=>`<div><div class="comp-meta"><span class="comp-name">${it.label}</span><span class="comp-val" style="color:${it.color}">${it.count} (${it.pct}%)</span></div>
+    <div class="comp-bar-bg"><div class="comp-bar" style="width:${it.pct}%;background:${it.color}"></div></div></div>`).join('');
+}
+
+function filterComp(filter,el){
+  currentFilter=filter;currentPage=1;oppPage=1;
+  document.querySelectorAll('.legend-item').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  renderActive();
+}
+
+function updateBtnColor(){
+  const nat=document.getElementById('f-natjecanje').value;
+  document.getElementById('btn-add').className='btn-add '+getCompClass(nat);
+}
+
+function addMatch(){
+  const datum=document.getElementById('f-datum').value;
+  const nat=document.getElementById('f-natjecanje').value;
+  const prot=document.getElementById('f-protivnik').value.trim();
+  const rez=document.getElementById('f-rezultat').value.trim();
+  const gle=parseInt(document.getElementById('f-gledatelji').value);
+  if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
+  if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  matches.push({datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle});
+  matches.sort((a,b)=>a.datum<b.datum?-1:1);
+  ['f-datum','f-protivnik','f-rezultat','f-gledatelji'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(id==='f-datum')el.value=new Date().toISOString().split('T')[0];
+    else el.value='';
+  });
+  renderActive();renderCompStats();
+  const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+function showModal(idx){
+  const m=matches[idx];
+  const labels={win:'✅ Pobjeda',draw:'🤝 Remi',loss:'❌ Poraz'};
+  document.getElementById('m-title').textContent=`vs ${m.protivnik}`;
+  document.getElementById('m-comp').textContent=m.natjecanje+' · '+labels[getResult(m.rezultat)];
+  document.getElementById('m-datum').textContent=fmtDate(m.datum);
+  document.getElementById('m-nat').textContent=m.natjecanje;
+  document.getElementById('m-rez').textContent=m.rezultat;
+  document.getElementById('m-gle').textContent=fmtNum(m.gledatelji);
+  document.getElementById('modal').classList.add('open');
+}
+
+document.getElementById('f-datum').value=new Date().toISOString().split('T')[0];
+renderTable();renderCompStats();
+</script>
+</body>
+</html>
