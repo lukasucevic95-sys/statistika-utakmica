@@ -62,6 +62,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .sc-views::before{background:linear-gradient(90deg,#0A7A5E,#14B884);}
 .sc-avg::before{background:linear-gradient(90deg,#6B21A8,#9333EA);}
 .sc-best::before{background:linear-gradient(90deg,#B45309,#F59E0B);}
+.sc-goals::before{background:linear-gradient(90deg,#065F46,#10B981);}
+.sc-conceded::before{background:linear-gradient(90deg,#7F1D1D,#EF4444);}
 .stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:7px;}
 .stat-value{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;letter-spacing:1px;}
 .stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px;}
@@ -77,8 +79,15 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .search-box:focus{border-color:rgba(77,159,255,0.5);}
 .search-box::placeholder{color:var(--text-muted);}
 
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-table{width:100%;border-collapse:collapse;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;}
+.table-scroll::-webkit-scrollbar{height:5px;}
+.table-scroll::-webkit-scrollbar-track{background:transparent;}
+.table-scroll::-webkit-scrollbar-thumb{background:rgba(100,140,220,0.35);border-radius:3px;}
+.table-scroll::-webkit-scrollbar-thumb:hover{background:rgba(100,140,220,0.6);}
+.table-fade{position:absolute;top:0;right:0;bottom:22px;width:48px;background:linear-gradient(to right,transparent,var(--surface) 85%);pointer-events:none;border-radius:0 14px 0 0;transition:opacity 0.25s;z-index:2;}
+.table-fade.hidden{opacity:0;}
+table{width:100%;border-collapse:collapse;min-width:460px;}
 thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
 thead th:hover{color:#7FB5FF;}
 .si{font-size:10px;margin-left:3px;opacity:0.5;}
@@ -88,6 +97,11 @@ tbody tr:hover{background:rgba(77,159,255,0.07);}
 tbody td{padding:10px 13px;font-size:14px;white-space:nowrap;}
 tbody td:last-child{text-align:right;}
 .empty-row td{text-align:center;padding:36px;color:var(--text-muted);font-style:italic;cursor:default;}
+/* Scroll hint pill */
+.scroll-hint{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);padding:6px 14px;border-top:1px solid var(--border);letter-spacing:0.5px;}
+.scroll-hint.visible{display:flex;}
+.scroll-hint svg{opacity:0.5;animation:scrollPulse 1.5s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{transform:translateX(0);opacity:0.4;}50%{transform:translateX(4px);opacity:0.9;}}
 
 .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
 .badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
@@ -268,6 +282,10 @@ tr.opp-loss{border-left:3px solid #F87171;}
   .topnav{padding:10px 16px;}
   .legend{padding:12px 16px;}
   .header{padding:28px 16px 22px;}
+  thead th{padding:9px 10px;font-size:10px;letter-spacing:1px;}
+  tbody td{padding:9px 10px;font-size:13px;}
+  .badge{font-size:9px;padding:2px 6px;}
+  .result-pill{font-size:12px;padding:2px 7px;}
 }
 </style>
 </head>
@@ -316,6 +334,8 @@ tr.opp-loss{border-left:3px solid #F87171;}
       <div class="stat-card sc-views"><div class="stat-label">Ukupno gledatelja</div><div class="stat-value" id="stat-viewers">0</div><div class="stat-sub">svi stadioni</div></div>
       <div class="stat-card sc-avg"><div class="stat-label">Prosjek gledatelja</div><div class="stat-value" id="stat-avg">0</div><div class="stat-sub">po utakmici</div></div>
       <div class="stat-card sc-best"><div class="stat-label">Najviše gledatelja</div><div class="stat-value" id="stat-best">0</div><div class="stat-sub" id="stat-best-match">rekord</div></div>
+      <div class="stat-card sc-goals"><div class="stat-label">Zabijeni golovi</div><div class="stat-value" id="stat-scored">0</div><div class="stat-sub" id="stat-scored-avg">prosjek po utakmici</div></div>
+      <div class="stat-card sc-conceded"><div class="stat-label">Primljeni golovi</div><div class="stat-value" id="stat-conceded">0</div><div class="stat-sub" id="stat-conceded-avg">prosjek po utakmici</div></div>
     </div>
 
     <div class="table-section">
@@ -330,7 +350,9 @@ tr.opp-loss{border-left:3px solid #F87171;}
         </div>
       </div>
       <div class="table-wrap">
+        <div class="table-fade" id="tbl-fade"></div>
         <div id="view-matches">
+          <div class="table-scroll" id="tbl-scroll-matches">
           <table>
             <thead><tr>
               <th onclick="sortBy('datum')">Datum <span class="si" id="sort-datum">↓</span></th>
@@ -341,19 +363,32 @@ tr.opp-loss{border-left:3px solid #F87171;}
             </tr></thead>
             <tbody id="match-tbody"></tbody>
           </table>
+          </div>
+          <div class="scroll-hint" id="scroll-hint-matches">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Pomakni tablicu desno za više stupaca
+          </div>
           <div class="pagination"><span id="page-info"></span><div class="page-btns" id="page-btns"></div></div>
         </div>
         <div id="view-opponents" style="display:none;">
+          <div class="table-scroll" id="tbl-scroll-opponents">
           <table>
             <thead><tr>
               <th onclick="sortOpp('protivnik')">Protivnik <span class="si" id="osort-protivnik">↕</span></th>
               <th onclick="sortOpp('utakmice')">Uta. <span class="si" id="osort-utakmice">↓</span></th>
               <th onclick="sortOpp('wins')">P / R / P <span class="si" id="osort-wins">↕</span></th>
               <th onclick="sortOpp('winPct')">% Win <span class="si" id="osort-winPct">↕</span></th>
+              <th onclick="sortOpp('scored')">Gol. zab. <span class="si" id="osort-scored">↕</span></th>
+              <th onclick="sortOpp('conceded')">Gol. prim. <span class="si" id="osort-conceded">↕</span></th>
               <th onclick="sortOpp('avgGle')">Prosjek gle. <span class="si" id="osort-avgGle">↕</span></th>
             </tr></thead>
             <tbody id="opp-tbody"></tbody>
           </table>
+          </div>
+          <div class="scroll-hint" id="scroll-hint-opponents">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            Pomakni tablicu desno za više stupaca
+          </div>
           <div class="pagination"><span id="opp-page-info"></span><div class="page-btns" id="opp-page-btns"></div></div>
         </div>
       </div>
@@ -428,9 +463,9 @@ tr.opp-loss{border-left:3px solid #F87171;}
         </div>
       </div>
       <div class="score-legend">
-        <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>3 boda — rezultat + gledatelji (±1000)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — samo rezultat</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1 bod — samo gledatelji</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>3 boda — točan rezultat + bliži gledatelji</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — samo točan rezultat</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1 bod — bliži gledateljima (pobjednik dobiva, izjednačeno = oba)</div>
       </div>
       <div class="form-card">
         <div class="card-header">➕ Nova predikcija</div>
@@ -618,6 +653,24 @@ async function saveMatches() {
 }
 
 /* ===== STATISTIKA LOGIC ===== */
+function checkScrollOverflow(){
+  const viewId = activeView === 'matches' ? 'tbl-scroll-matches' : 'tbl-scroll-opponents';
+  const hintId = activeView === 'matches' ? 'scroll-hint-matches' : 'scroll-hint-opponents';
+  const scroller = document.getElementById(viewId);
+  const hint = document.getElementById(hintId);
+  const fade = document.getElementById('tbl-fade');
+  if(!scroller) return;
+  const isOverflow = scroller.scrollWidth > scroller.clientWidth + 4;
+  if(hint) hint.classList.toggle('visible', isOverflow);
+  if(fade) fade.classList.toggle('hidden', !isOverflow);
+  // Hide hint once user starts scrolling
+  scroller.onscroll = ()=>{
+    const atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 8;
+    if(hint) hint.classList.toggle('visible', !atEnd);
+    if(fade) fade.classList.toggle('hidden', atEnd);
+  };
+}
+
 function switchView(v,el){
   activeView=v;
   document.getElementById('view-matches').style.display=v==='matches'?'':'none';
@@ -625,6 +678,7 @@ function switchView(v,el){
   document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderActive();
+  setTimeout(checkScrollOverflow, 50);
 }
 window.switchView = switchView;
 
@@ -684,20 +738,25 @@ function renderTable(){
   document.getElementById('page-info').textContent=`${total} utakmice · Str. ${currentPage}/${pages}`;
   renderPageBtns('page-btns',pages,currentPage,p=>{currentPage=p;renderTable();});
   updateStats(filtered);
+  setTimeout(checkScrollOverflow, 30);
 }
-function buildOppData(filtered){
   const g={};
   filtered.forEach(m=>{
-    if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[]};
+    if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[],scored:0,conceded:0};
     const r=getResult(m.rezultat);
     if(r==='win')g[m.protivnik].wins++;else if(r==='draw')g[m.protivnik].draws++;else g[m.protivnik].losses++;
     g[m.protivnik].gle.push(m.gledatelji);
+    const p=m.rezultat.split('-').map(Number);
+    if(p.length===2){g[m.protivnik].scored+=p[0];g[m.protivnik].conceded+=p[1];}
   });
   return Object.entries(g).map(([p,d])=>({
     protivnik:p,utakmice:d.wins+d.draws+d.losses,
     wins:d.wins,draws:d.draws,losses:d.losses,
     winPct:d.wins/(d.wins+d.draws+d.losses)*100,
-    avgGle:Math.round(d.gle.reduce((a,b)=>a+b,0)/d.gle.length)
+    avgGle:Math.round(d.gle.reduce((a,b)=>a+b,0)/d.gle.length),
+    scored:d.scored,conceded:d.conceded,
+    avgScored:d.scored/(d.wins+d.draws+d.losses),
+    avgConceded:d.conceded/(d.wins+d.draws+d.losses)
   }));
 }
 function sortOpp(key){
@@ -724,7 +783,7 @@ function renderOpponents(){
   if(oppPage>pages)oppPage=pages;
   const slice=opps.slice((oppPage-1)*PER_PAGE,oppPage*PER_PAGE);
   document.getElementById('opp-tbody').innerHTML=slice.length===0
-    ?'<tr class="empty-row"><td colspan="5">Nema rezultata</td></tr>'
+    ?'<tr class="empty-row"><td colspan="7">Nema rezultata</td></tr>'
     :slice.map(o=>{
       const t=o.utakmice||1;
       const wP=(o.wins/t*100).toFixed(0),dP=(o.draws/t*100).toFixed(0),lP=(o.losses/t*100).toFixed(0);
@@ -736,14 +795,16 @@ function renderOpponents(){
         <td><span style="color:#4ADE80;font-weight:700">${o.wins}</span> / <span style="color:#888">${o.draws}</span> / <span style="color:#F87171">${o.losses}</span>
           <div class="opp-mini-bar"><div class="opp-bar-w" style="width:${wP}%"></div><div class="opp-bar-d" style="width:${dP}%"></div><div class="opp-bar-l" style="width:${lP}%"></div></div></td>
         <td><span style="color:${wc};font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:16px;">${wP}%</span></td>
+        <td><span style="color:#4ADE80;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700">${o.scored}</span><span style="color:var(--text-muted);font-size:11px;"> (${o.avgScored.toFixed(1)}/ut.)</span></td>
+        <td><span style="color:#F87171;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700">${o.conceded}</span><span style="color:var(--text-muted);font-size:11px;"> (${o.avgConceded.toFixed(1)}/ut.)</span></td>
         <td class="viewers-num">${fmtNum(o.avgGle)}</td>
       </tr>`;
     }).join('');
   document.getElementById('opp-page-info').textContent=`${total} protivnika · Str. ${oppPage}/${pages}`;
   renderPageBtns('opp-page-btns',pages,oppPage,p=>{oppPage=p;renderOpponents();});
   updateStats(filtered);
+  setTimeout(checkScrollOverflow, 30);
 }
-function renderPageBtns(id,pages,cur,cb){
   const pb=document.getElementById(id);pb.innerHTML='';
   for(let p=1;p<=pages;p++){
     const btn=document.createElement('button');
@@ -760,6 +821,11 @@ function updateStats(filtered){
   const avg=total?Math.round(totalViews/total):0;
   const best=filtered.reduce((b,m)=>m.gledatelji>(b?.gledatelji||0)?m:b,null);
   const label=currentFilter==='all'?'svih natjecanja':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  // Goals
+  let scored=0,conceded=0;
+  filtered.forEach(m=>{const p=m.rezultat.split('-').map(Number);if(p.length===2){scored+=p[0];conceded+=p[1];}});
+  const avgScored=total?(scored/total).toFixed(2):0;
+  const avgConceded=total?(conceded/total).toFixed(2):0;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-comp-label').textContent=label;
   document.getElementById('stat-wdl').textContent=`${wins}/${draws}/${losses}`;
@@ -769,6 +835,10 @@ function updateStats(filtered){
   document.getElementById('stat-avg').textContent=fmtNum(avg);
   document.getElementById('stat-best').textContent=best?fmtNum(best.gledatelji):'—';
   document.getElementById('stat-best-match').textContent=best?`vs ${best.protivnik}`:'rekord';
+  document.getElementById('stat-scored').textContent=scored;
+  document.getElementById('stat-scored-avg').textContent=`prosjek: ${avgScored} / ut.`;
+  document.getElementById('stat-conceded').textContent=conceded;
+  document.getElementById('stat-conceded-avg').textContent=`prosjek: ${avgConceded} / ut.`;
   renderCompStats();renderWinStats(filtered);
 }
 function renderCompStats(){
@@ -846,14 +916,24 @@ async function savePreds(){
   await set(ref(db, 'predictions'), predictions);
 }
 
-function scoreCalc(gRez,gGle,aRez,aGle){
-  const rezHit=gRez===aRez;
-  const gleHit=Math.abs(Number(gGle)-Number(aGle))<=1000;
-  let pts=0;
-  if(rezHit)pts+=1;
-  if(gleHit)pts+=1;
-  if(rezHit&&gleHit)pts+=1;
-  return{pts,rezHit,gleHit};
+function scoreCalc(lRez,lGle,loRez,loGle,aRez,aGle){
+  // Rezultat: točan pogodak = 1 bod svaki
+  const lRezHit=lRez===aRez;
+  const loRezHit=loRez===aRez;
+  // Gledatelji: bod ide onom koji je bliže; ako jednako blizu — oba dobiju
+  const lDiff=Math.abs(Number(lGle)-Number(aGle));
+  const loDiff=Math.abs(Number(loGle)-Number(aGle));
+  let lGleHit=false,loGleHit=false;
+  if(lDiff<loDiff){lGleHit=true;}
+  else if(loDiff<lDiff){loGleHit=true;}
+  else{lGleHit=true;loGleHit=true;} // isti razmak — oba dobiju
+  // Bonus: točan rezultat + gledatelji pobijedio = +1
+  const lPts=(lRezHit?1:0)+(lGleHit?1:0)+(lRezHit&&lGleHit?1:0);
+  const loPts=(loRezHit?1:0)+(loGleHit?1:0)+(loRezHit&&loGleHit?1:0);
+  return{
+    luka:{pts:lPts,rezHit:lRezHit,gleHit:lGleHit},
+    lovro:{pts:loPts,rezHit:loRezHit,gleHit:loGleHit}
+  };
 }
 async function addPrediction(){
   const datum=document.getElementById('p-datum').value;
@@ -891,8 +971,9 @@ async function confirmResult(){
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
   const p=predictions[confirmIdx];
   p.actual={rez,gle};p.resolved=true;
-  p.luka.score=scoreCalc(p.luka.rez,p.luka.gle,rez,gle);
-  p.lovro.score=scoreCalc(p.lovro.rez,p.lovro.gle,rez,gle);
+  const scores=scoreCalc(p.luka.rez,p.luka.gle,p.lovro.rez,p.lovro.gle,rez,gle);
+  p.luka.score=scores.luka;
+  p.lovro.score=scores.lovro;
   await savePreds();
   document.getElementById('confirm-modal').classList.remove('open');
   renderPreds();
@@ -939,8 +1020,10 @@ function renderPreds(){
       const loC=lo.rezHit&&lo.gleHit?'hit-both':lo.rezHit?'hit-rez':lo.gleHit?'hit-gle':'no-hit';
       const lE=l.rezHit&&l.gleHit?'🎯':l.rezHit?'✅':l.gleHit?'👁️':'❌';
       const loE=lo.rezHit&&lo.gleHit?'🎯':lo.rezHit?'✅':lo.gleHit?'👁️':'❌';
-      lBox=`<div class="guess-box ${lC}"><div class="guess-who pl-luka">🔵 Luka <span style="font-weight:400;color:var(--text-muted)">(${l.pts} bod${l.pts===1?'':'a'})</span></div><div class="guess-rez">${p.luka.rez}</div><div class="guess-gle">${fmtNum(p.luka.gle)} gle.</div><div class="guess-hit">${lE}</div></div>`;
-      loBox=`<div class="guess-box ${loC}"><div class="guess-who pl-lovro">🟣 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod${lo.pts===1?'':'a'})</span></div><div class="guess-rez">${p.lovro.rez}</div><div class="guess-gle">${fmtNum(p.lovro.gle)} gle.</div><div class="guess-hit">${loE}</div></div>`;
+      const lDiff=Math.abs(Number(p.luka.gle)-Number(p.actual.gle));
+      const loDiff=Math.abs(Number(p.lovro.gle)-Number(p.actual.gle));
+      lBox=`<div class="guess-box ${lC}"><div class="guess-who pl-luka">🔵 Luka <span style="font-weight:400;color:var(--text-muted)">(${l.pts} bod${l.pts===1?'':'a'})</span></div><div class="guess-rez">${p.luka.rez}</div><div class="guess-gle">${fmtNum(p.luka.gle)} gle. <span style="color:var(--text-muted)">(±${fmtNum(lDiff)})</span></div><div class="guess-hit">${lE}</div></div>`;
+      loBox=`<div class="guess-box ${loC}"><div class="guess-who pl-lovro">🟣 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod${lo.pts===1?'':'a'})</span></div><div class="guess-rez">${p.lovro.rez}</div><div class="guess-gle">${fmtNum(p.lovro.gle)} gle. <span style="color:var(--text-muted)">(±${fmtNum(loDiff)})</span></div><div class="guess-hit">${loE}</div></div>`;
     }else{
       lBox=`<div class="guess-box pending"><div class="guess-who pl-luka">🔵 Luka</div><div class="guess-rez">${p.luka.rez}</div><div class="guess-gle">${fmtNum(p.luka.gle)} gle.</div></div>`;
       loBox=`<div class="guess-box pending"><div class="guess-who pl-lovro">🟣 Lovro</div><div class="guess-rez">${p.lovro.rez}</div><div class="guess-gle">${fmtNum(p.lovro.gle)} gle.</div></div>`;
@@ -1022,6 +1105,8 @@ async function init() {
   renderCompStats();
   renderPreds();
 }
+
+window.addEventListener('resize', ()=>setTimeout(checkScrollOverflow, 50));
 
 init();
 </script>
