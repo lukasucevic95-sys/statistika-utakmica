@@ -79,15 +79,8 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .search-box:focus{border-color:rgba(77,159,255,0.5);}
 .search-box::placeholder{color:var(--text-muted);}
 
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;position:relative;}
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;}
-.table-scroll::-webkit-scrollbar{height:5px;}
-.table-scroll::-webkit-scrollbar-track{background:transparent;}
-.table-scroll::-webkit-scrollbar-thumb{background:rgba(100,140,220,0.35);border-radius:3px;}
-.table-scroll::-webkit-scrollbar-thumb:hover{background:rgba(100,140,220,0.6);}
-.table-fade{position:absolute;top:0;right:0;bottom:22px;width:48px;background:linear-gradient(to right,transparent,var(--surface) 85%);pointer-events:none;border-radius:0 14px 0 0;transition:opacity 0.25s;z-index:2;}
-.table-fade.hidden{opacity:0;}
-table{width:100%;border-collapse:collapse;min-width:460px;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
 thead th{padding:11px 13px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;}
 thead th:hover{color:#7FB5FF;}
 .si{font-size:10px;margin-left:3px;opacity:0.5;}
@@ -97,11 +90,6 @@ tbody tr:hover{background:rgba(77,159,255,0.07);}
 tbody td{padding:10px 13px;font-size:14px;white-space:nowrap;}
 tbody td:last-child{text-align:right;}
 .empty-row td{text-align:center;padding:36px;color:var(--text-muted);font-style:italic;cursor:default;}
-/* Scroll hint pill */
-.scroll-hint{display:none;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);padding:6px 14px;border-top:1px solid var(--border);letter-spacing:0.5px;}
-.scroll-hint.visible{display:flex;}
-.scroll-hint svg{opacity:0.5;animation:scrollPulse 1.5s ease-in-out infinite;}
-@keyframes scrollPulse{0%,100%{transform:translateX(0);opacity:0.4;}50%{transform:translateX(4px);opacity:0.9;}}
 
 .badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
 .badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
@@ -282,10 +270,6 @@ tr.opp-loss{border-left:3px solid #F87171;}
   .topnav{padding:10px 16px;}
   .legend{padding:12px 16px;}
   .header{padding:28px 16px 22px;}
-  thead th{padding:9px 10px;font-size:10px;letter-spacing:1px;}
-  tbody td{padding:9px 10px;font-size:13px;}
-  .badge{font-size:9px;padding:2px 6px;}
-  .result-pill{font-size:12px;padding:2px 7px;}
 }
 </style>
 </head>
@@ -350,9 +334,7 @@ tr.opp-loss{border-left:3px solid #F87171;}
         </div>
       </div>
       <div class="table-wrap">
-        <div class="table-fade" id="tbl-fade"></div>
         <div id="view-matches">
-          <div class="table-scroll" id="tbl-scroll-matches">
           <table>
             <thead><tr>
               <th onclick="sortBy('datum')">Datum <span class="si" id="sort-datum">↓</span></th>
@@ -363,15 +345,9 @@ tr.opp-loss{border-left:3px solid #F87171;}
             </tr></thead>
             <tbody id="match-tbody"></tbody>
           </table>
-          </div>
-          <div class="scroll-hint" id="scroll-hint-matches">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            Pomakni tablicu desno za više stupaca
-          </div>
           <div class="pagination"><span id="page-info"></span><div class="page-btns" id="page-btns"></div></div>
         </div>
         <div id="view-opponents" style="display:none;">
-          <div class="table-scroll" id="tbl-scroll-opponents">
           <table>
             <thead><tr>
               <th onclick="sortOpp('protivnik')">Protivnik <span class="si" id="osort-protivnik">↕</span></th>
@@ -384,11 +360,6 @@ tr.opp-loss{border-left:3px solid #F87171;}
             </tr></thead>
             <tbody id="opp-tbody"></tbody>
           </table>
-          </div>
-          <div class="scroll-hint" id="scroll-hint-opponents">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            Pomakni tablicu desno za više stupaca
-          </div>
           <div class="pagination"><span id="opp-page-info"></span><div class="page-btns" id="opp-page-btns"></div></div>
         </div>
       </div>
@@ -653,24 +624,6 @@ async function saveMatches() {
 }
 
 /* ===== STATISTIKA LOGIC ===== */
-function checkScrollOverflow(){
-  const viewId = activeView === 'matches' ? 'tbl-scroll-matches' : 'tbl-scroll-opponents';
-  const hintId = activeView === 'matches' ? 'scroll-hint-matches' : 'scroll-hint-opponents';
-  const scroller = document.getElementById(viewId);
-  const hint = document.getElementById(hintId);
-  const fade = document.getElementById('tbl-fade');
-  if(!scroller) return;
-  const isOverflow = scroller.scrollWidth > scroller.clientWidth + 4;
-  if(hint) hint.classList.toggle('visible', isOverflow);
-  if(fade) fade.classList.toggle('hidden', !isOverflow);
-  // Hide hint once user starts scrolling
-  scroller.onscroll = ()=>{
-    const atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 8;
-    if(hint) hint.classList.toggle('visible', !atEnd);
-    if(fade) fade.classList.toggle('hidden', atEnd);
-  };
-}
-
 function switchView(v,el){
   activeView=v;
   document.getElementById('view-matches').style.display=v==='matches'?'':'none';
@@ -678,7 +631,6 @@ function switchView(v,el){
   document.querySelectorAll('.view-tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
   renderActive();
-  setTimeout(checkScrollOverflow, 50);
 }
 window.switchView = switchView;
 
@@ -738,8 +690,8 @@ function renderTable(){
   document.getElementById('page-info').textContent=`${total} utakmice · Str. ${currentPage}/${pages}`;
   renderPageBtns('page-btns',pages,currentPage,p=>{currentPage=p;renderTable();});
   updateStats(filtered);
-  setTimeout(checkScrollOverflow, 30);
 }
+function buildOppData(filtered){
   const g={};
   filtered.forEach(m=>{
     if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[],scored:0,conceded:0};
@@ -803,8 +755,8 @@ function renderOpponents(){
   document.getElementById('opp-page-info').textContent=`${total} protivnika · Str. ${oppPage}/${pages}`;
   renderPageBtns('opp-page-btns',pages,oppPage,p=>{oppPage=p;renderOpponents();});
   updateStats(filtered);
-  setTimeout(checkScrollOverflow, 30);
 }
+function renderPageBtns(id,pages,cur,cb){
   const pb=document.getElementById(id);pb.innerHTML='';
   for(let p=1;p<=pages;p++){
     const btn=document.createElement('button');
@@ -1105,8 +1057,6 @@ async function init() {
   renderCompStats();
   renderPreds();
 }
-
-window.addEventListener('resize', ()=>setTimeout(checkScrollOverflow, 50));
 
 init();
 </script>
