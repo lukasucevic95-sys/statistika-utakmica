@@ -307,7 +307,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .predictor-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
 .predictor-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
 .pl-luka{color:#60A5FA;}.pl-lovro{color:#C084FC;}
-.pred-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.pred-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .pred-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .btn-pred{border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#4C1D95,#7C3AED);width:100%;}
 .btn-pred:hover{transform:translateY(-1px);filter:brightness(1.1);}
@@ -397,14 +397,100 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .pred-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:600px){
-  .header h1{font-size:36px;}
+  .header{padding:20px 16px 16px;}
+  .header h1{font-size:28px;letter-spacing:2px;}
+  .header p{font-size:11px;}
+  /* Hide decorative right-side overlays on mobile */
+  .header>div[style*="position:absolute"][style*="width:5"]{display:none!important;}
+  .header>div[style*="position:absolute"][style*="right:0"][style*="width:4"]{display:none!important;}
+  .header::after{display:none;}
   .stats-bar{grid-template-columns:1fr 1fr;}
   .pred-grid{grid-template-columns:1fr;}
   .form-grid-3{grid-template-columns:1fr 1fr;}
   .predictors-wrap{grid-template-columns:1fr;}
+  .pred-type-tabs{flex-direction:column;gap:6px;}
+  .leaderboard{gap:10px;}
+  .lb-score{font-size:38px;}
+}
+@media(max-width:768px){
+  .header{padding:22px 18px 18px;overflow:hidden;}
+  .header h1{font-size:34px;letter-spacing:2px;}
+  /* Shrink decorative overlays on tablet */
+  .header>div[style*="position:absolute"][style*="right:0"]{opacity:0.12!important;}
 }
 
-/* Away predictor */
+/* ===== KARTE PAGE ===== */
+.karte-main{padding:22px 40px;display:flex;flex-direction:column;gap:22px;}
+.karte-header-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
+.karte-refresh-btn{background:rgba(0,102,204,0.2);border:1px solid rgba(0,102,204,0.4);border-radius:8px;padding:7px 16px;color:#7FB5FF;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
+.karte-refresh-btn:hover{background:rgba(0,102,204,0.35);border-color:rgba(0,102,204,0.7);}
+.karte-refresh-btn.spinning svg{animation:spinIcon 0.8s linear infinite;}
+@keyframes spinIcon{to{transform:rotate(360deg);}}
+.karte-match-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color 0.2s;}
+.karte-match-card:hover{border-color:rgba(77,159,255,0.35);}
+.kmc-header{padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--border);}
+.kmc-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
+.kmc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.kmc-date{font-size:12px;color:var(--text-muted);font-weight:600;}
+.kmc-comp-badge{display:inline-flex;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
+.kmc-body{padding:16px 20px;}
+.karte-zones-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:14px;}
+.karte-zone{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;}
+.kz-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;}
+.kz-bar-wrap{position:relative;height:8px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;margin-bottom:8px;}
+.kz-bar-sold{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#1D4ED8,#60A5FA);border-radius:4px;transition:width 0.7s cubic-bezier(0.16,1,0.3,1);}
+.kz-bar-sold.high{background:linear-gradient(90deg,#065F46,#4ADE80);}
+.kz-bar-sold.full{background:linear-gradient(90deg,#7F1D1D,#F87171);}
+.kz-numbers{display:flex;justify-content:space-between;font-size:11px;}
+.kz-sold{font-weight:700;color:#93c5fd;}
+.kz-sold.high{color:#4ADE80;}
+.kz-sold.full{color:#fca5a5;font-weight:800;}
+.kz-free{color:var(--text-muted);}
+.kz-total{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;color:var(--text-muted);margin-top:4px;}
+.karte-summary-row{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,0.03);border-radius:10px;margin-top:6px;flex-wrap:wrap;}
+.ks-item{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;min-width:80px;}
+.ks-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
+.ks-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+.ks-sep{width:1px;height:40px;background:var(--border);flex-shrink:0;}
+.karte-overall-bar{height:10px;background:rgba(255,255,255,0.07);border-radius:5px;overflow:hidden;margin:10px 0 4px;}
+.karte-overall-fill{height:100%;background:linear-gradient(90deg,#1D4ED8,#60A5FA);border-radius:5px;transition:width 0.8s cubic-bezier(0.16,1,0.3,1);}
+.karte-overall-fill.high{background:linear-gradient(90deg,#065F46,#4ADE80);}
+.karte-overall-fill.full{background:linear-gradient(90deg,#7F1D1D,#F87171);}
+.karte-no-matches{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.karte-no-matches-icon{font-size:48px;margin-bottom:12px;}
+.karte-no-matches h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#fff;margin-bottom:6px;}
+.karte-error{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;padding:20px;text-align:center;color:#F87171;font-size:13px;}
+.karte-loading-state{display:flex;align-items:center;justify-content:center;gap:10px;padding:50px 20px;color:var(--text-muted);font-size:14px;}
+.karte-loading-dot{width:8px;height:8px;border-radius:50%;background:#4D9FFF;animation:loadPulse 1.2s ease-in-out infinite;}
+.karte-loading-dot:nth-child(2){animation-delay:0.2s;}.karte-loading-dot:nth-child(3){animation-delay:0.4s;}
+@keyframes loadPulse{0%,80%,100%{opacity:0.3;transform:scale(0.8);}40%{opacity:1;transform:scale(1.1);}}
+.karte-source-note{font-size:10px;color:var(--text-muted);text-align:right;margin-top:8px;opacity:0.6;}
+.karte-source-note a{color:var(--text-muted);text-decoration:none;}
+.karte-source-note a:hover{color:#7FB5FF;}
+@media(max-width:960px){.karte-main{padding:14px;}}
+@media(max-width:600px){.karte-zones-grid{grid-template-columns:1fr 1fr;}}
+
+/* Stadium SVG container */
+.karte-stadium-wrap{margin-bottom:16px;}
+/* Karte manual form grid responsive */
+@media(max-width:700px){
+  #km-zones-grid{grid-template-columns:1fr 1fr!important;}
+  .karte-main > div > div[style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important;}
+}
+
+.rasp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;transition:border-color 0.2s;}
+.rasp-card:hover{border-color:rgba(167,139,250,0.4);}
+.rasp-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.rasp-match-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
+.rasp-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.rasp-card-body{padding:13px 18px;display:flex;gap:24px;flex-wrap:wrap;}
+.rasp-detail{display:flex;flex-direction:column;gap:2px;}
+.rasp-detail-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);}
+.rasp-detail-val{font-size:14px;font-weight:600;color:var(--text);}
+.rasp-countdown{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#A78BFA;}
+.rasp-section-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#A78BFA;margin:18px 0 10px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+.rasp-empty{text-align:center;padding:60px 20px;color:var(--text-muted);}
+.rasp-empty-icon{font-size:48px;margin-bottom:12px;}
 .pred-type-tabs{display:flex;gap:8px;margin-bottom:16px;}
 .pred-type-tab{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all 0.2s;color:var(--text-muted);}
 .pred-type-tab.active-home{background:rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.5);color:#A78BFA;}
@@ -439,6 +525,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <button class="nav-btn active" id="nav-statistika" onclick="goTo('statistika')">📊 Statistika</button>
     <button class="nav-btn" id="nav-golovi" onclick="goTo('golovi')">⚽ Golovi</button>
     <button class="nav-btn" id="nav-prediktor" onclick="goTo('prediktor')">🔮 Prediktor</button>
+    <button class="nav-btn" id="nav-karte" onclick="goTo('karte')">🎫 Karte</button>
+    <button class="nav-btn" id="nav-raspored" onclick="goTo('raspored')">📅 Raspored</button>
   </div>
 </nav>
 
@@ -889,7 +977,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1/2/3 boda — gledatelji (bliži/±500/±100)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>1 bod — točna minuta početka (samo točno!)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#F9A8D4"></div>1 bod — točna minuta poluvremena (samo točno!)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>1 bod — točna minuta 1. gola (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>2 boda — točan poluvremeni rezultat</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+1 bonus — točan rezultat + gledatelji + oba kašnjenja</div>
       </div>
 
@@ -912,6 +1001,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div class="predictor-name pl-luka">🔵 Luka predviđa</div>
               <div class="pred-grid" style="margin-bottom:8px;">
                 <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="l-rez" placeholder="2-1"></div>
+                <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="l-ht" placeholder="1-0"></div>
                 <div class="form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="l-gle" placeholder="15000"></div>
                 <div class="form-group"><label class="form-label">1. gol (min)</label><input class="form-input-pred" type="text" id="l-fg" placeholder="npr. 23"></div>
               </div>
@@ -924,6 +1014,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div class="predictor-name pl-lovro">🟣 Lovro predviđa</div>
               <div class="pred-grid" style="margin-bottom:8px;">
                 <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="lo-rez" placeholder="2-1"></div>
+                <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="lo-ht" placeholder="1-0"></div>
                 <div class="form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="lo-gle" placeholder="15000"></div>
                 <div class="form-group"><label class="form-label">1. gol (min)</label><input class="form-input-pred" type="text" id="lo-fg" placeholder="npr. 23"></div>
               </div>
@@ -969,7 +1060,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1/2/3 boda — gledatelji (bliži/±500/±100)</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>1 bod — točna minuta 1. gola</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>2 boda — točan poluvremeni rezultat</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola</div>
         </div>
 
         <!-- Away form -->
@@ -992,17 +1084,19 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
                 <div class="predictor-name pl-luka">🔵 Luka predviđa</div>
                 <div class="pred-grid-2" style="margin-bottom:6px;">
                   <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="la-rez" placeholder="1-0"></div>
+                  <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="la-ht" placeholder="0-0"></div>
                   <div class="form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="la-gle" placeholder="10000"></div>
+                  <div class="form-group"><label class="form-label">Min. 1. gola</label><input class="form-input-pred" type="text" id="la-fg" placeholder="23"></div>
                 </div>
-                <div class="form-group"><label class="form-label">Minuta 1. gola</label><input class="form-input-pred" type="text" id="la-fg" placeholder="npr. 23"></div>
               </div>
               <div class="predictor-box">
                 <div class="predictor-name pl-lovro">🟣 Lovro predviđa</div>
                 <div class="pred-grid-2" style="margin-bottom:6px;">
                   <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="loa-rez" placeholder="1-0"></div>
+                  <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="loa-ht" placeholder="0-0"></div>
                   <div class="form-group"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="loa-gle" placeholder="10000"></div>
+                  <div class="form-group"><label class="form-label">Min. 1. gola</label><input class="form-input-pred" type="text" id="loa-fg" placeholder="23"></div>
                 </div>
-                <div class="form-group"><label class="form-label">Minuta 1. gola</label><input class="form-input-pred" type="text" id="loa-fg" placeholder="npr. 23"></div>
               </div>
             </div>
             <button class="btn-pred" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="addAwayPrediction()">💾 Spremi gostujuću predikciju</button>
@@ -1031,11 +1125,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-sub" id="cm-sub"></div>
       <div class="modal-inputs">
         <div class="modal-row"><label class="form-label">Stvarni rezultat</label><input class="form-input-pred" type="text" id="cm-rez" placeholder="2-1"></div>
+        <div class="modal-row"><label class="form-label">Poluvremeni rezultat</label><input class="form-input-pred" type="text" id="cm-ht" placeholder="1-0"></div>
         <div class="modal-row"><label class="form-label">Stvarni broj gledatelja</label><input class="form-input-pred" type="number" id="cm-gle" placeholder="15000"></div>
         <div class="modal-row"><label class="form-label">Minuta 1. gola (prazno ako nema golova)</label><input class="form-input-pred" type="text" id="cm-fg" placeholder="npr. 23 ili 45+"></div>
         <div class="form-grid-2">
-          <div class="modal-row"><label class="form-label">Kasnjenje početka (min)</label><input class="form-input-pred" type="number" id="cm-kas1" placeholder="5" min="0"></div>
-          <div class="modal-row"><label class="form-label">Kasnjenje poluvremena (min)</label><input class="form-input-pred" type="number" id="cm-kas2" placeholder="3" min="0"></div>
+          <div class="modal-row"><label class="form-label">Kašnjenje početka (min)</label><input class="form-input-pred" type="number" id="cm-kas1" placeholder="5" min="0"></div>
+          <div class="modal-row"><label class="form-label">Kašnjenje poluvremena (min)</label><input class="form-input-pred" type="number" id="cm-kas2" placeholder="3" min="0"></div>
         </div>
       </div>
       <div class="modal-btns">
@@ -1054,6 +1149,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="modal-inputs">
       <div class="modal-row"><label class="form-label">Stvarni rezultat</label><input class="form-input-pred" type="text" id="acm-rez" placeholder="1-0"></div>
       <div class="modal-row"><label class="form-label">Stvarni broj gledatelja</label><input class="form-input-pred" type="number" id="acm-gle" placeholder="10000"></div>
+      <div class="modal-row"><label class="form-label">Poluvremeni rezultat</label><input class="form-input-pred" type="text" id="acm-ht" placeholder="0-0"></div>
       <div class="modal-row"><label class="form-label">Minuta 1. gola (prazno ako nema)</label><input class="form-input-pred" type="text" id="acm-fg" placeholder="npr. 23 ili 45+"></div>
     </div>
     <div class="modal-btns">
@@ -1063,7 +1159,146 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- EDIT HOME PRED MODAL -->
+<div class="modal-overlay" id="edit-pred-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ Uredi predikciju</h3>
+    <div class="modal-sub" id="epm-sub"></div>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Luka — Rezultat</label><input class="form-input-pred" type="text" id="epm-l-rez"></div>
+      <div class="modal-row"><label class="form-label">Luka — Poluvremeni</label><input class="form-input-pred" type="text" id="epm-l-ht" placeholder="1-0"></div>
+      <div class="modal-row"><label class="form-label">Luka — Gledatelji</label><input class="form-input-pred" type="number" id="epm-l-gle"></div>
+      <div class="modal-row"><label class="form-label">Luka — 1. gol (min)</label><input class="form-input-pred" type="text" id="epm-l-fg"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Rezultat</label><input class="form-input-pred" type="text" id="epm-lo-rez"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Poluvremeni</label><input class="form-input-pred" type="text" id="epm-lo-ht" placeholder="1-0"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Gledatelji</label><input class="form-input-pred" type="number" id="epm-lo-gle"></div>
+      <div class="modal-row"><label class="form-label">Lovro — 1. gol (min)</label><input class="form-input-pred" type="text" id="epm-lo-fg"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="saveEditPred()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-pred-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT AWAY PRED MODAL -->
+<div class="modal-overlay" id="edit-away-pred-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ Uredi gostujuću predikciju</h3>
+    <div class="modal-sub" id="eapm-sub"></div>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Luka — Rezultat</label><input class="form-input-pred" type="text" id="eapm-l-rez"></div>
+      <div class="modal-row"><label class="form-label">Luka — Poluvremeni</label><input class="form-input-pred" type="text" id="eapm-l-ht" placeholder="0-0"></div>
+      <div class="modal-row"><label class="form-label">Luka — Gledatelji</label><input class="form-input-pred" type="number" id="eapm-l-gle"></div>
+      <div class="modal-row"><label class="form-label">Luka — 1. gol (min)</label><input class="form-input-pred" type="text" id="eapm-l-fg"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Rezultat</label><input class="form-input-pred" type="text" id="eapm-lo-rez"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Poluvremeni</label><input class="form-input-pred" type="text" id="eapm-lo-ht" placeholder="0-0"></div>
+      <div class="modal-row"><label class="form-label">Lovro — Gledatelji</label><input class="form-input-pred" type="number" id="eapm-lo-gle"></div>
+      <div class="modal-row"><label class="form-label">Lovro — 1. gol (min)</label><input class="form-input-pred" type="text" id="eapm-lo-fg"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="saveEditAwayPred()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-away-pred-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT ACTUAL RESULT — HOME -->
+<div class="modal-overlay" id="edit-actual-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ Uredi stvarni rezultat</h3>
+    <div class="modal-sub" id="eam-sub"></div>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Stvarni rezultat</label><input class="form-input-pred" type="text" id="eam-rez" placeholder="2-1"></div>
+      <div class="modal-row"><label class="form-label">Poluvremeni rezultat</label><input class="form-input-pred" type="text" id="eam-ht" placeholder="1-0"></div>
+      <div class="modal-row"><label class="form-label">Broj gledatelja</label><input class="form-input-pred" type="number" id="eam-gle" placeholder="15000"></div>
+      <div class="modal-row"><label class="form-label">Minuta 1. gola</label><input class="form-input-pred" type="text" id="eam-fg" placeholder="npr. 23 ili 45+"></div>
+      <div class="form-grid-2">
+        <div class="modal-row"><label class="form-label">Kašnjenje početka (min)</label><input class="form-input-pred" type="number" id="eam-kas1" placeholder="5" min="0"></div>
+        <div class="modal-row"><label class="form-label">Kašnjenje poluvremena (min)</label><input class="form-input-pred" type="number" id="eam-kas2" placeholder="3" min="0"></div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="saveEditActual()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-actual-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT ACTUAL RESULT — AWAY -->
+<div class="modal-overlay" id="edit-actual-away-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ Uredi stvarni rezultat gostovanja</h3>
+    <div class="modal-sub" id="eaam-sub"></div>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Stvarni rezultat</label><input class="form-input-pred" type="text" id="eaam-rez" placeholder="1-0"></div>
+      <div class="modal-row"><label class="form-label">Poluvremeni rezultat</label><input class="form-input-pred" type="text" id="eaam-ht" placeholder="0-0"></div>
+      <div class="modal-row"><label class="form-label">Broj gledatelja</label><input class="form-input-pred" type="number" id="eaam-gle" placeholder="10000"></div>
+      <div class="modal-row"><label class="form-label">Minuta 1. gola</label><input class="form-input-pred" type="text" id="eaam-fg" placeholder="npr. 23 ili 45+"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="saveEditActualAway()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-actual-away-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
+
+<!-- ======== PAGE: RASPORED ======== -->
+<div class="page" id="page-raspored">
+  <div class="header header-stat" style="background:linear-gradient(135deg,#001430 0%,#0A0A2E 60%,#0D0D3A 100%);">
+    <div style="position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;">
+      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(100,0,220,0.12) 0%,transparent 70%);"></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:28px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:10px;color:rgba(167,139,250,0.15);line-height:1;">RASPORED</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(167,139,250,0.3);line-height:1;margin-top:-4px;">NADOLAZEĆE UTAKMICE</div>
+      </div>
+    </div>
+    <div class="header-inner" style="position:relative;z-index:1;">
+      <h1>📅 <span style="color:#A78BFA;">Raspored</span></h1>
+      <p>GNK Dinamo Zagreb · Nadolazeće utakmice</p>
+    </div>
+  </div>
+  <div style="padding:22px 40px;" id="raspored-content">
+    <div style="color:var(--text-muted);text-align:center;padding:40px;">Učitavanje...</div>
+  </div>
+</div>
+
+<!-- ======== PAGE: KARTE ======== -->
+<div class="page" id="page-karte">
+  <div class="header header-stat" style="background:linear-gradient(135deg,#001830 0%,#0A1428 60%,#0D1A38 100%);">
+    <div style="position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;">
+      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(0,180,255,0.12) 0%,transparent 70%);"></div>
+      <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:28px;gap:0px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:10px;color:rgba(77,159,255,0.15);line-height:1;">MAKSIMIR</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(77,159,255,0.3);line-height:1;margin-top:-4px;">ZAGREB · HRVATSKA</div>
+      </div>
+    </div>
+    <div class="header-inner" style="position:relative;z-index:1;">
+      <h1>🎫 <span style="color:#4D9FFF;">Karte</span></h1>
+      <p>GNK Dinamo Zagreb · Prodaja ulaznica · zona-karata.live</p>
+    </div>
+  </div>
+
+  <div class="karte-main">
+    <div class="karte-header-bar">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;">Nadolazeće utakmice — status karata</div>
+      <button class="karte-refresh-btn" id="karte-refresh-btn" onclick="loadKarte()">
+        <svg id="karte-refresh-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        Osvježi
+      </button>
+    </div>
+    <div id="karte-content">
+      <div class="karte-loading-state">
+        <div class="karte-loading-dot"></div>
+        <div class="karte-loading-dot"></div>
+        <div class="karte-loading-dot"></div>
+        <span>Dohvaćam podatke s zona-karata.live...</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Edit goal modal -->
 <div class="modal-overlay" id="edit-goal-modal" onclick="if(event.target===this)closeEditGoal()">
@@ -1117,11 +1352,13 @@ function goTo(page) {
   window.location.hash = page;
   window.scrollTo(0,0);
   if(page==='golovi') { setTimeout(()=>{renderGoalStats();renderPlayerStats();renderGoalList();populateMatchSelect();},50); }
+  if(page==='karte') { setTimeout(()=>loadKarte(),50); }
+  if(page==='raspored') { setTimeout(()=>renderRaspored(),50); }
 }
 window.goTo = goTo;
 window.addEventListener('hashchange', () => {
   const h=window.location.hash.replace('#','');
-  if(['statistika','golovi','prediktor'].includes(h)) goTo(h);
+  if(['statistika','golovi','prediktor','karte','raspored'].includes(h)) goTo(h);
 });
 
 /* ===== HELPERS ===== */
@@ -2329,38 +2566,34 @@ async function saveEditGoal(){
 window.saveEditGoal=saveEditGoal;
 
 /* ===== PREDIKTOR BODOVANJE ===== */
-function scoreCalc(lRez,lGle,lKas1,lKas2,lFg, loRez,loGle,loKas1,loKas2,loFg, aRez,aGle,aKas1,aKas2,aFg){
+function scoreCalc(lRez,lGle,lKas1,lKas2,lFg,lHt, loRez,loGle,loKas1,loKas2,loFg,loHt, aRez,aGle,aKas1,aKas2,aFg,aHt){
   const lP=lRez.split('-').map(Number), loP=loRez.split('-').map(Number), aP=aRez.split('-').map(Number);
-  // Rezultat: 5 bodova točan konačni
   const lRezHit=lRez===aRez, loRezHit=loRez===aRez;
-  // Golovi Dinama: 1 bod točan
   const lScHit=lP[0]===aP[0], loScHit=loP[0]===aP[0];
-  // Golovi gosta: 1 bod točan
   const lConHit=lP[1]===aP[1], loConHit=loP[1]===aP[1];
-  // Gledatelji: bliži=1, ±500=2, ±100=3
   const lDiff=Math.abs(Number(lGle)-Number(aGle));
   const loDiff=Math.abs(Number(loGle)-Number(aGle));
   let lGlePts=0,loGlePts=0;
   const lWins=lDiff<loDiff, loWins=loDiff<lDiff, tie=lDiff===loDiff;
   if(lWins||tie){ lGlePts=lDiff<=100?3:lDiff<=500?2:1; }
   if(loWins||tie){ loGlePts=loDiff<=100?3:loDiff<=500?2:1; }
-  // Kašnjenje početka: SAMO TOČNA MINUTA = 1 bod
   const lKas1Pts=Number(lKas1)===Number(aKas1)?1:0;
   const loKas1Pts=Number(loKas1)===Number(aKas1)?1:0;
-  // Kašnjenje poluvremena: SAMO TOČNA MINUTA = 1 bod
   const lKas2Pts=Number(lKas2)===Number(aKas2)?1:0;
   const loKas2Pts=Number(loKas2)===Number(aKas2)?1:0;
-  // Minuta prvog gola: SAMO TOČNA = 1 bod (prazno/null = nema boda)
-  const lFgPts=(aFg&&lFg&&String(lFg).trim()===String(aFg).trim())?1:0;
-  const loFgPts=(aFg&&loFg&&String(loFg).trim()===String(aFg).trim())?1:0;
-  // Bonus: točan rezultat + gledatelji + oba kašnjenja = +1
+  // Poluvremeni rezultat: točan = 2 boda
+  const lHtPts=(aHt&&lHt&&String(lHt).trim()===String(aHt).trim())?2:0;
+  const loHtPts=(aHt&&loHt&&String(loHt).trim()===String(aHt).trim())?2:0;
+  // Minuta prvog gola: točna = 3 boda (povećano sa 1)
+  const lFgPts=(aFg&&lFg&&String(lFg).trim()===String(aFg).trim())?3:0;
+  const loFgPts=(aFg&&loFg&&String(loFg).trim()===String(aFg).trim())?3:0;
   const lBonus=(lRezHit&&lGlePts>0&&lKas1Pts>0&&lKas2Pts>0)?1:0;
   const loBonus=(loRezHit&&loGlePts>0&&loKas1Pts>0&&loKas2Pts>0)?1:0;
-  const lPts=(lRezHit?5:0)+(lScHit?1:0)+(lConHit?1:0)+lGlePts+lKas1Pts+lKas2Pts+lFgPts+lBonus;
-  const loPts=(loRezHit?5:0)+(loScHit?1:0)+(loConHit?1:0)+loGlePts+loKas1Pts+loKas2Pts+loFgPts+loBonus;
+  const lPts=(lRezHit?5:0)+(lScHit?1:0)+(lConHit?1:0)+lGlePts+lKas1Pts+lKas2Pts+lHtPts+lFgPts+lBonus;
+  const loPts=(loRezHit?5:0)+(loScHit?1:0)+(loConHit?1:0)+loGlePts+loKas1Pts+loKas2Pts+loHtPts+loFgPts+loBonus;
   return{
-    luka:{pts:lPts,rezHit:lRezHit,scHit:lScHit,conHit:lConHit,glePts:lGlePts,kas1Pts:lKas1Pts,kas2Pts:lKas2Pts,fgPts:lFgPts,bonus:lBonus,gleDiff:lDiff},
-    lovro:{pts:loPts,rezHit:loRezHit,scHit:loScHit,conHit:loConHit,glePts:loGlePts,kas1Pts:loKas1Pts,kas2Pts:loKas2Pts,fgPts:loFgPts,bonus:loBonus,gleDiff:loDiff}
+    luka:{pts:lPts,rezHit:lRezHit,scHit:lScHit,conHit:lConHit,glePts:lGlePts,kas1Pts:lKas1Pts,kas2Pts:lKas2Pts,htPts:lHtPts,fgPts:lFgPts,bonus:lBonus,gleDiff:lDiff},
+    lovro:{pts:loPts,rezHit:loRezHit,scHit:loScHit,conHit:loConHit,glePts:loGlePts,kas1Pts:loKas1Pts,kas2Pts:loKas2Pts,htPts:loHtPts,fgPts:loFgPts,bonus:loBonus,gleDiff:loDiff}
   };
 }
 
@@ -2380,12 +2613,14 @@ async function addPrediction(){
   const loFg=document.getElementById('lo-fg').value.trim();
   if(!datum||!prot||!lRez||isNaN(lGle)||!loRez||isNaN(loGle)){alert('Molimo ispunite sva obavezna polja!');return;}
   if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  const lHt=document.getElementById('l-ht')?.value.trim()||'';
+  const loHt=document.getElementById('lo-ht')?.value.trim()||'';
   predictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,
-    luka:{rez:lRez,gle:lGle,kas1:lKas1,kas2:lKas2,fg:lFg},
-    lovro:{rez:loRez,gle:loGle,kas1:loKas1,kas2:loKas2,fg:loFg},
+    luka:{rez:lRez,gle:lGle,kas1:lKas1,kas2:lKas2,fg:lFg,ht:lHt},
+    lovro:{rez:loRez,gle:loGle,kas1:loKas1,kas2:loKas2,fg:loFg,ht:loHt},
     actual:null,resolved:false});
   await set(ref(db,'predictions'),predictions);
-  ['p-protivnik','l-rez','l-gle','l-kas1','l-kas2','l-fg','lo-rez','lo-gle','lo-kas1','lo-kas2','lo-fg'].forEach(id=>document.getElementById(id).value='');
+  ['p-protivnik','l-rez','l-ht','l-gle','l-kas1','l-kas2','l-fg','lo-rez','lo-ht','lo-gle','lo-kas1','lo-kas2','lo-fg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   renderPreds();
   showToast('🔮 Predikcija dodana!','#1A1A4A','#A78BFA');
 }
@@ -2396,6 +2631,7 @@ function openConfirm(idx){
   const p=predictions[idx];
   document.getElementById('cm-sub').textContent=`Dinamo vs ${p.protivnik} · ${fmtDate(p.datum)}`;
   document.getElementById('cm-rez').value='';
+  const cmHt=document.getElementById('cm-ht');if(cmHt)cmHt.value='';
   document.getElementById('cm-gle').value='';
   document.getElementById('cm-kas1').value='';
   document.getElementById('cm-kas2').value='';
@@ -2406,6 +2642,7 @@ window.openConfirm=openConfirm;
 
 async function confirmResult(){
   const rez=document.getElementById('cm-rez').value.trim();
+  const ht=document.getElementById('cm-ht')?.value.trim()||'';
   const gle=parseInt(document.getElementById('cm-gle').value);
   const kas1=parseInt(document.getElementById('cm-kas1').value)||0;
   const kas2=parseInt(document.getElementById('cm-kas2').value)||0;
@@ -2413,10 +2650,10 @@ async function confirmResult(){
   if(!rez||isNaN(gle)){alert('Unesite rezultat i gledatelje!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Format: 2-1');return;}
   const p=predictions[confirmIdx];
-  p.actual={rez,gle,kas1,kas2,fg};p.resolved=true;
-  const sc=scoreCalc(p.luka.rez,p.luka.gle,p.luka.kas1||0,p.luka.kas2||0,p.luka.fg||'',
-                     p.lovro.rez,p.lovro.gle,p.lovro.kas1||0,p.lovro.kas2||0,p.lovro.fg||'',
-                     rez,gle,kas1,kas2,fg);
+  p.actual={rez,ht,gle,kas1,kas2,fg};p.resolved=true;
+  const sc=scoreCalc(p.luka.rez,p.luka.gle,p.luka.kas1||0,p.luka.kas2||0,p.luka.fg||'',p.luka.ht||'',
+                     p.lovro.rez,p.lovro.gle,p.lovro.kas1||0,p.lovro.kas2||0,p.lovro.fg||'',p.lovro.ht||'',
+                     rez,gle,kas1,kas2,fg,ht);
   p.luka.score=sc.luka;p.lovro.score=sc.lovro;
   await set(ref(db,'predictions'),predictions);
   document.getElementById('confirm-modal').classList.remove('open');
@@ -2485,7 +2722,7 @@ function renderPreds(){
     let lBox,loBox;
     if(p.resolved){
       const l=p.luka.score,lo=p.lovro.score;
-      const allHit=(sc)=>sc.rezHit&&sc.glePts>0&&sc.kas1Pts>0&&sc.kas2Pts>0;
+      const allHit=(sc)=>sc.rezHit&&sc.glePts>0&&(isAway||( sc.kas1Pts>0&&sc.kas2Pts>0));
       const lCls=l.rezHit&&l.glePts>0?'hit-both':l.rezHit?'hit-rez':l.glePts>0?'hit-gle':'no-hit';
       const loCls=lo.rezHit&&lo.glePts>0?'hit-both':lo.rezHit?'hit-rez':lo.glePts>0?'hit-gle':'no-hit';
       const lE=allHit(l)?'🎯':l.rezHit?'✅':l.glePts>0?'👁️':'❌';
@@ -2495,7 +2732,8 @@ function renderPreds(){
         <div class="guess-rez">${p.luka.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.luka.gle)} <span style="opacity:0.6">(±${fmtNum(l.gleDiff)})</span></div>
-          <div class="guess-detail">⏰ poč:${p.luka.kas1||0}' pol:${p.luka.kas2||0}'</div>
+          ${!isAway?`<div class="guess-detail">⏰ poč:${p.luka.kas1||0}' pol:${p.luka.kas2||0}'</div>`:''}
+          ${p.luka.ht?`<div class="guess-detail">📊 pol.rez: ${p.luka.ht}</div>`:''}
           ${p.luka.fg?`<div class="guess-detail">⚽ 1.gol: ${p.luka.fg}'</div>`:''}
         </div>
         <div class="guess-hit">${lE}</div>
@@ -2505,10 +2743,12 @@ function renderPreds(){
             ${l.scHit?'<span class="pts-chip chip-gle">1 din.gol</span>':''}
             ${l.conHit?'<span class="pts-chip chip-gle">1 gost.gol</span>':''}
             ${l.glePts>0?`<span class="pts-chip chip-gle">${l.glePts} gle.</span>`:''}
-            ${l.kas1Pts>0?`<span class="pts-chip chip-time">${l.kas1Pts} poč.</span>`:''}
-            ${l.kas2Pts>0?`<span class="pts-chip chip-time">${l.kas2Pts} pol.</span>`:''}
-            ${l.fgPts>0?`<span class="pts-chip" style="background:rgba(250,204,21,0.15);color:#FDE68A">1 1.gol</span>`:''}
-            ${l.bonus>0?'<span class="pts-chip" style="background:rgba(52,211,153,0.2);color:#34D399">+1 bonus</span>':''}
+            ${!isAway&&l.kas1Pts>0?`<span class="pts-chip chip-time">${l.kas1Pts} poč.</span>`:''}
+            ${!isAway&&l.kas2Pts>0?`<span class="pts-chip chip-time">${l.kas2Pts} pol.</span>`:''}
+            ${!isAway&&l.htPts>0?`<span class="pts-chip" style="background:rgba(167,139,250,0.2);color:#C4B5FD">2 pol.rez.</span>`:''}
+            ${isAway&&l.htPts>0?`<span class="pts-chip" style="background:rgba(167,139,250,0.2);color:#C4B5FD">2 pol.rez.</span>`:''}
+            ${l.fgPts>0?`<span class="pts-chip" style="background:rgba(250,204,21,0.15);color:#FDE68A">${l.fgPts} 1.gol</span>`:''}
+            ${!isAway&&l.bonus>0?'<span class="pts-chip" style="background:rgba(52,211,153,0.2);color:#34D399">+1 bonus</span>':''}
           </div>
         </div>
       </div>`;
@@ -2517,7 +2757,8 @@ function renderPreds(){
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)} <span style="opacity:0.6">(±${fmtNum(lo.gleDiff)})</span></div>
-          <div class="guess-detail">⏰ poč:${p.lovro.kas1||0}' pol:${p.lovro.kas2||0}'</div>
+          ${!isAway?`<div class="guess-detail">⏰ poč:${p.lovro.kas1||0}' pol:${p.lovro.kas2||0}'</div>`:''}
+          ${p.lovro.ht?`<div class="guess-detail">📊 pol.rez: ${p.lovro.ht}</div>`:''}
           ${p.lovro.fg?`<div class="guess-detail">⚽ 1.gol: ${p.lovro.fg}'</div>`:''}
         </div>
         <div class="guess-hit">${loE}</div>
@@ -2527,10 +2768,11 @@ function renderPreds(){
             ${lo.scHit?'<span class="pts-chip chip-gle">1 din.gol</span>':''}
             ${lo.conHit?'<span class="pts-chip chip-gle">1 gost.gol</span>':''}
             ${lo.glePts>0?`<span class="pts-chip chip-gle">${lo.glePts} gle.</span>`:''}
-            ${lo.kas1Pts>0?`<span class="pts-chip chip-time">${lo.kas1Pts} poč.</span>`:''}
-            ${lo.kas2Pts>0?`<span class="pts-chip chip-time">${lo.kas2Pts} pol.</span>`:''}
-            ${lo.fgPts>0?`<span class="pts-chip" style="background:rgba(250,204,21,0.15);color:#FDE68A">1 1.gol</span>`:''}
-            ${lo.bonus>0?'<span class="pts-chip" style="background:rgba(52,211,153,0.2);color:#34D399">+1 bonus</span>':''}
+            ${!isAway&&lo.kas1Pts>0?`<span class="pts-chip chip-time">${lo.kas1Pts} poč.</span>`:''}
+            ${!isAway&&lo.kas2Pts>0?`<span class="pts-chip chip-time">${lo.kas2Pts} pol.</span>`:''}
+            ${lo.htPts>0?`<span class="pts-chip" style="background:rgba(167,139,250,0.2);color:#C4B5FD">2 pol.rez.</span>`:''}
+            ${lo.fgPts>0?`<span class="pts-chip" style="background:rgba(250,204,21,0.15);color:#FDE68A">${lo.fgPts} 1.gol</span>`:''}
+            ${!isAway&&lo.bonus>0?'<span class="pts-chip" style="background:rgba(52,211,153,0.2);color:#34D399">+1 bonus</span>':''}
           </div>
         </div>
       </div>`;
@@ -2540,7 +2782,8 @@ function renderPreds(){
         <div class="guess-rez">${p.luka.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.luka.gle)}</div>
-          <div class="guess-detail">⏰ poč:${p.luka.kas1||0}' pol:${p.luka.kas2||0}'</div>
+          ${!isAway?`<div class="guess-detail">⏰ poč:${p.luka.kas1||0}' pol:${p.luka.kas2||0}'</div>`:''}
+          ${p.luka.ht?`<div class="guess-detail">📊 pol.rez: ${p.luka.ht}</div>`:''}
           ${p.luka.fg?`<div class="guess-detail">⚽ 1.gol: ${p.luka.fg}'</div>`:''}
         </div>
       </div>`;
@@ -2549,7 +2792,8 @@ function renderPreds(){
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)}</div>
-          <div class="guess-detail">⏰ poč:${p.lovro.kas1||0}' pol:${p.lovro.kas2||0}'</div>
+          ${!isAway?`<div class="guess-detail">⏰ poč:${p.lovro.kas1||0}' pol:${p.lovro.kas2||0}'</div>`:''}
+          ${p.lovro.ht?`<div class="guess-detail">📊 pol.rez: ${p.lovro.ht}</div>`:''}
           ${p.lovro.fg?`<div class="guess-detail">⚽ 1.gol: ${p.lovro.fg}'</div>`:''}
         </div>
       </div>`;
@@ -2560,9 +2804,13 @@ function renderPreds(){
           <div class="actual-result">
             <span class="actual-label">Stvarni:</span>
             <span class="actual-val">${p.actual.rez}</span>
-            <span class="actual-gle">${fmtNum(p.actual.gle)} gle. · poč:${p.actual.kas1||0}' pol:${p.actual.kas2||0}'${p.actual.fg?` · 1.gol:${p.actual.fg}'`:''}</span>
+            <span class="actual-gle">${fmtNum(p.actual.gle)} gle.${!isAway?` · poč:${p.actual.kas1||0}' pol:${p.actual.kas2||0}'`:''}${p.actual.ht?` · pol.rez:${p.actual.ht}`:''}${p.actual.fg?` · 1.gol:${p.actual.fg}'`:''}</span>
           </div>
-          <div class="pred-actions"><button class="btn-sm btn-delete" onclick="deletePred(${idx})">🗑️ Briši</button></div>
+          <div class="pred-actions">
+              <button class="btn-sm" style="background:rgba(59,130,246,0.15);color:#93C5FD;border:1px solid rgba(59,130,246,0.3);" onclick="${isAway?'openEditAwayPred':'openEditPred'}(${idx})">✏️ Pred.</button>
+              <button class="btn-sm" style="background:rgba(167,139,250,0.15);color:#C4B5FD;border:1px solid rgba(167,139,250,0.3);" onclick="${isAway?'openEditActualAway':'openEditActual'}(${idx})">📝 Rezultat</button>
+              <button class="btn-sm btn-delete" onclick="${isAway?'deleteAwayPred':'deletePred'}(${idx})">🗑️</button>
+            </div>
         </div>`
       :`<div class="pred-bottom">
           <span style="font-size:11px;color:var(--text-muted);">⏳ Čeka se rezultat</span>
@@ -2602,7 +2850,7 @@ let awayListFilter='all';
 
 async function saveAwayPreds(){await set(ref(db,'predictions_away'),awayPredictions);}
 
-function awayScoreCalc(lRez,lGle,lFg, loRez,loGle,loFg, aRez,aGle,aFg){
+function awayScoreCalc(lRez,lGle,lFg,lHt, loRez,loGle,loFg,loHt, aRez,aGle,aFg,aHt){
   const lP=lRez.split('-').map(Number), loP=loRez.split('-').map(Number), aP=aRez.split('-').map(Number);
   const lRezHit=lRez===aRez, loRezHit=loRez===aRez;
   const lScHit=lP[0]===aP[0], loScHit=loP[0]===aP[0];
@@ -2612,13 +2860,17 @@ function awayScoreCalc(lRez,lGle,lFg, loRez,loGle,loFg, aRez,aGle,aFg){
   let lGlePts=0,loGlePts=0;
   if(lWins||tie){lGlePts=lDiff<=100?3:lDiff<=500?2:1;}
   if(loWins||tie){loGlePts=loDiff<=100?3:loDiff<=500?2:1;}
-  const lFgPts=(aFg&&lFg&&String(lFg).trim()===String(aFg).trim())?1:0;
-  const loFgPts=(aFg&&loFg&&String(loFg).trim()===String(aFg).trim())?1:0;
-  const lPts=(lRezHit?5:0)+(lScHit?1:0)+(lConHit?1:0)+lGlePts+lFgPts;
-  const loPts=(loRezHit?5:0)+(loScHit?1:0)+(loConHit?1:0)+loGlePts+loFgPts;
+  // Poluvremeni rezultat: točan = 2 boda
+  const lHtPts=(aHt&&lHt&&String(lHt).trim()===String(aHt).trim())?2:0;
+  const loHtPts=(aHt&&loHt&&String(loHt).trim()===String(aHt).trim())?2:0;
+  // Minuta prvog gola: točna = 3 boda
+  const lFgPts=(aFg&&lFg&&String(lFg).trim()===String(aFg).trim())?3:0;
+  const loFgPts=(aFg&&loFg&&String(loFg).trim()===String(aFg).trim())?3:0;
+  const lPts=(lRezHit?5:0)+(lScHit?1:0)+(lConHit?1:0)+lGlePts+lHtPts+lFgPts;
+  const loPts=(loRezHit?5:0)+(loScHit?1:0)+(loConHit?1:0)+loGlePts+loHtPts+loFgPts;
   return{
-    luka:{pts:lPts,rezHit:lRezHit,scHit:lScHit,conHit:lConHit,glePts:lGlePts,fgPts:lFgPts,gleDiff:lDiff},
-    lovro:{pts:loPts,rezHit:loRezHit,scHit:loScHit,conHit:loConHit,glePts:loGlePts,fgPts:loFgPts,gleDiff:loDiff}
+    luka:{pts:lPts,rezHit:lRezHit,scHit:lScHit,conHit:lConHit,glePts:lGlePts,htPts:lHtPts,fgPts:lFgPts,gleDiff:lDiff},
+    lovro:{pts:loPts,rezHit:loRezHit,scHit:loScHit,conHit:loConHit,glePts:loGlePts,htPts:loHtPts,fgPts:loFgPts,gleDiff:loDiff}
   };
 }
 
@@ -2634,8 +2886,10 @@ async function addAwayPrediction(){
   const loFg=document.getElementById('loa-fg').value.trim();
   if(!datum||!prot||!lRez||isNaN(lGle)||!loRez||isNaN(loGle)){alert('Molimo ispunite sva obavezna polja!');return;}
   if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 1-0');return;}
+  const laHt=document.getElementById('la-ht')?.value.trim()||'';
+  const loaHt=document.getElementById('loa-ht')?.value.trim()||'';
   awayPredictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,isAway:true,
-    luka:{rez:lRez,gle:lGle,fg:lFg},lovro:{rez:loRez,gle:loGle,fg:loFg},actual:null,resolved:false});
+    luka:{rez:lRez,gle:lGle,fg:lFg,ht:laHt},lovro:{rez:loRez,gle:loGle,fg:loFg,ht:loaHt},actual:null,resolved:false});
   await saveAwayPreds();
   ['pa-protivnik','la-rez','la-gle','la-fg','loa-rez','loa-gle','loa-fg'].forEach(id=>document.getElementById(id).value='');
   renderAwayPreds();
@@ -2648,6 +2902,7 @@ function openAwayConfirm(idx){
   const p=awayPredictions[idx];
   document.getElementById('acm-sub').textContent=`@ ${p.protivnik} · ${fmtDate(p.datum)}`;
   document.getElementById('acm-rez').value='';
+  const acmHt=document.getElementById('acm-ht');if(acmHt)acmHt.value='';
   document.getElementById('acm-gle').value='';
   document.getElementById('acm-fg').value='';
   document.getElementById('away-confirm-modal').classList.add('open');
@@ -2660,9 +2915,10 @@ async function confirmAwayResult(){
   const fg=document.getElementById('acm-fg').value.trim();
   if(!rez||isNaN(gle)){alert('Unesite rezultat i gledatelje!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Format: 1-0');return;}
+  const aHt=document.getElementById('acm-ht')?.value.trim()||'';
   const p=awayPredictions[awayConfirmIdx];
-  p.actual={rez,gle,fg};p.resolved=true;
-  const sc=awayScoreCalc(p.luka.rez,p.luka.gle,p.luka.fg||'',p.lovro.rez,p.lovro.gle,p.lovro.fg||'',rez,gle,fg);
+  p.actual={rez,ht:aHt,gle,fg};p.resolved=true;
+  const sc=awayScoreCalc(p.luka.rez,p.luka.gle,p.luka.fg||'',p.luka.ht||'',p.lovro.rez,p.lovro.gle,p.lovro.fg||'',p.lovro.ht||'',rez,gle,fg,aHt);
   p.luka.score=sc.luka;p.lovro.score=sc.lovro;
   await saveAwayPreds();
   document.getElementById('away-confirm-modal').classList.remove('open');
@@ -2700,9 +2956,541 @@ function renderAwayPreds(){
   document.getElementById('lb-away-lovro-detail').textContent=`${lb.loHits} točnih od ${lb.loTotal}`;
 
   // Render away cards in the shared preds-list (with away badge)
-  // We combine them in renderPreds() — see below
+  renderPreds();
 }
 window.renderAwayPreds=renderAwayPreds;
+
+/* ===== EDIT PREDICTIONS ===== */
+let _editPredIdx=-1, _editAwayPredIdx=-1;
+
+function openEditPred(idx){
+  _editPredIdx=idx;
+  const p=predictions[idx];
+  document.getElementById('epm-sub').textContent=`Dinamo vs ${p.protivnik} · ${fmtDate(p.datum)}`;
+  document.getElementById('epm-l-rez').value=p.luka.rez||'';
+  document.getElementById('epm-l-ht').value=p.luka.ht||'';
+  document.getElementById('epm-l-gle').value=p.luka.gle||'';
+  document.getElementById('epm-l-fg').value=p.luka.fg||'';
+  document.getElementById('epm-lo-rez').value=p.lovro.rez||'';
+  document.getElementById('epm-lo-ht').value=p.lovro.ht||'';
+  document.getElementById('epm-lo-gle').value=p.lovro.gle||'';
+  document.getElementById('epm-lo-fg').value=p.lovro.fg||'';
+  document.getElementById('edit-pred-modal').classList.add('open');
+}
+window.openEditPred=openEditPred;
+
+async function saveEditPred(){
+  if(_editPredIdx<0)return;
+  const p=predictions[_editPredIdx];
+  p.luka.rez=document.getElementById('epm-l-rez').value.trim();
+  p.luka.ht=document.getElementById('epm-l-ht').value.trim();
+  p.luka.gle=parseInt(document.getElementById('epm-l-gle').value)||p.luka.gle;
+  p.luka.fg=document.getElementById('epm-l-fg').value.trim();
+  p.lovro.rez=document.getElementById('epm-lo-rez').value.trim();
+  p.lovro.ht=document.getElementById('epm-lo-ht').value.trim();
+  p.lovro.gle=parseInt(document.getElementById('epm-lo-gle').value)||p.lovro.gle;
+  p.lovro.fg=document.getElementById('epm-lo-fg').value.trim();
+  await set(ref(db,'predictions'),predictions);
+  document.getElementById('edit-pred-modal').classList.remove('open');
+  renderPreds();
+  showToast('✏️ Predikcija ažurirana!','#0A1A3A','#7FB5FF');
+}
+window.saveEditPred=saveEditPred;
+
+function openEditAwayPred(idx){
+  _editAwayPredIdx=idx;
+  const p=awayPredictions[idx];
+  document.getElementById('eapm-sub').textContent=`@ ${p.protivnik} · ${fmtDate(p.datum)}`;
+  document.getElementById('eapm-l-rez').value=p.luka.rez||'';
+  document.getElementById('eapm-l-ht').value=p.luka.ht||'';
+  document.getElementById('eapm-l-gle').value=p.luka.gle||'';
+  document.getElementById('eapm-l-fg').value=p.luka.fg||'';
+  document.getElementById('eapm-lo-rez').value=p.lovro.rez||'';
+  document.getElementById('eapm-lo-ht').value=p.lovro.ht||'';
+  document.getElementById('eapm-lo-gle').value=p.lovro.gle||'';
+  document.getElementById('eapm-lo-fg').value=p.lovro.fg||'';
+  document.getElementById('edit-away-pred-modal').classList.add('open');
+}
+window.openEditAwayPred=openEditAwayPred;
+
+async function saveEditAwayPred(){
+  if(_editAwayPredIdx<0)return;
+  const p=awayPredictions[_editAwayPredIdx];
+  p.luka.rez=document.getElementById('eapm-l-rez').value.trim();
+  p.luka.ht=document.getElementById('eapm-l-ht').value.trim();
+  p.luka.gle=parseInt(document.getElementById('eapm-l-gle').value)||p.luka.gle;
+  p.luka.fg=document.getElementById('eapm-l-fg').value.trim();
+  p.lovro.rez=document.getElementById('eapm-lo-rez').value.trim();
+  p.lovro.ht=document.getElementById('eapm-lo-ht').value.trim();
+  p.lovro.gle=parseInt(document.getElementById('eapm-lo-gle').value)||p.lovro.gle;
+  p.lovro.fg=document.getElementById('eapm-lo-fg').value.trim();
+  if(p.resolved&&p.actual){
+    const sc=awayScoreCalc(p.luka.rez,p.luka.gle,p.luka.fg||'',p.luka.ht||'',p.lovro.rez,p.lovro.gle,p.lovro.fg||'',p.lovro.ht||'',p.actual.rez,p.actual.gle,p.actual.fg||'',p.actual.ht||'');
+    p.luka.score=sc.luka;p.lovro.score=sc.lovro;
+  }
+  await saveAwayPreds();
+  document.getElementById('edit-away-pred-modal').classList.remove('open');
+  renderAwayPreds();
+  showToast('✏️ Gostujuća predikcija ažurirana!','#2A0A0A','#F87171');
+}
+window.saveEditAwayPred=saveEditAwayPred;
+
+/* ===== KARTE ===== */
+// Maksimir kapaciteti po tribinama (stvarni podaci)
+// Orijentacija Maksimira (tlocrt odozgo — teren ide L-D, golovi lijevo=Jug i desno=Sjever)
+// Zapad = gornja duga tribina | Istok = donja duga tribina (UVIJEK ZATVORENA — oštećena)
+// Sjever = desno iza gola | Jug = lijevo iza gola
+const MAKSIMIR_ZONES = [
+  { id:'zap_d', name:'Zapad Dolje', group:'zap', cap:5526, color:'#1D4ED8' },
+  { id:'zap_g', name:'Zapad Gore',  group:'zap', cap:4826, color:'#1D4ED8', conditional:true },
+  { id:'ist',   name:'Istok',       group:'ist', cap:6500, color:'#6B7280', alwaysClosed:true },
+  { id:'sj_d',  name:'Sjever Dolje',group:'sj',  cap:4971, color:'#1D4ED8' },
+  { id:'sj_g',  name:'Sjever Gore', group:'sj',  cap:4510, color:'#1D4ED8' },
+  { id:'jug',   name:'Jug',         group:'jug', cap:1480, color:'#1D4ED8' },
+
+];
+const MAKSIMIR_TOTAL = MAKSIMIR_ZONES.filter(z=>!z.alwaysClosed).reduce((s,z)=>s+z.cap, 0);
+
+// Ručno uneseni podaci karata — ključ: id utakmice (datum+protivnik)
+let _karteManualData = {};
+let _karteLoaded = false;
+let _karteApiMatches = [];
+
+async function loadKarte(force=false){
+  if(_karteLoaded && !force) return;
+  const btn = document.getElementById('karte-refresh-btn');
+  const content = document.getElementById('karte-content');
+  if(!content) return;
+  if(btn) btn.classList.add('spinning');
+
+  content.innerHTML = `<div class="karte-loading-state">
+    <div class="karte-loading-dot"></div><div class="karte-loading-dot"></div><div class="karte-loading-dot"></div>
+    <span>Dohvaćam podatke...</span></div>`;
+
+  // Pokušaj dohvat preko Netlify proxy funkcije (radi samo kad je deployano)
+  let apiMatches = [];
+  try {
+    const isNetlify = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1' && location.protocol !== 'file:';
+    const proxyUrl = '/.netlify/functions/karte';
+    if(isNetlify) {
+      const res = await fetch(proxyUrl);
+      if(res.ok) {
+        const d = await res.json();
+        if(d.ok && d.matches && d.matches.length > 0) {
+          apiMatches = d.matches;
+        }
+      }
+    }
+  } catch(e) { /* proxy nedostupan, nastavi s ručnim */ }
+
+  _karteApiMatches = apiMatches;
+  _karteLoaded = true;
+  renderKarte();
+  if(btn) btn.classList.remove('spinning');
+}
+window.loadKarte = function(){ loadKarte(true); };
+
+// Učitaj iz Firebase karte podatke
+async function loadKarteFromDb(){
+  try{
+    const snap = await get(ref(db,'karte_manual'));
+    if(snap.exists()) _karteManualData = snap.val()||{};
+  }catch(e){}
+}
+
+
+// Provjeri pri učitavanju ima li import podataka u URL hash-u
+function renderKarte(){
+  const content = document.getElementById('karte-content');
+  if(!content) return;
+
+  // Ako ima API podataka — prikaži ih + ručni unos ispod
+  const apiSection = _karteApiMatches.length > 0
+    ? _karteApiMatches.map(m => buildApiMatchCard(m)).join('')
+    : '';
+
+  // Ručno unešene utakmice iz Firebase
+  const manualKeys = Object.keys(_karteManualData);
+  const manualSection = manualKeys.length > 0
+    ? manualKeys.map(k => buildManualMatchCard(k, _karteManualData[k])).join('')
+    : '';
+
+  // Uzmi zone zadnje (najnovije) utakmice za SVG prikaz, ili null ako nema
+  const latestKey = manualKeys.sort().reverse()[0];
+  const latestZones = latestKey ? (_karteManualData[latestKey].zones || null) : null;
+  const latestName  = latestKey ? `Dinamo vs ${_karteManualData[latestKey].protivnik||'?'}` : null;
+
+  content.innerHTML = `
+    <!-- UVIJEK PRIKAŽI SVG STADION NA VRHU -->
+    <div class="karte-match-card" style="border-color:rgba(77,159,255,0.15);margin-bottom:18px;">
+      <div class="kmc-header">
+        <div class="kmc-title">🏟️ Maksimir — Pregled zauzetosti</div>
+        <div class="kmc-meta"><span style="font-size:11px;color:var(--text-muted);">${latestName ? latestName : 'Nema unesenih podataka'}</span></div>
+      </div>
+      <div class="kmc-body">
+        ${buildStadiumSvg(latestZones)}
+        ${!latestZones ? `<div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:-8px;margin-bottom:4px;">Unesi podatke o utakmici ispod da se popuni prikaz</div>` : ''}
+      </div>
+    </div>
+
+    ${manualSection}
+    ${apiSection}
+
+        <!-- Forma za ručni unos -->
+    <div class="karte-match-card" style="border-color:rgba(77,159,255,0.25);">
+      <div class="kmc-header">
+        <div class="kmc-title" style="color:#60A5FA;">➕ Unesi podatke o utakmici</div>
+        <div class="kmc-meta"><span style="font-size:11px;color:var(--text-muted);">Podaci s zona-karata.live</span></div>
+      </div>
+      <div class="kmc-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+          <div><label class="form-label">Datum utakmice</label><input class="form-input" type="date" id="km-datum" style="width:100%;"></div>
+          <div><label class="form-label">Protivnik</label><input class="form-input" type="text" id="km-prot" placeholder="npr. Hajduk" style="width:100%;"></div>
+          <div><label class="form-label">Natjecanje</label>
+            <select class="form-select" id="km-nat" style="width:100%;">
+              <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option><option>Kup</option><option>Super kup</option>
+            </select>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:10px;">Slobodna mjesta po tribini</div>
+        <div id="km-zones-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:14px;">
+          ${MAKSIMIR_ZONES.filter(z=>!z.alwaysClosed && z.id !== 'vip').map(z=>`
+            <div style="background:var(--surface2);border:1px solid ${z.conditional?'rgba(255,255,255,0.08)':'var(--border)'};border-radius:10px;padding:12px;${z.conditional?'border-style:dashed;':''}">
+              <div style="font-size:11px;font-weight:700;color:${z.conditional?'rgba(255,255,255,0.4)':'var(--text-muted)'};margin-bottom:3px;text-transform:uppercase;letter-spacing:0.8px;">${z.name}${z.conditional?' <span style=\'font-size:9px;color:rgba(255,255,255,0.3);\'>(po potrebi)</span>':''}</div>
+              <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">Kapacitet: ${z.cap.toLocaleString('hr-HR')}</div>
+              <input class="form-input" type="number" id="km-free-${z.id}" placeholder="Slobodnih mjesta" min="0" max="${z.cap}" style="width:100%;font-size:12px;">
+            </div>`).join('')}
+        </div>
+        <button onclick="saveKarteManual()" style="background:linear-gradient(135deg,#003F8E,#0066CC);border:none;border-radius:8px;padding:9px 20px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.15)'" onmouseout="this.style.filter=''">
+          💾 Spremi podatke o kartama
+        </button>
+      </div>
+    </div>
+    <p class="karte-source-note">Podaci: <a href="https://zona-karata.live" target="_blank">zona-karata.live</a> · GNK Dinamo Zagreb</p>
+  `;
+}
+
+function buildApiMatchCard(m){
+  const name = m.name||m.title||m.matchName||'Utakmica';
+  const date = m.date||m.matchDate||m.startDate||'';
+  const dateStr = date ? new Date(date).toLocaleDateString('hr-HR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—';
+  const comp = m.competition||m.league||m.category||'';
+  const compClass = comp.toLowerCase().includes('hnl')?'badge-hnl':comp.toLowerCase().includes('ucl')?'badge-ucl':comp.toLowerCase().includes('uel')?'badge-uel':comp.toLowerCase().includes('ecl')?'badge-ecl':'badge-hnl';
+  const zones = m.zones||m.sectors||m.sections||m.stands||[];
+  let totalSold=0, totalFree=0, totalCap=0;
+  const zonesHtml = zones.length > 0 ? zones.map(z=>{
+    const cap = z.capacity||z.total||z.totalSeats||0;
+    const sold = z.sold||z.soldSeats||z.ticketsSold||0;
+    const free = z.available||z.freeSeats||z.availableSeats||(cap-sold)||0;
+    const pct = cap>0?Math.round(sold/cap*100):0;
+    totalSold+=sold; totalFree+=free; totalCap+=cap;
+    const cls = pct>=95?'full':pct>=70?'high':'';
+    return `<div class="karte-zone">
+      <div class="kz-name">${z.name||z.sectorName||'Tribina'}</div>
+      <div class="kz-bar-wrap"><div class="kz-bar-sold ${cls}" style="width:${pct}%"></div></div>
+      <div class="kz-numbers"><span class="kz-sold ${cls}">${sold.toLocaleString('hr-HR')} prodano</span><span class="kz-free">${free.toLocaleString('hr-HR')} slobodnih</span></div>
+      <div class="kz-total">${cap.toLocaleString('hr-HR')} ukupno · ${pct}% popunjeno</div></div>`;
+  }).join('') : '';
+  const overallPct = totalCap>0?Math.round(totalSold/totalCap*100):0;
+  const overallCls = overallPct>=95?'full':overallPct>=70?'high':'';
+  const summaryHtml = totalCap>0 ? `
+    <div class="karte-summary-row">
+      <div class="ks-item"><div class="ks-val" style="color:#60A5FA">${totalSold.toLocaleString('hr-HR')}</div><div class="ks-lbl">Prodano</div></div>
+      <div class="ks-sep"></div>
+      <div class="ks-item"><div class="ks-val" style="color:#4ADE80">${totalFree.toLocaleString('hr-HR')}</div><div class="ks-lbl">Slobodnih</div></div>
+      <div class="ks-sep"></div>
+      <div class="ks-item"><div class="ks-val">${totalCap.toLocaleString('hr-HR')}</div><div class="ks-lbl">Kapacitet</div></div>
+      <div class="ks-sep"></div>
+      <div class="ks-item"><div class="ks-val" style="color:${overallPct>=95?'#F87171':overallPct>=70?'#4ADE80':'#60A5FA'}">${overallPct}%</div><div class="ks-lbl">Popunjeno</div></div>
+    </div>
+    <div class="karte-overall-bar"><div class="karte-overall-fill ${overallCls}" style="width:${overallPct}%"></div></div>
+    <div style="font-size:10px;color:var(--text-muted);text-align:right;">${overallPct}% stadiona popunjeno</div>` : '';
+  return `<div class="karte-match-card">
+    <div class="kmc-header">
+      <div class="kmc-title">${name}</div>
+      <div class="kmc-meta">${comp?`<span class="kmc-comp-badge ${compClass}">${comp}</span>`:''}<span class="kmc-date">🕐 ${dateStr}</span></div>
+    </div>
+    <div class="kmc-body">
+      ${zonesHtml?`<div class="karte-zones-grid">${zonesHtml}</div>`:''}
+      ${summaryHtml}
+      ${!zonesHtml&&!summaryHtml?'<div style="color:var(--text-muted);font-size:13px;">Nema podataka o sektorima.</div>':''}
+    </div></div>`;
+}
+
+function buildManualMatchCard(key, data){
+  const { datum, protivnik, natjecanje, zones } = data;
+  const compClass = (natjecanje||'hnl').toLowerCase().includes('hnl')?'badge-hnl':(natjecanje||'').toLowerCase().includes('ucl')?'badge-ucl':'badge-hnl';
+  const dateStr = datum ? new Date(datum+'T00:00:00').toLocaleDateString('hr-HR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
+
+  let totalFree=0, totalCap=0;
+  const zonesHtml = MAKSIMIR_ZONES.filter(z => !z.alwaysClosed && z.id !== 'vip').map(z=>{
+    const freeVal = (zones&&zones[z.id]!=null) ? zones[z.id] : null;
+    const free = freeVal !== null ? parseInt(freeVal)||0 : null;
+    const sold = free !== null ? Math.max(0, z.cap - free) : null;
+    const pct = free !== null ? Math.round(sold/z.cap*100) : null;
+    if(free !== null){ totalFree += free; totalCap += z.cap; }
+    const cls = pct !== null ? (pct>=100?'full':pct>=95?'full':pct>=70?'high':'') : '';
+    const barW = pct !== null ? Math.min(100, pct) : 0;
+    const freeText = free===null ? '—' : free===0 ? 'RASPRODANO' : free.toLocaleString('hr-HR')+' slobodnih';
+    const soldText = sold===null ? '—' : sold.toLocaleString('hr-HR')+' prodano';
+    return `<div class="karte-zone">
+      <div class="kz-name">${z.name}</div>
+      <div class="kz-bar-wrap"><div class="kz-bar-sold ${cls}" style="width:${barW}%"></div></div>
+      <div class="kz-numbers">
+        <span class="kz-sold ${cls}">${soldText}</span>
+        <span class="kz-free" style="${free===0?'color:#fca5a5;font-weight:800;letter-spacing:0.5px;':''}">${freeText}</span>
+      </div>
+      <div class="kz-total">${z.cap.toLocaleString('hr-HR')} ukupno${pct!==null?' · '+pct+'% popunjeno':''}</div></div>`;
+  }).join('');
+
+  const totalSold = totalCap - totalFree;
+  const overallPct = totalCap>0?Math.round(totalSold/totalCap*100):0;
+  const overallCls = overallPct>=95?'full':overallPct>=70?'high':'';
+
+  const stadiumSvg = buildStadiumSvg(data.zones);
+
+  return `<div class="karte-match-card">
+    <div class="kmc-header">
+      <div>
+        <div class="kmc-title">Dinamo vs ${protivnik||'?'}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📅 ${dateStr}</div>
+      </div>
+      <div class="kmc-meta">
+        <span class="kmc-comp-badge ${compClass}">${natjecanje||'HNL'}</span>
+        <button onclick="deleteKarteManual('${key}')" style="background:rgba(220,0,0,0.12);border:1px solid rgba(220,0,0,0.25);border-radius:6px;padding:3px 9px;color:#F87171;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🗑️</button>
+      </div>
+    </div>
+    <div class="kmc-body">
+      ${stadiumSvg}
+      <div class="karte-zones-grid">${zonesHtml}</div>
+      ${totalCap>0?`
+      <div class="karte-summary-row">
+        <div class="ks-item"><div class="ks-val" style="color:#60A5FA">${totalSold.toLocaleString('hr-HR')}</div><div class="ks-lbl">Prodano</div></div>
+        <div class="ks-sep"></div>
+        <div class="ks-item"><div class="ks-val" style="color:#4ADE80">${totalFree.toLocaleString('hr-HR')}</div><div class="ks-lbl">Slobodnih</div></div>
+        <div class="ks-sep"></div>
+        <div class="ks-item"><div class="ks-val">${totalCap.toLocaleString('hr-HR')}</div><div class="ks-lbl">Kapacitet</div></div>
+        <div class="ks-sep"></div>
+        <div class="ks-item"><div class="ks-val" style="color:${overallPct>=95?'#F87171':overallPct>=70?'#4ADE80':'#60A5FA'}">${overallPct}%</div><div class="ks-lbl">Popunjeno</div></div>
+      </div>
+      <div class="karte-overall-bar"><div class="karte-overall-fill ${overallCls}" style="width:${overallPct}%"></div></div>
+      <div style="font-size:10px;color:var(--text-muted);text-align:right;">${overallPct}% Maksimira popunjeno</div>`:''}
+    </div></div>`;
+}
+
+function buildStadiumSvg(zones){
+  // Boja zone prema % popunjenosti
+  function pct(zid){
+    const z = MAKSIMIR_ZONES.find(z=>z.id===zid);
+    if(!z) return null;
+    if(z.alwaysClosed) return 100;
+    if(!zones || zones[zid]==null) return null;
+    const free = parseInt(zones[zid]);
+    if(isNaN(free)) return null;
+    return Math.round((z.cap - free) / z.cap * 100);
+  }
+  function fillColor(zid){
+    const z = MAKSIMIR_ZONES.find(z=>z.id===zid);
+    if(z?.alwaysClosed) return 'rgba(50,50,60,0.6)';
+    const p = pct(zid);
+    if(p===null) return 'rgba(255,255,255,0.04)';
+    if(p>=100) return 'rgba(248,113,113,0.88)'; // rasprodano
+    if(p>=95)  return 'rgba(248,113,113,0.82)';
+    if(p>=70)  return 'rgba(74,222,128,0.72)';
+    return 'rgba(96,165,250,0.55)';
+  }
+  function textColor(zid){
+    const z = MAKSIMIR_ZONES.find(z=>z.id===zid);
+    if(z?.alwaysClosed) return 'rgba(255,255,255,0.2)';
+    const p = pct(zid);
+    if(p===null) return 'rgba(255,255,255,0.2)';
+    if(p>=95) return '#fff';          // bijelo na crvenoj — dobar kontrast
+    if(p>=70) return '#052e16';       // tamnozeleno na zelenoj pozadini
+    return '#dbeafe';                 // svjetloplavo na plavoj pozadini
+  }
+  function freeLabel(zid){
+    const z = MAKSIMIR_ZONES.find(z=>z.id===zid);
+    if(z?.alwaysClosed) return 'ZATV.';
+    if(!zones || zones[zid]==null) return '?';
+    const n = parseInt(zones[zid]);
+    return n === 0 ? 'RASPRODANO' : n.toLocaleString('hr-HR');
+  }
+  function freeLabelShort(zid){
+    const z = MAKSIMIR_ZONES.find(z=>z.id===zid);
+    if(z?.alwaysClosed) return 'ZATV.';
+    if(!zones || zones[zid]==null) return '?';
+    const n = parseInt(zones[zid]);
+    return n === 0 ? 'RASPR.' : n.toLocaleString('hr-HR');
+  }
+
+  // Jug: kapacitet 1480, kavez za goste ~200 mjesta (donji lijevi ugao tribine)
+  // Domaći dio Juga: 1280, Kavez gosta: 200
+  const jugCap = 1480, kavezCap = 0, jugDomaceCap = 1480;
+  let jugFree = (zones&&zones['jug']!=null) ? parseInt(zones['jug']) : null;
+  // Pretpostavljamo da su gostujuća mjesta uvijek popunjena (kavez)
+  // Domaći slobodni = jugFree ako postoji
+  const jugPct = jugFree!==null ? Math.round((jugCap-jugFree)/jugCap*100) : null;
+  function jugFill(){
+    if(jugPct===null) return 'rgba(255,255,255,0.04)';
+    if(jugPct>=100) return 'rgba(248,113,113,0.88)';
+    if(jugPct>=95)  return 'rgba(248,113,113,0.82)';
+    if(jugPct>=70)  return 'rgba(74,222,128,0.72)';
+    return 'rgba(96,165,250,0.55)';
+  }
+
+  return `<svg viewBox="0 0 600 380" xmlns="http://www.w3.org/2000/svg"
+    style="width:100%;max-width:600px;display:block;margin:0 auto 18px;border-radius:10px;overflow:visible">
+  <defs>
+    <linearGradient id="gr-pitch" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"    stop-color="#15803d"/>
+      <stop offset="16.7%" stop-color="#166534"/>
+      <stop offset="33.3%" stop-color="#15803d"/>
+      <stop offset="50%"   stop-color="#166534"/>
+      <stop offset="66.7%" stop-color="#15803d"/>
+      <stop offset="83.3%" stop-color="#166534"/>
+      <stop offset="100%"  stop-color="#15803d"/>
+    </linearGradient>
+    <pattern id="hatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="7" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+    </pattern>
+    <pattern id="hatch-kavez" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="5" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Pozadina -->
+  <rect x="1" y="1" width="598" height="378" rx="12" fill="rgba(5,10,20,0.85)" stroke="rgba(80,100,160,0.2)" stroke-width="1"/>
+
+  <!-- ══ ZAPAD GORE (vanjski, dalje od terena) ══ -->
+  <rect x="122" y="6" width="356" height="36" rx="7" fill="${fillColor('zap_g')}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="${zones&&zones['zap_g']!=null?'none':'4,3'}"/>
+  <text x="300" y="20" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="rgba(255,255,255,0.8)" letter-spacing="2">ZAPAD GORE</text>
+  <text x="300" y="35" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="9" font-weight="700" fill="${textColor('zap_g')}">${freeLabel('zap_g')}</text>
+
+  <!-- ══ ZAPAD DOLJE (unutarnji, bliže terenu) ══ -->
+  <rect x="122" y="44" width="356" height="42" rx="6" fill="${fillColor('zap_d')}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="300" y="60" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="12" fill="rgba(255,255,255,0.92)" letter-spacing="2">ZAPAD DOLJE</text>
+  <text x="300" y="76" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="10" font-weight="700" fill="${textColor('zap_d')}">${freeLabel('zap_d')}</text>
+
+  <!-- ══ TEREN ══ -->
+  <rect x="122" y="88" width="356" height="204" rx="4" fill="url(#gr-pitch)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <line x1="300" y1="88" x2="300" y2="292" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+  <circle cx="300" cy="190" r="36" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"/>
+  <circle cx="300" cy="190" r="3" fill="rgba(255,255,255,0.5)"/>
+  <path d="M264,88 a36,36 0 0,0 72,0" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <path d="M264,292 a36,36 0 0,1 72,0" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <rect x="122" y="140" width="52" height="100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <rect x="122" y="158" width="26" height="64" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <line x1="122" y1="190" x2="132" y2="190" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <rect x="426" y="140" width="52" height="100" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+  <rect x="452" y="158" width="26" height="64" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <line x1="478" y1="190" x2="468" y2="190" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+  <path d="M122,88 q7,0 7,7"   fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <path d="M478,88 q-7,0 -7,7" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <path d="M122,292 q7,0 7,-7"  fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <path d="M478,292 q-7,0 -7,-7" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+  <text x="300" y="186" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="11" fill="rgba(255,255,255,0.1)" letter-spacing="5">MAKSIMIR</text>
+
+  <!-- ══ ISTOK (donja duga, zatvorena) ══ -->
+  <rect x="122" y="294" width="356" height="18" rx="4" fill="rgba(40,40,50,0.55)" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="5,3"/>
+  <rect x="122" y="294" width="356" height="18" rx="4" fill="url(#hatch)" opacity="0.12"/>
+  <text x="300" y="307" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="7.5" fill="rgba(255,255,255,0.2)" letter-spacing="2">ISTOK · PRIVREMENO ZATVORENO</text>
+
+  <!-- ══ JUG — jedinstvena tribina (kavez + domaći = ista zona) ══ -->
+  <!-- Cijela tribina — jedna boja prema popunjenosti -->
+  <rect x="6" y="88" width="114" height="204" rx="8" fill="${jugFill()}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <!-- Kavez za goste — gornji dio, vizualni marker s rešetkom -->
+  <rect x="6" y="88" width="114" height="50" rx="8 8 0 0" fill="rgba(0,0,0,0.25)" stroke="none"/>
+  <!-- Vertikalne šipke kaveza -->
+  <line x1="25"  y1="88" x2="25"  y2="138" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <line x1="44"  y1="88" x2="44"  y2="138" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <line x1="63"  y1="88" x2="63"  y2="138" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <line x1="82"  y1="88" x2="82"  y2="138" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <line x1="101" y1="88" x2="101" y2="138" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="63" y="106" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="1">GOSTI</text>
+  <text x="63" y="119" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="7.5" fill="rgba(255,255,255,0.35)">kavez za goste</text>
+  <!-- Razdjelna linija -->
+  <line x1="6" y1="138" x2="120" y2="138" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/>
+  <!-- Naziv i broj slobodnih — domaći dio -->
+  <text x="63" y="196" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="16" fill="rgba(255,255,255,0.95)" letter-spacing="2">JUG</text>
+  <text x="63" y="215" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="11" font-weight="800"
+    fill="${jugPct!==null?(jugPct>=95?'#fff':jugPct>=70?'#052e16':'#dbeafe'):'rgba(255,255,255,0.2)'}"
+  >${jugFree!==null?(jugFree===0?'RASPRODANO':jugFree.toLocaleString('hr-HR')+' slob.'):'?'}</text>
+  <text x="63" y="229" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8"
+    fill="${jugPct!==null?(jugPct>=95?'rgba(255,255,255,0.7)':jugPct>=70?'rgba(5,46,22,0.7)':'rgba(255,255,255,0.35)'):'rgba(255,255,255,0.15)'}"
+  >${jugPct!==null?jugPct+'% popunjeno':''}</text>
+
+  <!-- ══ SJEVER DOLJE (zatvorena, rasprodana kad 0 slobodnih) ══ -->
+  <rect x="480" y="88" width="52" height="204" rx="8" fill="${fillColor('sj_d')}" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,3"/>
+  ${(()=>{ const p=pct('sj_d'); return p===null
+    ? `<rect x="480" y="88" width="52" height="204" rx="8" fill="url(#hatch)" opacity="0.12"/>`
+    : ''; })()}
+  <text x="506" y="178" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="9" fill="${textColor('sj_d')}" letter-spacing="0">SJ.</text>
+  <text x="506" y="191" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="9" fill="${textColor('sj_d')}">DOLJE</text>
+  <text x="506" y="207" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8" font-weight="700" fill="${textColor('sj_d')}">${freeLabelShort('sj_d')}</text>
+
+  <!-- ══ SJEVER GORE (u prodaji) ══ -->
+  <rect x="534" y="88" width="60" height="204" rx="8" fill="${fillColor('sj_g')}" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="564" y="175" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="10" fill="rgba(255,255,255,0.9)" letter-spacing="1">SJ.</text>
+  <text x="564" y="188" text-anchor="middle" font-family="'Bebas Neue',sans-serif" font-size="10" fill="rgba(255,255,255,0.9)">GORE</text>
+  <text x="564" y="204" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="10" font-weight="700" fill="${textColor('sj_g')}">${freeLabelShort('sj_g')}</text>
+  <text x="564" y="216" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.3)">slob.</text>
+
+  <!-- Smjer oznake -->
+  <text x="63"  y="82" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.2)">JUG</text>
+  <text x="520" y="82" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.2)">SJEVER</text>
+  <text x="300" y="18" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.2)">ZAPAD</text>
+  <text x="300" y="323" text-anchor="middle" font-family="'Barlow',sans-serif" font-size="7" fill="rgba(255,255,255,0.12)">ISTOK</text>
+
+  <!-- Legenda -->
+  <g transform="translate(122,334)">
+    <rect x="0"   y="0" width="9" height="9" rx="2" fill="rgba(96,165,250,0.6)"/>
+    <text x="13"  y="8" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Slobodno</text>
+    <rect x="75"  y="0" width="9" height="9" rx="2" fill="rgba(74,222,128,0.72)"/>
+    <text x="88"  y="8" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">70%+ puno</text>
+    <rect x="163" y="0" width="9" height="9" rx="2" fill="rgba(248,113,113,0.88)"/>
+    <text x="176" y="8" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Rasprodano</text>
+    <rect x="253" y="0" width="9" height="9" rx="2" fill="rgba(248,113,113,0.25)"/>
+    <line x1="253" y1="0" x2="262" y2="9" stroke="rgba(248,113,113,0.6)" stroke-width="1"/>
+    <text x="266" y="8" font-family="'Barlow',sans-serif" font-size="8" fill="rgba(255,255,255,0.4)">Gosti kavez</text>
+  </g>
+</svg>`;
+}
+
+async function saveKarteManual(){
+  const datum = document.getElementById('km-datum').value;
+  const prot = document.getElementById('km-prot').value.trim();
+  const nat = document.getElementById('km-nat').value;
+  if(!datum || !prot){ alert('Unesite datum i protivnika!'); return; }
+
+  const zones = {};
+    MAKSIMIR_ZONES.filter(z => !z.alwaysClosed && z.id !== 'vip').forEach(z=>{   const val = document.getElementById('km-free-'+z.id)?.value;
+    if(val !== '' && val !== null && val !== undefined) zones[z.id] = parseInt(val)||0;
+  });
+
+  const key = datum + '_' + prot.toLowerCase().replace(/\s+/g,'_');
+  _karteManualData[key] = { datum, protivnik:prot, natjecanje:nat, zones, updated: new Date().toISOString() };
+
+  try{
+    await set(ref(db,'karte_manual'), _karteManualData);
+    showToast('🎫 Podaci o kartama spremljeni!','#001830','#4D9FFF');
+    renderKarte();
+  }catch(e){
+    alert('Greška pri spremanju: '+e.message);
+  }
+}
+window.saveKarteManual = saveKarteManual;
+
+async function deleteKarteManual(key){
+  if(!confirm('Obriši ove podatke?')) return;
+  delete _karteManualData[key];
+  try{
+    await set(ref(db,'karte_manual'), _karteManualData);
+    renderKarte();
+    showToast('🗑️ Podaci obrisani','#1a0a0a','#F87171');
+  }catch(e){ alert('Greška: '+e.message); }
+}
+window.deleteKarteManual = deleteKarteManual;
+window._loadKarteInit = loadKarte;
 
 /* ===== INIT ===== */
 async function init(){
@@ -2736,7 +3524,8 @@ async function init(){
     onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();}});
     onValue(ref(db,'goals'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){goals=snap.val();renderGoalStats();renderPlayerStats();renderGoalList();}else{goals=[];}});
     onValue(ref(db,'predictions'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){predictions=snap.val();renderPreds();}});
-    onValue(ref(db,'predictions_away'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){awayPredictions=snap.val();renderPreds();}else{awayPredictions=[];}});
+    onValue(ref(db,'predictions_away'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){awayPredictions=snap.val();renderAwayPreds();}else{awayPredictions=[];renderAwayPreds();}});
+    onValue(ref(db,'karte_manual'),(snap)=>{_karteManualData=snap.exists()?(snap.val()||{}):{};});
   }catch(e){
     console.error('Firebase greška:',e);
     matches=INITIAL_MATCHES;goals=[];predictions=[];
@@ -2744,9 +3533,517 @@ async function init(){
   document.getElementById('fb-loading').style.display='none';
   renderSeasonBar();
   const hash=window.location.hash.replace('#','');
-  if(['statistika','golovi','prediktor'].includes(hash))goTo(hash);else goTo('statistika');
-  renderTable();renderCompStats();renderPreds();populateMatchSelect();
+  if(['statistika','golovi','prediktor','karte','raspored'].includes(hash))goTo(hash);else goTo('statistika');
+  renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
 }
+
+/* ===== UREDI STVARNI REZULTAT — DOMAĆE ===== */
+let _editActualIdx=-1;
+function openEditActual(idx){
+  _editActualIdx=idx;
+  const p=predictions[idx];
+  document.getElementById('eam-sub').textContent=`Dinamo vs ${p.protivnik} · ${fmtDate(p.datum)}`;
+  document.getElementById('eam-rez').value=p.actual.rez||'';
+  document.getElementById('eam-ht').value=p.actual.ht||'';
+  document.getElementById('eam-gle').value=p.actual.gle||'';
+  document.getElementById('eam-fg').value=p.actual.fg||'';
+  document.getElementById('eam-kas1').value=p.actual.kas1||'';
+  document.getElementById('eam-kas2').value=p.actual.kas2||'';
+  document.getElementById('edit-actual-modal').classList.add('open');
+}
+window.openEditActual=openEditActual;
+
+async function saveEditActual(){
+  if(_editActualIdx<0)return;
+  const p=predictions[_editActualIdx];
+  const rez=document.getElementById('eam-rez').value.trim();
+  const ht=document.getElementById('eam-ht').value.trim();
+  const gle=parseInt(document.getElementById('eam-gle').value);
+  const fg=document.getElementById('eam-fg').value.trim();
+  const kas1=parseInt(document.getElementById('eam-kas1').value)||0;
+  const kas2=parseInt(document.getElementById('eam-kas2').value)||0;
+  if(!rez||isNaN(gle)){alert('Unesite rezultat i gledatelje!');return;}
+  p.actual={rez,ht,gle,fg,kas1,kas2};
+  // Recalculate score
+  const sc=scoreCalc(p.luka.rez,p.luka.gle,p.luka.kas1||0,p.luka.kas2||0,p.luka.fg||'',p.luka.ht||'',
+                     p.lovro.rez,p.lovro.gle,p.lovro.kas1||0,p.lovro.kas2||0,p.lovro.fg||'',p.lovro.ht||'',
+                     rez,gle,kas1,kas2,fg,ht);
+  p.luka.score=sc.luka;p.lovro.score=sc.lovro;
+  await set(ref(db,'predictions'),predictions);
+  document.getElementById('edit-actual-modal').classList.remove('open');
+  renderPreds();
+  showToast('✏️ Stvarni rezultat ažuriran!','#0A1A3A','#7FB5FF');
+}
+window.saveEditActual=saveEditActual;
+
+/* ===== UREDI STVARNI REZULTAT — GOSTUJUĆE ===== */
+let _editActualAwayIdx=-1;
+function openEditActualAway(idx){
+  _editActualAwayIdx=idx;
+  const p=awayPredictions[idx];
+  document.getElementById('eaam-sub').textContent=`@ ${p.protivnik} · ${fmtDate(p.datum)}`;
+  document.getElementById('eaam-rez').value=p.actual.rez||'';
+  document.getElementById('eaam-ht').value=p.actual.ht||'';
+  document.getElementById('eaam-gle').value=p.actual.gle||'';
+  document.getElementById('eaam-fg').value=p.actual.fg||'';
+  document.getElementById('edit-actual-away-modal').classList.add('open');
+}
+window.openEditActualAway=openEditActualAway;
+
+async function saveEditActualAway(){
+  if(_editActualAwayIdx<0)return;
+  const p=awayPredictions[_editActualAwayIdx];
+  const rez=document.getElementById('eaam-rez').value.trim();
+  const ht=document.getElementById('eaam-ht').value.trim();
+  const gle=parseInt(document.getElementById('eaam-gle').value);
+  const fg=document.getElementById('eaam-fg').value.trim();
+  if(!rez||isNaN(gle)){alert('Unesite rezultat i gledatelje!');return;}
+  p.actual={rez,ht,gle,fg};
+  const sc=awayScoreCalc(p.luka.rez,p.luka.gle,p.luka.fg||'',p.luka.ht||'',
+                         p.lovro.rez,p.lovro.gle,p.lovro.fg||'',p.lovro.ht||'',
+                         rez,gle,fg,ht);
+  p.luka.score=sc.luka;p.lovro.score=sc.lovro;
+  await saveAwayPreds();
+  document.getElementById('edit-actual-away-modal').classList.remove('open');
+  renderAwayPreds();
+  showToast('✏️ Stvarni rezultat gostovanja ažuriran!','#2A0A0A','#F87171');
+}
+window.saveEditActualAway=saveEditActualAway;
+
+/* ===== RASPORED ===== */
+/* ===== RASPORED — TheSportsDB API ===== */
+// Team IDs on TheSportsDB
+
+
+// ═══════════════════════════════════════════════════════
+// RASPORED — football-data.org (free, CORS-OK, works from file://)
+// Dinamo Zagreb team ID: 674
+// Croatia NT team ID: 799
+// Free tier: 10 req/min, last 2 seasons, all competitions
+// ═══════════════════════════════════════════════════════
+
+const FD_TOKEN   = 'fd8659de5a6e4d83a2a563fbdc10e2d8'; // free public tier
+const FD_DINAMO  = 674;
+const FD_CROATIA = 799;
+const FD_BASE    = 'https://api.football-data.org/v4';
+
+function leagueFromStr(s){
+  const l=(s||'').toLowerCase();
+  if(l.includes('champions'))return'UCL';
+  if(l.includes('europa'))return'UEL';
+  if(l.includes('conference'))return'ECL';
+  if(l.includes('nations'))return'Liga Nacija';
+  if(l.includes('world cup')||l.includes('wcq')||l.includes('qualif'))return'Fifa WCQ';
+  if(l.includes('european championship')||l.includes('euro'))return'Euro Q';
+  if(l.includes('hnl')||l.includes('prva')||l.includes('croatia football'))return'HNL';
+  if(l.includes('cup')||l.includes('kup'))return'Kup';
+  if(l.includes('super'))return'Super kup';
+  return s||'HNL';
+}
+
+function normMatch(o){
+  return{datum:o.datum||'',protivnik:o.protivnik||'—',natjecanje:o.natjecanje||'HNL',
+    domace:!!o.domace,koDisplay:o.koDisplay||'',stadion:o.stadion||'',
+    rezultat:o.rezultat||'',isPast:!!o.isPast,form:o.form||'',
+    source:o.source||'fd',isCroatia:!!o.isCroatia,hasPred:false,
+    _id:o._id||Math.random().toString(36)};
+}
+
+let _fdCache={}, _fdTs={};
+
+async function fdFetch(path){
+  if(_fdCache[path]&&Date.now()-(_fdTs[path]||0)<600000) return _fdCache[path];
+  const r = await fetch(FD_BASE+path,{headers:{'X-Auth-Token':FD_TOKEN}});
+  if(!r.ok) throw new Error('fd '+r.status+' '+path);
+  const d = await r.json();
+  _fdCache[path]=d; _fdTs[path]=Date.now();
+  return d;
+}
+
+function mapFdMatch(m, teamId, isCroatia){
+  const isHome = m.homeTeam?.id === teamId;
+  const opp    = isHome ? (m.awayTeam?.name||'—') : (m.homeTeam?.name||'—');
+  // Parse UTC kickoff → local CEST (+2h)
+  const dt = m.utcDate ? new Date(m.utcDate) : null;
+  let datum='', koDisplay='';
+  if(dt){
+    // Shift to CEST (+2h)
+    const local = new Date(dt.getTime()+2*3600000);
+    datum = local.toISOString().split('T')[0];
+    koDisplay = String(local.getUTCHours()).padStart(2,'0')+':'+String(local.getUTCMinutes()).padStart(2,'0');
+  }
+  const status  = m.status||'';
+  const isPast  = status==='FINISHED'||status==='AWARDED';
+  const hs = m.score?.fullTime?.home??null;
+  const as = m.score?.fullTime?.away??null;
+  let rezultat='', form='';
+  if(isPast && hs!==null && as!==null){
+    rezultat = isHome ? `${hs} - ${as}` : `${as} - ${hs}`;
+    const gs=isHome?hs:as, gc=isHome?as:hs;
+    form = gs>gc?'W':gs<gc?'L':'D';
+  }
+  const nat = leagueFromStr(m.competition?.name||'');
+  return normMatch({datum,protivnik:opp,natjecanje:nat,domace:isHome,
+    koDisplay,stadion:m.venue||'',rezultat,isPast,form,
+    source:'fd',isCroatia,_id:'fd'+m.id});
+}
+
+async function fetchFdTeam(teamId, isCroatia){
+  try{
+    // Get matches for current + previous season (limit=40 to get more)
+    const d = await fdFetch(`/teams/${teamId}/matches?limit=30`);
+    const matches = d.matches||[];
+    return matches.map(m=>mapFdMatch(m,teamId,isCroatia)).filter(m=>m.datum);
+  }catch(e){
+    console.warn('football-data.org failed for',teamId,e.message);
+    return[];
+  }
+}
+
+// Fallback: TheSportsDB (5 next + 15 last, free, CORS-ok)
+const TSDB_DINAMO_ID  = '133961';
+const TSDB_CROATIA_ID = '133912';
+let _rasporedDinamoCache=null,_rasporedDinamoTs=0;
+let _rasporedCroatiaCache=null,_rasporedCroatiaTs=0;
+
+function tsdbLeagueToNat(s,isCroatia){ return leagueFromStr(s)||(isCroatia?'Reprezentacija':'HNL'); }
+
+async function fetchTsdb(teamId, isPast){
+  try{
+    const ep=isPast?'eventslast':'eventsnext';
+    const r=await fetch(`https://www.thesportsdb.com/api/v1/json/123/${ep}.php?id=${teamId}`);
+    if(!r.ok) throw new Error('tsdb '+r.status);
+    const d=await r.json();
+    return (d.events||d.results||[]).map(e=>({...e,_fromNext:!isPast}));
+  }catch(e){ console.warn('TSDB failed:',e.message); return[]; }
+}
+
+function mapTsdb(e,isCroatia){
+  const homeLC=(e.strHomeTeam||'').toLowerCase();
+  const domace=isCroatia?homeLC.includes('croatia'):homeLC.includes('dinamo');
+  const opp=domace?(e.strAwayTeam||'—'):(e.strHomeTeam||'—');
+  const raw=e.strTime||'';
+  let koDisplay='';
+  if(raw.length>=5){const[hh,mm]=raw.split(':').map(Number);koDisplay=String((hh+2)%24).padStart(2,'0')+':'+String(mm).padStart(2,'0');}
+  let rezultat='',form='';
+  if(!e._fromNext&&e.intHomeScore!=null&&e.intHomeScore!==''){
+    const hs=parseInt(e.intHomeScore)||0,as=parseInt(e.intAwayScore)||0;
+    rezultat=domace?`${hs} - ${as}`:`${as} - ${hs}`;
+    const gs=domace?hs:as,gc=domace?as:hs;
+    form=gs>gc?'W':gs<gc?'L':'D';
+  }
+  return normMatch({datum:e.dateEvent||'',protivnik:opp,natjecanje:tsdbLeagueToNat(e.strLeague,isCroatia),
+    domace,koDisplay,stadion:e.strVenue||'',rezultat,isPast:!e._fromNext,form,source:'tsdb',isCroatia,_id:e.idEvent});
+}
+
+async function fetchTsdbSchedule(){
+  // Try football-data.org first (proper CORS, richer data)
+  // Then fall back to TheSportsDB
+  const [fdDinamo, fdCroatia, tsNext, tsLast, tsCrNext, tsCrLast] = await Promise.all([
+    fetchFdTeam(FD_DINAMO, false),
+    fetchFdTeam(FD_CROATIA, true),
+    fetchTsdb(TSDB_DINAMO_ID,  false),
+    fetchTsdb(TSDB_DINAMO_ID,  true),
+    fetchTsdb(TSDB_CROATIA_ID, false),
+    fetchTsdb(TSDB_CROATIA_ID, true)
+  ]);
+
+  const tsdbDinamo = [...tsNext,...tsLast].map(e=>mapTsdb(e,false));
+  const tsdbCroatia= [...tsCrNext,...tsCrLast].map(e=>mapTsdb(e,true));
+
+  // Use whichever source returned more Dinamo matches
+  const dinamo  = fdDinamo.length  >= tsdbDinamo.length  ? fdDinamo  : tsdbDinamo;
+  const croatia = fdCroatia.length >= tsdbCroatia.length ? fdCroatia : tsdbCroatia;
+
+  console.log(`Dinamo: ${dinamo.length} matches from ${fdDinamo.length>=tsdbDinamo.length?'football-data.org':'TheSportsDB'}`);
+  console.log(`Croatia: ${croatia.length} matches from ${fdCroatia.length>=tsdbCroatia.length?'football-data.org':'TheSportsDB'}`);
+
+  return{dinamo, croatia};
+}
+
+
+async function renderRaspored(){
+  const container=document.getElementById('raspored-content');
+  if(!container)return;
+  const nowLocal=new Date(Date.now()+2*3600000);
+  const today=nowLocal.toISOString().split('T')[0];
+
+  container.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:40px 0;color:var(--text-muted);">
+    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out infinite;"></div>
+    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out 0.2s infinite;"></div>
+    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out 0.4s infinite;"></div>
+    <span style="margin-left:6px;">Učitavanje rasporeda...</span>
+  </div>`;
+
+  const {dinamo:dinamoEvents, croatia:croatiaEvents}=await fetchTsdbSchedule();
+
+  // Events are already normalized by normMatch() in fetch layer
+  const seenIds=new Set();
+  const apiAll=[
+    ...dinamoEvents,
+    ...croatiaEvents
+  ].filter(m=>{
+    if(!m.datum)return false;
+    if(seenIds.has(m._id))return false;
+    seenIds.add(m._id);return true;
+  });
+
+  const apiFuture=apiAll.filter(m=>m.datum>=today&&!m.isPast).sort((a,b)=>a.datum<b.datum?-1:1);
+  const apiPast  =apiAll.filter(m=>m.datum<today||m.isPast).sort((a,b)=>a.datum<b.datum?1:-1);
+  const futureDates=new Set(apiFuture.map(m=>m.datum));
+  const pastClean=apiPast.filter(m=>!futureDates.has(m.datum));
+
+  // Pending predictions
+  const predMatches=[
+    ...predictions.filter(p=>!p.resolved&&p.datum>=today&&!p._rasporedOnly).map(p=>({
+      datum:p.datum,protivnik:p.protivnik,natjecanje:p.natjecanje,
+      domace:true,source:'pred',isCroatia:false,hasPred:true,
+      koDisplay:'',stadion:'',rezultat:'',isPast:false,form:'',_id:'pred_'+p.datum+p.protivnik
+    })),
+    ...awayPredictions.filter(p=>!p.resolved&&p.datum>=today&&!p._rasporedOnly).map(p=>({
+      datum:p.datum,protivnik:p.protivnik,natjecanje:p.natjecanje,
+      domace:false,source:'pred',isCroatia:false,hasPred:true,
+      koDisplay:'',stadion:'',rezultat:'',isPast:false,form:'',_id:'pred_a'+p.datum+p.protivnik
+    }))
+  ];
+  apiFuture.forEach(m=>{
+    if(predMatches.some(p=>p.datum===m.datum||(
+      Math.abs(new Date(p.datum)-new Date(m.datum))<2*86400000&&
+      p.protivnik.toLowerCase().split(' ')[0]===m.protivnik.toLowerCase().split(' ')[0]
+    )))m.hasPred=true;
+  });
+  const apiDates=new Set(apiFuture.map(m=>m.datum));
+  const predOnly=predMatches.filter(p=>!apiDates.has(p.datum));
+  const future=[...apiFuture,...predOnly].sort((a,b)=>a.datum<b.datum?-1:1);
+  const past=pastClean;
+
+  // ---- FORMA — zadnjih 5 utakmica Dinama ----
+  const dinamoPast=past.filter(m=>!m.isCroatia&&m.form).slice(0,5);
+  function formDot(f){
+    const color=f==='W'?'#4ADE80':f==='L'?'#F87171':'#9CA3AF';
+    const label=f==='W'?'P':f==='L'?'G':'R'; // Pobjeda/Gol/Remi
+    return`<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#000;font-weight:900;box-shadow:0 2px 8px ${color}66;">${label}</div>`;
+  }
+  const formaHtml=dinamoPast.length?`
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:18px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:10px;">💙 FORMA DINAMA — ZADNJIH ${dinamoPast.length} UTAKMICA</div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        ${dinamoPast.map(m=>`
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            ${formDot(m.form)}
+            <div style="font-size:9px;color:var(--text-muted);text-align:center;max-width:36px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.protivnik.split(' ')[0]}</div>
+            <div style="font-size:10px;font-weight:700;color:#fff;">${m.rezultat}</div>
+          </div>`).join('')}
+        <div style="margin-left:8px;display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:11px;color:#4ADE80;font-weight:700;">P: ${dinamoPast.filter(m=>m.form==='W').length}</div>
+          <div style="font-size:11px;color:#9CA3AF;font-weight:700;">R: ${dinamoPast.filter(m=>m.form==='D').length}</div>
+          <div style="font-size:11px;color:#F87171;font-weight:700;">G: ${dinamoPast.filter(m=>m.form==='L').length}</div>
+        </div>
+      </div>
+    </div>`:'';
+
+  // ---- Render cards ----
+  const now=new Date();
+  function countdown(datum,koDisplay){
+    const suffix=koDisplay?`T${koDisplay}:00`:'T18:00:00';
+    const diff=new Date(datum+suffix)-now;
+    if(diff<=0)return'Uskoro';
+    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m2=Math.floor((diff%3600000)/60000);
+    if(d>0)return`Za ${d} dan${d===1?'':'a'}`;
+    if(h>0)return`Za ${h}h ${m2}min`;
+    return`Za ${m2}min`;
+  }
+  function teamBadge(isCroatia){
+    return isCroatia
+      ?`<span style="font-size:9px;background:rgba(239,68,68,0.15);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3);border-radius:4px;padding:1px 6px;font-weight:700;">🇭🇷 REPRE</span>`
+      :`<span style="font-size:9px;background:rgba(77,159,255,0.15);color:#93C5FD;border:1px solid rgba(77,159,255,0.3);border-radius:4px;padding:1px 6px;font-weight:700;">💙 DINAMO</span>`;
+  }
+  function futureCard(u){
+    const cls=getCompClass(u.natjecanje);
+    const ht=u.isCroatia?'Hrvatska':'Dinamo';
+    const dt=u.domace?`${ht} vs ${u.protivnik}`:`${u.protivnik} vs ${ht}`;
+    const loc=u.domace?('🏟️ '+(u.stadion||'Maksimir')):('✈️ '+(u.stadion||'Gostovanje'));
+    return`<div class="rasp-card">
+      <div class="rasp-card-header">
+        <div>
+          <div class="rasp-match-title">${dt}</div>
+          <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;">${teamBadge(u.isCroatia)}<span style="font-size:9px;background:rgba(52,211,153,0.12);color:#34D399;border:1px solid rgba(52,211,153,0.25);border-radius:4px;padding:1px 6px;font-weight:700;">${u.source==='ss'?'SOFASCORE':u.source==='api'?'LIVE':''}</span></div>
+        </div>
+        <div class="rasp-meta">
+          <span class="badge badge-${cls}">${u.natjecanje}</span>
+          ${u.domace?'<span class="home-badge">DOMAĆE</span>':'<span class="away-badge">GOSTOVANJE</span>'}
+        </div>
+      </div>
+      <div class="rasp-card-body">
+        <div class="rasp-detail"><div class="rasp-detail-label">Datum</div><div class="rasp-detail-val">📅 ${fmtDate(u.datum)}</div></div>
+        ${u.koDisplay?`<div class="rasp-detail"><div class="rasp-detail-label">Početak</div><div class="rasp-detail-val">🕐 ${u.koDisplay}</div></div>`:''}
+        <div class="rasp-detail"><div class="rasp-detail-label">Lokacija</div><div class="rasp-detail-val">${loc}</div></div>
+        <div class="rasp-detail"><div class="rasp-detail-label">Odbrojavanje</div><div class="rasp-countdown">${countdown(u.datum,u.koDisplay)}</div></div>
+        ${u.hasPred?'<div class="rasp-detail"><div class="rasp-detail-label">Predikcija</div><div class="rasp-detail-val" style="color:#A78BFA;">🔮 Unesena</div></div>':''}
+      </div>
+    </div>`;
+  }
+  function pastCard(u){
+    const cls=getCompClass(u.natjecanje);
+    const ht=u.isCroatia?'Hrvatska':'Dinamo';
+    const dt=u.domace?`${ht} vs ${u.protivnik}`:`${u.protivnik} vs ${ht}`;
+    const parts=u.rezultat?u.rezultat.split(' - ').map(Number):[];
+    const sc=parts.length===2?(parts[0]>parts[1]?'#4ADE80':parts[0]<parts[1]?'#F87171':'#9CA3AF'):'#fff';
+    const formDotSmall=u.form?`<div style="width:22px;height:22px;border-radius:50%;background:${u.form==='W'?'#4ADE80':u.form==='L'?'#F87171':'#9CA3AF'};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#000;margin-left:6px;">${u.form==='W'?'P':u.form==='L'?'G':'R'}</div>`:'';
+    return`<div class="rasp-card" style="opacity:0.75;">
+      <div class="rasp-card-header" style="padding:11px 16px;">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="rasp-match-title" style="font-size:15px;">${dt}</div>
+              ${formDotSmall}
+            </div>
+            <div style="display:flex;gap:5px;margin-top:3px;">${teamBadge(u.isCroatia)}<span class="badge badge-${cls}" style="opacity:0.8;">${u.natjecanje}</span></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          ${u.rezultat?`<span style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:${sc};line-height:1;">${u.rezultat}</span>`:'<span style="color:var(--text-muted);font-size:12px;">n/a</span>'}
+          <span style="font-size:11px;color:var(--text-muted);">📅 ${fmtDate(u.datum)}</span>
+          ${u.koDisplay?`<span style="font-size:10px;color:var(--text-muted);">🕐 ${u.koDisplay}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }
+  function section(arr,title,color,cardFn){
+    if(!arr.length)return'';
+    return`<div class="rasp-section-title" style="color:${color};">${title}</div>`+arr.map(cardFn).join('');
+  }
+
+  const wEnd=new Date(now.getTime()+7*86400000).toISOString().split('T')[0];
+  const mEnd=new Date(now.getTime()+30*86400000).toISOString().split('T')[0];
+  const fw=future.filter(u=>u.datum<=wEnd);
+  const fm=future.filter(u=>u.datum>wEnd&&u.datum<=mEnd);
+  const fl=future.filter(u=>u.datum>mEnd);
+
+  const apiOk=dinamoEvents.length>0||croatiaEvents.length>0;
+  const sc2=apiOk?'#34D399':'#F87171';
+  const st=apiOk?`Dinamo: ${dinamoEvents.length} · Hrvatska: ${croatiaEvents.length} utakmica`:'Podaci nedostupni';
+
+  let html=`${formaHtml}
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:${sc2};box-shadow:0 0 6px ${sc2};"></div>
+      <span style="font-size:12px;color:var(--text-muted);">${st}</span>
+    </div>
+    <button onclick="refreshRaspored()" style="background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:7px;padding:5px 12px;color:#C4B5FD;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:5px;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="rasp-refresh-icon"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+      Osvježi
+    </button>
+  </div>
+  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+    <button class="view-tab active" id="rasp-tab-all"    onclick="rasporedFilter('all',this)">Sve (${future.length+past.length})</button>
+    <button class="view-tab"        id="rasp-tab-dinamo" onclick="rasporedFilter('dinamo',this)">💙 Dinamo (${[...future,...past].filter(m=>!m.isCroatia).length})</button>
+    <button class="view-tab"        id="rasp-tab-repre"  onclick="rasporedFilter('repre',this)">🇭🇷 Repre (${[...future,...past].filter(m=>m.isCroatia).length})</button>
+  </div>
+  <div id="rasp-cards">`;
+
+  if(!future.length&&!past.length){
+    html+=`<div class="rasp-empty"><div class="rasp-empty-icon">📅</div><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;">Nema utakmica</div></div>`;
+  }else{
+    if(future.length){
+      html+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">📅 NADOLAZEĆE UTAKMICE</div>`;
+      html+=section(fw,'🔥 Ovaj tjedan','#F87171',futureCard);
+      html+=section(fm,'📆 Sljedećih 30 dana','#FBBF24',futureCard);
+      html+=section(fl,'🗓️ Kasnije','#A78BFA',futureCard);
+    }
+    if(past.length){
+      html+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#6B7280;margin-top:${future.length?'24':'0'}px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">🕐 PROŠLE UTAKMICE</div>`;
+      html+=past.map(pastCard).join('');
+    }
+  }
+  html+=`</div>`;
+  container.innerHTML=html;
+
+  container._future=future; container._past=past;
+  container._fw=fw; container._fm=fm; container._fl=fl;
+  container._futureCard=futureCard; container._pastCard=pastCard;
+  container._section=section;
+}
+window.renderRaspored=renderRaspored;
+
+function rasporedFilter(type, btn){
+  document.querySelectorAll('#raspored-content .view-tab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const container=document.getElementById('raspored-content');
+  if(!container||!container._future) return;
+
+  const f=m=>type==='all'||(type==='dinamo'&&!m.isCroatia)||(type==='repre'&&m.isCroatia);
+  const future  = container._future.filter(f);
+  const past    = container._past.filter(f);
+  const fw      = container._fw.filter(f);
+  const fm      = container._fm.filter(f);
+  const fl      = container._fl.filter(f);
+  const futureCard = container._futureCard;
+  const pastCard   = container._pastCard;
+  const section    = container._section;
+
+  const cards=document.getElementById('rasp-cards');
+  if(!cards) return;
+  let out='';
+  if(!future.length&&!past.length){
+    out=`<div class="rasp-empty"><div class="rasp-empty-icon">📅</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;">Nema utakmica za ovaj filter</div></div>`;
+  }else{
+    if(future.length){
+      out+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">📅 NADOLAZEĆE UTAKMICE</div>`;
+      out+=section(fw,'🔥 Ovaj tjedan','#F87171',futureCard);
+      out+=section(fm,'📆 Sljedećih 30 dana','#FBBF24',futureCard);
+      out+=section(fl,'🗓️ Kasnije','#A78BFA',futureCard);
+    }
+    if(past.length){
+      out+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#6B7280;margin-top:${future.length?'24':'0'}px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">🕐 PROŠLE UTAKMICE</div>`;
+      out+=past.map(pastCard).join('');
+    }
+  }
+  cards.innerHTML=out;
+}
+window.rasporedFilter=rasporedFilter;
+
+async function refreshRaspored(){
+  const icon=document.getElementById('rasp-refresh-icon');
+  if(icon) icon.style.animation='spinIcon 0.8s linear infinite';
+  _rasporedDinamoCache=null;  _rasporedDinamoTs=0;
+  _rasporedCroatiaCache=null; _rasporedCroatiaTs=0;
+  await renderRaspored();
+  const icon2=document.getElementById('rasp-refresh-icon');
+  if(icon2) icon2.style.animation='';
+}
+window.refreshRaspored=refreshRaspored;
+
+async function addRasporedMatch(){
+  const datum=document.getElementById('rasp-datum').value;
+  const nat=document.getElementById('rasp-nat').value;
+  const prot=document.getElementById('rasp-prot').value.trim();
+  const loc=document.getElementById('rasp-loc').value;
+  if(!datum||!prot){alert('Unesite datum i protivnika!');return;}
+  const today=new Date().toISOString().split('T')[0];
+  if(datum<=today){alert('Datum mora biti u budućnosti!');return;}
+
+  // Add as a pending prediction with no guess (special upcoming entry)
+  const isAway=loc==='away';
+  const entry={
+    id:Date.now(), datum, protivnik:prot, natjecanje:nat, isAway,
+    luka:{rez:'?-?',gle:0,fg:'',ht:''}, lovro:{rez:'?-?',gle:0,fg:'',ht:''},
+    actual:null, resolved:false, _rasporedOnly:true
+  };
+  if(isAway){
+    awayPredictions.unshift(entry);
+    await saveAwayPreds();
+  }else{
+    predictions.unshift(entry);
+    await set(ref(db,'predictions'),predictions);
+  }
+  showToast('📅 Utakmica dodana u raspored!','#1A0A3A','#A78BFA');
+  renderRaspored();
+  renderPreds();
+}
+window.addRasporedMatch=addRasporedMatch;
+
 
 init();
 </script>
