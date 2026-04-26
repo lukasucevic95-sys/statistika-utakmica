@@ -163,22 +163,54 @@ async function scrapeAllMatches(page) {
   console.log('📋 Dohvaćam listu utakmica...');
   await page.goto(ZONA_KARATA_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-  // Čekaj da se React SPA potpuno učita (do 45 sekundi)
+  // Čekaj da se React SPA potpuno učita — traži section[aria-label] s "Dinamo"
   console.log('  ⏳ Čekam učitavanje stranice (React SPA)...');
   let loaded = false;
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < 50; i++) {
     await new Promise(r => setTimeout(r, 1000));
-    const hasData = await page.evaluate(() => {
-      return document.querySelectorAll('span.text-lg').length > 0;
+    const status = await page.evaluate(() => {
+      const sections = [...document.querySelectorAll('section[aria-label]')];
+      const hasDinamo = sections.some(s => (s.getAttribute('aria-label')||'').toLowerCase().includes('dinamo'));
+      const spanCount = document.querySelectorAll('span.text-lg').length;
+      const bodyText = document.body.innerText || '';
+      const hasSlob = bodyText.includes('Slobodno');
+      return { hasDinamo, spanCount, hasSlob, sectionCount: sections.length };
     });
-    if (hasData) {
-      console.log(`  ✓ Podaci pronađeni nakon ${i+1}s`);
+    console.log(`  [t=${i+1}s] sekcije:${status.sectionCount} dinamo:${status.hasDinamo} span.text-lg:${status.spanCount} slobodno:${status.hasSlob}`);
+    if (status.hasDinamo && status.hasSlob) {
+      console.log(`  ✓ Podaci s tribinama pronađeni nakon ${i+1}s`);
       loaded = true;
       break;
     }
   }
-  if (!loaded) console.log('  ⚠ span.text-lg nije pronađen nakon 45s, pokušavam svejedno...');
-  await new Promise(r => setTimeout(r, 2000));
+  if (!loaded) console.log('  ⚠ Podaci nisu pronađeni nakon 50s');
+  await new Promise(r => setTimeout(r, 1000));
+
+  // Debug — ispiši što je pronađeno na stranici
+  const debugInfo = await page.evaluate(() => {
+    const spans = [...document.querySelectorAll('span.text-lg')];
+    const allText = [...document.querySelectorAll('span')]
+      .filter(s => s.children.length === 0)
+      .map(s => s.textContent.trim())
+      .filter(t => t.length > 0 && t.length < 50)
+      .slice(0, 30);
+    const sections = [...document.querySelectorAll('section[aria-label]')]
+      .map(s => s.getAttribute('aria-label'));
+    return {
+      spanCount: spans.length,
+      spanValues: spans.map(s => s.textContent.trim()).slice(0, 10),
+      allSpans: allText,
+      sections,
+      title: document.title,
+      url: location.href,
+    };
+  });
+  console.log('  📊 Debug info:');
+  console.log('    Title:', debugInfo.title);
+  console.log('    span.text-lg count:', debugInfo.spanCount);
+  console.log('    span.text-lg values:', debugInfo.spanValues);
+  console.log('    Sections:', debugInfo.sections);
+  console.log('    Svi spanovi:', debugInfo.allSpans);
 
   // Pronađi sve linkove na utakmice
   const matchLinks = await page.evaluate(() => {
@@ -213,21 +245,34 @@ async function main() {
   console.log('🚀 Dinamo Karte Scraper — pokrenuto u', new Date().toISOString());
 
   const browser = await puppeteer.launch({
-    headless: 'new',
+    headless: true,
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
+      '--disable-blink-features=AutomationControlled',
+      '--window-size=1280,800',
     ],
   });
 
   try {
     const page = await browser.newPage();
     await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36'
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
     );
     await page.setViewport({ width: 1280, height: 800 });
+
+    // Sakrij headless browser od detekcije
+    await page.evaluateOnNewDocument(() => {
+      Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+      Object.defineProperty(navigator, 'languages', { get: () => ['hr-HR', 'hr', 'en-US', 'en'] });
+      Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
+      window.chrome = { runtime: {} };
+    });
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'hr-HR,hr;q=0.9,en-US;q=0.8',
+    });
 
     // 1. Dohvati listu utakmica
     const { matchLinks, matchSections } = await scrapeAllMatches(page);
