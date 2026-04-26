@@ -78,11 +78,11 @@ function extractDate(text) {
 // ── Scraping logika (ista kao Chrome extension content.js) ────────────────
 async function scrapeMatch(page, matchUrl) {
   console.log(`  → Otvaram: ${matchUrl}`);
-  await page.goto(matchUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+  await page.goto(matchUrl, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
   // Čekaj da se učitaju zone (span.text-lg)
   try {
-    await page.waitForSelector('span.text-lg', { timeout: 15000 });
+    await page.waitForSelector('span.text-lg', { timeout: 40000 });
   } catch(e) {
     console.log('  ⚠ Nema span.text-lg — stranica možda nema podatke o kartama');
     return null;
@@ -161,10 +161,24 @@ async function scrapeMatch(page, matchUrl) {
 // ── Pronađi nadolazeće utakmice na zona-karata.live ──────────────────────
 async function scrapeAllMatches(page) {
   console.log('📋 Dohvaćam listu utakmica...');
-  await page.goto(ZONA_KARATA_URL, { waitUntil: 'networkidle2', timeout: 30000 });
+  await page.goto(ZONA_KARATA_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
-  // Čekaj učitavanje utakmica
-  await new Promise(r => setTimeout(r, 3000));
+  // Čekaj da se React SPA potpuno učita (do 45 sekundi)
+  console.log('  ⏳ Čekam učitavanje stranice (React SPA)...');
+  let loaded = false;
+  for (let i = 0; i < 45; i++) {
+    await new Promise(r => setTimeout(r, 1000));
+    const hasData = await page.evaluate(() => {
+      return document.querySelectorAll('span.text-lg').length > 0;
+    });
+    if (hasData) {
+      console.log(`  ✓ Podaci pronađeni nakon ${i+1}s`);
+      loaded = true;
+      break;
+    }
+  }
+  if (!loaded) console.log('  ⚠ span.text-lg nije pronađen nakon 45s, pokušavam svejedno...');
+  await new Promise(r => setTimeout(r, 2000));
 
   // Pronađi sve linkove na utakmice
   const matchLinks = await page.evaluate(() => {
@@ -325,16 +339,19 @@ async function main() {
     if (scraped > 0) {
       console.log(`\n💾 Sprema ${scraped} utakmica u Firebase...`);
 
-      // Dohvati postojeće podatke da ne prepisujemo ručno unesene
       const existing = (await db.ref('karte_manual').once('value')).val() || {};
-
-      // Merge — novi podaci prepisuju samo polja koja su stigla iz scrapera
       const merged = { ...existing };
+
       for (const [key, data] of Object.entries(results)) {
-        if (merged[key]) {
-          // Ako ručno unesen (source nije github-actions), ne prepisuj protivnika/datum
-          merged[key] = { ...merged[key], zones: data.zones, updated: data.updated, source: data.source };
+        // Traži postojeći unos po protivniku — da ažurira isti unos svaki sat
+        const oppSlug = (data.protivnik||'').toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
+        const existingKey = Object.keys(merged).find(k => oppSlug && k.includes(oppSlug));
+
+        if (existingKey) {
+          console.log(`  🔄 Ažuriram: ${existingKey}`);
+          merged[existingKey] = { ...merged[existingKey], zones: data.zones, updated: data.updated, source: data.source };
         } else {
+          console.log(`  ➕ Novi unos: ${key}`);
           merged[key] = data;
         }
       }
@@ -342,7 +359,7 @@ async function main() {
       await db.ref('karte_manual').set(merged);
       console.log('✅ Firebase ažuriran!');
     } else {
-      console.log('⚠ Nema novih podataka — zona-karata.live možda nema aktivnih utakmica');
+      console.log('⚠ Nema podataka — zona-karata.live nema aktivnih utakmica u prodaji');
     }
 
   } finally {
