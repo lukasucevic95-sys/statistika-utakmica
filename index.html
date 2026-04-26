@@ -468,14 +468,80 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .karte-source-note a{color:var(--text-muted);text-decoration:none;}
 .karte-source-note a:hover{color:#7FB5FF;}
 @media(max-width:960px){.karte-main{padding:14px;}}
-@media(max-width:600px){.karte-zones-grid{grid-template-columns:1fr 1fr;}}
-
-/* Stadium SVG container */
 .karte-stadium-wrap{margin-bottom:16px;}
-/* Karte manual form grid responsive */
-@media(max-width:700px){
-  #km-zones-grid{grid-template-columns:1fr 1fr!important;}
-  .karte-main > div > div[style*="grid-template-columns:1fr 1fr 1fr"]{grid-template-columns:1fr!important;}
+.page-content-pad{padding:22px 40px;}
+
+/* ============================================================
+   MOBILE — sve ispod 600px
+   ============================================================ */
+@media(max-width:600px){
+
+  /* Navigacija — kompaktna grid s ikonama */
+  .topnav{ padding:7px 10px; flex-direction:column; gap:6px; align-items:stretch; }
+  .topnav-logo{ font-size:15px; letter-spacing:1px; }
+  .topnav-logo svg{ width:22px!important; height:22px!important; }
+  .topnav-links{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:3px;
+  }
+  .nav-btn{
+    padding:6px 3px 5px;
+    font-size:8.5px;
+    letter-spacing:0;
+    border-radius:6px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1px;
+    line-height:1.2;
+    white-space:nowrap;
+  }
+
+  /* Stats stranica */
+  .s-main{ padding:10px!important; }
+  .g-main{ padding:10px!important; }
+  .stats-bar{ grid-template-columns:1fr 1fr!important; gap:8px!important; }
+  .stat-card{ padding:12px!important; }
+  .stat-val{ font-size:26px!important; }
+  .legend{ padding:8px 10px!important; flex-wrap:wrap; gap:5px; }
+  .header{ padding:18px 14px 14px!important; }
+  .header h1{ font-size:26px!important; letter-spacing:2px!important; }
+
+  /* Tablica — sakrij Vrij. stupac, smanji padding */
+  .match-table th:nth-child(2),
+  .match-table td:nth-child(2){ display:none!important; }
+  .match-table th,
+  .match-table td{ font-size:10px!important; padding:6px 4px!important; }
+
+  /* Karte */
+  .karte-main{ padding:10px!important; gap:10px!important; }
+  .kmc-header{ padding:10px 12px 8px!important; }
+  .kmc-title{ font-size:15px!important; }
+  .kmc-body{ padding:10px 12px!important; }
+  .karte-zones-grid{ grid-template-columns:1fr 1fr!important; gap:8px!important; }
+  .karte-zone{ padding:10px!important; }
+  .kz-name{ font-size:9px!important; margin-bottom:6px!important; }
+  .ks-val{ font-size:20px!important; }
+  .ks-sep{ height:26px!important; }
+  .karte-summary-row{ padding:8px 10px!important; gap:5px!important; }
+  #km-zones-grid{ grid-template-columns:1fr 1fr!important; }
+
+  /* Raspored */
+  #raspored-content{ padding:10px!important; }
+  .page-content-pad{ padding:10px!important; }
+  .rasp-card{ border-radius:10px!important; margin-bottom:8px!important; }
+  .rasp-card-header{ padding:10px 12px!important; flex-wrap:wrap!important; gap:6px!important; }
+  .rasp-match-title{ font-size:14px!important; }
+  .rasp-card-body{ padding:10px 12px!important; grid-template-columns:1fr 1fr!important; gap:8px!important; }
+  .rasp-section-title{ font-size:11px!important; }
+  .rasp-countdown{ font-size:13px!important; }
+  .view-tab{ font-size:11px!important; padding:5px 10px!important; }
+
+  /* Forma za unos */
+  .form-grid-3{ grid-template-columns:1fr!important; }
+  .pred-grid{ grid-template-columns:1fr!important; }
 }
 
 .rasp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;transition:border-color 0.2s;}
@@ -1260,7 +1326,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <p>GNK Dinamo Zagreb · Nadolazeće utakmice</p>
     </div>
   </div>
-  <div style="padding:22px 40px;" id="raspored-content">
+  <div class="page-content-pad" id="raspored-content">
     <div style="color:var(--text-muted);text-align:center;padding:40px;">Učitavanje...</div>
   </div>
 </div>
@@ -3115,24 +3181,7 @@ function renderKarte(){
     ? manualKeys.map(k => buildManualMatchCard(k, _karteManualData[k])).join('')
     : '';
 
-  // Uzmi zone zadnje (najnovije) utakmice za SVG prikaz, ili null ako nema
-  const latestKey = manualKeys.sort().reverse()[0];
-  const latestZones = latestKey ? (_karteManualData[latestKey].zones || null) : null;
-  const latestName  = latestKey ? `Dinamo vs ${_karteManualData[latestKey].protivnik||'?'}` : null;
-
   content.innerHTML = `
-    <!-- UVIJEK PRIKAŽI SVG STADION NA VRHU -->
-    <div class="karte-match-card" style="border-color:rgba(77,159,255,0.15);margin-bottom:18px;">
-      <div class="kmc-header">
-        <div class="kmc-title">🏟️ Maksimir — Pregled zauzetosti</div>
-        <div class="kmc-meta"><span style="font-size:11px;color:var(--text-muted);">${latestName ? latestName : 'Nema unesenih podataka'}</span></div>
-      </div>
-      <div class="kmc-body">
-        ${buildStadiumSvg(latestZones)}
-        ${!latestZones ? `<div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:-8px;margin-bottom:4px;">Unesi podatke o utakmici ispod da se popuni prikaz</div>` : ''}
-      </div>
-    </div>
-
     ${manualSection}
     ${apiSection}
 
@@ -3220,7 +3269,6 @@ function buildApiMatchCard(m){
 function buildManualMatchCard(key, data){
   const { datum, protivnik, natjecanje, zones } = data;
   const compClass = (natjecanje||'hnl').toLowerCase().includes('hnl')?'badge-hnl':(natjecanje||'').toLowerCase().includes('ucl')?'badge-ucl':'badge-hnl';
-  const dateStr = datum ? new Date(datum+'T00:00:00').toLocaleDateString('hr-HR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—';
 
   let totalFree=0, totalCap=0;
   const zonesHtml = MAKSIMIR_ZONES.filter(z => !z.alwaysClosed && z.id !== 'vip').map(z=>{
@@ -3253,7 +3301,10 @@ function buildManualMatchCard(key, data){
     <div class="kmc-header">
       <div>
         <div class="kmc-title">Dinamo vs ${protivnik||'?'}</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">📅 ${dateStr}</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:8px;">
+          ${datum ? `<span>📅 ${new Date(datum+'T00:00:00').toLocaleDateString('hr-HR',{day:'2-digit',month:'2-digit',year:'numeric'})}</span>` : ''}
+          ${data.updated ? `<span style="opacity:0.6;">· Ažurirano: ${new Date(data.updated).toLocaleTimeString('hr-HR',{hour:'2-digit',minute:'2-digit'})}</span>` : ''}
+        </div>
       </div>
       <div class="kmc-meta">
         <span class="kmc-comp-badge ${compClass}">${natjecanje||'HNL'}</span>
@@ -3457,7 +3508,7 @@ function buildStadiumSvg(zones){
 }
 
 async function saveKarteManual(){
-  const datum = document.getElementById('km-datum').value;
+  const datum = document.getElementById('km-datum')?.value || new Date().toISOString().split('T')[0];
   const prot = document.getElementById('km-prot').value.trim();
   const nat = document.getElementById('km-nat').value;
   if(!datum || !prot){ alert('Unesite datum i protivnika!'); return; }
@@ -3467,7 +3518,7 @@ async function saveKarteManual(){
     if(val !== '' && val !== null && val !== undefined) zones[z.id] = parseInt(val)||0;
   });
 
-  const key = datum + '_' + prot.toLowerCase().replace(/\s+/g,'_');
+  const key = datum + '_' + prot.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');
   _karteManualData[key] = { datum, protivnik:prot, natjecanje:nat, zones, updated: new Date().toISOString() };
 
   try{
