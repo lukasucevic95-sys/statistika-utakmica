@@ -243,12 +243,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .pm-edit-btn:hover{background:rgba(77,159,255,0.2);}
 
 /* Minute detail panel */
-.min-detail-panel{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.16,1,0.3,1);border-top:0px solid var(--border);}
-.min-detail-panel.open{max-height:600px;border-top:1px solid var(--border);}
+.min-detail-panel{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1);border-top:0px solid var(--border);}
+.min-detail-panel.open{max-height:70vh;border-top:1px solid var(--border);}
 .min-detail-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 8px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;}
 .min-detail-close{background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:7px;padding:3px 10px;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.2s;}
 .min-detail-close:hover{background:rgba(255,255,255,0.15);color:#fff;}
-.min-detail-body{padding:0 18px 12px;display:flex;flex-direction:column;gap:4px;}
+.min-detail-body{padding:0 18px 12px;display:flex;flex-direction:column;gap:4px;max-height:calc(70vh - 60px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;}
 .min-detail-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;}
 .min-detail-row:last-child{border-bottom:none;}
 .min-time{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;min-width:40px;}
@@ -1506,6 +1506,9 @@ const INITIAL_MATCHES = [
   {datum:'2026-03-04',natjecanje:'Kup',protivnik:'Kurilovec',rezultat:'2-0',gledatelji:4605},
   {datum:'2026-03-14',natjecanje:'HNL',protivnik:'Slaven',rezultat:'4-2',gledatelji:7752},
   {datum:'2026-04-04',natjecanje:'HNL',protivnik:'Osijek',rezultat:'7-0',gledatelji:9109},
+  {datum:'2026-04-18',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-2',gledatelji:8200},
+  {datum:'2026-04-23',natjecanje:'HNL',protivnik:'Istra',rezultat:'2-0',gledatelji:5100},
+  {datum:'2026-04-26',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:12800},
 ];
 
 let matches=[], goals=[], predictions=[];
@@ -3543,6 +3546,29 @@ async function deleteKarteManual(key){
 window.deleteKarteManual = deleteKarteManual;
 window._loadKarteInit = loadKarte;
 
+// ── Raspored admin funkcije ───────────────────────────────────────────────
+// Spremi hardkodirane nadolazeće utakmice u Firebase (pokreni jednom kad dodaš nove)
+window.pushRasporedToFirebase = async function() {
+  const upcoming = [
+    {datum:'2026-05-02',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
+    {datum:'2026-05-09',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-17',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
+    {datum:'2026-05-23',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
+  ];
+  const results = [
+    {datum:'2026-04-04',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
+    {datum:'2026-04-18',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
+    {datum:'2026-04-23',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-04-26',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
+  ];
+  try {
+    await set(ref(db,'raspored'), { upcoming, results, updated: new Date().toISOString() });
+    alert('✅ Raspored spremljen u Firebase!');
+  } catch(e) {
+    alert('❌ Greška: ' + e.message);
+  }
+};
+
 /* ===== INIT ===== */
 async function init(){
   const today=new Date().toISOString().split('T')[0];
@@ -3577,6 +3603,18 @@ async function init(){
     onValue(ref(db,'predictions'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){predictions=snap.val();renderPreds();}});
     onValue(ref(db,'predictions_away'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){awayPredictions=snap.val();renderAwayPreds();}else{awayPredictions=[];renderAwayPreds();}});
     onValue(ref(db,'karte_manual'),(snap)=>{_karteManualData=snap.exists()?(snap.val()||{}):{};});
+    // Raspored iz Firebase — admin može ažurirati, svi čitaju
+    onValue(ref(db,'raspored'),(snap)=>{
+      if(snap.exists()){
+        const d=snap.val();
+        if(d.upcoming && Array.isArray(d.upcoming)){
+          window._fbUpcoming = d.upcoming;
+        }
+        if(d.results && Array.isArray(d.results)){
+          window._fbResults = d.results;
+        }
+      }
+    });
   }catch(e){
     console.error('Firebase greška:',e);
     matches=INITIAL_MATCHES;goals=[];predictions=[];
@@ -3762,7 +3800,7 @@ function tsdbLeagueToNat(s,isCroatia){ return leagueFromStr(s)||(isCroatia?'Repr
 async function fetchTsdb(teamId, isPast){
   try{
     const ep=isPast?'eventslast':'eventsnext';
-    const r=await fetch(`https://www.thesportsdb.com/api/v1/json/123/${ep}.php?id=${teamId}`);
+    const r=await fetch(`https://www.thesportsdb.com/api/v1/json/1/${ep}.php?id=${teamId}`);
     if(!r.ok) throw new Error('tsdb '+r.status);
     const d=await r.json();
     return (d.events||d.results||[]).map(e=>({...e,_fromNext:!isPast}));
@@ -3809,7 +3847,51 @@ async function fetchTsdbSchedule(){
   console.log(`Dinamo: ${dinamo.length} matches from ${fdDinamo.length>=tsdbDinamo.length?'football-data.org':'TheSportsDB'}`);
   console.log(`Croatia: ${croatia.length} matches from ${fdCroatia.length>=tsdbCroatia.length?'football-data.org':'TheSportsDB'}`);
 
-  return{dinamo, croatia};
+  // Hardkodirane prošle utakmice (popunjavaju praznine iz API-ja)
+  const hardcodedResults = [
+    {datum:'2025-07-19',protivnik:'Šibenik',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'4-0',form:'W'},
+    {datum:'2025-07-26',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'20:00',rezultat:'1-1',form:'D'},
+    {datum:'2025-08-02',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'20:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-08-09',protivnik:'Hajduk',natjecanje:'HNL',domace:false,koDisplay:'20:30',rezultat:'1-2',form:'L'},
+    {datum:'2025-08-16',protivnik:'Gorica',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'5-0',form:'W'},
+    {datum:'2025-08-23',protivnik:'Istra',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'3-0',form:'W'},
+    {datum:'2025-09-13',protivnik:'Osijek',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'2-1',form:'W'},
+    {datum:'2025-09-20',protivnik:'Slaven',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
+    {datum:'2025-09-27',protivnik:'Lokomotiva',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-10-04',protivnik:'Šibenik',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-10-18',protivnik:'Rijeka',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-11-01',protivnik:'Varaždin',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-11-08',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-11-22',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-11-29',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'4-0',form:'W'},
+    {datum:'2025-12-06',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
+    {datum:'2026-02-07',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'4-2',form:'W'},
+    {datum:'2026-02-14',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'4-0',form:'W'},
+    {datum:'2026-02-19',protivnik:'Genk',natjecanje:'UEL',domace:false,koDisplay:'18:45',rezultat:'1-3',form:'L'},
+    {datum:'2026-02-22',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'2-0',form:'W'},
+    {datum:'2026-03-01',protivnik:'Gorica',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
+    {datum:'2026-03-04',protivnik:'Kurilovec',natjecanje:'Kup',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-03-14',protivnik:'Slaven',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
+    {datum:'2026-04-04',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
+    {datum:'2026-04-18',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
+    {datum:'2026-04-23',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-04-26',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
+  ].map(m=>normMatch({...m,isPast:true,source:'manual',isCroatia:false}));
+
+  const hardcodedUpcoming = [
+    {datum:'2026-05-02',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
+    {datum:'2026-05-09',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-17',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
+    {datum:'2026-05-23',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
+  ].map(m=>normMatch({...m,isPast:false,rezultat:'',form:'',source:'manual',isCroatia:false}));
+
+  // API podaci imaju prednost, hardkodirani popunjavaju praznine
+  const allDates = new Set(dinamo.map(m=>m.datum));
+  const extraResults  = hardcodedResults.filter(m => !allDates.has(m.datum));
+  const extraUpcoming = hardcodedUpcoming.filter(m => !allDates.has(m.datum));
+  const finalDinamo = [...dinamo, ...extraResults, ...extraUpcoming];
+
+  return{dinamo: finalDinamo, croatia};
 }
 
 
@@ -3941,13 +4023,44 @@ async function renderRaspored(){
     const parts=u.rezultat?u.rezultat.split(' - ').map(Number):[];
     const sc=parts.length===2?(parts[0]>parts[1]?'#4ADE80':parts[0]<parts[1]?'#F87171':'#9CA3AF'):'#fff';
     const formDotSmall=u.form?`<div style="width:22px;height:22px;border-radius:50%;background:${u.form==='W'?'#4ADE80':u.form==='L'?'#F87171':'#9CA3AF'};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#000;margin-left:6px;">${u.form==='W'?'P':u.form==='L'?'G':'R'}</div>`:'';
-    return`<div class="rasp-card" style="opacity:0.75;">
-      <div class="rasp-card-header" style="padding:11px 16px;">
+
+    // Pronađi utakmicu u Firebase bazi (samo domaće imaju detalje)
+    const fbMatch = u.domace && !u.isCroatia ? matches.find(m =>
+      m.datum === u.datum ||
+      (m.datum && u.datum && m.datum.slice(0,7)===u.datum.slice(0,7) &&
+       (m.protivnik||'').toLowerCase().includes((u.protivnik||'').split(' ')[0].toLowerCase()))
+    ) : null;
+
+    // Golovi za ovu utakmicu iz Firebase
+    const matchGoals = fbMatch ? goals.filter(g => {
+      const gm = matches.indexOf(fbMatch);
+      return g.matchIndex === gm || g.match === fbMatch.datum ||
+        (g.protivnik && (g.protivnik||'').toLowerCase().includes((u.protivnik||'').split(' ')[0].toLowerCase()) &&
+         g.datum && g.datum.slice(0,7) === u.datum.slice(0,7));
+    }) : [];
+
+    // Strijelci iz golova
+    const scorers = matchGoals.filter(g=>g.team==='dinamo'||!g.team).map(g=>{
+      const min = g.minuta||g.min||'';
+      return `${g.igrac||g.player||'?'} ${min?min+"'":""}`;
+    });
+
+    const gledalelji = fbMatch?.gledatelji || u.gledatelji || 0;
+    const primljenGol = matchGoals.filter(g=>g.team==='opp'||g.team==='opponent').map(g=>`${g.igrac||'?'}`);
+
+    // Detalji panel
+    const hasDetails = fbMatch && (scorers.length > 0 || gledalelji > 0);
+    const panelId = `past-detail-${u.datum.replace(/-/g,'')}`;
+
+    return`<div class="rasp-card" style="opacity:0.85;">
+      <div class="rasp-card-header" style="padding:11px 16px;cursor:${hasDetails?'pointer':'default'};"
+        ${hasDetails?`onclick="const p=document.getElementById('${panelId}');p.style.display=p.style.display==='none'?'block':'none'"`:''}>
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <div>
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="rasp-match-title" style="font-size:15px;">${dt}</div>
               ${formDotSmall}
+              ${hasDetails?`<span style="font-size:9px;color:var(--text-muted);margin-left:2px;">▼</span>`:''}
             </div>
             <div style="display:flex;gap:5px;margin-top:3px;">${teamBadge(u.isCroatia)}<span class="badge badge-${cls}" style="opacity:0.8;">${u.natjecanje}</span></div>
           </div>
@@ -3958,6 +4071,26 @@ async function renderRaspored(){
           ${u.koDisplay?`<span style="font-size:10px;color:var(--text-muted);">🕐 ${u.koDisplay}</span>`:''}
         </div>
       </div>
+      ${hasDetails?`
+      <div id="${panelId}" style="display:none;padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15);">
+        <div style="display:flex;flex-wrap:wrap;gap:20px;">
+          ${scorers.length>0?`
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">⚽ Strijelci</div>
+            ${scorers.map(s=>`<div style="font-size:12px;font-weight:600;color:#93C5FD;margin-bottom:3px;">${s}</div>`).join('')}
+          </div>`:''}
+          ${gledalelji>0?`
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">👥 Gledatelji</div>
+            <div style="font-size:16px;font-weight:700;color:#fff;">${gledalelji.toLocaleString('hr-HR')}</div>
+          </div>`:''}
+          ${primljenGol.length>0?`
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">🔴 Primljeni golovi</div>
+            ${primljenGol.map(s=>`<div style="font-size:12px;color:#FCA5A5;margin-bottom:3px;">${s}</div>`).join('')}
+          </div>`:''}
+        </div>
+      </div>`:''}
     </div>`;
   }
   function section(arr,title,color,cardFn){
@@ -3988,8 +4121,7 @@ async function renderRaspored(){
   </div>
   <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
     <button class="view-tab active" id="rasp-tab-all"    onclick="rasporedFilter('all',this)">Sve (${future.length+past.length})</button>
-    <button class="view-tab"        id="rasp-tab-dinamo" onclick="rasporedFilter('dinamo',this)">💙 Dinamo (${[...future,...past].filter(m=>!m.isCroatia).length})</button>
-    <button class="view-tab"        id="rasp-tab-repre"  onclick="rasporedFilter('repre',this)">🇭🇷 Repre (${[...future,...past].filter(m=>m.isCroatia).length})</button>
+    <button class="view-tab"        id="rasp-tab-dinamo" onclick="rasporedFilter('dinamo',this)">Dinamo (${[...future,...past].filter(m=>!m.isCroatia).length})</button>
   </div>
   <div id="rasp-cards">`;
 
