@@ -3179,9 +3179,16 @@ function renderKarte(){
     : '';
 
   // Ručno unešene utakmice iz Firebase
-  const manualKeys = Object.keys(_karteManualData);
+  // Sortiraj po updated timestamp — najnoviji prvi
+  const manualKeys = Object.keys(_karteManualData)
+    .sort((a,b) => {
+      const ua = _karteManualData[a]?.updated || a;
+      const ub = _karteManualData[b]?.updated || b;
+      return ub.localeCompare(ua);
+    });
+  // Prva (najnovija) kartica je uvijek otvorena, ostale skupljene
   const manualSection = manualKeys.length > 0
-    ? manualKeys.map(k => buildManualMatchCard(k, _karteManualData[k])).join('')
+    ? manualKeys.map((k, i) => buildManualMatchCard(k, _karteManualData[k], i === 0)).join('')
     : '';
 
   content.innerHTML = `
@@ -3266,10 +3273,10 @@ function buildApiMatchCard(m){
       ${zonesHtml?`<div class="karte-zones-grid">${zonesHtml}</div>`:''}
       ${summaryHtml}
       ${!zonesHtml&&!summaryHtml?'<div style="color:var(--text-muted);font-size:13px;">Nema podataka o sektorima.</div>':''}
-    </div></div>`;
+    </div></div></div>`;
 }
 
-function buildManualMatchCard(key, data){
+function buildManualMatchCard(key, data, expanded=false){
   const { datum, protivnik, natjecanje, zones } = data;
   const compClass = (natjecanje||'hnl').toLowerCase().includes('hnl')?'badge-hnl':(natjecanje||'').toLowerCase().includes('ucl')?'badge-ucl':'badge-hnl';
 
@@ -3300,8 +3307,14 @@ function buildManualMatchCard(key, data){
 
   const stadiumSvg = buildStadiumSvg(data.zones);
 
-  return `<div class="karte-match-card">
-    <div class="kmc-header">
+  const cardId = 'kmc-' + key;
+  return `<div class="karte-match-card" style="${expanded?'':'opacity:0.85;'}">
+    <div class="kmc-header" style="cursor:pointer;" onclick="
+      const b=document.getElementById('${cardId}');
+      const arr=this.querySelector('.kmc-arrow');
+      if(b.style.display==='none'){b.style.display='block';this.parentElement.style.opacity='1';if(arr)arr.textContent='▲';}
+      else{b.style.display='none';this.parentElement.style.opacity='0.85';if(arr)arr.textContent='▼';}
+    ">
       <div>
         <div class="kmc-title">Dinamo vs ${protivnik||'?'}</div>
         <div style="font-size:11px;color:var(--text-muted);margin-top:3px;display:flex;align-items:center;gap:8px;">
@@ -3309,11 +3322,13 @@ function buildManualMatchCard(key, data){
           ${data.updated ? `<span style="opacity:0.6;">· Ažurirano: ${new Date(data.updated).toLocaleTimeString('hr-HR',{hour:'2-digit',minute:'2-digit'})}</span>` : ''}
         </div>
       </div>
-      <div class="kmc-meta">
+      <div class="kmc-meta" style="display:flex;align-items:center;gap:8px;">
         <span class="kmc-comp-badge ${compClass}">${natjecanje||'HNL'}</span>
-        <button onclick="deleteKarteManual('${key}')" style="background:rgba(220,0,0,0.12);border:1px solid rgba(220,0,0,0.25);border-radius:6px;padding:3px 9px;color:#F87171;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🗑️</button>
+        <span class="kmc-arrow" style="font-size:10px;color:var(--text-muted);">${expanded?'▲':'▼'}</span>
+        <button onclick="event.stopPropagation();deleteKarteManual('${key}')" style="background:rgba(220,0,0,0.12);border:1px solid rgba(220,0,0,0.25);border-radius:6px;padding:3px 9px;color:#F87171;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">🗑️</button>
       </div>
     </div>
+    <div id="${cardId}" style="display:${expanded?'block':'none'};">
     <div class="kmc-body">
       ${stadiumSvg}
       <div class="karte-zones-grid">${zonesHtml}</div>
@@ -3329,7 +3344,7 @@ function buildManualMatchCard(key, data){
       </div>
       <div class="karte-overall-bar"><div class="karte-overall-fill ${overallCls}" style="width:${overallPct}%"></div></div>
       <div style="font-size:10px;color:var(--text-muted);text-align:right;">${overallPct}% Maksimira popunjeno</div>`:''}
-    </div></div>`;
+    </div></div></div>`;
 }
 
 function buildStadiumSvg(zones){
