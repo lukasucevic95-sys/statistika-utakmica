@@ -2,7 +2,7 @@ name: Dinamo Karte Scraper
 
 on:
   schedule:
-    - cron: '0 * * * *'   # svaki sat u :00
+    - cron: '*/30 * * * *'   # svakih 30 minuta
   workflow_dispatch:        # ručno pokretanje iz GitHub UI
 
 jobs:
