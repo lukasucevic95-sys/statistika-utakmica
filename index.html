@@ -2,8 +2,16 @@
 <html lang="hr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>GNK Dinamo Zagreb · Statistika</title>
+<meta name="description" content="GNK Dinamo Zagreb — statistika utakmica, golovi, raspored i karte">
+<meta name="theme-color" content="#060C1A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dinamo">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
@@ -4245,5 +4253,12 @@ window.addRasporedMatch=addRasporedMatch;
 
 init();
 </script>
+  <script>
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      });
+    }
+  </script>
 </body>
 </html>
