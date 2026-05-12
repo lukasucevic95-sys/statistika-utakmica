@@ -2,16 +2,8 @@
 <html lang="hr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GNK Dinamo Zagreb · Statistika</title>
-<meta name="description" content="GNK Dinamo Zagreb — statistika utakmica, golovi, raspored i karte">
-<meta name="theme-color" content="#060C1A">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Dinamo">
-<link rel="manifest" href="/manifest.json">
-<link rel="apple-touch-icon" href="/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
@@ -84,6 +76,16 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .table-section{min-width:0;}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;}
+.stat-person-tab{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 14px;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.stat-person-tab:hover{border-color:rgba(77,159,255,0.4);}
+.stat-person-tab.active-all{background:rgba(100,130,180,0.2);border-color:rgba(100,130,180,0.5);color:#fff;}
+.stat-person-tab.active-luka{background:rgba(96,165,250,0.2);border-color:rgba(96,165,250,0.5);color:#60A5FA;}
+.stat-person-tab.active-lovro{background:rgba(125,211,252,0.2);border-color:rgba(125,211,252,0.5);color:#7DD3FC;}
+.stat-person-tab{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 14px;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
+.stat-person-tab:hover{border-color:rgba(77,159,255,0.4);}
+.stat-person-tab.active-all{background:rgba(100,130,180,0.2);border-color:rgba(100,130,180,0.5);color:#fff;}
+.stat-person-tab.active-luka{background:rgba(96,165,250,0.2);border-color:rgba(96,165,250,0.5);color:#60A5FA;}
+.stat-person-tab.active-lovro{background:rgba(125,211,252,0.2);border-color:rgba(125,211,252,0.5);color:#7DD3FC;}
 .header-right{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .view-tabs{display:flex;gap:5px;}
 .view-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text-muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
@@ -314,7 +316,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .predictors-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .predictor-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
 .predictor-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
-.pl-luka{color:#60A5FA;}.pl-lovro{color:#C084FC;}
+.pl-luka{color:#60A5FA;}.pl-lovro{color:#7DD3FC;}
 .pred-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .pred-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .btn-pred{border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#4C1D95,#7C3AED);width:100%;}
@@ -641,6 +643,13 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 
   <div class="s-main">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;">Statistika za:</span>
+      <button id="spt-sve"   class="stat-person-tab active-all" onclick="setStatPerson('sve')">📋 Sve utakmice</button>
+      <button id="spt-all"   class="stat-person-tab"            onclick="setStatPerson('all')">👥 Luka &amp; Lovro</button>
+      <button id="spt-luka"  class="stat-person-tab"            onclick="setStatPerson('luka')">🔵 Samo Luka</button>
+      <button id="spt-lovro" class="stat-person-tab"            onclick="setStatPerson('lovro')">🔷 Samo Lovro</button>
+    </div>
     <div class="stats-bar">
       <div class="stat-card sc-total"><div class="stat-label">Ukupno utakmica</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub" id="stat-comp-label">svih natjecanja</div></div>
       <div class="stat-card sc-wdl"><div class="stat-label">P / R / P</div><div class="stat-value" id="stat-wdl">0/0/0</div><div class="stat-sub" id="stat-wdl-pct">—</div></div>
@@ -660,7 +669,18 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <button class="view-tab active" onclick="switchView('matches',this)">Utakmice</button>
             <button class="view-tab" onclick="switchView('opponents',this)">Protivnici</button>
           </div>
-          <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="search" oninput="renderActive()">
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+            <select class="form-input" id="stadion-filter" onchange="renderActive()" style="font-size:11px;padding:4px 8px;height:30px;min-width:140px;max-width:200px;">
+              <option value="all">🏟️ Svi stadioni</option>
+            </select>
+            <select class="form-input" id="prisutni-filter" onchange="renderActive()" style="font-size:11px;padding:4px 8px;height:30px;min-width:130px;max-width:180px;">
+              <option value="sve">📋 Sve utakmice</option>
+              <option value="all">👥 Luka &amp; Lovro</option>
+              <option value="luka">🔵 Samo Luka</option>
+              <option value="lovro">🔷 Samo Lovro</option>
+            </select>
+            <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="search" oninput="renderActive()">
+          </div>
         </div>
       </div>
       <div class="season-bar" id="season-bar"></div>
@@ -724,15 +744,49 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             </select>
           </div>
           <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="f-protivnik" placeholder="Npr. Hajduk"></div>
+          <div class="form-row">
+            <label class="form-label">Stadion</label>
+            <div style="display:flex;gap:6px;">
+              <select class="form-input" id="f-stadion-select" style="flex:1;" onchange="
+                const v=this.value;
+                const ci=document.getElementById('f-stadion-custom');
+                ci.style.display=v==='custom'?'block':'none';
+                if(v!=='custom') document.getElementById('f-stadion-custom').value='';
+              ">
+                <option value="Stadion Maksimir">Stadion Maksimir</option>
+                <option value="Opus Arena">Opus Arena Osijek</option>
+                <option value="Stadion Poljud">Stadion Poljud</option>
+                <option value="NK Gorica Stadion">NK Gorica Stadion</option>
+                <option value="Stadion Rujevica">Stadion Rujevica Rijeka</option>
+                <option value="Stadion Koprivnica">Stadion Koprivnica</option>
+                <option value="custom">✏️ Drugi stadion...</option>
+              </select>
+            </div>
+            <input class="form-input" type="text" id="f-stadion-custom" placeholder="Upiši naziv stadiona" style="display:none;margin-top:5px;">
+          </div>
           <div class="form-row-2">
             <div class="form-row"><label class="form-label">Rezultat</label><input class="form-input" type="text" id="f-rezultat" placeholder="2-1"></div>
             <div class="form-row"><label class="form-label">Gledatelji</label><input class="form-input" type="number" id="f-gledatelji" placeholder="12000"></div>
+          </div>
+          <div class="form-row" style="margin-bottom:8px;">
+            <label class="form-label">Tko je bio prisutan</label>
+            <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
+              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text);">
+                <input type="checkbox" id="f-prisutan-luka" checked style="accent-color:#60A5FA;width:14px;height:14px;cursor:pointer;">
+                <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text);">
+                <input type="checkbox" id="f-prisutan-lovro" checked style="accent-color:#7DD3FC;width:14px;height:14px;cursor:pointer;">
+                <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
+              </label>
+            </div>
           </div>
           <button class="btn-add" id="btn-add" onclick="addMatch()">Dodaj utakmicu</button>
         </div>
       </div>
       <div class="side-card"><div class="side-card-header">📊 Prosjek po natjecanju</div><div class="comp-list" id="comp-stats"></div></div>
       <div class="side-card"><div class="side-card-header">⚽ Omjer pobjeda</div><div class="comp-list" id="win-stats"></div></div>
+      <div class="side-card"><div class="side-card-header">🏟️ Statistika po stadionima</div><div class="comp-list" id="stadion-stats"></div></div>
       <div class="side-card" id="termini-card" style="display:none;">
         <div class="side-card-header">🕐 Termini utakmica</div>
         <div style="padding:10px 16px 4px;">
@@ -981,6 +1035,35 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Protivnik</label><input class="form-input-pred" type="text" id="em-protivnik" placeholder="Npr. Hajduk"></div>
       <div class="modal-row"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="em-rezultat" placeholder="2-1"></div>
       <div class="modal-row"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="em-gledatelji" placeholder="15000"></div>
+      <div class="modal-row">
+        <label class="form-label">Stadion</label>
+        <select class="form-input-pred" id="em-stadion-select" onchange="
+          const ci=document.getElementById('em-stadion-custom');
+          ci.style.display=this.value==='custom'?'block':'none';
+        ">
+          <option value="Stadion Maksimir">Stadion Maksimir</option>
+          <option value="Opus Arena">Opus Arena Osijek</option>
+          <option value="Stadion Poljud">Stadion Poljud</option>
+          <option value="NK Gorica Stadion">NK Gorica Stadion</option>
+          <option value="Stadion Rujevica">Stadion Rujevica Rijeka</option>
+          <option value="Stadion Koprivnica">Stadion Koprivnica</option>
+          <option value="custom">✏️ Drugi stadion...</option>
+        </select>
+        <input class="form-input-pred" type="text" id="em-stadion-custom" placeholder="Upiši naziv stadiona" style="display:none;margin-top:5px;">
+      </div>
+      <div class="modal-row">
+        <label class="form-label">Tko je bio prisutan</label>
+        <div style="display:flex;gap:14px;align-items:center;margin-top:5px;">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="em-prisutan-luka" style="accent-color:#60A5FA;width:14px;height:14px;cursor:pointer;">
+            <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
+            <input type="checkbox" id="em-prisutan-lovro" style="accent-color:#7DD3FC;width:14px;height:14px;cursor:pointer;">
+            <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
+          </label>
+        </div>
+      </div>
     </div>
     <div class="modal-btns">
       <button class="modal-btn-ok" onclick="saveEditMatch()">💾 Spremi</button>
@@ -1085,7 +1168,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               </div>
             </div>
             <div class="predictor-box">
-              <div class="predictor-name pl-lovro">🟣 Lovro predviđa</div>
+              <div class="predictor-name pl-lovro">🔷 Lovro predviđa</div>
               <div class="pred-grid" style="margin-bottom:8px;">
                 <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="lo-rez" placeholder="2-1"></div>
                 <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="lo-ht" placeholder="1-0"></div>
@@ -1164,7 +1247,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
                 </div>
               </div>
               <div class="predictor-box">
-                <div class="predictor-name pl-lovro">🟣 Lovro predviđa</div>
+                <div class="predictor-name pl-lovro">🔷 Lovro predviđa</div>
                 <div class="pred-grid-2" style="margin-bottom:6px;">
                   <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="loa-rez" placeholder="1-0"></div>
                   <div class="form-group"><label class="form-label">Pol.rezultat</label><input class="form-input-pred" type="text" id="loa-ht" placeholder="0-0"></div>
@@ -1554,6 +1637,7 @@ window.setSeason=function(s,el){
 /* ===== FILTER MATCHES ===== */
 function filterMatches(){
   const q=(document.getElementById('search')||{value:''}).value.toLowerCase();
+  const stadionF=(document.getElementById('stadion-filter')||{value:'all'}).value;
   return matches.filter(m=>{
     let pass=true;
     if(currentFilter==='rep') pass=REP_COMPS.includes(m.natjecanje);
@@ -1561,7 +1645,6 @@ function filterMatches(){
     if(!pass) return false;
     if(activeSeason!=='all' && getSeason(m.datum)!==activeSeason) return false;
     if(activeTimeFilter!=='all'){
-      // activeTimeFilter is exact HH:MM — match normalized kick-off time
       if(!m.vrijemePoc)return false;
       const parts=(m.vrijemePoc||'').split(':');
       const h=parseInt(parts[0]);const min=parseInt(parts[1]||'0');
@@ -1569,6 +1652,19 @@ function filterMatches(){
       const norm=`${String(h).padStart(2,'0')}:${String(minR).padStart(2,'0')}`;
       if(norm!==activeTimeFilter)return false;
     }
+    if(stadionF!=='all' && getStadion(m)!==stadionF) return false;
+    // Helper: undefined (stare utakmice) = bio prisutan
+    const lukaB  = m.prisutanLuka  !== false; // true ako nije eksplicitno false
+    const lovroB = m.prisutanLovro !== false;
+    // Prisutni filter (dropdown pored tražilice)
+    const prisutniF=(document.getElementById('prisutni-filter')||{value:'all'}).value;
+    if(prisutniF==='all'   && (!lukaB || !lovroB)) return false; // oboje prisutni
+    if(prisutniF==='luka'  && !lukaB)  return false;
+    if(prisutniF==='lovro' && !lovroB) return false;
+    // Stat person filter (tabs iznad stat kartica)
+    if(activeStatPerson==='all'   && (!lukaB || !lovroB)) return false; // oboje prisutni
+    if(activeStatPerson==='luka'  && !lukaB)  return false;
+    if(activeStatPerson==='lovro' && !lovroB) return false;
     if(q) return m.protivnik.toLowerCase().includes(q)||m.natjecanje.toLowerCase().includes(q)||m.rezultat.includes(q)||m.datum.includes(q);
     return true;
   });
@@ -1621,6 +1717,8 @@ function renderTable(){
   document.getElementById('page-info').textContent=`${total} ut. · Str. ${currentPage}/${pages}`;
   renderPageBtns('page-btns',pages,currentPage,p=>{currentPage=p;renderTable();});
   updateStats(filtered);
+  renderStadionStats();
+  populateStadionFilter();
   setTimeout(()=>checkScrollOverflow('matches'),30);
 }
 
@@ -1711,7 +1809,9 @@ function updateStats(filtered){
   const best=filtered.reduce((b,m)=>m.gledatelji>(b?.gledatelji||0)?m:b,null);
   let scored=0,conceded=0;
   filtered.forEach(m=>{const p=m.rezultat.split('-').map(Number);if(p.length===2){scored+=p[0];conceded+=p[1];}});
-  const label=currentFilter==='all'?'svih natjecanja':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  const personLabel=activeStatPerson==='luka'?'🔵 Luka':activeStatPerson==='lovro'?'🔷 Lovro':activeStatPerson==='all'?'👥 Luka & Lovro':'📋 Sve';
+  const compLabel=currentFilter==='all'?'svih natjecanja':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  const label=activeStatPerson==='sve'?compLabel:`${personLabel} · ${compLabel}`;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-comp-label').textContent=label;
   document.getElementById('stat-wdl').textContent=`${wins}/${draws}/${losses}`;
@@ -1759,6 +1859,19 @@ function getTimeSlot(vrijemePoc){
 }
 
 let activeTimeFilter='all';
+let activeStatPerson='all'; // 'sve'=sve utakmice | 'all'=oboje | 'luka' | 'lovro'
+
+function setStatPerson(p){
+  activeStatPerson=p;
+  const tabs={sve:'active-all',all:'active-all',luka:'active-luka',lovro:'active-lovro'};
+  ['sve','all','luka','lovro'].forEach(k=>{
+    const el=document.getElementById('spt-'+k);
+    if(!el)return;
+    el.className='stat-person-tab'+(k===p?' '+tabs[k]:'');
+  });
+  renderActive();
+}
+window.setStatPerson=setStatPerson;
 window.setTimeFilter=function(f){
   activeTimeFilter=f;
   renderActive();
@@ -1767,7 +1880,7 @@ window.setTimeFilter=function(f){
 
 function renderCompStats(){
   const g={};
-  matches.forEach(m=>{if(!g[m.natjecanje])g[m.natjecanje]=[];g[m.natjecanje].push(m.gledatelji);});
+  filterMatches().forEach(m=>{if(!g[m.natjecanje])g[m.natjecanje]=[];g[m.natjecanje].push(m.gledatelji);});
   const avgs=Object.entries(g).map(([k,v])=>({name:k,avg:Math.round(v.reduce((a,b)=>a+b,0)/v.length),count:v.length,cls:getCompClass(k)})).sort((a,b)=>b.avg-a.avg);
   const max=Math.max(...avgs.map(a=>a.avg));
   document.getElementById('comp-stats').innerHTML=avgs.map(a=>`<div>
@@ -1785,6 +1898,58 @@ function renderWinStats(filtered){
     {label:'Porazi',count:losses,color:'#F87171',pct:(losses/t*100).toFixed(0)},
   ].map(it=>`<div><div class="comp-meta"><span class="comp-name">${it.label}</span><span class="comp-val" style="color:${it.color}">${it.count} (${it.pct}%)</span></div>
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${it.pct}%;background:${it.color}"></div></div></div>`).join('');
+}
+
+function getStadion(m){
+  return m.stadion || (m.domace===false ? '' : 'Stadion Maksimir');
+}
+
+function renderStadionStats(){
+  const el = document.getElementById('stadion-stats');
+  if(!el) return;
+  const g = {};
+  filterMatches().forEach(m=>{
+    const s = getStadion(m) || 'Nepoznat';
+    if(!g[s]) g[s] = { count:0, gledatelji:0, max:0 };
+    g[s].count++;
+    const gle = m.gledatelji || 0;
+    g[s].gledatelji += gle;
+    if(gle > g[s].max) g[s].max = gle;
+  });
+  const sorted = Object.entries(g)
+    .map(([name,v])=>({name, count:v.count, ukupno:v.gledatelji, prosjek:Math.round(v.gledatelji/v.count), max:v.max}))
+    .sort((a,b)=>b.ukupno-a.ukupno);
+  const maxUk = Math.max(...sorted.map(s=>s.ukupno)) || 1;
+  el.innerHTML = sorted.map(s=>`
+    <div onclick="filterByStadion('${s.name.replace(/'/g,"\\'")}')" style="cursor:pointer;" title="Klikni za filter">
+      <div class="comp-meta">
+        <span class="comp-name" style="font-size:11px;">${s.name} <span style="opacity:0.4;font-size:9px;">(${s.count}ut.)</span></span>
+        <span class="comp-val" style="font-size:11px;">${fmtNum(s.ukupno)}</span>
+      </div>
+      <div class="comp-bar-bg"><div class="comp-bar" style="width:${(s.ukupno/maxUk*100).toFixed(1)}%;background:linear-gradient(90deg,#0A7A5E,#14B884)"></div></div>
+      <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">Prosjek: ${fmtNum(s.prosjek)} · Rekord: ${fmtNum(s.max)}</div>
+    </div>`).join('');
+}
+window.renderStadionStats = renderStadionStats;
+
+function populateStadionFilter(){
+  const sel = document.getElementById('stadion-filter');
+  if(!sel) return;
+  const current = sel.value;
+  const stadions = [...new Set(matches.map(m=>getStadion(m)).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="all">🏟️ Svi stadioni</option>'
+    + stadions.map(s=>`<option value="${s}">${s}</option>`).join('');
+  if(stadions.includes(current)) sel.value = current;
+}
+window.populateStadionFilter = populateStadionFilter;
+
+function filterByStadion(name){
+  const sel = document.getElementById('stadion-filter');
+  if(!sel) return;
+  sel.value = name;
+  renderActive();
+  // Skrolaj do tablice
+  document.getElementById('tbl-scroll-matches')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function normalizeTime(v){
@@ -1968,13 +2133,21 @@ async function addMatch(){
   if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
   const vrijemePoc=(document.getElementById('f-vrijemePoc')||{value:''}).value||'';
-  matches.push({datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||''});
+  // Stadion — custom ili iz selecta
+  const stadionSel = document.getElementById('f-stadion-select')?.value||'Stadion Maksimir';
+  const stadionCustom = document.getElementById('f-stadion-custom')?.value.trim()||'';
+  const stadion = stadionSel === 'custom' ? stadionCustom : stadionSel;
+  const prisutanLuka  = document.getElementById('f-prisutan-luka')?.checked !== false;
+  const prisutanLovro = document.getElementById('f-prisutan-lovro')?.checked !== false;
+  matches.push({datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro});
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
   document.getElementById('f-protivnik').value='';
   document.getElementById('f-rezultat').value='';
   document.getElementById('f-gledatelji').value='';
   const vtEl=document.getElementById('f-vrijemePoc');if(vtEl)vtEl.value='';
+  const selEl=document.getElementById('f-stadion-select');if(selEl)selEl.value='Stadion Maksimir';
+  const custEl=document.getElementById('f-stadion-custom');if(custEl){custEl.value='';custEl.style.display='none';}
   renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();
   showToast('✅ Utakmica dodana!','#0A3A0A','#4ADE80');
 }
@@ -2034,6 +2207,21 @@ function openEditMatch(){
   document.getElementById('em-protivnik').value=m.protivnik||'';
   document.getElementById('em-rezultat').value=m.rezultat||'';
   document.getElementById('em-gledatelji').value=m.gledatelji||'';
+  // Stadion — postavi select ili custom
+  const knownStadions = ['Stadion Maksimir','Opus Arena','Stadion Poljud','NK Gorica Stadion','Stadion Rujevica','Stadion Koprivnica'];
+  const mStadion = m.stadion || 'Stadion Maksimir';
+  const emSel = document.getElementById('em-stadion-select');
+  const emCust = document.getElementById('em-stadion-custom');
+  if(knownStadions.includes(mStadion)){
+    emSel.value = mStadion;
+    emCust.style.display = 'none';
+  } else {
+    emSel.value = 'custom';
+    emCust.value = mStadion;
+    emCust.style.display = 'block';
+  }
+  document.getElementById('em-prisutan-luka').checked  = m.prisutanLuka  !== false;
+  document.getElementById('em-prisutan-lovro').checked = m.prisutanLovro !== false;
   document.getElementById('edit-match-modal').classList.add('open');
 }
 window.openEditMatch=openEditMatch;
@@ -2053,7 +2241,12 @@ async function saveEditMatch(){
   const gle=parseInt(document.getElementById('em-gledatelji').value);
   if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
-  matches[_editMatchIdx]={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle};
+  const emStadionSel = document.getElementById('em-stadion-select')?.value||'Stadion Maksimir';
+  const emStadionCust = document.getElementById('em-stadion-custom')?.value.trim()||'';
+  const stadion = emStadionSel === 'custom' ? emStadionCust : emStadionSel;
+  const emPrisutanLuka  = document.getElementById('em-prisutan-luka')?.checked !== false;
+  const emPrisutanLovro = document.getElementById('em-prisutan-lovro')?.checked !== false;
+  matches[_editMatchIdx]={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro};
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
   closeEditMatch();
@@ -2830,7 +3023,7 @@ function renderPreds(){
         </div>
       </div>`;
       loBox=`<div class="guess-box ${loCls}">
-        <div class="guess-who pl-lovro">🟣 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod.)</span></div>
+        <div class="guess-who pl-lovro">🔷 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod.)</span></div>
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)} <span style="opacity:0.6">(±${fmtNum(lo.gleDiff)})</span></div>
@@ -2865,7 +3058,7 @@ function renderPreds(){
         </div>
       </div>`;
       loBox=`<div class="guess-box pending">
-        <div class="guess-who pl-lovro">🟣 Lovro</div>
+        <div class="guess-who pl-lovro">🔷 Lovro</div>
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)}</div>
@@ -4253,12 +4446,5 @@ window.addRasporedMatch=addRasporedMatch;
 
 init();
 </script>
-  <script>
-    if('serviceWorker' in navigator){
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(()=>{});
-      });
-    }
-  </script>
 </body>
 </html>
