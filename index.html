@@ -1102,6 +1102,44 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   <div class="p-main">
     <div>
       <!-- Home / Away toggle tabs -->
+      <!-- ARCHIVE BANNER — shown when new season started but old not archived -->
+      <div id="archive-banner" style="display:none;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:#FCD34D;display:flex;align-items:center;gap:10px;">
+        📦 <span>Nova sezona 2026/27 je počela! <strong>Zaključi sezonu 2025/26</strong> da arhiviraš predikcije.</span>
+        <button onclick="document.getElementById('archive-season-modal').classList.add('open')" style="margin-left:auto;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.4);border-radius:6px;padding:4px 12px;color:#FCD34D;font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;cursor:pointer;">Zaključi →</button>
+      </div>
+
+      <!-- SEZONA ARHIVA -->
+      <div id="pred-season-bar" style="margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <!-- populated by renderPredSeasonBar() -->
+      </div>
+
+      <!-- UKUPNI LEADERBOARD (domaće + gostujuće) -->
+      <div style="background:linear-gradient(135deg,rgba(15,23,42,0.9),rgba(20,30,55,0.9));border:1px solid rgba(100,140,220,0.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:10px;">🏆 UKUPNO — DOMAĆE + GOSTUJUĆE</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:rgba(29,78,216,0.12);border:1px solid rgba(96,165,250,0.25);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#60A5FA;margin-bottom:4px;">🔵 LUKA</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;line-height:1;" id="lb-total-luka-score">0</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">bodova ukupno</div>
+            <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;">
+              <div style="text-align:center;"><div style="font-size:10px;color:var(--text-muted);">Domaće</div><div style="font-size:13px;font-weight:700;color:#60A5FA;" id="lb-total-luka-home">0</div></div>
+              <div style="width:1px;background:var(--border);"></div>
+              <div style="text-align:center;"><div style="font-size:10px;color:var(--text-muted);">Gostujuće</div><div style="font-size:13px;font-weight:700;color:#F87171;" id="lb-total-luka-away">0</div></div>
+            </div>
+          </div>
+          <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(125,211,252,0.2);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#7DD3FC;margin-bottom:4px;">🔷 LOVRO</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;line-height:1;" id="lb-total-lovro-score">0</div>
+            <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">bodova ukupno</div>
+            <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;">
+              <div style="text-align:center;"><div style="font-size:10px;color:var(--text-muted);">Domaće</div><div style="font-size:13px;font-weight:700;color:#60A5FA;" id="lb-total-lovro-home">0</div></div>
+              <div style="width:1px;background:var(--border);"></div>
+              <div style="text-align:center;"><div style="font-size:10px;color:var(--text-muted);">Gostujuće</div><div style="font-size:13px;font-weight:700;color:#F87171;" id="lb-total-lovro-away">0</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="pred-type-tabs">
         <div class="pred-type-tab active-home" id="pred-tab-home" onclick="switchPredType('home',this)">🏟️ DOMAĆE</div>
         <div class="pred-type-tab" id="pred-tab-away" onclick="switchPredType('away',this)">✈️ GOSTOVANJE</div>
@@ -1396,6 +1434,27 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="modal-btns">
       <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="saveEditActualAway()">💾 Spremi</button>
       <button class="modal-btn-cancel" onclick="document.getElementById('edit-actual-away-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
+<!-- Archive season modal -->
+<div class="modal-overlay" id="archive-season-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>📦 Zaključi sezonu</h3>
+    <div class="modal-sub">Arhivira sve predikcije tekuće sezone i resetira za novu</div>
+    <div class="modal-inputs">
+      <div class="modal-row">
+        <label class="form-label">Naziv sezone koja završava</label>
+        <input class="form-input-pred" type="text" id="archive-season-name" placeholder="npr. 2025/26" value="2025/26">
+      </div>
+      <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:#FCA5A5;margin-top:8px;">
+        ⚠️ Ova akcija premješta sve predikcije u arhivu i <strong>briše ih iz aktivne liste</strong>. Arhiva ostaje dostupna za čitanje.
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="archiveSeason()">📦 Zaključi i arhiviraj</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('archive-season-modal').classList.remove('open')">Odustani</button>
     </div>
   </div>
 </div>
@@ -2132,7 +2191,7 @@ async function addMatch(){
   const gle=parseInt(document.getElementById('f-gledatelji').value);
   if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
-  const vrijemePoc=(document.getElementById('f-vrijemePoc')||{value:''}).value||'';
+  const vrijemePoc=(document.getElementById('f-vrijeme')||{value:''}).value||'';
   // Stadion — custom ili iz selecta
   const stadionSel = document.getElementById('f-stadion-select')?.value||'Stadion Maksimir';
   const stadionCustom = document.getElementById('f-stadion-custom')?.value.trim()||'';
@@ -2145,7 +2204,7 @@ async function addMatch(){
   document.getElementById('f-protivnik').value='';
   document.getElementById('f-rezultat').value='';
   document.getElementById('f-gledatelji').value='';
-  const vtEl=document.getElementById('f-vrijemePoc');if(vtEl)vtEl.value='';
+  const vtEl=document.getElementById('f-vrijeme');if(vtEl)vtEl.value='';
   const selEl=document.getElementById('f-stadion-select');if(selEl)selEl.value='Stadion Maksimir';
   const custEl=document.getElementById('f-stadion-custom');if(custEl){custEl.value='';custEl.style.display='none';}
   renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();
@@ -2947,6 +3006,29 @@ function setFilter(f,el){
 }
 window.setFilter=setFilter;
 
+function calcTotalLB(){
+  const home=calcLB();
+  const away=calcAwayLB();
+  return{
+    lukaTotal: home.lPts + away.lPts,
+    lovroTotal: home.loPts + away.loPts,
+    lukaHome:  home.lPts,  lukaAway:  away.lPts,
+    lovroHome: home.loPts, lovroAway: away.loPts,
+  };
+}
+
+function renderTotalLB(){
+  const t=calcTotalLB();
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  el('lb-total-luka-score',  t.lukaTotal);
+  el('lb-total-lovro-score', t.lovroTotal);
+  el('lb-total-luka-home',   t.lukaHome);
+  el('lb-total-luka-away',   t.lukaAway);
+  el('lb-total-lovro-home',  t.lovroHome);
+  el('lb-total-lovro-away',  t.lovroAway);
+}
+window.renderTotalLB=renderTotalLB;
+
 function calcLB(){
   let lPts=0,lHits=0,lTotal=0,loPts=0,loHits=0,loTotal=0;
   predictions.filter(p=>p.resolved).forEach(p=>{
@@ -2965,6 +3047,7 @@ function renderPreds(){
   document.getElementById('lb-lovro-pct').textContent=lb.loTotal?`${(lb.loHits/lb.loTotal*100).toFixed(0)}% rez.`:'—';
   document.getElementById('lb-luka-detail').textContent=`${lb.lHits} točnih od ${lb.lTotal}`;
   document.getElementById('lb-lovro-detail').textContent=`${lb.loHits} točnih od ${lb.loTotal}`;
+  renderTotalLB();
 
   // Merge home + away for display
   const allPreds=[
@@ -3227,6 +3310,7 @@ function renderAwayPreds(){
 
   // Render away cards in the shared preds-list (with away badge)
   renderPreds();
+  renderTotalLB();
 }
 window.renderAwayPreds=renderAwayPreds;
 
@@ -3331,6 +3415,21 @@ async function loadKarte(force=false){
   const btn = document.getElementById('karte-refresh-btn');
   const content = document.getElementById('karte-content');
   if(!content) return;
+  // Sezona 2025/26 završila — karte nisu u prodaji do 22.7.2026
+  const now = new Date();
+  const offSeasonStart = new Date('2026-07-01');
+  const offSeasonEnd   = new Date('2026-07-22');
+  if(now >= offSeasonStart && now < offSeasonEnd){
+    content.innerHTML = `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:40px 24px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:16px;">🏖️</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#fff;margin-bottom:8px;">PAUZA IZMEĐU SEZONA</div>
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:8px;">Sezona 2025/26 je završila.</div>
+        <div style="font-size:13px;color:#A78BFA;">Nova sezona 2026/27 počinje <strong style="color:#fff;">22. srpnja 2026.</strong></div>
+      </div>`;
+    if(btn) btn.classList.remove('spinning');
+    return;
+  }
   if(btn) btn.classList.add('spinning');
 
   content.innerHTML = `<div class="karte-loading-state">
@@ -3816,8 +3915,16 @@ async function init(){
 
     onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();}});
     onValue(ref(db,'goals'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){goals=snap.val();renderGoalStats();renderPlayerStats();renderGoalList();}else{goals=[];}});
-    onValue(ref(db,'predictions'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){predictions=snap.val();renderPreds();}});
-    onValue(ref(db,'predictions_away'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){awayPredictions=snap.val();renderAwayPreds();}else{awayPredictions=[];renderAwayPreds();}});
+    onValue(ref(db,'predictions'),(snap)=>{
+      const val=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
+      _livePredictions=val;
+      if(_activePredSeason===null){predictions=val;renderPreds();}
+    });
+    onValue(ref(db,'predictions_away'),(snap)=>{
+      const val=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
+      _liveAwayPredictions=val;
+      if(_activePredSeason===null){awayPredictions=val;renderAwayPreds();}
+    });
     onValue(ref(db,'karte_manual'),(snap)=>{_karteManualData=snap.exists()?(snap.val()||{}):{};});
     // Raspored iz Firebase — admin može ažurirati, svi čitaju
     onValue(ref(db,'raspored'),(snap)=>{
@@ -3840,6 +3947,7 @@ async function init(){
   const hash=window.location.hash.replace('#','');
   if(['statistika','golovi','prediktor','karte','raspored'].includes(hash))goTo(hash);else goTo('statistika');
   renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
+  loadPredArchive();
 }
 
 /* ===== UREDI STVARNI REZULTAT — DOMAĆE ===== */
@@ -4442,6 +4550,127 @@ async function addRasporedMatch(){
   renderPreds();
 }
 window.addRasporedMatch=addRasporedMatch;
+
+
+// ═══════════════════════════════════════════════════════
+// ARHIVIRANJE SEZONE
+// ═══════════════════════════════════════════════════════
+
+// Current active pred season (null = show current /predictions)
+let _activePredSeason = null; // null = aktualna sezona
+let _predArchiveData  = {};   // { "2025/26": { predictions:[], predictions_away:[] } }
+
+// Load all archived seasons from Firebase
+async function loadPredArchive(){
+  try{
+    const snap = await get(ref(db,'predictions_archive'));
+    if(snap.exists()) _predArchiveData = snap.val()||{};
+  }catch(e){ console.warn('Archive load failed:',e.message); }
+  renderPredSeasonBar();
+}
+window.loadPredArchive=loadPredArchive;
+
+// Render season selector tabs in predictor
+function renderPredSeasonBar(){
+  const bar = document.getElementById('pred-season-bar');
+  if(!bar) return;
+  const seasons = Object.keys(_predArchiveData).sort().reverse();
+  const isAuth  = !!_currentUser;
+
+  bar.innerHTML = `
+    <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;margin-right:2px;">Sezona:</span>
+    <button class="season-btn${_activePredSeason===null?' active':''}"
+      onclick="setPredSeason(null)"
+      style="${_activePredSeason===null?'background:rgba(0,102,204,0.25);border-color:rgba(0,102,204,0.5);color:#7FB5FF;':''}">
+      2026/27 (aktualna)
+    </button>
+    ${seasons.map(s=>`
+      <button class="season-btn${_activePredSeason===s?' active':''}"
+        onclick="setPredSeason('${s}')"
+        style="${_activePredSeason===s?'background:rgba(0,102,204,0.25);border-color:rgba(0,102,204,0.5);color:#7FB5FF;':''}">
+        ${s}
+      </button>`).join('')}
+    ${isAuth ? `<button onclick="document.getElementById('archive-season-modal').classList.add('open')"
+      style="margin-left:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:4px 10px;color:#F87171;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">
+      📦 Zaključi sezonu
+    </button>` : ''}
+  `;
+}
+window.renderPredSeasonBar=renderPredSeasonBar;
+
+// Switch to archived season or back to current
+function setPredSeason(season){
+  _activePredSeason = season;
+  if(season === null){
+    // Restore live Firebase data
+    predictions      = _livePredictions;
+    awayPredictions  = _liveAwayPredictions;
+  } else {
+    const arch = _predArchiveData[season] || {};
+    predictions      = arch.predictions      || [];
+    awayPredictions  = arch.predictions_away || [];
+  }
+  renderPredSeasonBar();
+  renderPreds();
+  renderAwayPreds();
+}
+window.setPredSeason=setPredSeason;
+
+// Save live copies so we can restore when switching back
+let _livePredictions     = [];
+let _liveAwayPredictions = [];
+
+// Archive current season and reset
+async function archiveSeason(){
+  if(!_currentUser){ showToast('⚠️ Trebaš biti prijavljen!','#1A0A0A','#F87171'); return; }
+  const seasonName = document.getElementById('archive-season-name').value.trim();
+  if(!seasonName){ showToast('⚠️ Upiši naziv sezone!','#1A0A0A','#F87171'); return; }
+
+  try{
+    // 1. Save current predictions to archive
+    await set(ref(db,`predictions_archive/${seasonName}/predictions`),      _livePredictions);
+    await set(ref(db,`predictions_archive/${seasonName}/predictions_away`), _liveAwayPredictions);
+
+    // 2. Clear active predictions
+    await set(ref(db,'predictions'),      []);
+    await set(ref(db,'predictions_away'), []);
+
+    // 3. Update local state
+    _predArchiveData[seasonName] = {
+      predictions:      _livePredictions,
+      predictions_away: _liveAwayPredictions
+    };
+    _livePredictions     = [];
+    _liveAwayPredictions = [];
+    predictions          = [];
+    awayPredictions      = [];
+    _activePredSeason    = null;
+
+    document.getElementById('archive-season-modal').classList.remove('open');
+    renderPredSeasonBar();
+    renderPreds();
+    renderAwayPreds();
+    showToast(`✅ Sezona ${seasonName} arhivirana!`,'#0A2A0A','#4ADE80');
+  }catch(e){
+    showToast('❌ Greška: '+e.message,'#1A0A0A','#F87171');
+  }
+}
+window.archiveSeason=archiveSeason;
+
+// Auto-archive check: if date >= 1.7.2026 and predictions exist from 2025/26,
+// show a banner suggesting to archive
+function checkArchiveBanner(){
+  const now = new Date();
+  const archiveDate = new Date('2026-07-01');
+  if(now < archiveDate) return;
+  if(!_currentUser) return;
+  if(_predArchiveData['2025/26']) return; // already archived
+  if(!_livePredictions.length && !_liveAwayPredictions.length) return;
+
+  const banner = document.getElementById('archive-banner');
+  if(banner) banner.style.display = '';
+}
+window.checkArchiveBanner=checkArchiveBanner;
 
 
 init();
