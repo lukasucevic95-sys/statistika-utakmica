@@ -153,6 +153,9 @@ tbody td.td-right{text-align:right;}
 .badge-uel{background:rgba(232,100,12,0.2);color:#FFAA70;border:1px solid rgba(232,100,12,0.4);}
 .badge-ecl{background:rgba(0,135,90,0.2);color:#50D49A;border:1px solid rgba(0,135,90,0.4);}
 .badge-rep{background:rgba(204,0,0,0.2);color:#FF7070;border:1px solid rgba(204,0,0,0.4);}
+.badge-ucl-q{background:rgba(240,192,48,0.12);color:#FDE68A;border:1px solid rgba(240,192,48,0.35);opacity:0.8;}
+.badge-uel-q{background:rgba(255,140,62,0.12);color:#FDBA74;border:1px solid rgba(255,140,62,0.35);opacity:0.8;}
+.badge-ecl-q{background:rgba(77,201,154,0.12);color:#86EFAC;border:1px solid rgba(77,201,154,0.35);opacity:0.8;}
 .badge-kup{background:rgba(91,45,142,0.3);color:#C09AFF;border:1px solid rgba(91,45,142,0.5);}
 .badge-superkup{background:rgba(193,122,0,0.25);color:#FFCC44;border:1px solid rgba(193,122,0,0.5);}
 .result-pill{display:inline-block;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
@@ -447,8 +450,19 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 @media(max-width:768px){
   .header{padding:22px 18px 18px;overflow:hidden;}
   .header h1{font-size:34px;letter-spacing:2px;}
-  /* Shrink decorative overlays on tablet */
-  .header>div[style*="position:absolute"][style*="right:0"]{opacity:0.12!important;}
+  /* Shrink trophy ticker on tablet */
+  #trophy-inner>div{min-width:200px!important;padding:7px 11px!important;}
+  #trophy-inner>div>div:first-child{font-size:12px!important;}
+  #trophy-inner>div>div:not(:first-child){font-size:10px!important;line-height:1.5!important;}
+}
+@media(max-width:600px){
+  /* Na mobitelu, sakrij ticker i stavi kompaktni prikaz */
+  #trophy-ticker-wrap{height:38px!important;}
+  #trophy-inner>div{min-width:160px!important;padding:5px 10px!important;border-radius:7px!important;}
+  #trophy-inner>div>div:first-child{font-size:11px!important;margin-bottom:2px!important;}
+  #trophy-inner>div>div:not(:first-child){font-size:9.5px!important;line-height:1.4!important;}
+  /* Sakrij BBB na mobitelu */
+  #trophy-bbb{display:none!important;}
 }
 
 /* ===== KARTE PAGE ===== */
@@ -643,9 +657,9 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <!-- fade lijevo -->
       <div style="position:absolute;left:0;top:0;bottom:0;width:60px;background:linear-gradient(90deg,var(--bg),transparent);z-index:2;pointer-events:none;"></div>
       <!-- BBB subtle bg text -->
-      <div style="position:absolute;bottom:-12px;right:16px;font-family:'Bebas Neue',sans-serif;font-size:88px;letter-spacing:8px;color:rgba(77,159,255,0.06);pointer-events:none;line-height:1;z-index:0;">BBB</div>
+      <div id="trophy-bbb" style="position:absolute;bottom:-12px;right:16px;font-family:'Bebas Neue',sans-serif;font-size:88px;letter-spacing:8px;color:rgba(77,159,255,0.06);pointer-events:none;line-height:1;z-index:0;">BBB</div>
       <!-- ticker track -->
-      <div style="position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;padding-left:20px;">
+      <div id="trophy-ticker-wrap" style="position:absolute;inset:0;display:flex;align-items:center;overflow:hidden;padding-left:20px;">
         <div id="trophy-inner" style="display:flex;gap:16px;animation:tickerScroll 44s linear infinite;will-change:transform;">
 
           <!-- CARD 1: Prvaci Hrvatske -->
@@ -773,10 +787,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button id="spt-lovro" class="stat-person-tab"            onclick="setStatPerson('lovro')">🔷 Samo Lovro</button>
     </div>
     <div class="stats-bar">
-      <div class="stat-card sc-total clickable" onclick="openTop5('wld')"><div class="stat-label">Ukupno utakmica</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub" id="stat-comp-label">svih natjecanja</div></div>
-      <div class="stat-card sc-wdl clickable" onclick="openTop5('wld')"><div class="stat-label">P / R / P</div><div class="stat-value" id="stat-wdl">0/0/0</div><div class="stat-sub" id="stat-wdl-pct">—</div></div>
+      <div class="stat-card sc-total clickable" onclick="openTop5('totals')"><div class="stat-label">Ukupno utakmica</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub" id="stat-comp-label">svih natjecanja</div></div>
+      <div class="stat-card sc-wdl clickable" onclick="openTop5('unbeaten')"><div class="stat-label">P / R / P</div><div class="stat-value" id="stat-wdl">0/0/0</div><div class="stat-sub" id="stat-wdl-pct">—</div></div>
       <div class="stat-card sc-views clickable" onclick="openTop5('viewers')"><div class="stat-label">Ukupno gledatelja</div><div class="stat-value" id="stat-viewers">0</div><div class="stat-sub">svi stadioni</div></div>
-      <div class="stat-card sc-avg clickable" onclick="openTop5('viewers')"><div class="stat-label">Prosjek gle.</div><div class="stat-value" id="stat-avg">0</div><div class="stat-sub">po utakmici</div></div>
+      <div class="stat-card sc-avg clickable" onclick="openTop5('stadions')"><div class="stat-label">Prosjek gle.</div><div class="stat-value" id="stat-avg">0</div><div class="stat-sub">po utakmici</div></div>
       <div class="stat-card sc-best clickable" onclick="openTop5('viewers')"><div class="stat-label">Rekord gle.</div><div class="stat-value" id="stat-best">0</div><div class="stat-sub" id="stat-best-match">rekord</div></div>
       <div class="stat-card sc-goals clickable" onclick="openTop5('goals')"><div class="stat-label">Zabijeni golovi</div><div class="stat-value" id="stat-scored">0</div><div class="stat-sub" id="stat-scored-avg">—</div></div>
       <div class="stat-card clickable" onclick="openTop5('time')" style="position:relative;overflow:hidden;"><div class="stat-card::before" style="content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#1D4ED8,#7C3AED);"></div><div class="stat-label">Najčešći termin</div><div class="stat-value" id="stat-doba">—</div><div class="stat-sub" id="stat-doba-sub">—</div></div>
@@ -860,7 +874,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="form-row"><label class="form-label">Početak (hh:mm)</label><input class="form-input" type="time" id="f-vrijeme" placeholder="npr. 20:30"></div>
           <div class="form-row"><label class="form-label">Natjecanje</label>
             <select class="form-select" id="f-natjecanje" onchange="updateBtnColor()">
-              <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
               <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
               <option>Super kup</option><option>Kup</option>
             </select>
@@ -1149,7 +1163,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Početak (hh:mm)</label><input class="form-input-pred" type="time" id="em-vrijemePoc"></div>
       <div class="modal-row"><label class="form-label">Natjecanje</label>
         <select class="form-input-pred" id="em-natjecanje">
-          <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+          <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
           <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
           <option>Reprezentacija</option><option>Super kup</option><option>Kup</option>
         </select>
@@ -1306,7 +1320,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <div class="form-group"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="p-datum"></div>
             <div class="form-group"><label class="form-label">Natjecanje</label>
               <select class="form-input-pred" id="p-natjecanje">
-                <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+                <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
                 <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
                 <option>Super kup</option><option>Kup</option>
               </select>
@@ -1389,7 +1403,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div class="form-group"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="pa-datum"></div>
               <div class="form-group"><label class="form-label">Natjecanje</label>
                 <select class="form-input-pred" id="pa-natjecanje">
-                  <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option>
+                  <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
                   <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
                   <option>Super kup</option><option>Kup</option>
                 </select>
@@ -1703,13 +1717,20 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<script>
+  // API key se injektira iz Netlify environment varijable
+  // Postavi FIREBASE_API_KEY u Netlify > Site settings > Environment variables
+  // Netlify će ga ubaciti ovdje putem _headers ili snippets
+  // Ako koristiš lokalno, ručno postavi window.__FK
+  // window.__FK = "tvoj-api-key";  // NIKAD ne commitaj pravi ključ!
+</script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCEKUmO4g1j4OKykcjU5_6W-y2H58HSJDM",
+  apiKey: window.__FK || "REPLACE_WITH_YOUR_API_KEY",
   authDomain: "statistika-utakmica.firebaseapp.com",
   databaseURL: "https://statistika-utakmica-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "statistika-utakmica",
@@ -1742,11 +1763,14 @@ window.addEventListener('hashchange', () => {
 
 /* ===== HELPERS ===== */
 const REP_COMPS=['Liga Nacija','Fifa WCQ','Euro Q','Fifa WCQ','Reprezentacija'];
-const EUR_MAP={UCL:'ucl',UEL:'uel',ECL:'ecl'};
-const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030',uel:'#FF8C3E',ecl:'#4DC99A',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
+const EUR_MAP={UCL:'ucl','UCL Q':'ucl-q',UEL:'uel','UEL Q':'uel-q',ECL:'ecl','ECL Q':'ecl-q'};
+const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030','ucl-q':'#F0C03099',uel:'#FF8C3E','uel-q':'#FF8C3E99',ecl:'#4DC99A','ecl-q':'#4DC99A99',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
 
 function getCompClass(nat){
   if(nat==='HNL')return'hnl';
+  if(nat==='UCL Q')return'ucl-q';
+  if(nat==='UEL Q')return'uel-q';
+  if(nat==='ECL Q')return'ecl-q';
   if(EUR_MAP[nat])return EUR_MAP[nat];
   if(REP_COMPS.includes(nat))return'rep';
   if(nat==='Kup')return'kup';
@@ -1863,7 +1887,11 @@ function filterMatches(){
   return matches.filter(m=>{
     let pass=true;
     if(currentFilter==='rep') pass=REP_COMPS.includes(m.natjecanje);
-    else if(currentFilter!=='all') pass=m.natjecanje===currentFilter;
+    else if(currentFilter!=='all'){
+    // UCL filter prikazuje i UCL Q, UEL→UEL Q, ECL→ECL Q
+    const qMap={'UCL':['UCL','UCL Q'],'UEL':['UEL','UEL Q'],'ECL':['ECL','ECL Q']};
+    pass=qMap[currentFilter]?qMap[currentFilter].includes(m.natjecanje):m.natjecanje===currentFilter;
+  }
     if(!pass) return false;
     if(activeSeason!=='all' && getSeason(m.datum)!==activeSeason) return false;
     if(activeTimeFilter!=='all'){
@@ -3670,7 +3698,7 @@ function renderKarte(){
           <div><label class="form-label">Protivnik</label><input class="form-input" type="text" id="km-prot" placeholder="npr. Hajduk" style="width:100%;"></div>
           <div><label class="form-label">Natjecanje</label>
             <select class="form-select" id="km-nat" style="width:100%;">
-              <option>HNL</option><option>UCL</option><option>UEL</option><option>ECL</option><option>Kup</option><option>Super kup</option>
+              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option><option>Kup</option><option>Super kup</option>
             </select>
           </div>
         </div>
@@ -4977,6 +5005,66 @@ function openTop5(type){
       detail:`${d.wins} pobjeda od ${d.count} utakmica (${Math.round(d.wins/d.count*100)}%)`,
       val:d.count+'ut.', color:'#A78BFA'
     }));
+  }
+  else if(type==='unbeaten'){
+    titleText='🔥 Najduže serije bez poraza (P+R)';
+    const sorted=[...fm].sort((a,b)=>a.datum<b.datum?-1:1);
+    let streaks=[], cur=0, start=null, wins=0, draws=0;
+    sorted.forEach(m=>{
+      const r=m.rezultat.split('-').map(Number);
+      const isW=r[0]>r[1], isD=r[0]===r[1], isL=r[0]<r[1];
+      if(!isL){
+        if(!start)start=m;
+        cur++; if(isW)wins++; else draws++;
+      }else{
+        if(cur>=2) streaks.push({len:cur,wins,draws,from:start,to:m});
+        cur=0;start=null;wins=0;draws=0;
+      }
+    });
+    if(cur>=1) streaks.push({len:cur,wins,draws,from:start,to:sorted[sorted.length-1]});
+    streaks.sort((a,b)=>b.len-a.len);
+    rows=streaks.slice(0,5).map((s,i)=>({
+      rank:i+1,
+      name:`${s.len} utakmica bez poraza`,
+      detail:`${s.wins}P + ${s.draws}R · ${fmtDate(s.from.datum)} – ${fmtDate(s.to?.datum||s.from.datum)}`,
+      val:s.len+'🔥', color:'#F97316'
+    }));
+    if(!rows.length) rows=[{rank:1,name:'Nema podataka',detail:'',val:'',color:'#666'}];
+  }
+  else if(type==='stadions'){
+    titleText='🏟️ Prosjek gledatelja po stadionima';
+    const sg={};
+    fm.filter(m=>m.gledatelji&&m.stadion).forEach(m=>{
+      const k=m.stadion||'Maksimir';
+      if(!sg[k])sg[k]={sum:0,count:0,max:0,maxMatch:null};
+      sg[k].sum+=m.gledatelji; sg[k].count++;
+      if(m.gledatelji>sg[k].max){sg[k].max=m.gledatelji;sg[k].maxMatch=m;}
+    });
+    rows=Object.entries(sg).sort((a,b)=>b[1].sum/b[1].count-(a[1].sum/a[1].count)).slice(0,8).map(([st,d],i)=>({
+      rank:i+1, name:st,
+      detail:`${d.count} utakmica · rekord: ${fmtNum(d.max)} (${d.maxMatch?d.maxMatch.protivnik:'—'})`,
+      val:fmtNum(Math.round(d.sum/d.count)), color:'#60A5FA'
+    }));
+  }
+  else if(type==='totals'){
+    titleText='📊 Pobjede, remiji i porazi';
+    const sorted=[...fm].sort((a,b)=>a.datum<b.datum?-1:1);
+    let wStreak=0, wStreakMax=0, wStreakStart=null, wStreakMaxStart=null;
+    let wins=0,draws=0,losses=0,wStreakCur=null;
+    sorted.forEach(m=>{
+      const r=m.rezultat.split('-').map(Number);
+      if(r[0]>r[1]){wins++;wStreak++;if(!wStreakCur)wStreakCur=m;if(wStreak>wStreakMax){wStreakMax=wStreak;wStreakMaxStart=wStreakCur;}}
+      else if(r[0]===r[1]){draws++;wStreak=0;wStreakCur=null;}
+      else{losses++;wStreak=0;wStreakCur=null;}
+    });
+    const pct=fm.length?Math.round(wins/fm.length*100):0;
+    rows=[
+      {rank:1,name:`${wins} pobjeda`,detail:`od ${fm.length} utakmica · ${pct}% win rate`,val:pct+'%',color:'#4ADE80'},
+      {rank:2,name:`${draws} remija`,detail:`${Math.round(draws/fm.length*100)}% utakmica`,val:draws+'R',color:'#9CA3AF'},
+      {rank:3,name:`${losses} poraza`,detail:`${Math.round(losses/fm.length*100)}% utakmica`,val:losses+'P',color:'#F87171'},
+      {rank:4,name:`Najdulja pobjednička serija: ${wStreakMax}`,detail:wStreakMaxStart?`od ${fmtDate(wStreakMaxStart.datum)}`:'—',val:wStreakMax+'🏆',color:'#FACC15'},
+      {rank:5,name:`Bez poraza ukupno: ${wins+draws}`,detail:`pobjeda + remija`,val:(wins+draws)+'',color:'#F97316'},
+    ];
   }
 
   title.textContent=titleText;
