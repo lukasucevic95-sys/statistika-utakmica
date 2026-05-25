@@ -26,7 +26,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .header{position:relative;padding:36px 40px 26px;background:linear-gradient(135deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border-bottom:1px solid var(--border);overflow:hidden;}
 .header::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;pointer-events:none;}
 .header-stat::before{background:radial-gradient(circle,rgba(0,100,220,0.18) 0%,transparent 70%);}
-.header-pred::before{background:radial-gradient(circle,rgba(100,0,220,0.15) 0%,transparent 70%);}
+.header-pred::before{background:radial-gradient(circle,rgba(200,160,0,0.18) 0%,transparent 70%);}
 .header-gol::before{background:radial-gradient(circle,rgba(0,180,80,0.15) 0%,transparent 70%);}
 .header::after{position:absolute;bottom:-20px;right:30px;font-family:'Bebas Neue',sans-serif;font-size:160px;color:rgba(255,255,255,0.03);letter-spacing:10px;pointer-events:none;}
 .header-stat::after{content:'';}
@@ -38,7 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .header-inner{position:relative;z-index:1;}
 .header h1{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:4px;color:#fff;line-height:1;margin-bottom:5px;}
 .header-stat h1 span{color:#4D9FFF;}
-.header-pred h1 span{color:#A78BFA;}
+.header-pred h1 span{color:#FACC15;}
 .header-gol h1 span{color:#34D399;}
 .header p{font-size:13px;font-weight:500;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;}
 
@@ -102,12 +102,12 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .stat-person-tab:hover{border-color:rgba(77,159,255,0.4);}
 .stat-person-tab.active-all{background:rgba(100,130,180,0.2);border-color:rgba(100,130,180,0.5);color:#fff;}
 .stat-person-tab.active-luka{background:rgba(96,165,250,0.2);border-color:rgba(96,165,250,0.5);color:#60A5FA;}
-.stat-person-tab.active-lovro{background:rgba(125,211,252,0.2);border-color:rgba(125,211,252,0.5);color:#7DD3FC;}
+.stat-person-tab.active-lovro{background:rgba(45,212,191,0.15);border-color:rgba(45,212,191,0.4);color:#2DD4BF;}
 .stat-person-tab{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 14px;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:5px;}
 .stat-person-tab:hover{border-color:rgba(77,159,255,0.4);}
 .stat-person-tab.active-all{background:rgba(100,130,180,0.2);border-color:rgba(100,130,180,0.5);color:#fff;}
 .stat-person-tab.active-luka{background:rgba(96,165,250,0.2);border-color:rgba(96,165,250,0.5);color:#60A5FA;}
-.stat-person-tab.active-lovro{background:rgba(125,211,252,0.2);border-color:rgba(125,211,252,0.5);color:#7DD3FC;}
+.stat-person-tab.active-lovro{background:rgba(45,212,191,0.15);border-color:rgba(45,212,191,0.4);color:#2DD4BF;}
 .header-right{display:flex;gap:7px;align-items:center;flex-wrap:wrap;}
 .view-tabs{display:flex;gap:5px;}
 .view-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text-muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
@@ -316,14 +316,14 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .lb-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;position:relative;overflow:hidden;}
 .lb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .lb-luka::before{background:linear-gradient(90deg,#1D4ED8,#60A5FA);}
-.lb-lovro::before{background:linear-gradient(90deg,#7C3AED,#C084FC);}
+.lb-lovro::before{background:linear-gradient(90deg,#0891B2,#2DD4BF);}
 .lb-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;margin-bottom:2px;}
 .lb-luka .lb-name{color:#60A5FA;}
-.lb-lovro .lb-name{color:#C084FC;}
+.lb-lovro .lb-name{color:#2DD4BF;}
 .lb-score{font-family:'Bebas Neue',sans-serif;font-size:50px;line-height:1;letter-spacing:2px;}
 .lb-sub{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 .lb-pct{font-size:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-top:5px;}
-.lb-luka .lb-pct{color:#60A5FA;}.lb-lovro .lb-pct{color:#C084FC;}
+.lb-luka .lb-pct{color:#60A5FA;}.lb-lovro .lb-pct{color:#2DD4BF;}
 
 .score-legend{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;display:flex;flex-direction:column;gap:5px;}
 .score-legend-item{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-muted);}
@@ -341,10 +341,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .predictors-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .predictor-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;}
 .predictor-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
-.pl-luka{color:#60A5FA;}.pl-lovro{color:#7DD3FC;}
+.pl-luka{color:#60A5FA;}.pl-lovro{color:#2DD4BF;}
 .pred-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
 .pred-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.btn-pred{border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#4C1D95,#7C3AED);width:100%;}
+.btn-pred{border:none;border-radius:8px;padding:9px;color:#000;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#92701A,#D4A017);width:100%;}
 .btn-pred:hover{transform:translateY(-1px);filter:brightness(1.1);}
 
 .btn-sm{border:none;border-radius:6px;padding:4px 10px;font-family:'Barlow',sans-serif;font-weight:700;font-size:11px;cursor:pointer;transition:all 0.2s;}
@@ -357,7 +357,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .preds-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
 .filter-tabs{display:flex;gap:5px;}
 .filter-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text-muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
-.filter-tab.active{background:rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.5);color:#C084FC;}
+.filter-tab.active{background:rgba(250,204,21,0.15);border-color:rgba(250,204,21,0.4);color:#FACC15;}
 
 .pred-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;transition:border-color 0.2s;}
 .pred-card:hover{border-color:rgba(124,58,237,0.3);}
@@ -605,11 +605,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .rasp-empty-icon{font-size:48px;margin-bottom:12px;}
 .pred-type-tabs{display:flex;gap:8px;margin-bottom:16px;}
 .pred-type-tab{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:9px;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all 0.2s;color:var(--text-muted);}
-.pred-type-tab.active-home{background:rgba(124,58,237,0.25);border-color:rgba(124,58,237,0.5);color:#A78BFA;}
-.pred-type-tab.active-away{background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4);color:#F87171;}
+.pred-type-tab.active-home{background:rgba(250,204,21,0.18);border-color:rgba(250,204,21,0.5);color:#FACC15;}
+.pred-type-tab.active-away{background:rgba(234,88,12,0.2);border-color:rgba(234,88,12,0.45);color:#FB923C;}
 .pred-type-tab:hover{color:#fff;}
-.away-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(239,68,68,0.2);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3);margin-left:5px;}
-.home-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(124,58,237,0.2);color:#C4B5FD;border:1px solid rgba(124,58,237,0.3);margin-left:5px;}
+.away-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(234,88,12,0.2);color:#FDBA74;border:1px solid rgba(234,88,12,0.35);margin-left:5px;}
+.home-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.35);margin-left:5px;}
 </style>
 </head>
 <body>
@@ -912,7 +912,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
                 <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
               </label>
               <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text);">
-                <input type="checkbox" id="f-prisutan-lovro" checked style="accent-color:#7DD3FC;width:14px;height:14px;cursor:pointer;">
+                <input type="checkbox" id="f-prisutan-lovro" checked style="accent-color:#2DD4BF;width:14px;height:14px;cursor:pointer;">
                 <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
               </label>
             </div>
@@ -1195,7 +1195,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
           </label>
           <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
-            <input type="checkbox" id="em-prisutan-lovro" style="accent-color:#7DD3FC;width:14px;height:14px;cursor:pointer;">
+            <input type="checkbox" id="em-prisutan-lovro" style="accent-color:#2DD4BF;width:14px;height:14px;cursor:pointer;">
             <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
           </label>
         </div>
@@ -1213,19 +1213,19 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   <div class="header header-pred">
     <!-- Welcome to Blue Hell overlay (right side) with BBB logo -->
     <div style="position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;">
-      <div style="position:absolute;top:-50px;right:-50px;width:350px;height:350px;background:radial-gradient(circle,rgba(124,58,237,0.18) 0%,transparent 70%);"></div>
+      <div style="position:absolute;top:-50px;right:-50px;width:350px;height:350px;background:radial-gradient(circle,rgba(200,160,0,0.18) 0%,transparent 70%);"></div>
       <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.08;">
         <defs><pattern id="pstripes" x="0" y="0" width="36" height="130" patternUnits="userSpaceOnUse" patternTransform="rotate(-12)">
-          <rect width="16" height="130" fill="#7C3AED" opacity="0.7"/>
+          <rect width="16" height="130" fill="#B8860B" opacity="0.7"/>
           <rect x="18" width="18" height="130" fill="#1e1b4b" opacity="0.5"/>
         </pattern></defs>
         <rect width="640" height="130" fill="url(#pstripes)"/>
       </svg>
       <div style="position:relative;z-index:1;display:flex;align-items:center;gap:16px;padding-right:24px;">
         <div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:4px;color:#A78BFA;line-height:1;margin-bottom:4px;opacity:0.85;">KAD IGRAŠ TI,</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:4px;color:#FACC15;line-height:1;margin-bottom:4px;opacity:0.85;">KAD IGRAŠ TI,</div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:#fff;line-height:1;text-shadow:0 0 20px rgba(167,139,250,0.5);">JA PRATIM TE 💙</div>
-          <div style="font-size:9px;letter-spacing:3px;color:rgba(167,139,250,0.55);margin-top:4px;font-weight:700;">BBB · 1986</div>
+          <div style="font-size:9px;letter-spacing:3px;color:rgba(250,204,21,0.6);margin-top:4px;font-weight:700;">BBB · 1986</div>
         </div>
       </div>
     </div>
@@ -1250,8 +1250,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       </div>
 
       <!-- UKUPNI LEADERBOARD (domaće + gostujuće) -->
-      <div style="background:linear-gradient(135deg,rgba(15,23,42,0.9),rgba(20,30,55,0.9));border:1px solid rgba(100,140,220,0.2);border-radius:14px;padding:14px 18px;margin-bottom:16px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:10px;">🏆 UKUPNO — DOMAĆE + GOSTUJUĆE</div>
+      <div style="background:linear-gradient(135deg,rgba(20,16,0,0.9),rgba(35,26,0,0.9));border:1px solid rgba(250,204,21,0.15);border-radius:14px;padding:14px 18px;margin-bottom:16px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#FACC15;margin-bottom:10px;">🏆 UKUPNO — DOMAĆE + GOSTUJUĆE</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div style="background:rgba(29,78,216,0.12);border:1px solid rgba(96,165,250,0.25);border-radius:10px;padding:12px;text-align:center;">
             <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#60A5FA;margin-bottom:4px;">🔵 LUKA</div>
@@ -1263,8 +1263,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div style="text-align:center;"><div style="font-size:10px;color:var(--text-muted);">Gostujuće</div><div style="font-size:13px;font-weight:700;color:#F87171;" id="lb-total-luka-away">0</div></div>
             </div>
           </div>
-          <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(125,211,252,0.2);border-radius:10px;padding:12px;text-align:center;">
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#7DD3FC;margin-bottom:4px;">🔷 LOVRO</div>
+          <div style="background:rgba(180,140,0,0.08);border:1px solid rgba(125,211,252,0.2);border-radius:10px;padding:12px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#2DD4BF;margin-bottom:4px;">🔷 LOVRO</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;line-height:1;" id="lb-total-lovro-score">0</div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">bodova ukupno</div>
             <div style="display:flex;justify-content:center;gap:12px;margin-top:8px;">
@@ -1306,10 +1306,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1/2/3 boda — gledatelji (bliži/±500/±100)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>1 bod — točna minuta početka (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — točna minuta početka (samo točno!)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#F9A8D4"></div>1 bod — točna minuta poluvremena (samo točno!)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola (samo točno!)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>2 boda — točan poluvremeni rezultat</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>2 boda — točan poluvremeni rezultat</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+1 bonus — točan rezultat + gledatelji + oba kašnjenja</div>
       </div>
 
@@ -1368,14 +1368,14 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
         <!-- Away leaderboard -->
         <div class="leaderboard" style="margin-bottom:14px;">
-          <div class="lb-card" style="border-top:3px solid #EF4444;">
+          <div class="lb-card" style="border-top:3px solid #EA580C;">
             <div class="lb-name" style="color:#F87171;">Luka</div>
             <div class="lb-score" id="lb-away-luka-score">0</div>
             <div class="lb-sub">bod. (gost.)</div>
             <div class="lb-pct" id="lb-away-luka-pct" style="color:#F87171;">—</div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:3px;" id="lb-away-luka-detail">0 od 0</div>
           </div>
-          <div class="lb-card" style="border-top:3px solid #EF4444;">
+          <div class="lb-card" style="border-top:3px solid #EA580C;">
             <div class="lb-name" style="color:#FCA5A5;">Lovro</div>
             <div class="lb-score" id="lb-away-lovro-score">0</div>
             <div class="lb-sub">bod. (gost.)</div>
@@ -1391,7 +1391,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>1/2/3 boda — gledatelji (bliži/±500/±100)</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#A78BFA"></div>2 boda — točan poluvremeni rezultat</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>2 boda — točan poluvremeni rezultat</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola</div>
         </div>
 
@@ -1430,7 +1430,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
                 </div>
               </div>
             </div>
-            <button class="btn-pred" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="addAwayPrediction()">💾 Spremi gostujuću predikciju</button>
+            <button class="btn-pred" style="background:linear-gradient(135deg,#7C2D12,#EA580C);" onclick="addAwayPrediction()">💾 Spremi gostujuću predikciju</button>
           </div>
         </div>
       </div><!-- end pred-away-section -->
@@ -1484,7 +1484,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Minuta 1. gola (prazno ako nema)</label><input class="form-input-pred" type="text" id="acm-fg" placeholder="npr. 23 ili 45+"></div>
     </div>
     <div class="modal-btns">
-      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="confirmAwayResult()">Potvrdi</button>
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7C2D12,#EA580C);" onclick="confirmAwayResult()">Potvrdi</button>
       <button class="modal-btn-cancel" onclick="document.getElementById('away-confirm-modal').classList.remove('open')">Odustani</button>
     </div>
   </div>
@@ -1528,7 +1528,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Lovro — 1. gol (min)</label><input class="form-input-pred" type="text" id="eapm-lo-fg"></div>
     </div>
     <div class="modal-btns">
-      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="saveEditAwayPred()">💾 Spremi</button>
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7C2D12,#EA580C);" onclick="saveEditAwayPred()">💾 Spremi</button>
       <button class="modal-btn-cancel" onclick="document.getElementById('edit-away-pred-modal').classList.remove('open')">Odustani</button>
     </div>
   </div>
@@ -1568,7 +1568,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Minuta 1. gola</label><input class="form-input-pred" type="text" id="eaam-fg" placeholder="npr. 23 ili 45+"></div>
     </div>
     <div class="modal-btns">
-      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7F1D1D,#EF4444);" onclick="saveEditActualAway()">💾 Spremi</button>
+      <button class="modal-btn-ok" style="background:linear-gradient(135deg,#7C2D12,#EA580C);" onclick="saveEditActualAway()">💾 Spremi</button>
       <button class="modal-btn-cancel" onclick="document.getElementById('edit-actual-away-modal').classList.remove('open')">Odustani</button>
     </div>
   </div>
@@ -1627,20 +1627,39 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- Edit display name modal -->
+<div class="modal-overlay" id="edit-name-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:320px;">
+    <h3>✏️ Promijeni ime</h3>
+    <div class="modal-sub">Ime koje se prikazuje u navigaciji</div>
+    <div class="modal-inputs">
+      <div class="modal-row">
+        <label class="form-label">Ime</label>
+        <input class="form-input-pred" type="text" id="edit-name-input" placeholder="npr. Luka" maxlength="20"
+          style="width:100%;" onkeydown="if(event.key==='Enter')saveDisplayName()">
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="saveDisplayName()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-name-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- ======== PAGE: RASPORED ======== -->
 <div class="page" id="page-raspored">
   <div class="header header-stat" style="background:linear-gradient(135deg,#001430 0%,#0A0A2E 60%,#0D0D3A 100%);">
     <div style="position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;">
-      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(100,0,220,0.12) 0%,transparent 70%);"></div>
+      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(180,140,0,0.12) 0%,transparent 70%);"></div>
       <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:28px;">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:10px;color:rgba(167,139,250,0.15);line-height:1;">RASPORED</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(167,139,250,0.3);line-height:1;margin-top:-4px;">NADOLAZEĆE UTAKMICE</div>
       </div>
     </div>
     <div class="header-inner" style="position:relative;z-index:1;">
-      <h1>📅 <span style="color:#A78BFA;">Raspored</span></h1>
+      <h1>📅 <span style="color:#FACC15;">Raspored</span></h1>
       <p>GNK Dinamo Zagreb · Nadolazeće utakmice</p>
     </div>
   </div>
@@ -1727,7 +1746,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: window.__FK || "REPLACE_WITH_YOUR_API_KEY",
@@ -4911,8 +4930,10 @@ onAuthStateChanged(auth, user=>{
   const btn=document.getElementById('auth-action-btn');
   if(!label||!btn)return;
   if(user){
-    const name=user.email.split('@')[0];
-    label.textContent=name.charAt(0).toUpperCase()+name.slice(1);
+    // Čitaj display name iz Firebase Auth (radi na svim uređajima)
+    const fallback = user.email.split('@')[0];
+    const displayName = user.displayName || (fallback.charAt(0).toUpperCase()+fallback.slice(1));
+    label.innerHTML = `<span style="cursor:pointer;border-bottom:1px dashed rgba(255,255,255,0.2);" title="Klikni za promjenu imena" onclick="openEditName()">${displayName}</span>`;
     btn.textContent='🚪 Odjava';
     btn.style.color='#F87171';btn.style.borderColor='rgba(248,113,113,0.3)';btn.style.background='rgba(248,113,113,0.1)';
   }else{
@@ -5084,6 +5105,35 @@ window.openTop5=openTop5;
 
 function closeTop5(){ document.getElementById('top5-overlay')?.classList.remove('open'); }
 window.closeTop5=closeTop5;
+
+
+// ── Edit display name ─────────────────────────────────────────────────
+function openEditName(){
+  if(!_currentUser) return;
+  const input = document.getElementById('edit-name-input');
+  if(input) input.value = _currentUser.displayName || '';
+  document.getElementById('edit-name-modal').classList.add('open');
+  setTimeout(()=>input?.focus(), 100);
+}
+window.openEditName = openEditName;
+
+async function saveDisplayName(){
+  if(!_currentUser) return;
+  const input = document.getElementById('edit-name-input');
+  const name = input?.value.trim();
+  if(!name){ showToast('⚠️ Upiši ime!','#1A0A0A','#F87171'); return; }
+  try{
+    // Spremi u Firebase Auth — sinkronizira se na svim uređajima
+    await updateProfile(_currentUser, { displayName: name });
+    document.getElementById('edit-name-modal').classList.remove('open');
+    const label = document.getElementById('auth-user-label');
+    if(label) label.innerHTML = `<span style="cursor:pointer;border-bottom:1px dashed rgba(255,255,255,0.2);" title="Klikni za promjenu imena" onclick="openEditName()">${name}</span>`;
+    showToast('✅ Ime promijenjeno na svim uređajima!','#0A2A0A','#4ADE80');
+  }catch(e){
+    showToast('❌ Greška: '+e.message,'#1A0A0A','#F87171');
+  }
+}
+window.saveDisplayName = saveDisplayName;
 
 
 init();
