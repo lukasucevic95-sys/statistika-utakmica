@@ -1724,34 +1724,39 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="sched-stats-bar" id="sched-stats"></div>
 
     <!-- admin: add new match (only visible when logged in) -->
-    <div class="sched-add-section" id="sched-add-section" style="display:none;">
-      <div class="sched-add-title">➕ Dodaj utakmicu</div>
-      <div class="sched-add-grid">
-        <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="sa-datum"></div>
-        <div class="form-row"><label class="form-label">Vrijeme (HH:MM)</label><input class="form-input" type="time" id="sa-time" placeholder="20:30"></div>
-        <div class="form-row"><label class="form-label">Natjecanje</label>
-          <select class="form-select" id="sa-nat">
-            <option value="hnl" data-label="">HNL</option>
-            <option value="euro" data-label="★ Europa">UCL pretkolo</option>
-            <option value="euro" data-label="★ Europa">UEL pretkolo</option>
-            <option value="euro" data-label="★ Playoff">Playoff</option>
-            <option value="euro" data-label="★ UCL">UCL</option>
-            <option value="euro" data-label="★ UEL">UEL</option>
-            <option value="euro" data-label="★ ECL">ECL</option>
-            <option value="hnl" data-label="">Kup</option>
-            <option value="hnl" data-label="">Super kup</option>
-          </select>
+    <div id="sched-add-section" style="display:none;margin-bottom:14px;">
+      <button onclick="schedToggleAdd()" id="sched-add-toggle"
+        style="background:rgba(77,159,255,0.12);border:1px solid rgba(77,159,255,0.25);border-radius:8px;padding:6px 14px;color:#7FB5FF;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+        <span id="sched-add-icon">➕</span> Dodaj utakmicu <span id="sched-add-arrow" style="opacity:0.5;font-size:10px;">▼</span>
+      </button>
+      <div id="sched-add-form" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:0 0 12px 12px;border-top:none;padding:14px 16px;margin-top:-1px;">
+        <div class="sched-add-grid">
+          <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="sa-datum"></div>
+          <div class="form-row"><label class="form-label">Vrijeme (HH:MM)</label><input class="form-input" type="time" id="sa-time" placeholder="20:30"></div>
+          <div class="form-row"><label class="form-label">Natjecanje</label>
+            <select class="form-select" id="sa-nat">
+              <option value="hnl" data-label="">HNL</option>
+              <option value="euro" data-label="★ Europa">UCL pretkolo</option>
+              <option value="euro" data-label="★ Europa">UEL pretkolo</option>
+              <option value="euro" data-label="★ Playoff">Playoff</option>
+              <option value="euro" data-label="★ UCL">UCL</option>
+              <option value="euro" data-label="★ UEL">UEL</option>
+              <option value="euro" data-label="★ ECL">ECL</option>
+              <option value="hnl" data-label="">Kup</option>
+              <option value="hnl" data-label="">Super kup</option>
+            </select>
+          </div>
+          <div class="form-row"><label class="form-label">Runda / kolo</label><input class="form-input" type="text" id="sa-label" placeholder="npr. 1. kolo"></div>
+          <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="sa-opp" placeholder="Npr. Hajduk"></div>
+          <div class="form-row"><label class="form-label">Domaće / Gostovanje</label>
+            <select class="form-select" id="sa-home">
+              <option value="true">🏟️ Domaće</option>
+              <option value="false">✈️ Gostovanje</option>
+            </select>
+          </div>
         </div>
-        <div class="form-row"><label class="form-label">Runda / kolo</label><input class="form-input" type="text" id="sa-label" placeholder="npr. 1. kolo"></div>
-        <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="sa-opp" placeholder="Npr. Hajduk"></div>
-        <div class="form-row"><label class="form-label">Domaće / Gostovanje</label>
-          <select class="form-select" id="sa-home">
-            <option value="true">🏟️ Domaće</option>
-            <option value="false">✈️ Gostovanje</option>
-          </select>
-        </div>
+        <button class="btn-add" style="margin-top:10px;width:100%;" onclick="schedAddMatch()">💾 Dodaj utakmicu</button>
       </div>
-      <button class="btn-add" style="margin-top:10px;width:100%;" onclick="schedAddMatch()">💾 Dodaj utakmicu</button>
     </div>
 
     <!-- filters -->
@@ -4617,6 +4622,19 @@ function schedFilter(type, btn){
 }
 window.schedFilter = schedFilter;
 
+function schedToggleAdd(){
+  const form = document.getElementById('sched-add-form');
+  const arrow = document.getElementById('sched-add-arrow');
+  const icon = document.getElementById('sched-add-icon');
+  const btn = document.getElementById('sched-add-toggle');
+  const open = form.style.display === 'none';
+  form.style.display = open ? 'block' : 'none';
+  arrow.textContent = open ? '▲' : '▼';
+  btn.style.borderRadius = open ? '8px 8px 0 0' : '8px';
+  btn.style.borderBottom = open ? '1px solid rgba(77,159,255,0.15)' : '1px solid rgba(77,159,255,0.25)';
+}
+window.schedToggleAdd = schedToggleAdd;
+
 async function schedAddMatch(){
   if(!_currentUser){ showToast('⚠️ Samo admin može dodati utakmicu!','#1A0A0A','#F87171'); return; }
   const datum   = document.getElementById('sa-datum').value;
@@ -4652,8 +4670,12 @@ async function schedAddMatch(){
   _schedMatches.sort((a,b)=>a.sortDate-b.sortDate);
   await set(ref(db,'raspored_2627'), _schedMatches);
   showToast('✅ Utakmica dodana!','#0A1A0A','#4ADE80');
-  // Reset form
+  // Reset form & collapse
   ['sa-datum','sa-time','sa-label','sa-opp'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const form=document.getElementById('sched-add-form');
+  if(form){ form.style.display='none'; }
+  const arrow=document.getElementById('sched-add-arrow'); if(arrow) arrow.textContent='▼';
+  const btn=document.getElementById('sched-add-toggle'); if(btn){ btn.style.borderRadius='8px'; btn.style.borderBottom='1px solid rgba(77,159,255,0.25)'; };
   schedRenderList();
   const statsEl = document.getElementById('sched-stats');
   if(statsEl){
