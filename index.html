@@ -610,6 +610,57 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .pred-type-tab:hover{color:#fff;}
 .away-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(234,88,12,0.2);color:#FDBA74;border:1px solid rgba(234,88,12,0.35);margin-left:5px;}
 .home-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.35);margin-left:5px;}
+
+/* ===== NOVI RASPORED DESIGN ===== */
+.sched-wrap{max-width:680px;margin:0 auto;padding:20px 20px 60px;}
+.sched-stats-bar{display:flex;gap:1px;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:20px;}
+.sched-stat{flex:1;background:var(--surface);padding:12px 10px;text-align:center;}
+.sched-stat-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#4D9FFF;line-height:1;}
+.sched-stat-lbl{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.sched-filters{display:flex;gap:7px;margin-bottom:20px;overflow-x:auto;scrollbar-width:none;padding-bottom:3px;}
+.sched-filters::-webkit-scrollbar{display:none;}
+.sched-filter-btn{flex-shrink:0;padding:7px 16px;border-radius:100px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.sched-filter-btn.active,.sched-filter-btn:hover{background:rgba(0,87,184,0.5);border-color:rgba(77,159,255,0.5);color:#fff;}
+.sched-month-sep{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#4D9FFF;padding:14px 4px 6px;opacity:0.7;}
+.sched-match-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:13px 15px;margin-bottom:6px;display:flex;align-items:center;gap:14px;transition:transform 0.15s,border-color 0.15s;position:relative;}
+.sched-match-card:hover{transform:translateX(3px);border-color:rgba(79,163,232,0.4);}
+.sched-match-card.euro-card{background:rgba(108,63,201,0.1);border-color:rgba(108,63,201,0.25);}
+.sched-match-card.euro-card:hover{border-color:rgba(108,63,201,0.55);}
+.sched-date-col{flex-shrink:0;width:44px;text-align:center;}
+.sched-day{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:#fff;}
+.sched-month-sm{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#4D9FFF;opacity:0.8;}
+.sched-divider{width:1px;height:34px;background:var(--border);flex-shrink:0;}
+.sched-info{flex:1;min-width:0;}
+.sched-teams{font-weight:600;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sched-teams strong{color:#FACC15;}
+.sched-meta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap;}
+.sched-kolo{font-size:11px;color:var(--text-muted);}
+.sched-time{font-size:11px;color:#A78BFA;font-weight:600;}
+.sched-tag{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:100px;}
+.sched-tag.home{background:rgba(0,87,184,0.3);color:#7FB5FF;border:1px solid rgba(79,163,232,0.3);}
+.sched-tag.away{background:rgba(245,197,24,0.12);color:#FACC15;border:1px solid rgba(245,197,24,0.3);}
+.sched-tag.euro-home{background:rgba(108,63,201,0.3);color:#b39aff;border:1px solid rgba(108,63,201,0.4);}
+.sched-tag.euro-away{background:rgba(232,196,79,0.12);color:#e8c44f;border:1px solid rgba(232,196,79,0.3);}
+.sched-euro-badge{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#b39aff;}
+.sched-admin-btns{display:flex;gap:5px;flex-shrink:0;opacity:0;transition:opacity 0.2s;}
+.sched-match-card:hover .sched-admin-btns{opacity:1;}
+.sched-btn-edit{background:rgba(77,159,255,0.15);border:1px solid rgba(77,159,255,0.3);border-radius:6px;padding:4px 8px;color:#7FB5FF;font-size:10px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.sched-btn-edit:hover{background:rgba(77,159,255,0.3);}
+.sched-btn-del{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:6px;padding:4px 8px;color:#F87171;font-size:11px;cursor:pointer;transition:all 0.2s;}
+.sched-btn-del:hover{background:rgba(239,68,68,0.25);}
+.sched-add-section{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:20px;}
+.sched-add-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#4D9FFF;margin-bottom:12px;}
+.sched-add-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.sched-forma-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:18px;}
+.sched-forma-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:10px;}
+.sched-forma-dots{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.sched-forma-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#000;font-weight:900;}
+@media(max-width:600px){
+  .sched-wrap{padding:10px 10px 60px;}
+  .sched-add-grid{grid-template-columns:1fr;}
+  .sched-match-card{padding:10px 12px;gap:10px;}
+  .sched-admin-btns{opacity:1;}
+}
 </style>
 </head>
 <body>
@@ -1652,19 +1703,106 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="page" id="page-raspored">
   <div class="header header-stat" style="background:linear-gradient(135deg,#001430 0%,#0A0A2E 60%,#0D0D3A 100%);">
     <div style="position:absolute;right:0;top:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;display:flex;align-items:center;justify-content:flex-end;">
-      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(180,140,0,0.12) 0%,transparent 70%);"></div>
+      <div style="position:absolute;top:-50px;right:-50px;width:380px;height:380px;background:radial-gradient(circle,rgba(0,87,184,0.18) 0%,transparent 70%);"></div>
       <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;padding-right:28px;">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:10px;color:rgba(167,139,250,0.15);line-height:1;">RASPORED</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(167,139,250,0.3);line-height:1;margin-top:-4px;">NADOLAZEĆE UTAKMICE</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:10px;color:rgba(77,159,255,0.12);line-height:1;">RASPORED</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:rgba(77,159,255,0.25);line-height:1;margin-top:-4px;">SEZONA 2026/27</div>
       </div>
     </div>
     <div class="header-inner" style="position:relative;z-index:1;">
-      <h1>📅 <span style="color:#FACC15;">Raspored</span></h1>
-      <p>GNK Dinamo Zagreb · Nadolazeće utakmice</p>
+      <h1>📅 <span style="color:#4D9FFF;">Raspored</span></h1>
+      <p>GNK Dinamo Zagreb · Sezona 2026/27</p>
     </div>
   </div>
-  <div class="page-content-pad" id="raspored-content">
-    <div style="color:var(--text-muted);text-align:center;padding:40px;">Učitavanje...</div>
+
+  <div class="sched-wrap" id="raspored-content">
+
+    <!-- forma -->
+    <div id="sched-forma"></div>
+
+    <!-- stats bar -->
+    <div class="sched-stats-bar" id="sched-stats"></div>
+
+    <!-- admin: add new match (only visible when logged in) -->
+    <div class="sched-add-section" id="sched-add-section" style="display:none;">
+      <div class="sched-add-title">➕ Dodaj utakmicu</div>
+      <div class="sched-add-grid">
+        <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="sa-datum"></div>
+        <div class="form-row"><label class="form-label">Vrijeme (HH:MM)</label><input class="form-input" type="time" id="sa-time" placeholder="20:30"></div>
+        <div class="form-row"><label class="form-label">Natjecanje</label>
+          <select class="form-select" id="sa-nat">
+            <option value="hnl" data-label="">HNL</option>
+            <option value="euro" data-label="★ Europa">UCL pretkolo</option>
+            <option value="euro" data-label="★ Europa">UEL pretkolo</option>
+            <option value="euro" data-label="★ Playoff">Playoff</option>
+            <option value="euro" data-label="★ UCL">UCL</option>
+            <option value="euro" data-label="★ UEL">UEL</option>
+            <option value="euro" data-label="★ ECL">ECL</option>
+            <option value="hnl" data-label="">Kup</option>
+            <option value="hnl" data-label="">Super kup</option>
+          </select>
+        </div>
+        <div class="form-row"><label class="form-label">Runda / kolo</label><input class="form-input" type="text" id="sa-label" placeholder="npr. 1. kolo"></div>
+        <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="sa-opp" placeholder="Npr. Hajduk"></div>
+        <div class="form-row"><label class="form-label">Domaće / Gostovanje</label>
+          <select class="form-select" id="sa-home">
+            <option value="true">🏟️ Domaće</option>
+            <option value="false">✈️ Gostovanje</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-add" style="margin-top:10px;width:100%;" onclick="schedAddMatch()">💾 Dodaj utakmicu</button>
+    </div>
+
+    <!-- filters -->
+    <div class="sched-filters" id="sched-filters">
+      <button class="sched-filter-btn active" onclick="schedFilter('sve',this)">Sve</button>
+      <button class="sched-filter-btn" onclick="schedFilter('hnl',this)">HNL</button>
+      <button class="sched-filter-btn" onclick="schedFilter('euro',this)">Europa</button>
+      <button class="sched-filter-btn" onclick="schedFilter('doma',this)">Doma</button>
+      <button class="sched-filter-btn" onclick="schedFilter('gostovanje',this)">Gostovanje</button>
+    </div>
+
+    <!-- match list -->
+    <div id="sched-list"><div style="text-align:center;padding:40px;color:var(--text-muted);">Učitavanje rasporeda...</div></div>
+
+  </div>
+</div>
+
+<!-- EDIT RASPORED MODAL -->
+<div class="modal-overlay" id="edit-sched-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <h3>✏️ Uredi utakmicu</h3>
+    <div class="modal-sub" id="esm-sub"></div>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="esm-datum"></div>
+      <div class="modal-row"><label class="form-label">Vrijeme (HH:MM)</label><input class="form-input-pred" type="time" id="esm-time"></div>
+      <div class="modal-row"><label class="form-label">Natjecanje</label>
+        <select class="form-input-pred" id="esm-nat">
+          <option value="hnl" data-label="">HNL</option>
+          <option value="euro" data-label="★ Europa">UCL pretkolo</option>
+          <option value="euro" data-label="★ Europa">UEL pretkolo</option>
+          <option value="euro" data-label="★ Playoff">Playoff</option>
+          <option value="euro" data-label="★ UCL">UCL</option>
+          <option value="euro" data-label="★ UEL">UEL</option>
+          <option value="euro" data-label="★ ECL">ECL</option>
+          <option value="hnl" data-label="">Kup</option>
+          <option value="hnl" data-label="">Super kup</option>
+        </select>
+      </div>
+      <div class="modal-row"><label class="form-label">Runda / kolo</label><input class="form-input-pred" type="text" id="esm-label" placeholder="npr. 1. kolo"></div>
+      <div class="modal-row"><label class="form-label">Protivnik</label><input class="form-input-pred" type="text" id="esm-opp"></div>
+      <div class="modal-row"><label class="form-label">Domaće / Gostovanje</label>
+        <select class="form-input-pred" id="esm-home">
+          <option value="true">🏟️ Domaće</option>
+          <option value="false">✈️ Gostovanje</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="schedSaveEdit()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-sched-modal').classList.remove('open')">Odustani</button>
+    </div>
   </div>
 </div>
 
@@ -4245,9 +4383,351 @@ async function saveEditActualAway(){
 }
 window.saveEditActualAway=saveEditActualAway;
 
-/* ===== RASPORED ===== */
-/* ===== RASPORED — TheSportsDB API ===== */
-// Team IDs on TheSportsDB
+/* ===== RASPORED 2026/27 — Firebase-backed ===== */
+
+// Defaultni raspored (seed data)
+const SCHED_DEFAULT = [
+  // EUROPA
+  { id:1, sortDate:20260721, datum:'2026-07-21', day:'21', month:'Srp 2026', monthKey:'Srpanj 2026', opp:'Protivnik', home:false, competition:'euro', natjecanje:'UCL pretkolo', label:'2. pretkolo', euroLabel:'★ Europa', time:'' },
+  { id:2, sortDate:20260728, datum:'2026-07-28', day:'28', month:'Srp 2026', monthKey:'Srpanj 2026', opp:'Protivnik', home:true,  competition:'euro', natjecanje:'UCL pretkolo', label:'2. pretkolo', euroLabel:'★ Europa', time:'' },
+  { id:3, sortDate:20260804, datum:'2026-08-04', day:'04', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Protivnik', home:false, competition:'euro', natjecanje:'UCL pretkolo', label:'3. pretkolo', euroLabel:'★ Europa', time:'' },
+  { id:4, sortDate:20260811, datum:'2026-08-11', day:'11', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Protivnik', home:true,  competition:'euro', natjecanje:'UCL pretkolo', label:'3. pretkolo', euroLabel:'★ Europa', time:'' },
+  { id:5, sortDate:20260818, datum:'2026-08-18', day:'18', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Protivnik', home:false, competition:'euro', natjecanje:'Playoff',     label:'Playoff',    euroLabel:'★ Playoff', time:'' },
+  { id:6, sortDate:20260825, datum:'2026-08-25', day:'25', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Protivnik', home:true,  competition:'euro', natjecanje:'Playoff',     label:'Playoff',    euroLabel:'★ Playoff', time:'' },
+  // HNL
+  { id:7,  sortDate:20260801, datum:'2026-08-01', day:'01', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Slaven Belupo', home:true,  competition:'hnl', natjecanje:'HNL', label:'1. kolo',  euroLabel:'', time:'' },
+  { id:8,  sortDate:20260808, datum:'2026-08-08', day:'08', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Rijeka',        home:false, competition:'hnl', natjecanje:'HNL', label:'2. kolo',  euroLabel:'', time:'' },
+  { id:9,  sortDate:20260815, datum:'2026-08-15', day:'15', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Rudeš',         home:true,  competition:'hnl', natjecanje:'HNL', label:'3. kolo',  euroLabel:'', time:'' },
+  { id:10, sortDate:20260822, datum:'2026-08-22', day:'22', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Varaždin',      home:true,  competition:'hnl', natjecanje:'HNL', label:'4. kolo',  euroLabel:'', time:'' },
+  { id:11, sortDate:20260829, datum:'2026-08-29', day:'29', month:'Kol 2026', monthKey:'Kolovoz 2026', opp:'Istra 1961',    home:false, competition:'hnl', natjecanje:'HNL', label:'5. kolo',  euroLabel:'', time:'' },
+  { id:12, sortDate:20260905, datum:'2026-09-05', day:'05', month:'Ruj 2026', monthKey:'Rujan 2026',   opp:'Gorica',        home:true,  competition:'hnl', natjecanje:'HNL', label:'6. kolo',  euroLabel:'', time:'' },
+  { id:13, sortDate:20260912, datum:'2026-09-12', day:'12', month:'Ruj 2026', monthKey:'Rujan 2026',   opp:'Osijek',        home:false, competition:'hnl', natjecanje:'HNL', label:'7. kolo',  euroLabel:'', time:'' },
+  { id:14, sortDate:20260919, datum:'2026-09-19', day:'19', month:'Ruj 2026', monthKey:'Rujan 2026',   opp:'Lokomotiva',    home:true,  competition:'hnl', natjecanje:'HNL', label:'8. kolo',  euroLabel:'', time:'' },
+  { id:15, sortDate:20261010, datum:'2026-10-10', day:'10', month:'Lis 2026', monthKey:'Listopad 2026',opp:'Hajduk',        home:false, competition:'hnl', natjecanje:'HNL', label:'9. kolo',  euroLabel:'', time:'' },
+  { id:16, sortDate:20261017, datum:'2026-10-17', day:'17', month:'Lis 2026', monthKey:'Listopad 2026',opp:'Slaven Belupo', home:false, competition:'hnl', natjecanje:'HNL', label:'10. kolo', euroLabel:'', time:'' },
+  { id:17, sortDate:20261024, datum:'2026-10-24', day:'24', month:'Lis 2026', monthKey:'Listopad 2026',opp:'Rijeka',        home:true,  competition:'hnl', natjecanje:'HNL', label:'11. kolo', euroLabel:'', time:'' },
+  { id:18, sortDate:20261031, datum:'2026-10-31', day:'31', month:'Lis 2026', monthKey:'Listopad 2026',opp:'Rudeš',         home:false, competition:'hnl', natjecanje:'HNL', label:'12. kolo', euroLabel:'', time:'' },
+  { id:19, sortDate:20261107, datum:'2026-11-07', day:'07', month:'Stu 2026', monthKey:'Studeni 2026', opp:'Varaždin',      home:false, competition:'hnl', natjecanje:'HNL', label:'13. kolo', euroLabel:'', time:'' },
+  { id:20, sortDate:20261121, datum:'2026-11-21', day:'21', month:'Stu 2026', monthKey:'Studeni 2026', opp:'Istra 1961',    home:true,  competition:'hnl', natjecanje:'HNL', label:'14. kolo', euroLabel:'', time:'' },
+  { id:21, sortDate:20261128, datum:'2026-11-28', day:'28', month:'Stu 2026', monthKey:'Studeni 2026', opp:'Gorica',        home:false, competition:'hnl', natjecanje:'HNL', label:'15. kolo', euroLabel:'', time:'' },
+  { id:22, sortDate:20261205, datum:'2026-12-05', day:'05', month:'Pro 2026', monthKey:'Prosinac 2026',opp:'Osijek',        home:true,  competition:'hnl', natjecanje:'HNL', label:'16. kolo', euroLabel:'', time:'' },
+  { id:23, sortDate:20261212, datum:'2026-12-12', day:'12', month:'Pro 2026', monthKey:'Prosinac 2026',opp:'Lokomotiva',    home:false, competition:'hnl', natjecanje:'HNL', label:'17. kolo', euroLabel:'', time:'' },
+  { id:24, sortDate:20261219, datum:'2026-12-19', day:'19', month:'Pro 2026', monthKey:'Prosinac 2026',opp:'Hajduk',        home:true,  competition:'hnl', natjecanje:'HNL', label:'18. kolo', euroLabel:'', time:'' },
+  { id:25, sortDate:20270123, datum:'2027-01-23', day:'23', month:'Sij 2027', monthKey:'Siječanj 2027',opp:'Slaven Belupo', home:true,  competition:'hnl', natjecanje:'HNL', label:'19. kolo', euroLabel:'', time:'' },
+  { id:26, sortDate:20270130, datum:'2027-01-30', day:'30', month:'Sij 2027', monthKey:'Siječanj 2027',opp:'Rijeka',        home:false, competition:'hnl', natjecanje:'HNL', label:'20. kolo', euroLabel:'', time:'' },
+  { id:27, sortDate:20270206, datum:'2027-02-06', day:'06', month:'Vel 2027', monthKey:'Veljača 2027', opp:'Rudeš',         home:true,  competition:'hnl', natjecanje:'HNL', label:'21. kolo', euroLabel:'', time:'' },
+  { id:28, sortDate:20270213, datum:'2027-02-13', day:'13', month:'Vel 2027', monthKey:'Veljača 2027', opp:'Varaždin',      home:true,  competition:'hnl', natjecanje:'HNL', label:'22. kolo', euroLabel:'', time:'' },
+  { id:29, sortDate:20270220, datum:'2027-02-20', day:'20', month:'Vel 2027', monthKey:'Veljača 2027', opp:'Istra 1961',    home:false, competition:'hnl', natjecanje:'HNL', label:'23. kolo', euroLabel:'', time:'' },
+  { id:30, sortDate:20270227, datum:'2027-02-27', day:'27', month:'Vel 2027', monthKey:'Veljača 2027', opp:'Gorica',        home:true,  competition:'hnl', natjecanje:'HNL', label:'24. kolo', euroLabel:'', time:'' },
+  { id:31, sortDate:20270306, datum:'2027-03-06', day:'06', month:'Ožu 2027', monthKey:'Ožujak 2027',  opp:'Osijek',        home:false, competition:'hnl', natjecanje:'HNL', label:'25. kolo', euroLabel:'', time:'' },
+  { id:32, sortDate:20270313, datum:'2027-03-13', day:'13', month:'Ožu 2027', monthKey:'Ožujak 2027',  opp:'Lokomotiva',    home:true,  competition:'hnl', natjecanje:'HNL', label:'26. kolo', euroLabel:'', time:'' },
+  { id:33, sortDate:20270320, datum:'2027-03-20', day:'20', month:'Ožu 2027', monthKey:'Ožujak 2027',  opp:'Hajduk',        home:false, competition:'hnl', natjecanje:'HNL', label:'27. kolo', euroLabel:'', time:'' },
+  { id:34, sortDate:20270403, datum:'2027-04-03', day:'03', month:'Tra 2027', monthKey:'Travanj 2027', opp:'Slaven Belupo', home:false, competition:'hnl', natjecanje:'HNL', label:'28. kolo', euroLabel:'', time:'' },
+  { id:35, sortDate:20270410, datum:'2027-04-10', day:'10', month:'Tra 2027', monthKey:'Travanj 2027', opp:'Rijeka',        home:true,  competition:'hnl', natjecanje:'HNL', label:'29. kolo', euroLabel:'', time:'' },
+  { id:36, sortDate:20270417, datum:'2027-04-17', day:'17', month:'Tra 2027', monthKey:'Travanj 2027', opp:'Rudeš',         home:false, competition:'hnl', natjecanje:'HNL', label:'30. kolo', euroLabel:'', time:'' },
+  { id:37, sortDate:20270424, datum:'2027-04-24', day:'24', month:'Tra 2027', monthKey:'Travanj 2027', opp:'Varaždin',      home:false, competition:'hnl', natjecanje:'HNL', label:'31. kolo', euroLabel:'', time:'' },
+  { id:38, sortDate:20270501, datum:'2027-05-01', day:'01', month:'Svi 2027', monthKey:'Svibanj 2027', opp:'Istra 1961',    home:true,  competition:'hnl', natjecanje:'HNL', label:'32. kolo', euroLabel:'', time:'' },
+  { id:39, sortDate:20270508, datum:'2027-05-08', day:'08', month:'Svi 2027', monthKey:'Svibanj 2027', opp:'Gorica',        home:false, competition:'hnl', natjecanje:'HNL', label:'33. kolo', euroLabel:'', time:'' },
+  { id:40, sortDate:20270512, datum:'2027-05-12', day:'12', month:'Svi 2027', monthKey:'Svibanj 2027', opp:'Osijek',        home:true,  competition:'hnl', natjecanje:'HNL', label:'34. kolo', euroLabel:'', time:'' },
+  { id:41, sortDate:20270515, datum:'2027-05-15', day:'15', month:'Svi 2027', monthKey:'Svibanj 2027', opp:'Lokomotiva',    home:false, competition:'hnl', natjecanje:'HNL', label:'35. kolo', euroLabel:'', time:'' },
+  { id:42, sortDate:20270522, datum:'2027-05-22', day:'22', month:'Svi 2027', monthKey:'Svibanj 2027', opp:'Hajduk',        home:true,  competition:'hnl', natjecanje:'HNL', label:'36. kolo', euroLabel:'', time:'' },
+];
+
+let _schedMatches = null; // null = not yet loaded
+let _schedFilter  = 'sve';
+let _schedEditId  = null;
+
+function dateToSchedParts(datum){
+  // datum = 'YYYY-MM-DD'
+  const [y,m,d] = datum.split('-');
+  const monthNames = {
+    '01':'Sij','02':'Vel','03':'Ožu','04':'Tra','05':'Svi','06':'Lip',
+    '07':'Srp','08':'Kol','09':'Ruj','10':'Lis','11':'Stu','12':'Pro'
+  };
+  const monthFull = {
+    '01':'Siječanj','02':'Veljača','03':'Ožujak','04':'Travanj','05':'Svibanj','06':'Lipanj',
+    '07':'Srpanj','08':'Kolovoz','09':'Rujan','10':'Listopad','11':'Studeni','12':'Prosinac'
+  };
+  return {
+    sortDate: parseInt(y+m+d),
+    day: d,
+    month: monthNames[m]+' '+y,
+    monthKey: monthFull[m]+' '+y
+  };
+}
+
+async function schedLoad(){
+  try{
+    const snap = await get(ref(db,'raspored_2627'));
+    if(snap.exists() && snap.val() && snap.val().length){
+      _schedMatches = snap.val();
+    } else {
+      _schedMatches = JSON.parse(JSON.stringify(SCHED_DEFAULT));
+      // Seed Firebase if admin
+      if(_currentUser) await set(ref(db,'raspored_2627'), _schedMatches);
+    }
+  }catch(e){
+    console.warn('schedLoad failed, using default:', e.message);
+    _schedMatches = JSON.parse(JSON.stringify(SCHED_DEFAULT));
+  }
+}
+
+async function renderRaspored(){
+  const container = document.getElementById('raspored-content');
+  if(!container) return;
+
+  if(!_schedMatches) await schedLoad();
+
+  // Show/hide admin add section
+  const addSec = document.getElementById('sched-add-section');
+  if(addSec) addSec.style.display = _currentUser ? 'block' : 'none';
+
+  // Forma momčadi (zadnjih 5 iz matches baze)
+  schedRenderForma();
+
+  // Stats bar
+  const hnlCount  = _schedMatches.filter(m=>m.competition==='hnl').length;
+  const euroCount = _schedMatches.filter(m=>m.competition==='euro').length;
+  const total     = _schedMatches.length;
+  const statsEl = document.getElementById('sched-stats');
+  if(statsEl) statsEl.innerHTML = `
+    <div class="sched-stat"><div class="sched-stat-num">${hnlCount}</div><div class="sched-stat-lbl">HNL utakmica</div></div>
+    <div class="sched-stat"><div class="sched-stat-num">${euroCount}</div><div class="sched-stat-lbl">Euro kval.</div></div>
+    <div class="sched-stat"><div class="sched-stat-num">${total}</div><div class="sched-stat-lbl">Ukupno</div></div>`;
+
+  schedRenderList();
+}
+window.renderRaspored = renderRaspored;
+
+function schedRenderForma(){
+  const el = document.getElementById('sched-forma');
+  if(!el) return;
+  // Use last 5 from matches array (Firebase-loaded match data)
+  const recent = [...matches]
+    .filter(m => m.rezultat && m.datum)
+    .sort((a,b) => b.datum.localeCompare(a.datum))
+    .slice(0,5)
+    .reverse();
+  if(!recent.length){ el.innerHTML=''; return; }
+  function formDot(m){
+    const parts = m.rezultat.split('-').map(Number);
+    let form='D';
+    if(parts.length===2){ form = parts[0]>parts[1]?'W':parts[0]<parts[1]?'L':'D'; }
+    const color = form==='W'?'#4ADE80':form==='L'?'#F87171':'#9CA3AF';
+    const lbl   = form==='W'?'P':form==='L'?'G':'R';
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div class="sched-forma-dot" style="background:${color};box-shadow:0 2px 8px ${color}66;">${lbl}</div>
+      <div style="font-size:9px;color:var(--text-muted);text-align:center;max-width:36px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${(m.protivnik||'').split(' ')[0]}</div>
+      <div style="font-size:10px;font-weight:700;color:#fff;">${m.rezultat}</div>
+    </div>`;
+  }
+  const wins   = recent.filter(m=>{ const p=m.rezultat.split('-').map(Number);return p[0]>p[1];}).length;
+  const draws  = recent.filter(m=>{ const p=m.rezultat.split('-').map(Number);return p[0]===p[1];}).length;
+  const losses = recent.filter(m=>{ const p=m.rezultat.split('-').map(Number);return p[0]<p[1];}).length;
+  el.innerHTML = `
+    <div class="sched-forma-card">
+      <div class="sched-forma-title">💙 FORMA DINAMA — ZADNJIH ${recent.length} UTAKMICA</div>
+      <div class="sched-forma-dots">
+        ${recent.map(formDot).join('')}
+        <div style="margin-left:8px;display:flex;flex-direction:column;gap:2px;">
+          <div style="font-size:11px;color:#4ADE80;font-weight:700;">P: ${wins}</div>
+          <div style="font-size:11px;color:#9CA3AF;font-weight:700;">R: ${draws}</div>
+          <div style="font-size:11px;color:#F87171;font-weight:700;">G: ${losses}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function schedRenderList(){
+  const listEl = document.getElementById('sched-list');
+  if(!listEl || !_schedMatches) return;
+
+  let filtered = _schedMatches.filter(m=>{
+    if(_schedFilter==='sve') return true;
+    if(_schedFilter==='hnl') return m.competition==='hnl';
+    if(_schedFilter==='euro') return m.competition==='euro';
+    if(_schedFilter==='doma') return m.home===true;
+    if(_schedFilter==='gostovanje') return m.home===false;
+    return true;
+  });
+  filtered.sort((a,b)=>a.sortDate-b.sortDate);
+
+  if(!filtered.length){
+    listEl.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-muted);">Nema utakmica za ovaj filter.</div>';
+    return;
+  }
+
+  let html='', lastMonth='';
+  filtered.forEach(m=>{
+    if(m.monthKey !== lastMonth){
+      lastMonth = m.monthKey;
+      html += `<div class="sched-month-sep">${m.monthKey}</div>`;
+    }
+    html += schedBuildCard(m);
+  });
+  listEl.innerHTML = html;
+}
+
+function schedBuildCard(m){
+  const isEuro = m.competition==='euro';
+  const cardCls = isEuro ? 'sched-match-card euro-card' : 'sched-match-card';
+
+  const t1 = m.home ? 'Dinamo' : m.opp;
+  const t2 = m.home ? m.opp   : 'Dinamo';
+  const t1html = t1==='Dinamo' ? `<strong>Dinamo</strong>` : t1;
+  const t2html = t2==='Dinamo' ? `<strong>Dinamo</strong>` : t2;
+
+  const tagCls  = isEuro ? (m.home?'euro-home':'euro-away') : (m.home?'home':'away');
+  const tagTxt  = m.home ? 'Doma' : 'Gostovanje';
+  const tagHTML = `<span class="sched-tag ${tagCls}">${tagTxt}</span>`;
+  const euroB   = isEuro && m.euroLabel ? `<span class="sched-euro-badge">${m.euroLabel}</span>` : '';
+  const timeB   = m.time ? `<span class="sched-time">🕐 ${m.time}</span>` : '';
+
+  const adminBtns = _currentUser ? `
+    <div class="sched-admin-btns">
+      <button class="sched-btn-edit" onclick="schedOpenEdit(${m.id})">✏️ Uredi</button>
+      <button class="sched-btn-del" onclick="schedDelete(${m.id})" title="Obriši">✕</button>
+    </div>` : '';
+
+  return `
+    <div class="${cardCls}">
+      <div class="sched-date-col">
+        <div class="sched-day">${m.day}</div>
+        <div class="sched-month-sm">${m.month}</div>
+      </div>
+      <div class="sched-divider"></div>
+      <div class="sched-info">
+        <div class="sched-teams">${t1html} — ${t2html}</div>
+        <div class="sched-meta">
+          <span class="sched-kolo">${m.label}</span>
+          ${tagHTML}
+          ${euroB}
+          ${timeB}
+        </div>
+      </div>
+      ${adminBtns}
+    </div>`;
+}
+
+function schedFilter(type, btn){
+  document.querySelectorAll('.sched-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  _schedFilter = type;
+  schedRenderList();
+}
+window.schedFilter = schedFilter;
+
+async function schedAddMatch(){
+  if(!_currentUser){ showToast('⚠️ Samo admin može dodati utakmicu!','#1A0A0A','#F87171'); return; }
+  const datum   = document.getElementById('sa-datum').value;
+  const time    = document.getElementById('sa-time').value;
+  const natSel  = document.getElementById('sa-nat');
+  const natOpt  = natSel.options[natSel.selectedIndex];
+  const comp    = natOpt.value;
+  const natText = natOpt.text;
+  const euroLabel = natOpt.dataset.label || '';
+  const label   = document.getElementById('sa-label').value.trim();
+  const opp     = document.getElementById('sa-opp').value.trim();
+  const home    = document.getElementById('sa-home').value === 'true';
+
+  if(!datum || !opp){ showToast('⚠️ Unesite datum i protivnika!','#1A0A0A','#F87171'); return; }
+
+  const parts = dateToSchedParts(datum);
+  const newMatch = {
+    id: Date.now(),
+    sortDate: parts.sortDate,
+    datum,
+    day: parts.day,
+    month: parts.month,
+    monthKey: parts.monthKey,
+    opp,
+    home,
+    competition: comp,
+    natjecanje: natText,
+    label: label || (comp==='hnl'?'HNL':'Europa'),
+    euroLabel,
+    time
+  };
+  _schedMatches.push(newMatch);
+  _schedMatches.sort((a,b)=>a.sortDate-b.sortDate);
+  await set(ref(db,'raspored_2627'), _schedMatches);
+  showToast('✅ Utakmica dodana!','#0A1A0A','#4ADE80');
+  // Reset form
+  ['sa-datum','sa-time','sa-label','sa-opp'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  schedRenderList();
+  const statsEl = document.getElementById('sched-stats');
+  if(statsEl){
+    const hnlC=_schedMatches.filter(m=>m.competition==='hnl').length;
+    const euroC=_schedMatches.filter(m=>m.competition==='euro').length;
+    statsEl.innerHTML=`<div class="sched-stat"><div class="sched-stat-num">${hnlC}</div><div class="sched-stat-lbl">HNL utakmica</div></div><div class="sched-stat"><div class="sched-stat-num">${euroC}</div><div class="sched-stat-lbl">Euro kval.</div></div><div class="sched-stat"><div class="sched-stat-num">${_schedMatches.length}</div><div class="sched-stat-lbl">Ukupno</div></div>`;
+  }
+}
+window.schedAddMatch = schedAddMatch;
+
+function schedOpenEdit(id){
+  if(!_currentUser) return;
+  const m = _schedMatches.find(x=>x.id===id);
+  if(!m) return;
+  _schedEditId = id;
+  document.getElementById('esm-sub').textContent = `${m.opp} · ${m.datum}`;
+  document.getElementById('esm-datum').value = m.datum;
+  document.getElementById('esm-time').value  = m.time || '';
+  document.getElementById('esm-label').value = m.label;
+  document.getElementById('esm-opp').value   = m.opp;
+  document.getElementById('esm-home').value  = m.home ? 'true' : 'false';
+  // Set natjecanje select
+  const natSel = document.getElementById('esm-nat');
+  for(let i=0;i<natSel.options.length;i++){
+    if(natSel.options[i].text === m.natjecanje){ natSel.selectedIndex=i; break; }
+  }
+  document.getElementById('edit-sched-modal').classList.add('open');
+}
+window.schedOpenEdit = schedOpenEdit;
+
+async function schedSaveEdit(){
+  if(!_currentUser || !_schedEditId) return;
+  const idx = _schedMatches.findIndex(x=>x.id===_schedEditId);
+  if(idx<0) return;
+
+  const datum   = document.getElementById('esm-datum').value;
+  const time    = document.getElementById('esm-time').value;
+  const natSel  = document.getElementById('esm-nat');
+  const natOpt  = natSel.options[natSel.selectedIndex];
+  const comp    = natOpt.value;
+  const natText = natOpt.text;
+  const euroLabel = natOpt.dataset.label || '';
+  const label   = document.getElementById('esm-label').value.trim();
+  const opp     = document.getElementById('esm-opp').value.trim();
+  const home    = document.getElementById('esm-home').value === 'true';
+
+  if(!datum || !opp){ showToast('⚠️ Unesite datum i protivnika!','#1A0A0A','#F87171'); return; }
+
+  const parts = dateToSchedParts(datum);
+  Object.assign(_schedMatches[idx], {
+    datum, time, label, opp, home,
+    competition: comp, natjecanje: natText, euroLabel,
+    sortDate: parts.sortDate,
+    day: parts.day, month: parts.month, monthKey: parts.monthKey
+  });
+  _schedMatches.sort((a,b)=>a.sortDate-b.sortDate);
+  await set(ref(db,'raspored_2627'), _schedMatches);
+  document.getElementById('edit-sched-modal').classList.remove('open');
+  showToast('✅ Utakmica ažurirana!','#0A1A0A','#4ADE80');
+  schedRenderList();
+}
+window.schedSaveEdit = schedSaveEdit;
+
+async function schedDelete(id){
+  if(!_currentUser) return;
+  const m = _schedMatches.find(x=>x.id===id);
+  if(!m) return;
+  if(!confirm(`Obriši utakmicu ${m.opp} (${m.datum})?`)) return;
+  _schedMatches = _schedMatches.filter(x=>x.id!==id);
+  await set(ref(db,'raspored_2627'), _schedMatches);
+  showToast('🗑️ Utakmica obrisana!','#1A0A0A','#F87171');
+  renderRaspored();
+}
+window.schedDelete = schedDelete;
 
 
 // ═══════════════════════════════════════════════════════
@@ -4439,339 +4919,6 @@ async function fetchTsdbSchedule(){
 
   return{dinamo: finalDinamo, croatia};
 }
-
-
-async function renderRaspored(){
-  const container=document.getElementById('raspored-content');
-  if(!container)return;
-  const nowLocal=new Date(Date.now()+2*3600000);
-  const today=nowLocal.toISOString().split('T')[0];
-
-  container.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:40px 0;color:var(--text-muted);">
-    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out infinite;"></div>
-    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out 0.2s infinite;"></div>
-    <div style="width:10px;height:10px;border-radius:50%;background:#A78BFA;animation:loadPulse 1.2s ease-in-out 0.4s infinite;"></div>
-    <span style="margin-left:6px;">Učitavanje rasporeda...</span>
-  </div>`;
-
-  const {dinamo:dinamoEvents, croatia:croatiaEvents}=await fetchTsdbSchedule();
-
-  // Events are already normalized by normMatch() in fetch layer
-  const seenIds=new Set();
-  const apiAll=[
-    ...dinamoEvents,
-    ...croatiaEvents
-  ].filter(m=>{
-    if(!m.datum)return false;
-    if(seenIds.has(m._id))return false;
-    seenIds.add(m._id);return true;
-  });
-
-  const apiFuture=apiAll.filter(m=>m.datum>=today&&!m.isPast).sort((a,b)=>a.datum<b.datum?-1:1);
-  const apiPast  =apiAll.filter(m=>m.datum<today||m.isPast).sort((a,b)=>a.datum<b.datum?1:-1);
-  const futureDates=new Set(apiFuture.map(m=>m.datum));
-  const pastClean=apiPast.filter(m=>!futureDates.has(m.datum));
-
-  // Pending predictions
-  const predMatches=[
-    ...predictions.filter(p=>!p.resolved&&p.datum>=today&&!p._rasporedOnly).map(p=>({
-      datum:p.datum,protivnik:p.protivnik,natjecanje:p.natjecanje,
-      domace:true,source:'pred',isCroatia:false,hasPred:true,
-      koDisplay:'',stadion:'',rezultat:'',isPast:false,form:'',_id:'pred_'+p.datum+p.protivnik
-    })),
-    ...awayPredictions.filter(p=>!p.resolved&&p.datum>=today&&!p._rasporedOnly).map(p=>({
-      datum:p.datum,protivnik:p.protivnik,natjecanje:p.natjecanje,
-      domace:false,source:'pred',isCroatia:false,hasPred:true,
-      koDisplay:'',stadion:'',rezultat:'',isPast:false,form:'',_id:'pred_a'+p.datum+p.protivnik
-    }))
-  ];
-  apiFuture.forEach(m=>{
-    if(predMatches.some(p=>p.datum===m.datum||(
-      Math.abs(new Date(p.datum)-new Date(m.datum))<2*86400000&&
-      p.protivnik.toLowerCase().split(' ')[0]===m.protivnik.toLowerCase().split(' ')[0]
-    )))m.hasPred=true;
-  });
-  const apiDates=new Set(apiFuture.map(m=>m.datum));
-  const predOnly=predMatches.filter(p=>!apiDates.has(p.datum));
-  const future=[...apiFuture,...predOnly].sort((a,b)=>a.datum<b.datum?-1:1);
-  const past=pastClean;
-
-  // ---- FORMA — zadnjih 5 utakmica Dinama ----
-  const dinamoPast=past.filter(m=>!m.isCroatia&&m.form).slice(0,5);
-  function formDot(f){
-    const color=f==='W'?'#4ADE80':f==='L'?'#F87171':'#9CA3AF';
-    const label=f==='W'?'P':f==='L'?'G':'R'; // Pobjeda/Gol/Remi
-    return`<div style="width:30px;height:30px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#000;font-weight:900;box-shadow:0 2px 8px ${color}66;">${label}</div>`;
-  }
-  const formaHtml=dinamoPast.length?`
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:18px;">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:10px;">💙 FORMA DINAMA — ZADNJIH ${dinamoPast.length} UTAKMICA</div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        ${dinamoPast.map(m=>`
-          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-            ${formDot(m.form)}
-            <div style="font-size:9px;color:var(--text-muted);text-align:center;max-width:36px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.protivnik.split(' ')[0]}</div>
-            <div style="font-size:10px;font-weight:700;color:#fff;">${m.rezultat}</div>
-          </div>`).join('')}
-        <div style="margin-left:8px;display:flex;flex-direction:column;gap:2px;">
-          <div style="font-size:11px;color:#4ADE80;font-weight:700;">P: ${dinamoPast.filter(m=>m.form==='W').length}</div>
-          <div style="font-size:11px;color:#9CA3AF;font-weight:700;">R: ${dinamoPast.filter(m=>m.form==='D').length}</div>
-          <div style="font-size:11px;color:#F87171;font-weight:700;">G: ${dinamoPast.filter(m=>m.form==='L').length}</div>
-        </div>
-      </div>
-    </div>`:'';
-
-  // ---- Render cards ----
-  const now=new Date();
-  function countdown(datum,koDisplay){
-    const suffix=koDisplay?`T${koDisplay}:00`:'T18:00:00';
-    const diff=new Date(datum+suffix)-now;
-    if(diff<=0)return'Uskoro';
-    const d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),m2=Math.floor((diff%3600000)/60000);
-    if(d>0)return`Za ${d} dan${d===1?'':'a'}`;
-    if(h>0)return`Za ${h}h ${m2}min`;
-    return`Za ${m2}min`;
-  }
-  function teamBadge(isCroatia){
-    return isCroatia
-      ?`<span style="font-size:9px;background:rgba(239,68,68,0.15);color:#FCA5A5;border:1px solid rgba(239,68,68,0.3);border-radius:4px;padding:1px 6px;font-weight:700;">🇭🇷 REPRE</span>`
-      :`<span style="font-size:9px;background:rgba(77,159,255,0.15);color:#93C5FD;border:1px solid rgba(77,159,255,0.3);border-radius:4px;padding:1px 6px;font-weight:700;">💙 DINAMO</span>`;
-  }
-  function futureCard(u){
-    const cls=getCompClass(u.natjecanje);
-    const ht=u.isCroatia?'Hrvatska':'Dinamo';
-    const dt=u.domace?`${ht} vs ${u.protivnik}`:`${u.protivnik} vs ${ht}`;
-    const loc=u.domace?('🏟️ '+(u.stadion||'Maksimir')):('✈️ '+(u.stadion||'Gostovanje'));
-    return`<div class="rasp-card">
-      <div class="rasp-card-header">
-        <div>
-          <div class="rasp-match-title">${dt}</div>
-          <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap;">${teamBadge(u.isCroatia)}<span style="font-size:9px;background:rgba(52,211,153,0.12);color:#34D399;border:1px solid rgba(52,211,153,0.25);border-radius:4px;padding:1px 6px;font-weight:700;">${u.source==='ss'?'SOFASCORE':u.source==='api'?'LIVE':''}</span></div>
-        </div>
-        <div class="rasp-meta">
-          <span class="badge badge-${cls}">${u.natjecanje}</span>
-          ${u.domace?'<span class="home-badge">DOMAĆE</span>':'<span class="away-badge">GOSTOVANJE</span>'}
-        </div>
-      </div>
-      <div class="rasp-card-body">
-        <div class="rasp-detail"><div class="rasp-detail-label">Datum</div><div class="rasp-detail-val">📅 ${fmtDate(u.datum)}</div></div>
-        ${u.koDisplay?`<div class="rasp-detail"><div class="rasp-detail-label">Početak</div><div class="rasp-detail-val">🕐 ${u.koDisplay}</div></div>`:''}
-        <div class="rasp-detail"><div class="rasp-detail-label">Lokacija</div><div class="rasp-detail-val">${loc}</div></div>
-        <div class="rasp-detail"><div class="rasp-detail-label">Odbrojavanje</div><div class="rasp-countdown">${countdown(u.datum,u.koDisplay)}</div></div>
-        ${u.hasPred?'<div class="rasp-detail"><div class="rasp-detail-label">Predikcija</div><div class="rasp-detail-val" style="color:#A78BFA;">🔮 Unesena</div></div>':''}
-      </div>
-    </div>`;
-  }
-  function pastCard(u){
-    const cls=getCompClass(u.natjecanje);
-    const ht=u.isCroatia?'Hrvatska':'Dinamo';
-    const dt=u.domace?`${ht} vs ${u.protivnik}`:`${u.protivnik} vs ${ht}`;
-    const parts=u.rezultat?u.rezultat.split(' - ').map(Number):[];
-    const sc=parts.length===2?(parts[0]>parts[1]?'#4ADE80':parts[0]<parts[1]?'#F87171':'#9CA3AF'):'#fff';
-    const formDotSmall=u.form?`<div style="width:22px;height:22px;border-radius:50%;background:${u.form==='W'?'#4ADE80':u.form==='L'?'#F87171':'#9CA3AF'};display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#000;margin-left:6px;">${u.form==='W'?'P':u.form==='L'?'G':'R'}</div>`:'';
-
-    // Pronađi utakmicu u Firebase bazi (samo domaće imaju detalje)
-    const fbMatch = u.domace && !u.isCroatia ? matches.find(m =>
-      m.datum === u.datum ||
-      (m.datum && u.datum && m.datum.slice(0,7)===u.datum.slice(0,7) &&
-       (m.protivnik||'').toLowerCase().includes((u.protivnik||'').split(' ')[0].toLowerCase()))
-    ) : null;
-
-    // Golovi za ovu utakmicu iz Firebase
-    const matchGoals = fbMatch ? goals.filter(g => {
-      const gm = matches.indexOf(fbMatch);
-      return g.matchIndex === gm || g.match === fbMatch.datum ||
-        (g.protivnik && (g.protivnik||'').toLowerCase().includes((u.protivnik||'').split(' ')[0].toLowerCase()) &&
-         g.datum && g.datum.slice(0,7) === u.datum.slice(0,7));
-    }) : [];
-
-    // Strijelci iz golova
-    const scorers = matchGoals.filter(g=>g.team==='dinamo'||!g.team).map(g=>{
-      const min = g.minuta||g.min||'';
-      return `${g.igrac||g.player||'?'} ${min?min+"'":""}`;
-    });
-
-    const gledalelji = fbMatch?.gledatelji || u.gledatelji || 0;
-    const primljenGol = matchGoals.filter(g=>g.team==='opp'||g.team==='opponent').map(g=>`${g.igrac||'?'}`);
-
-    // Detalji panel
-    const hasDetails = fbMatch && (scorers.length > 0 || gledalelji > 0);
-    const panelId = `past-detail-${u.datum.replace(/-/g,'')}`;
-
-    return`<div class="rasp-card" style="opacity:0.85;">
-      <div class="rasp-card-header" style="padding:11px 16px;cursor:${hasDetails?'pointer':'default'};"
-        ${hasDetails?`onclick="const p=document.getElementById('${panelId}');p.style.display=p.style.display==='none'?'block':'none'"`:''}>
-        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-          <div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <div class="rasp-match-title" style="font-size:15px;">${dt}</div>
-              ${formDotSmall}
-              ${hasDetails?`<span style="font-size:9px;color:var(--text-muted);margin-left:2px;">▼</span>`:''}
-            </div>
-            <div style="display:flex;gap:5px;margin-top:3px;">${teamBadge(u.isCroatia)}<span class="badge badge-${cls}" style="opacity:0.8;">${u.natjecanje}</span></div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-          ${u.rezultat?`<span style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:${sc};line-height:1;">${u.rezultat}</span>`:'<span style="color:var(--text-muted);font-size:12px;">n/a</span>'}
-          <span style="font-size:11px;color:var(--text-muted);">📅 ${fmtDate(u.datum)}</span>
-          ${u.koDisplay?`<span style="font-size:10px;color:var(--text-muted);">🕐 ${u.koDisplay}</span>`:''}
-        </div>
-      </div>
-      ${hasDetails?`
-      <div id="${panelId}" style="display:none;padding:12px 16px;border-top:1px solid var(--border);background:rgba(0,0,0,0.15);">
-        <div style="display:flex;flex-wrap:wrap;gap:20px;">
-          ${scorers.length>0?`
-          <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">⚽ Strijelci</div>
-            ${scorers.map(s=>`<div style="font-size:12px;font-weight:600;color:#93C5FD;margin-bottom:3px;">${s}</div>`).join('')}
-          </div>`:''}
-          ${gledalelji>0?`
-          <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">👥 Gledatelji</div>
-            <div style="font-size:16px;font-weight:700;color:#fff;">${gledalelji.toLocaleString('hr-HR')}</div>
-          </div>`:''}
-          ${primljenGol.length>0?`
-          <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">🔴 Primljeni golovi</div>
-            ${primljenGol.map(s=>`<div style="font-size:12px;color:#FCA5A5;margin-bottom:3px;">${s}</div>`).join('')}
-          </div>`:''}
-        </div>
-      </div>`:''}
-    </div>`;
-  }
-  function section(arr,title,color,cardFn){
-    if(!arr.length)return'';
-    return`<div class="rasp-section-title" style="color:${color};">${title}</div>`+arr.map(cardFn).join('');
-  }
-
-  const wEnd=new Date(now.getTime()+7*86400000).toISOString().split('T')[0];
-  const mEnd=new Date(now.getTime()+30*86400000).toISOString().split('T')[0];
-  const fw=future.filter(u=>u.datum<=wEnd);
-  const fm=future.filter(u=>u.datum>wEnd&&u.datum<=mEnd);
-  const fl=future.filter(u=>u.datum>mEnd);
-
-  const apiOk=dinamoEvents.length>0||croatiaEvents.length>0;
-  const sc2=apiOk?'#34D399':'#F87171';
-  const st=apiOk?`Dinamo: ${dinamoEvents.length} · Hrvatska: ${croatiaEvents.length} utakmica`:'Podaci nedostupni';
-
-  let html=`${formaHtml}
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div style="width:8px;height:8px;border-radius:50%;background:${sc2};box-shadow:0 0 6px ${sc2};"></div>
-      <span style="font-size:12px;color:var(--text-muted);">${st}</span>
-    </div>
-    <button onclick="refreshRaspored()" style="background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);border-radius:7px;padding:5px 12px;color:#C4B5FD;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:5px;">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="rasp-refresh-icon"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-      Osvježi
-    </button>
-  </div>
-  <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
-    <button class="view-tab active" id="rasp-tab-all"    onclick="rasporedFilter('all',this)">Sve (${future.length+past.length})</button>
-    <button class="view-tab"        id="rasp-tab-dinamo" onclick="rasporedFilter('dinamo',this)">Dinamo (${[...future,...past].filter(m=>!m.isCroatia).length})</button>
-  </div>
-  <div id="rasp-cards">`;
-
-  if(!future.length&&!past.length){
-    html+=`<div class="rasp-empty"><div class="rasp-empty-icon">📅</div><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;">Nema utakmica</div></div>`;
-  }else{
-    if(future.length){
-      html+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">📅 NADOLAZEĆE UTAKMICE</div>`;
-      html+=section(fw,'🔥 Ovaj tjedan','#F87171',futureCard);
-      html+=section(fm,'📆 Sljedećih 30 dana','#FBBF24',futureCard);
-      html+=section(fl,'🗓️ Kasnije','#A78BFA',futureCard);
-    }
-    if(past.length){
-      html+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#6B7280;margin-top:${future.length?'24':'0'}px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">🕐 PROŠLE UTAKMICE</div>`;
-      html+=past.map(pastCard).join('');
-    }
-  }
-  html+=`</div>`;
-  container.innerHTML=html;
-
-  container._future=future; container._past=past;
-  container._fw=fw; container._fm=fm; container._fl=fl;
-  container._futureCard=futureCard; container._pastCard=pastCard;
-  container._section=section;
-}
-window.renderRaspored=renderRaspored;
-
-function rasporedFilter(type, btn){
-  document.querySelectorAll('#raspored-content .view-tab').forEach(b=>b.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  const container=document.getElementById('raspored-content');
-  if(!container||!container._future) return;
-
-  const f=m=>type==='all'||(type==='dinamo'&&!m.isCroatia)||(type==='repre'&&m.isCroatia);
-  const future  = container._future.filter(f);
-  const past    = container._past.filter(f);
-  const fw      = container._fw.filter(f);
-  const fm      = container._fm.filter(f);
-  const fl      = container._fl.filter(f);
-  const futureCard = container._futureCard;
-  const pastCard   = container._pastCard;
-  const section    = container._section;
-
-  const cards=document.getElementById('rasp-cards');
-  if(!cards) return;
-  let out='';
-  if(!future.length&&!past.length){
-    out=`<div class="rasp-empty"><div class="rasp-empty-icon">📅</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;">Nema utakmica za ovaj filter</div></div>`;
-  }else{
-    if(future.length){
-      out+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#A78BFA;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">📅 NADOLAZEĆE UTAKMICE</div>`;
-      out+=section(fw,'🔥 Ovaj tjedan','#F87171',futureCard);
-      out+=section(fm,'📆 Sljedećih 30 dana','#FBBF24',futureCard);
-      out+=section(fl,'🗓️ Kasnije','#A78BFA',futureCard);
-    }
-    if(past.length){
-      out+=`<div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#6B7280;margin-top:${future.length?'24':'0'}px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">🕐 PROŠLE UTAKMICE</div>`;
-      out+=past.map(pastCard).join('');
-    }
-  }
-  cards.innerHTML=out;
-}
-window.rasporedFilter=rasporedFilter;
-
-async function refreshRaspored(){
-  const icon=document.getElementById('rasp-refresh-icon');
-  if(icon) icon.style.animation='spinIcon 0.8s linear infinite';
-  _rasporedDinamoCache=null;  _rasporedDinamoTs=0;
-  _rasporedCroatiaCache=null; _rasporedCroatiaTs=0;
-  await renderRaspored();
-  const icon2=document.getElementById('rasp-refresh-icon');
-  if(icon2) icon2.style.animation='';
-}
-window.refreshRaspored=refreshRaspored;
-
-async function addRasporedMatch(){
-  const datum=document.getElementById('rasp-datum').value;
-  const nat=document.getElementById('rasp-nat').value;
-  const prot=document.getElementById('rasp-prot').value.trim();
-  const loc=document.getElementById('rasp-loc').value;
-  if(!datum||!prot){alert('Unesite datum i protivnika!');return;}
-  const today=new Date().toISOString().split('T')[0];
-  if(datum<=today){alert('Datum mora biti u budućnosti!');return;}
-
-  // Add as a pending prediction with no guess (special upcoming entry)
-  const isAway=loc==='away';
-  const entry={
-    id:Date.now(), datum, protivnik:prot, natjecanje:nat, isAway,
-    luka:{rez:'?-?',gle:0,fg:'',ht:''}, lovro:{rez:'?-?',gle:0,fg:'',ht:''},
-    actual:null, resolved:false, _rasporedOnly:true
-  };
-  if(isAway){
-    awayPredictions.unshift(entry);
-    await saveAwayPreds();
-  }else{
-    predictions.unshift(entry);
-    await set(ref(db,'predictions'),predictions);
-  }
-  showToast('📅 Utakmica dodana u raspored!','#1A0A3A','#A78BFA');
-  renderRaspored();
-  renderPreds();
-}
-window.addRasporedMatch=addRasporedMatch;
 
 
 // ═══════════════════════════════════════════════════════
