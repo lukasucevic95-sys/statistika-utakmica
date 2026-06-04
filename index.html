@@ -661,6 +661,66 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .sched-match-card{padding:10px 12px;gap:10px;}
   .sched-admin-btns{opacity:1;}
 }
+
+/* ===== TABLICA ===== */
+.sched-page-tabs{display:flex;gap:6px;margin-bottom:18px;}
+.sched-page-tab{flex:1;padding:9px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-align:center;transition:all 0.2s;}
+.sched-page-tab.active{background:rgba(0,87,184,0.4);border-color:rgba(77,159,255,0.5);color:#fff;}
+.tabl-section{margin-bottom:22px;}
+.tabl-heading{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:#4D9FFF;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.tabl-heading span{font-size:10px;color:var(--text-muted);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:1px;margin-left:auto;}
+.tabl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.tabl-table{width:100%;border-collapse:collapse;font-size:12px;}
+.tabl-table th{background:rgba(0,87,184,0.18);color:#7FB5FF;font-family:'Barlow',sans-serif;font-weight:700;letter-spacing:1px;font-size:10px;text-transform:uppercase;padding:8px 10px;text-align:center;}
+.tabl-table th.left{text-align:left;}
+.tabl-table td{padding:8px 10px;text-align:center;color:var(--text-muted);border-top:1px solid rgba(255,255,255,0.04);transition:background 0.15s;}
+.tabl-table td.left{text-align:left;}
+.tabl-table tr:hover td{background:rgba(255,255,255,0.03);}
+/* pozicije — s lijevom bordom-trakom */
+.tabl-table tr td:first-child{border-left:3px solid transparent;}
+.tabl-table tr.pos-ucl td:first-child{border-left-color:#1565C0;}
+.tabl-table tr.pos-ecl td:first-child{border-left-color:#00965A;}
+.tabl-table tr.pos-rel td:first-child{border-left-color:#EF4444;}
+.tabl-table tr.pos-playoff td:first-child{border-left-color:#F97316;}
+.tabl-pos{width:22px;text-align:right;font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--text-muted);}
+.tabl-pos.ucl-pos{color:#5B9BF5;}
+.tabl-pos.ecl-pos{color:#34D399;}
+.tabl-pos.rel-pos{color:#F87171;}
+.tabl-pos.playoff-pos{color:#FB923C;}
+/* badge pored rednog broja */
+.comp-badge{display:inline-block;font-size:8px;font-weight:900;letter-spacing:0.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;margin-left:3px;text-transform:uppercase;}
+.comp-badge.ucl{background:#1565C0;color:#90CAF9;}
+.comp-badge.ecl{background:#00965A;color:#A7F3D0;}
+.comp-badge.rel{background:#7F1D1D;color:#FCA5A5;}
+.comp-badge.playoff{background:#7C2D12;color:#FDBA74;}
+.tabl-club-name{font-weight:700;color:#fff;white-space:nowrap;}
+.tabl-club-name.dinamo{color:#FACC15;}
+.tabl-pts{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;}
+.tabl-pts.dinamo{color:#FACC15;}
+.tabl-form{display:flex;gap:3px;justify-content:center;align-items:center;}
+.tabl-form-dot{width:14px;height:14px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:#000;}
+.tabl-form-dot.W{background:#4ADE80;}
+.tabl-form-dot.D{background:#9CA3AF;}
+.tabl-form-dot.L{background:#F87171;}
+.tabl-admin-row{display:flex;gap:6px;padding:10px 12px;background:rgba(0,87,184,0.06);border-top:1px solid var(--border);flex-wrap:wrap;align-items:center;}
+.tabl-btn-sm{background:rgba(77,159,255,0.12);border:1px solid rgba(77,159,255,0.25);border-radius:6px;padding:4px 10px;color:#7FB5FF;font-size:10px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;transition:all 0.2s;letter-spacing:0.5px;}
+.tabl-btn-sm:hover{background:rgba(77,159,255,0.25);}
+.tabl-btn-red{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#F87171;}
+.tabl-btn-red:hover{background:rgba(239,68,68,0.22);}
+/* Graf */
+.pts-graph-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:18px;}
+.pts-graph-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#FACC15;margin-bottom:12px;}
+.pts-graph-svg{width:100%;overflow:visible;}
+.pts-graph-bar{transition:opacity 0.2s;}
+.pts-graph-bar:hover{opacity:0.8;}
+@media(max-width:500px){
+  .tabl-table th,.tabl-table td{padding:7px 5px;font-size:11px;}
+  .tabl-table .hide-mobile{display:none;}
+  .tabl-club-name{font-size:12px;}
+  .tabl-pts{font-size:14px;}
+  .tabl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .tabl-form-dot{width:12px;height:12px;font-size:7px;}
+}
 </style>
 </head>
 <body>
@@ -1717,6 +1777,15 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
   <div class="sched-wrap" id="raspored-content">
 
+    <!-- PAGE TABS -->
+    <div class="sched-page-tabs">
+      <button class="sched-page-tab active" id="ptab-raspored" onclick="switchSchedPage('raspored')">📅 Raspored</button>
+      <button class="sched-page-tab" id="ptab-tablica" onclick="switchSchedPage('tablica')">🏆 Tablica</button>
+    </div>
+
+    <!-- ===== RASPORED VIEW ===== -->
+    <div id="sched-view-raspored">
+
     <!-- forma -->
     <div id="sched-forma"></div>
 
@@ -1771,10 +1840,150 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <!-- match list -->
     <div id="sched-list"><div style="text-align:center;padding:40px;color:var(--text-muted);">Učitavanje rasporeda...</div></div>
 
+    </div><!-- /sched-view-raspored -->
+
+    <!-- ===== TABLICA VIEW ===== -->
+    <div id="sched-view-tablica" style="display:none;">
+
+      <!-- Graf bodova -->
+      <div class="pts-graph-wrap">
+        <div class="pts-graph-title">📈 BODOVI PO KOLU — SEZONA 2026/27</div>
+        <div id="pts-graph-container"><div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px 0;">Nema podataka za prikaz grafa.</div></div>
+        <div id="pts-graph-admin" style="display:none;margin-top:10px;display:none;">
+          <button class="tabl-btn-sm" onclick="tablAddPtsRound()">➕ Dodaj kolo</button>
+          <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetPts()">🗑️ Reset bodova</button>
+        </div>
+      </div>
+
+      <!-- HNL Tablica -->
+      <div class="tabl-section">
+        <div class="tabl-heading">🇭🇷 HNL — Tablica
+          <span id="hnl-tabl-season">2026/27</span>
+        </div>
+        <div class="tabl-wrap">
+          <table class="tabl-table">
+            <thead>
+              <tr>
+                <th style="width:28px;">#</th>
+                <th class="left">Klub</th>
+                <th class="hide-mobile">U</th>
+                <th class="hide-mobile">P</th>
+                <th class="hide-mobile">N</th>
+                <th class="hide-mobile">G</th>
+                <th class="hide-mobile">GR</th>
+                <th>GD</th>
+                <th>Bod</th>
+                <th>Forma</th>
+              </tr>
+            </thead>
+            <tbody id="hnl-tabl-body"></tbody>
+          </table>
+          <div id="hnl-tabl-admin" style="display:none;" class="tabl-admin-row">
+            <button class="tabl-btn-sm" onclick="tablAddRow('hnl')">➕ Dodaj klub</button>
+            <button class="tabl-btn-sm" onclick="tablEditAll('hnl')">✏️ Uredi sve</button>
+            <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetTable('hnl')">🗑️ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Europa Tablica -->
+      <div class="tabl-section" id="euro-tabl-section">
+        <div class="tabl-heading">⭐ Europa — Tablica
+          <span id="euro-tabl-label" style="color:#b39aff;">UCL</span>
+        </div>
+        <div class="tabl-wrap">
+          <table class="tabl-table">
+            <thead>
+              <tr>
+                <th style="width:28px;">#</th>
+                <th class="left">Klub</th>
+                <th class="hide-mobile">U</th>
+                <th class="hide-mobile">P</th>
+                <th class="hide-mobile">N</th>
+                <th class="hide-mobile">G</th>
+                <th class="hide-mobile">GR</th>
+                <th>GD</th>
+                <th>Bod</th>
+                <th>Forma</th>
+              </tr>
+            </thead>
+            <tbody id="euro-tabl-body"></tbody>
+          </table>
+          <div id="euro-tabl-admin" style="display:none;" class="tabl-admin-row">
+            <button class="tabl-btn-sm" onclick="tablAddRow('euro')">➕ Dodaj klub</button>
+            <button class="tabl-btn-sm" onclick="tablEditAll('euro')">✏️ Uredi sve</button>
+            <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetTable('euro')">🗑️ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legenda -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
+          <div style="width:3px;height:14px;border-radius:2px;background:#1565C0;"></div>
+          <span class="comp-badge ucl">UCL</span> 1. mjesto — UCL kvalifikacije
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
+          <div style="width:3px;height:14px;border-radius:2px;background:#00965A;"></div>
+          <span class="comp-badge ecl">ECL</span> 2.–4. mjesto — ECL kvalifikacije
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
+          <div style="width:3px;height:14px;border-radius:2px;background:#F97316;"></div>
+          <span class="comp-badge playoff">KVO</span> 9. mjesto — kval. za ostanak
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
+          <div style="width:3px;height:14px;border-radius:2px;background:#EF4444;"></div>
+          <span class="comp-badge rel">ISP</span> 10. mjesto — ispadanje iz HNL
+        </div>
+      </div>
+
+    </div><!-- /sched-view-tablica -->
+
+  </div><!-- /sched-wrap -->
+
+  </div><!-- /sched-wrap -->
+</div><!-- /page-raspored -->
+
+<!-- EDIT TABLICA ROW MODAL -->
+<div class="modal-overlay" id="edit-tabl-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:380px;">
+    <h3>✏️ Uredi redak tablice</h3>
+    <div class="modal-sub" id="etm-sub"></div>
+    <input type="hidden" id="etm-type">
+    <input type="hidden" id="etm-idx">
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Klub</label><input class="form-input-pred" id="etm-club" type="text" placeholder="Naziv kluba" style="width:100%;"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div class="modal-row"><label class="form-label">U (utakmice)</label><input class="form-input-pred" id="etm-p" type="number" min="0" style="width:100%;"></div>
+        <div class="modal-row"><label class="form-label">P (pobjede)</label><input class="form-input-pred" id="etm-w" type="number" min="0" style="width:100%;"></div>
+        <div class="modal-row"><label class="form-label">N (neriješeno)</label><input class="form-input-pred" id="etm-d" type="number" min="0" style="width:100%;"></div>
+        <div class="modal-row"><label class="form-label">G (porazi)</label><input class="form-input-pred" id="etm-l" type="number" min="0" style="width:100%;"></div>
+        <div class="modal-row"><label class="form-label">Gol: za</label><input class="form-input-pred" id="etm-gf" type="number" min="0" style="width:100%;"></div>
+        <div class="modal-row"><label class="form-label">Gol: prim.</label><input class="form-input-pred" id="etm-ga" type="number" min="0" style="width:100%;"></div>
+      </div>
+      <div class="modal-row"><label class="form-label">Forma (npr. W W D L W)</label><input class="form-input-pred" id="etm-form" type="text" placeholder="W D L W W" style="width:100%;"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="tablSaveRow()">💾 Spremi</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('edit-tabl-modal').classList.remove('open')">Odustani</button>
+    </div>
   </div>
 </div>
 
-<!-- EDIT RASPORED MODAL -->
+<!-- ADD PTS ROUND MODAL -->
+<div class="modal-overlay" id="add-pts-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:320px;">
+    <h3>📈 Dodaj kolo</h3>
+    <div class="modal-inputs">
+      <div class="modal-row"><label class="form-label">Kolo (br.)</label><input class="form-input-pred" id="apm-kolo" type="number" min="1" max="36" placeholder="1" style="width:100%;"></div>
+      <div class="modal-row"><label class="form-label">Bodovi (ukupno)</label><input class="form-input-pred" id="apm-pts" type="number" min="0" placeholder="npr. 3" style="width:100%;"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn-ok" onclick="tablSavePtsRound()">💾 Dodaj</button>
+      <button class="modal-btn-cancel" onclick="document.getElementById('add-pts-modal').classList.remove('open')">Odustani</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="edit-sched-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal">
     <h3>✏️ Uredi utakmicu</h3>
@@ -4491,14 +4700,19 @@ async function renderRaspored(){
   schedRenderForma();
 
   // Stats bar
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayNum = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
   const hnlCount  = _schedMatches.filter(m=>m.competition==='hnl').length;
   const euroCount = _schedMatches.filter(m=>m.competition==='euro').length;
   const total     = _schedMatches.length;
+  const played    = _schedMatches.filter(m=>m.sortDate < todayNum).length;
+  const remaining = total - played;
   const statsEl = document.getElementById('sched-stats');
   if(statsEl) statsEl.innerHTML = `
     <div class="sched-stat"><div class="sched-stat-num">${hnlCount}</div><div class="sched-stat-lbl">HNL utakmica</div></div>
     <div class="sched-stat"><div class="sched-stat-num">${euroCount}</div><div class="sched-stat-lbl">Euro kval.</div></div>
-    <div class="sched-stat"><div class="sched-stat-num">${total}</div><div class="sched-stat-lbl">Ukupno</div></div>`;
+    <div class="sched-stat"><div class="sched-stat-num" style="color:#4ADE80;">${played}</div><div class="sched-stat-lbl">Odigrano</div></div>
+    <div class="sched-stat"><div class="sched-stat-num" style="color:#FACC15;">${remaining}</div><div class="sched-stat-lbl">Preostalo</div></div>`;
 
   schedRenderList();
 }
@@ -4681,7 +4895,11 @@ async function schedAddMatch(){
   if(statsEl){
     const hnlC=_schedMatches.filter(m=>m.competition==='hnl').length;
     const euroC=_schedMatches.filter(m=>m.competition==='euro').length;
-    statsEl.innerHTML=`<div class="sched-stat"><div class="sched-stat-num">${hnlC}</div><div class="sched-stat-lbl">HNL utakmica</div></div><div class="sched-stat"><div class="sched-stat-num">${euroC}</div><div class="sched-stat-lbl">Euro kval.</div></div><div class="sched-stat"><div class="sched-stat-num">${_schedMatches.length}</div><div class="sched-stat-lbl">Ukupno</div></div>`;
+    const today2=new Date(); today2.setHours(0,0,0,0);
+    const todayN=today2.getFullYear()*10000+(today2.getMonth()+1)*100+today2.getDate();
+    const played2=_schedMatches.filter(m=>m.sortDate<todayN).length;
+    const rem2=_schedMatches.length-played2;
+    statsEl.innerHTML=`<div class="sched-stat"><div class="sched-stat-num">${hnlC}</div><div class="sched-stat-lbl">HNL utakmica</div></div><div class="sched-stat"><div class="sched-stat-num">${euroC}</div><div class="sched-stat-lbl">Euro kval.</div></div><div class="sched-stat"><div class="sched-stat-num" style="color:#4ADE80;">${played2}</div><div class="sched-stat-lbl">Odigrano</div></div><div class="sched-stat"><div class="sched-stat-num" style="color:#FACC15;">${rem2}</div><div class="sched-stat-lbl">Preostalo</div></div>`;
   }
 }
 window.schedAddMatch = schedAddMatch;
@@ -4750,6 +4968,305 @@ async function schedDelete(id){
   renderRaspored();
 }
 window.schedDelete = schedDelete;
+
+
+/* ===== TABLICA & GRAF ===== */
+
+const TABL_HNL_DEFAULT = [
+  {club:'Dinamo',    p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Hajduk',    p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Rijeka',    p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Osijek',    p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Lokomotiva',p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Gorica',    p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Varaždin',  p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Slaven Belupo',p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Rudeš',     p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+  {club:'Istra 1961',p:0,w:0,d:0,l:0,gf:0,ga:0,form:''},
+];
+
+let _tablHnl  = null;
+let _tablEuro = null;
+let _tablPts  = null; // [{kolo:1, pts:3}, ...]
+let _currentSchedPage = 'raspored';
+
+function switchSchedPage(page){
+  _currentSchedPage = page;
+  document.getElementById('sched-view-raspored').style.display = page==='raspored' ? '' : 'none';
+  document.getElementById('sched-view-tablica').style.display  = page==='tablica'  ? '' : 'none';
+  document.getElementById('ptab-raspored').classList.toggle('active', page==='raspored');
+  document.getElementById('ptab-tablica').classList.toggle('active',  page==='tablica');
+  if(page==='tablica') renderTablica();
+}
+window.switchSchedPage = switchSchedPage;
+
+async function tablLoad(){
+  try{
+    const [snapHnl, snapEuro, snapPts] = await Promise.all([
+      get(ref(db,'tablica_hnl')),
+      get(ref(db,'tablica_euro')),
+      get(ref(db,'tablica_pts')),
+    ]);
+    _tablHnl  = snapHnl.exists()  ? snapHnl.val()  : JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
+    _tablEuro = snapEuro.exists() ? snapEuro.val() : [];
+    _tablPts  = snapPts.exists()  ? snapPts.val()  : [];
+  }catch(e){
+    _tablHnl  = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
+    _tablEuro = [];
+    _tablPts  = [];
+  }
+}
+
+async function renderTablica(){
+  if(!_tablHnl) await tablLoad();
+  const isAdmin = !!_currentUser;
+
+  // admin controls
+  ['hnl-tabl-admin','euro-tabl-admin'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display=isAdmin?'flex':'none';
+  });
+  const ptsAdmin = document.getElementById('pts-graph-admin');
+  if(ptsAdmin) ptsAdmin.style.display = isAdmin ? 'flex' : 'none';
+
+  // Europa section - show only if data
+  const euroSec = document.getElementById('euro-tabl-section');
+  if(euroSec) euroSec.style.display = (_tablEuro && _tablEuro.length) ? '' : (isAdmin ? '' : 'none');
+
+  tablRenderTable('hnl');
+  tablRenderTable('euro');
+  tablRenderGraph();
+}
+window.renderTablica = renderTablica;
+
+function tablCalcPts(row){ return row.w*3 + row.d; }
+function tablCalcGD(row) { return row.gf - row.ga; }
+
+function tablPosMeta(rank, total){
+  // HNL (10 klubova): 1. = UCL kval, 2.-4. = ECL kval, 9. = kval. za ostanak, 10. = ispadanje
+  if(rank === 0)          return { trCls:'pos-ucl', posCls:'ucl-pos', badge:'<span class="comp-badge ucl">UCL</span>' };
+  if(rank <= 3)           return { trCls:'pos-ecl', posCls:'ecl-pos', badge:'<span class="comp-badge ecl">ECL</span>' };
+  if(rank === total-2)    return { trCls:'pos-playoff', posCls:'playoff-pos', badge:'<span class="comp-badge playoff">KVO</span>' };
+  if(rank === total-1)    return { trCls:'pos-rel', posCls:'rel-pos', badge:'<span class="comp-badge rel">ISP</span>' };
+  return { trCls:'', posCls:'', badge:'' };
+}
+
+function tablFormDots(formStr){
+  if(!formStr) return '<span style="color:var(--text-muted);font-size:10px;">—</span>';
+  const letters = formStr.trim().toUpperCase().split(/[\s,]+/).filter(Boolean).slice(-5);
+  return letters.map(l=>{
+    const cls = l==='P'||l==='W' ? 'W' : l==='G'||l==='L' ? 'L' : 'D';
+    const show = l==='P'||l==='W' ? 'P' : l==='G'||l==='L' ? 'G' : 'N';
+    return `<div class="tabl-form-dot ${cls}" title="${cls}">${show}</div>`;
+  }).join('');
+}
+
+function tablRenderTable(type){
+  const data = type==='hnl' ? _tablHnl : _tablEuro;
+  const bodyId = type==='hnl' ? 'hnl-tabl-body' : 'euro-tabl-body';
+  const el = document.getElementById(bodyId);
+  if(!el) return;
+  if(!data || !data.length){
+    el.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--text-muted);">
+      ${_currentUser ? 'Klikni "Dodaj klub" za početak.' : 'Tablica će biti dostupna kada sezona počne.'}
+    </td></tr>`;
+    return;
+  }
+  const sorted = [...data]
+    .map((r,i)=>({...r, _origIdx:i}))
+    .sort((a,b)=>{
+      const pb = tablCalcPts(b) - tablCalcPts(a);
+      if(pb!==0) return pb;
+      const gd = tablCalcGD(b) - tablCalcGD(a);
+      if(gd!==0) return gd;
+      return b.gf - a.gf;
+    });
+  const total = sorted.length;
+  let html = '';
+  sorted.forEach((row, rank)=>{
+    const isDinamo = row.club.toLowerCase().includes('dinamo');
+    const pts = tablCalcPts(row);
+    const gd  = tablCalcGD(row);
+    const meta = tablPosMeta(rank, total);
+    const nameCls = isDinamo ? 'tabl-club-name dinamo' : 'tabl-club-name';
+    const ptsCls  = isDinamo ? 'tabl-pts dinamo' : 'tabl-pts';
+    const editBtn = _currentUser
+      ? `<td><button class="sched-btn-edit" style="opacity:0.7;" onclick="tablOpenEdit('${type}',${row._origIdx})">✏️</button></td>` : '';
+    html += `<tr class="${meta.trCls}">
+      <td><span class="tabl-pos ${meta.posCls}">${rank+1}</span>${meta.badge}</td>
+      <td class="left"><span class="${nameCls}">${row.club}</span></td>
+      <td class="hide-mobile">${row.p}</td>
+      <td class="hide-mobile">${row.w}</td>
+      <td class="hide-mobile">${row.d}</td>
+      <td class="hide-mobile">${row.l}</td>
+      <td class="hide-mobile">${row.gf}:${row.ga}</td>
+      <td style="color:${gd>0?'#4ADE80':gd<0?'#F87171':'var(--text-muted)'};">${gd>0?'+':''}${gd}</td>
+      <td><span class="${ptsCls}">${pts}</span></td>
+      <td><div class="tabl-form">${tablFormDots(row.form)}</div></td>
+      ${editBtn}
+    </tr>`;
+  });
+  el.innerHTML = html;
+}
+
+function tablRenderGraph(){
+  const el = document.getElementById('pts-graph-container');
+  if(!el) return;
+  if(!_tablPts || _tablPts.length < 2){
+    el.innerHTML = `<div style="color:var(--text-muted);font-size:12px;text-align:center;padding:18px 0;">
+      ${_currentUser ? 'Dodaj podatke po kolima za prikaz grafa.' : 'Graf bodova bit će dostupan kada sezona počne.'}
+    </div>`;
+    return;
+  }
+  const sorted = [..._tablPts].sort((a,b)=>a.kolo-b.kolo);
+  const maxPts = Math.max(...sorted.map(d=>d.pts));
+  const W = 600, H = 160, PAD = 30, BAR_GAP = 4;
+  const n = sorted.length;
+  const barW = Math.max(8, Math.floor((W - PAD*2 - BAR_GAP*(n-1)) / n));
+  const totalBarW = n*barW + (n-1)*BAR_GAP;
+  const startX = (W - totalBarW) / 2;
+
+  let bars = '', labels = '', trend = '';
+  sorted.forEach((d, i)=>{
+    const prev = i>0 ? sorted[i-1].pts : d.pts;
+    const isUp = d.pts >= prev;
+    const color = isUp ? '#4ADE80' : '#F87171';
+    const shadow = isUp ? '#4ADE8066' : '#F8717166';
+    const barH = maxPts > 0 ? Math.max(8, Math.round((d.pts / maxPts) * (H - 40))) : 8;
+    const x = startX + i*(barW + BAR_GAP);
+    const y = H - 20 - barH;
+    bars += `<rect class="pts-graph-bar" x="${x}" y="${y}" width="${barW}" height="${barH}"
+      rx="4" fill="${color}" opacity="0.85" style="filter:drop-shadow(0 2px 6px ${shadow})">
+      <title>Kolo ${d.kolo}: ${d.pts} bod</title></rect>`;
+    labels += `<text x="${x + barW/2}" y="${H - 4}" text-anchor="middle"
+      font-family="Barlow,sans-serif" font-size="9" fill="#6B7280">${d.kolo}</text>`;
+    labels += `<text x="${x + barW/2}" y="${y - 3}" text-anchor="middle"
+      font-family="Bebas Neue,sans-serif" font-size="11" fill="${color}">${d.pts}</text>`;
+    // trend line points
+    const cx = x + barW/2;
+    const cy = y;
+    trend += i===0 ? `M${cx},${cy}` : ` L${cx},${cy}`;
+  });
+
+  el.innerHTML = `<svg class="pts-graph-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <path d="${trend}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="4,3"/>
+    ${bars}${labels}
+    <text x="${PAD/2}" y="${H/2}" text-anchor="middle" font-family="Barlow,sans-serif" font-size="9"
+      fill="#4B5563" transform="rotate(-90,${PAD/2},${H/2})">Bodovi</text>
+  </svg>`;
+}
+
+function tablOpenEdit(type, idx){
+  if(!_currentUser) return;
+  const data = type==='hnl' ? _tablHnl : _tablEuro;
+  const row = data[idx];
+  if(!row) return;
+  document.getElementById('etm-sub').textContent = row.club;
+  document.getElementById('etm-type').value = type;
+  document.getElementById('etm-idx').value  = idx;
+  document.getElementById('etm-club').value = row.club;
+  document.getElementById('etm-p').value    = row.p;
+  document.getElementById('etm-w').value    = row.w;
+  document.getElementById('etm-d').value    = row.d;
+  document.getElementById('etm-l').value    = row.l;
+  document.getElementById('etm-gf').value   = row.gf;
+  document.getElementById('etm-ga').value   = row.ga;
+  document.getElementById('etm-form').value = row.form || '';
+  document.getElementById('edit-tabl-modal').classList.add('open');
+}
+window.tablOpenEdit = tablOpenEdit;
+
+async function tablSaveRow(){
+  const type = document.getElementById('etm-type').value;
+  const idx  = parseInt(document.getElementById('etm-idx').value);
+  const data = type==='hnl' ? _tablHnl : _tablEuro;
+  if(!data || idx<0 || idx>=data.length) return;
+  data[idx] = {
+    club: document.getElementById('etm-club').value.trim(),
+    p:  parseInt(document.getElementById('etm-p').value)||0,
+    w:  parseInt(document.getElementById('etm-w').value)||0,
+    d:  parseInt(document.getElementById('etm-d').value)||0,
+    l:  parseInt(document.getElementById('etm-l').value)||0,
+    gf: parseInt(document.getElementById('etm-gf').value)||0,
+    ga: parseInt(document.getElementById('etm-ga').value)||0,
+    form: document.getElementById('etm-form').value.trim(),
+  };
+  await set(ref(db, type==='hnl'?'tablica_hnl':'tablica_euro'), data);
+  document.getElementById('edit-tabl-modal').classList.remove('open');
+  showToast('✅ Tablica ažurirana!','#0A1A0A','#4ADE80');
+  tablRenderTable(type);
+}
+window.tablSaveRow = tablSaveRow;
+
+async function tablAddRow(type){
+  if(!_currentUser) return;
+  const club = prompt('Naziv kluba:');
+  if(!club) return;
+  const data = type==='hnl' ? _tablHnl : _tablEuro;
+  const newRow = {club:club.trim(),p:0,w:0,d:0,l:0,gf:0,ga:0,form:''};
+  data.push(newRow);
+  await set(ref(db, type==='hnl'?'tablica_hnl':'tablica_euro'), data);
+  tablRenderTable(type);
+  showToast('✅ Klub dodan!','#0A1A0A','#4ADE80');
+}
+window.tablAddRow = tablAddRow;
+
+async function tablEditAll(type){
+  if(!_currentUser) return;
+  const data = type==='hnl' ? _tablHnl : _tablEuro;
+  if(!data || !data.length){ showToast('⚠️ Nema podataka za uređivanje.','#1A0A0A','#F87171'); return; }
+  // Open edit for first Dinamo row or first row
+  const idx = data.findIndex(r=>r.club.toLowerCase().includes('dinamo'));
+  tablOpenEdit(type, idx>=0 ? idx : 0);
+}
+window.tablEditAll = tablEditAll;
+
+async function tablResetTable(type){
+  if(!_currentUser) return;
+  if(!confirm(`Resetirati ${type==='hnl'?'HNL':'Europa'} tablicu?`)) return;
+  if(type==='hnl'){
+    _tablHnl = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
+    await set(ref(db,'tablica_hnl'), _tablHnl);
+  } else {
+    _tablEuro = [];
+    await set(ref(db,'tablica_euro'), _tablEuro);
+  }
+  tablRenderTable(type);
+  showToast('🗑️ Tablica resetirana.','#1A0A0A','#F87171');
+}
+window.tablResetTable = tablResetTable;
+
+function tablAddPtsRound(){
+  document.getElementById('apm-kolo').value = (_tablPts && _tablPts.length) ? _tablPts[_tablPts.length-1].kolo+1 : 1;
+  document.getElementById('apm-pts').value = '';
+  document.getElementById('add-pts-modal').classList.add('open');
+}
+window.tablAddPtsRound = tablAddPtsRound;
+
+async function tablSavePtsRound(){
+  const kolo = parseInt(document.getElementById('apm-kolo').value);
+  const pts  = parseInt(document.getElementById('apm-pts').value);
+  if(isNaN(kolo)||isNaN(pts)){ showToast('⚠️ Unesite kolo i bodove!','#1A0A0A','#F87171'); return; }
+  if(!_tablPts) _tablPts = [];
+  const existing = _tablPts.findIndex(d=>d.kolo===kolo);
+  if(existing>=0) _tablPts[existing].pts = pts;
+  else _tablPts.push({kolo, pts});
+  _tablPts.sort((a,b)=>a.kolo-b.kolo);
+  await set(ref(db,'tablica_pts'), _tablPts);
+  document.getElementById('add-pts-modal').classList.remove('open');
+  tablRenderGraph();
+  showToast('✅ Bodovi dodani!','#0A1A0A','#4ADE80');
+}
+window.tablSavePtsRound = tablSavePtsRound;
+
+async function tablResetPts(){
+  if(!_currentUser) return;
+  if(!confirm('Resetirati graf bodova?')) return;
+  _tablPts = [];
+  await set(ref(db,'tablica_pts'), []);
+  tablRenderGraph();
+  showToast('🗑️ Graf resetiran.','#1A0A0A','#F87171');
+}
+window.tablResetPts = tablResetPts;
 
 
 // ═══════════════════════════════════════════════════════
