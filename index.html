@@ -713,6 +713,22 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .pts-graph-svg{width:100%;overflow:visible;}
 .pts-graph-bar{transition:opacity 0.2s;}
 .pts-graph-bar:hover{opacity:0.8;}
+
+/* ===== YT LINK ===== */
+.yt-section{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;}
+.yt-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.yt-link-row{display:flex;align-items:center;gap:7px;}
+.yt-input{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;outline:none;transition:border-color 0.2s;flex:1;min-width:0;}
+.yt-input:focus{border-color:rgba(255,0,0,0.5);}
+.yt-input::placeholder{color:var(--text-muted);}
+.yt-save-btn{background:rgba(220,38,38,0.2);border:1px solid rgba(220,38,38,0.4);border-radius:8px;padding:6px 12px;color:#FCA5A5;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;}
+.yt-save-btn:hover{background:rgba(220,38,38,0.35);border-color:rgba(220,38,38,0.7);}
+.yt-open-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#CC0000,#FF0000);border:none;border-radius:8px;padding:7px 14px;color:#fff;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;text-decoration:none;width:100%;justify-content:center;margin-top:7px;}
+.yt-open-btn:hover{filter:brightness(1.15);transform:translateY(-1px);}
+.yt-embed-wrap{margin-top:10px;border-radius:10px;overflow:hidden;position:relative;padding-bottom:56.25%;height:0;background:#000;}
+.yt-embed-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none;}
+.yt-toggle-embed{background:rgba(255,255,255,0.07);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;width:100%;margin-top:7px;text-align:center;}
+.yt-toggle-embed:hover{border-color:rgba(255,0,0,0.4);color:#FCA5A5;}
 @media(max-width:500px){
   .tabl-table th,.tabl-table td{padding:7px 5px;font-size:11px;}
   .tabl-table .hide-mobile{display:none;}
@@ -1070,6 +1086,22 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div id="m-strijelci-wrap" style="margin-top:12px;display:none;">
         <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:7px;">⚽ Strijelci</div>
         <div id="m-strijelci"></div>
+      </div>
+      <!-- YouTube link section -->
+      <div class="yt-section">
+        <div class="yt-label">▶ YouTube snimka</div>
+        <div class="yt-link-row">
+          <input class="yt-input" type="text" id="m-yt-input" placeholder="Zalijepi YT link (npr. https://youtu.be/...)">
+          <button class="yt-save-btn" onclick="saveYtLink()">💾 Spremi</button>
+        </div>
+        <div id="m-yt-actions" style="display:none;">
+          <a id="m-yt-open" href="#" target="_blank" rel="noopener" class="yt-open-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            Otvori na YouTubeu
+          </a>
+          <button class="yt-toggle-embed" onclick="toggleYtEmbed()" id="m-yt-embed-btn">📺 Prikaži ispod</button>
+        </div>
+        <div class="yt-embed-wrap" id="m-yt-embed" style="display:none;"></div>
       </div>
       <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Zatvori</button>
     </div>
@@ -2814,8 +2846,76 @@ function showMatchModal(idx){
     }
   }
   document.getElementById('modal').classList.add('open');
+  updateYtSection(m.ytLink||'');
 }
 window.showMatchModal=showMatchModal;
+
+// ── YouTube helpers ────────────────────────────────────────────────
+function getYtVideoId(url){
+  if(!url)return null;
+  try{
+    const u=new URL(url);
+    if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('?')[0];
+    if(u.hostname.includes('youtube.com')){
+      const v=u.searchParams.get('v');
+      if(v) return v;
+      // shorts / live / embed
+      const m=u.pathname.match(/\/(embed|shorts|live)\/([^/?]+)/);
+      if(m) return m[2];
+    }
+  }catch(_){}
+  return null;
+}
+
+function updateYtSection(ytUrl){
+  const input=document.getElementById('m-yt-input');
+  const actions=document.getElementById('m-yt-actions');
+  const openLink=document.getElementById('m-yt-open');
+  const embedWrap=document.getElementById('m-yt-embed');
+  // Reset embed
+  embedWrap.style.display='none';
+  embedWrap.innerHTML='';
+  document.getElementById('m-yt-embed-btn').textContent='📺 Prikaži ispod';
+  if(input) input.value=ytUrl||'';
+  if(ytUrl&&getYtVideoId(ytUrl)){
+    actions.style.display='block';
+    openLink.href=ytUrl;
+  }else{
+    actions.style.display='none';
+    if(openLink) openLink.href='#';
+  }
+}
+
+async function saveYtLink(){
+  if(_editMatchIdx<0||_editMatchIdx>=matches.length)return;
+  const url=(document.getElementById('m-yt-input')?.value||'').trim();
+  if(url&&!getYtVideoId(url)){
+    showToast('⚠️ Nije valjan YouTube link!','#1A0A0A','#F87171');return;
+  }
+  matches[_editMatchIdx]={...matches[_editMatchIdx],ytLink:url||''};
+  await set(ref(db,'matches'),matches);
+  updateYtSection(url);
+  showToast(url?'✅ YT link spremljen!':'🗑️ YT link uklonjen!','#0A2A0A','#4ADE80');
+}
+window.saveYtLink=saveYtLink;
+
+function toggleYtEmbed(){
+  const embedWrap=document.getElementById('m-yt-embed');
+  const btn=document.getElementById('m-yt-embed-btn');
+  if(embedWrap.style.display==='none'){
+    const url=(document.getElementById('m-yt-input')?.value||'').trim();
+    const vid=getYtVideoId(url);
+    if(!vid){showToast('⚠️ Nema YT linka!','#1A0A0A','#F87171');return;}
+    embedWrap.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${vid}?rel=0" allowfullscreen loading="lazy"></iframe>`;
+    embedWrap.style.display='block';
+    btn.textContent='🙈 Sakrij video';
+  }else{
+    embedWrap.style.display='none';
+    embedWrap.innerHTML='';
+    btn.textContent='📺 Prikaži ispod';
+  }
+}
+window.toggleYtEmbed=toggleYtEmbed;
 
 function openEditMatch(){
   if(_editMatchIdx<0)return;
