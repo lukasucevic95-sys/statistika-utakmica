@@ -2906,16 +2906,67 @@ function toggleYtEmbed(){
     const url=(document.getElementById('m-yt-input')?.value||'').trim();
     const vid=getYtVideoId(url);
     if(!vid){showToast('⚠️ Nema YT linka!','#1A0A0A','#F87171');return;}
-    embedWrap.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${vid}?rel=0" allowfullscreen loading="lazy"></iframe>`;
+    // Use standard youtube embed; if blocked, show fallback button
+    embedWrap.innerHTML=`
+      <iframe
+        id="yt-iframe"
+        src="https://www.youtube.com/embed/${vid}?rel=0&modestbranding=1"
+        allowfullscreen
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        loading="lazy"
+        style="border:none;"
+      ></iframe>
+      <div id="yt-fallback" style="display:none;position:absolute;inset:0;background:rgba(10,15,30,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center;">
+        <div style="font-size:28px;">🚫</div>
+        <div style="font-size:13px;font-weight:600;color:#F0F4FF;">Video nije dostupan za prikaz ovdje</div>
+        <div style="font-size:11px;color:var(--text-muted);">Vlasnik videa je onemogućio embed. Otvori direktno na YouTubeu.</div>
+        <a href="https://www.youtube.com/watch?v=${vid}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#CC0000,#FF0000);border:none;border-radius:8px;padding:9px 18px;color:#fff;font-family:'Barlow',sans-serif;font-size:13px;font-weight:700;text-decoration:none;margin-top:4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          Otvori na YouTubeu
+        </a>
+      </div>`;
     embedWrap.style.display='block';
     btn.textContent='🙈 Sakrij video';
+    // Detect if iframe fails to load (embed blocked) — listen for error via postMessage
+    const iframe=document.getElementById('yt-iframe');
+    if(iframe){
+      // After 4s, if iframe shows error page, show fallback
+      iframe._ytTimer=setTimeout(()=>{
+        try{
+          // If we can read contentDocument it means it loaded something local (blocked)
+          const doc=iframe.contentDocument||iframe.contentWindow?.document;
+          if(doc&&doc.title&&(doc.title.includes('unavailable')||doc.title===''||doc.body?.innerText?.includes('unavailable'))){
+            showYtFallback();
+          }
+        }catch(e){
+          // Cross-origin = actually loaded youtube = fine
+        }
+      },4000);
+      iframe.onload=()=>{
+        try{
+          const doc=iframe.contentDocument||iframe.contentWindow?.document;
+          if(doc&&(doc.title?.toLowerCase().includes('unavailable')||doc.body?.innerText?.toLowerCase().includes("isn't available"))){
+            showYtFallback();
+          }
+        }catch(e){}
+      };
+    }
   }else{
+    const iframe=document.getElementById('yt-iframe');
+    if(iframe&&iframe._ytTimer) clearTimeout(iframe._ytTimer);
     embedWrap.style.display='none';
     embedWrap.innerHTML='';
     btn.textContent='📺 Prikaži ispod';
   }
 }
+function showYtFallback(){
+  const iframe=document.getElementById('yt-iframe');
+  const fb=document.getElementById('yt-fallback');
+  if(iframe) iframe.style.display='none';
+  if(fb) fb.style.display='flex';
+}
 window.toggleYtEmbed=toggleYtEmbed;
+window.showYtFallback=showYtFallback;
 
 function openEditMatch(){
   if(_editMatchIdx<0)return;
