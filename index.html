@@ -1237,7 +1237,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div class="g-section-title">👟 Strijelci</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div class="view-tabs" id="scorer-tabs">
-            <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)">🔵 Dinamo</button>
+            <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)">🔵 <span id="scorer-tab-dinamo-label">Dinamo</span></button>
             <button class="view-tab" id="scorer-tab-opp" onclick="setScorerTab('opp',this)">🔴 Protivnici</button>
           </div>
           <select class="form-input" style="width:auto;font-size:11px;" id="player-sort" onchange="renderPlayerStats()">
@@ -1261,7 +1261,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div id="player-stats-pages" class="scorer-pages" style="display:none;"></div>
         </div>
         <div style="border-top:1px solid var(--border);padding:10px 16px 4px;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--text-muted);">GOLOVI PO EKIPI</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--text-muted);" id="din-vs-team-title">GOLOVI PO EKIPI</div>
         </div>
         <div id="din-vs-team" style="padding-bottom:6px;"></div>
       </div>
@@ -3415,6 +3415,14 @@ function renderPageBtns2(containerId, total, cur, cb){
 
 function renderPlayerStats(){
   populatePlayerFilters();
+  // Dinamički label: Hrvatska za reprezentaciju, Dinamo za sve ostalo
+  const isRep = (gCompFilter==='rep')||(gCompFilter==='all'&&false);
+  const isRepFilter = gCompFilter==='rep' || REP_COMPS.includes(gCompFilter);
+  const scoringTeamLabel = isRepFilter ? 'Hrvatska' : 'Dinamo';
+  const tabLabel = document.getElementById('scorer-tab-dinamo-label');
+  if(tabLabel) tabLabel.textContent = scoringTeamLabel;
+  const vsTeamTitleEl = document.getElementById('din-vs-team-title');
+  if(vsTeamTitleEl) vsTeamTitleEl.textContent = `GOLOVI PO EKIPI — ${scoringTeamLabel.toUpperCase()}`;
   const q=(document.getElementById('player-search')||{value:''}).value.toLowerCase();
   const clubSearchQ=(document.getElementById('opp-club-search')||{value:''}).value.toLowerCase();
   const clubF=(document.getElementById('opp-club-filter')||{value:'all'}).value;
