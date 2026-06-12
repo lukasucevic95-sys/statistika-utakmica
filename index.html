@@ -62,6 +62,13 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .leg-rep{background:rgba(204,0,0,0.25);color:#FF7070;}.leg-rep .legend-dot{background:#CC0000;}
 .leg-kup{background:rgba(91,45,142,0.35);color:#B88EFF;}.leg-kup .legend-dot{background:#7B4DB5;}
 .leg-superkup{background:rgba(193,122,0,0.3);color:#FFCC44;}.leg-superkup .legend-dot{background:#E8A800;}
+.leg-dinamo{background:rgba(0,87,184,0.35);color:#93C5FD;}.leg-dinamo .legend-dot{background:#1D4ED8;}
+/* Rep sub-filter bar */
+.rep-subfilter{display:none;flex-wrap:wrap;gap:5px;padding:6px 16px 8px;background:rgba(204,0,0,0.06);border-top:1px solid rgba(204,0,0,0.15);}
+.rep-subfilter.open{display:flex;}
+.leg-sub{padding:3px 10px;font-size:10px;border-width:1px;border-style:solid;border-radius:100px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;background:rgba(204,0,0,0.12);color:#FCA5A5;border-color:rgba(204,0,0,0.25);}
+.leg-sub:hover{background:rgba(204,0,0,0.25);}
+.leg-sub.active{background:rgba(204,0,0,0.35);border-color:rgba(204,0,0,0.7);color:#fff;}
 
 /* MAIN GRID */
 .s-main{padding:22px 40px;display:grid;grid-template-columns:1fr 330px;gap:24px;}
@@ -914,13 +921,23 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
   <div class="legend">
     <div class="legend-item leg-all active" onclick="filterComp('all',this)"><span class="legend-dot"></span>Sve</div>
+    <div class="legend-item leg-dinamo" onclick="filterComp('dinamo',this)"><span class="legend-dot"></span>Dinamo</div>
     <div class="legend-item leg-hnl" onclick="filterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
     <div class="legend-item leg-ucl" onclick="filterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
     <div class="legend-item leg-uel" onclick="filterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
     <div class="legend-item leg-ecl" onclick="filterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
-    <div class="legend-item leg-rep" onclick="filterComp('rep',this)"><span class="legend-dot"></span>Reprezentacija</div>
+    <div class="legend-item leg-rep" onclick="filterComp('rep',this);toggleRepSubfilter('main')"><span class="legend-dot"></span>Reprezentacija ▾</div>
     <div class="legend-item leg-kup" onclick="filterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
     <div class="legend-item leg-superkup" onclick="filterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+  </div>
+  <div class="rep-subfilter" id="rep-subfilter-main">
+    <span class="leg-sub active" onclick="filterRepSub('rep',this,'main')">Sve reprezentacije</span>
+    <span class="leg-sub" onclick="filterRepSub('Liga Nacija',this,'main')">Liga Nacija</span>
+    <span class="leg-sub" onclick="filterRepSub('FIFA WCQ',this,'main')">FIFA WCQ</span>
+    <span class="leg-sub" onclick="filterRepSub('UEFA EURO Q',this,'main')">UEFA EURO Q</span>
+    <span class="leg-sub" onclick="filterRepSub('UEFA EURO',this,'main')">UEFA EURO</span>
+    <span class="leg-sub" onclick="filterRepSub('FIFA World Cup',this,'main')">FIFA World Cup</span>
+    <span class="leg-sub" onclick="filterRepSub('Reprezentacija',this,'main')">Ostalo</span>
   </div>
 
   <div class="s-main">
@@ -1161,13 +1178,23 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   <!-- Legend / filter bar styled like matches page -->
   <div class="legend" id="g-legend">
     <div class="legend-item leg-all active" onclick="gFilterComp('all',this)"><span class="legend-dot"></span>Sve</div>
+    <div class="legend-item leg-dinamo" onclick="gFilterComp('dinamo',this)"><span class="legend-dot"></span>Dinamo</div>
     <div class="legend-item leg-hnl" onclick="gFilterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
     <div class="legend-item leg-ucl" onclick="gFilterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
     <div class="legend-item leg-uel" onclick="gFilterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
     <div class="legend-item leg-ecl" onclick="gFilterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
-    <div class="legend-item leg-rep" onclick="gFilterComp('rep',this)"><span class="legend-dot"></span>Reprezentacija</div>
+    <div class="legend-item leg-rep" onclick="gFilterComp('rep',this);toggleRepSubfilter('goals')"><span class="legend-dot"></span>Reprezentacija ▾</div>
     <div class="legend-item leg-kup" onclick="gFilterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
     <div class="legend-item leg-superkup" onclick="gFilterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+  </div>
+  <div class="rep-subfilter" id="rep-subfilter-goals">
+    <span class="leg-sub active" onclick="gFilterRepSub('rep',this)">Sve reprezentacije</span>
+    <span class="leg-sub" onclick="gFilterRepSub('Liga Nacija',this)">Liga Nacija</span>
+    <span class="leg-sub" onclick="gFilterRepSub('FIFA WCQ',this)">FIFA WCQ</span>
+    <span class="leg-sub" onclick="gFilterRepSub('UEFA EURO Q',this)">UEFA EURO Q</span>
+    <span class="leg-sub" onclick="gFilterRepSub('UEFA EURO',this)">UEFA EURO</span>
+    <span class="leg-sub" onclick="gFilterRepSub('FIFA World Cup',this)">FIFA World Cup</span>
+    <span class="leg-sub" onclick="gFilterRepSub('Reprezentacija',this)">Ostalo</span>
   </div>
 
   <div class="g-main">
@@ -2286,6 +2313,7 @@ const INITIAL_MATCHES = [
 
 let matches=[], goals=[], predictions=[];
 let currentFilter='all', sortKey='datum', sortDir='desc';
+let currentRepSub='rep'; // sub-filter inside rep: 'rep'=all, or specific comp name
 let oppSortKey='utakmice', oppSortDir='desc';
 let currentPage=1, oppPage=1, activeView='matches';
 let activeSeason='all', listFilter='all', confirmIdx=null;
@@ -2322,7 +2350,11 @@ function filterMatches(){
   const stadionF=(document.getElementById('stadion-filter')||{value:'all'}).value;
   return matches.filter(m=>{
     let pass=true;
-    if(currentFilter==='rep') pass=REP_COMPS.includes(m.natjecanje);
+    if(currentFilter==='dinamo') pass=!REP_COMPS.includes(m.natjecanje);
+    else if(currentFilter==='rep'){
+      if(currentRepSub==='rep') pass=REP_COMPS.includes(m.natjecanje);
+      else pass=m.natjecanje===currentRepSub;
+    }
     else if(currentFilter!=='all'){
     // UCL filter prikazuje i UCL Q, UEL→UEL Q, ECL→ECL Q
     const qMap={'UCL':['UCL','UCL Q'],'UEL':['UEL','UEL Q'],'ECL':['ECL','ECL Q']};
@@ -2497,13 +2529,14 @@ function updateStats(filtered){
   let scored=0,conceded=0;
   filtered.forEach(m=>{const p=m.rezultat.split('-').map(Number);if(p.length===2){scored+=p[0];conceded+=p[1];}});
   const personLabel=activeStatPerson==='luka'?'🔵 Luka':activeStatPerson==='lovro'?'🔷 Lovro':activeStatPerson==='all'?'👥 Luka & Lovro':'📋 Sve';
-  const compLabel=currentFilter==='all'?'svih natjecanja':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  const repSubLabel=currentRepSub==='rep'?'Reprezentacija':currentRepSub;
+  const compLabel=currentFilter==='all'?'svih natjecanja':currentFilter==='dinamo'?'Dinamo — sva natjecanja':currentFilter==='rep'?repSubLabel:currentFilter;
   const label=activeStatPerson==='sve'?compLabel:`${personLabel} · ${compLabel}`;
   document.getElementById('stat-total').textContent=total;
   document.getElementById('stat-comp-label').textContent=label;
   document.getElementById('stat-wdl').textContent=`${wins}/${draws}/${losses}`;
   document.getElementById('stat-wdl-pct').textContent=total?`${(wins/total*100).toFixed(0)}% pobjeda`:'—';
-  document.getElementById('section-title').textContent=currentFilter==='all'?'Sve utakmice':currentFilter==='rep'?'Reprezentacija':currentFilter;
+  document.getElementById('section-title').textContent=currentFilter==='all'?'Sve utakmice':currentFilter==='dinamo'?'Dinamo — sva natjecanja':currentFilter==='rep'?repSubLabel:currentFilter;
   document.getElementById('stat-viewers').textContent=fmtNum(totalViews);
   const viewersSub=document.getElementById('stat-viewers-sub');
   if(viewersSub) viewersSub.textContent='svi stadioni';
@@ -2770,9 +2803,40 @@ window.closeTerminiDetail=function(){
 function filterComp(filter,el){
   currentFilter=filter;currentPage=1;oppPage=1;
   document.querySelectorAll('.legend-item').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');renderActive();
+  el.classList.add('active');
+  // Close rep subfilter if not rep
+  if(filter!=='rep'){
+    document.getElementById('rep-subfilter-main').classList.remove('open');
+    currentRepSub='rep';
+  }
+  renderActive();
 }
 window.filterComp=filterComp;
+
+function toggleRepSubfilter(which){
+  const el=document.getElementById('rep-subfilter-'+which);
+  if(el) el.classList.toggle('open');
+}
+window.toggleRepSubfilter=toggleRepSubfilter;
+
+function filterRepSub(comp,el,which){
+  currentRepSub=comp;
+  document.querySelectorAll('#rep-subfilter-'+which+' .leg-sub').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  currentPage=1;oppPage=1;
+  renderActive();
+}
+window.filterRepSub=filterRepSub;
+
+let gRepSub='rep';
+window.gFilterRepSub=function(comp,el){
+  gRepSub=comp;
+  document.querySelectorAll('#rep-subfilter-goals .leg-sub').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  _selectedBucket=-1;
+  document.getElementById('min-detail-panel')?.classList.remove('open');
+  renderGoalStats();renderPlayerStats();
+};
 
 function switchView(v,el){
   activeView=v;
@@ -3135,7 +3199,11 @@ function getFilteredGoals(){
     }
     if(gCompFilter!=='all'){
       if(!m)return false;
-      if(gCompFilter==='rep') return REP_COMPS.includes(m.natjecanje);
+      if(gCompFilter==='dinamo') return !REP_COMPS.includes(m.natjecanje);
+      if(gCompFilter==='rep'){
+        if(gRepSub==='rep') return REP_COMPS.includes(m.natjecanje);
+        return m.natjecanje===gRepSub;
+      }
       return m.natjecanje===gCompFilter;
     }
     return true;
@@ -3148,6 +3216,10 @@ window.gFilterComp=function(filter,el){
   document.getElementById('min-detail-panel')?.classList.remove('open');
   document.querySelectorAll('#g-legend .legend-item').forEach(e=>e.classList.remove('active'));
   el.classList.add('active');
+  if(filter!=='rep'){
+    document.getElementById('rep-subfilter-goals').classList.remove('open');
+    gRepSub='rep';
+  }
   renderGoalStats();renderPlayerStats();
 };
 
@@ -4702,15 +4774,7 @@ async function init(){
     const matchSnap=await get(ref(db,'matches'));
     if(matchSnap.exists()&&Array.isArray(matchSnap.val())&&matchSnap.val().length>0){
       matches=matchSnap.val();
-      // Patch: ispravi Crna Gora utakmicu - prebaci na Reprezentacija / FIFA WCQ
-      let patched=false;
-      matches=matches.map(m=>{
-        if(m.protivnik==='Crna Gora'&&m.datum==='2025-09-08'&&(m.natjecanje==='FIFA Kvale'||m.natjecanje==='FIFA WCQ'||m.natjecanje==='FIFA WCQ')){
-          patched=true; return{...m,natjecanje:'Reprezentacija'};
-        }
-        return m;
-      });
-      if(patched) await set(ref(db,'matches'),matches);
+
     }else{
       matches=INITIAL_MATCHES;
       await set(ref(db,'matches'),matches);
