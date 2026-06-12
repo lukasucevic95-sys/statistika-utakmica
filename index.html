@@ -1020,7 +1020,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="form-row"><label class="form-label">Natjecanje</label>
             <select class="form-select" id="f-natjecanje" onchange="updateBtnColor();_updateRepHint()">
               <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
-              <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
+              <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
               <option>Super kup</option><option>Kup</option>
             </select>
           </div>
@@ -1331,7 +1331,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Natjecanje</label>
         <select class="form-input-pred" id="em-natjecanje" onchange="_updateEditRepHint()">
           <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
-          <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
+          <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
           <option>Reprezentacija</option><option>Super kup</option><option>Kup</option>
         </select>
       </div>
@@ -1495,7 +1495,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <div class="form-group"><label class="form-label">Natjecanje</label>
               <select class="form-input-pred" id="p-natjecanje">
                 <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
-                <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
+                <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
                 <option>Super kup</option><option>Kup</option>
               </select>
             </div>
@@ -1580,7 +1580,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div class="form-group"><label class="form-label">Natjecanje</label>
                 <select class="form-input-pred" id="pa-natjecanje">
                   <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
-                  <option>Liga Nacija</option><option>Fifa WCQ</option><option>Euro Q</option>
+                  <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
                   <option>Super kup</option><option>Kup</option>
                 </select>
               </div>
@@ -2198,7 +2198,7 @@ window.addEventListener('hashchange', () => {
 });
 
 /* ===== HELPERS ===== */
-const REP_COMPS=['Liga Nacija','Fifa WCQ','Euro Q','Fifa WCQ','Reprezentacija'];
+const REP_COMPS=['Liga Nacija','FIFA WCQ','UEFA EURO Q','UEFA EURO','FIFA World Cup','Reprezentacija'];
 const EUR_MAP={UCL:'ucl','UCL Q':'ucl-q',UEL:'uel','UEL Q':'uel-q',ECL:'ecl','ECL Q':'ecl-q'};
 const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030','ucl-q':'#F0C03099',uel:'#FF8C3E','uel-q':'#FF8C3E99',ecl:'#4DC99A','ecl-q':'#4DC99A99',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
 
@@ -4702,10 +4702,10 @@ async function init(){
     const matchSnap=await get(ref(db,'matches'));
     if(matchSnap.exists()&&Array.isArray(matchSnap.val())&&matchSnap.val().length>0){
       matches=matchSnap.val();
-      // Patch: ispravi Crna Gora utakmicu - prebaci na Reprezentacija / Fifa WCQ
+      // Patch: ispravi Crna Gora utakmicu - prebaci na Reprezentacija / FIFA WCQ
       let patched=false;
       matches=matches.map(m=>{
-        if(m.protivnik==='Crna Gora'&&m.datum==='2025-09-08'&&(m.natjecanje==='FIFA Kvale'||m.natjecanje==='Fifa WCQ'||m.natjecanje==='FIFA WCQ')){
+        if(m.protivnik==='Crna Gora'&&m.datum==='2025-09-08'&&(m.natjecanje==='FIFA Kvale'||m.natjecanje==='FIFA WCQ'||m.natjecanje==='FIFA WCQ')){
           patched=true; return{...m,natjecanje:'Reprezentacija'};
         }
         return m;
@@ -5524,8 +5524,8 @@ function leagueFromStr(s){
   if(l.includes('europa'))return'UEL';
   if(l.includes('conference'))return'ECL';
   if(l.includes('nations'))return'Liga Nacija';
-  if(l.includes('world cup')||l.includes('wcq')||l.includes('qualif'))return'Fifa WCQ';
-  if(l.includes('european championship')||l.includes('euro'))return'Euro Q';
+  if(l.includes('world cup')||l.includes('wcq')||l.includes('qualif'))return'FIFA WCQ';
+  if(l.includes('european championship')||l.includes('euro'))return'UEFA EURO Q';
   if(l.includes('hnl')||l.includes('prva')||l.includes('croatia football'))return'HNL';
   if(l.includes('cup')||l.includes('kup'))return'Kup';
   if(l.includes('super'))return'Super kup';
