@@ -175,6 +175,7 @@ tbody td.td-right{text-align:right;}
 .win{background:rgba(0,180,90,0.2);color:#4ADE80;}
 .draw{background:rgba(120,120,120,0.2);color:#AAA;}
 .loss{background:rgba(220,0,0,0.2);color:#F87171;}
+.pen-tag{font-size:10px;font-weight:700;letter-spacing:0.5px;margin-left:4px;opacity:0.85;}
 .viewers-num{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;}
 .date-cell{color:var(--text-muted);font-size:12px;}
 .opponent-cell{font-weight:600;}
@@ -1072,6 +1073,16 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <div class="form-row"><label class="form-label">Rezultat</label><input class="form-input" type="text" id="f-rezultat" placeholder="2-1"></div>
             <div class="form-row"><label class="form-label">Gledatelji</label><input class="form-input" type="number" id="f-gledatelji" placeholder="12000"></div>
           </div>
+          <div class="form-row" id="f-penali-row" style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+              <input type="checkbox" id="f-penali-check" onchange="document.getElementById('f-penali-wrap').style.display=this.checked?'flex':'none'" style="accent-color:#F59E0B;width:14px;height:14px;cursor:pointer;">
+              <span>🥅 Penali</span>
+            </label>
+            <div id="f-penali-wrap" style="display:none;align-items:center;gap:6px;">
+              <input class="form-input" type="text" id="f-penali" placeholder="5-4" style="width:70px;text-align:center;">
+              <span style="font-size:11px;color:var(--text-muted);">(Dinamo - protivnik)</span>
+            </div>
+          </div>
           <div class="form-row" style="margin-bottom:8px;">
             <label class="form-label">Tko je bio prisutan</label>
             <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
@@ -1370,6 +1381,16 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         </div>
       </div>
       <div class="modal-row"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="em-rezultat" placeholder="2-1"></div>
+      <div class="modal-row" style="display:flex;align-items:center;gap:10px;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+          <input type="checkbox" id="em-penali-check" onchange="document.getElementById('em-penali-wrap').style.display=this.checked?'flex':'none'" style="accent-color:#F59E0B;width:14px;height:14px;cursor:pointer;">
+          <span>🥅 Penali</span>
+        </label>
+        <div id="em-penali-wrap" style="display:none;align-items:center;gap:6px;">
+          <input class="form-input-pred" type="text" id="em-penali" placeholder="5-4" style="width:70px;text-align:center;">
+          <span style="font-size:11px;color:var(--text-muted);">(Dinamo - protivnik)</span>
+        </div>
+      </div>
       <div class="modal-row"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="em-gledatelji" placeholder="15000"></div>
       <div class="modal-row">
         <label class="form-label">Stadion</label>
@@ -2225,6 +2246,37 @@ window.addEventListener('hashchange', () => {
 });
 
 /* ===== HELPERS ===== */
+/* ── Službeni nazivi klubova ── */
+const OFFICIAL_NAMES={
+  'Rijeka':'HNK Rijeka',
+  'Hajduk':'HNK Hajduk Split',
+  'Varaždin':'NK Varaždin',
+  'Osijek':'NK Osijek',
+  'Slaven':'NK Slaven Belupo Koprivnica',
+  'Slaven Belupo':'NK Slaven Belupo Koprivnica',
+  'Gorica':'HNK Gorica',
+  'Betis':'Real Betis Balompié',
+  'Istra':'NK Istra 1961',
+  'Lokomotiva':'NK Lokomotiva Zagreb',
+  'Međimurje':'NK Međimurje Čakovec',
+  'Chelsea':'Chelsea FC',
+  'Salzburg':'FC Red Bull Salzburg',
+  'PAOK':'PAOK FC',
+  'Monaco':'AS Monaco FC',
+  'Borussia':'Borussia Dortmund',
+  'Celtic':'Celtic FC',
+  'Milan':'AC Milan',
+  'Šibenik':'HNK Šibenik',
+  'Fenerbahce':'Fenerbahçe SK',
+  'Celta':'RC Celta de Vigo',
+  'FCSB':'FC FCSB',
+  'Vukovar':'HNK Vukovar 1991',
+  'Genk':'KRC Genk',
+  'Kurilovec':'NK Kurilovec'
+};
+function officialName(n){ return OFFICIAL_NAMES[n]||n; }
+const DINAMO_CLUB='GNK Dinamo Zagreb';
+
 const REP_COMPS=['Liga Nacija','FIFA WCQ','UEFA EURO Q','UEFA EURO','FIFA World Cup','Reprezentacija'];
 const EUR_MAP={UCL:'ucl','UCL Q':'ucl-q',UEL:'uel','UEL Q':'uel-q',ECL:'ecl','ECL Q':'ecl-q'};
 const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030','ucl-q':'#F0C03099',uel:'#FF8C3E','uel-q':'#FF8C3E99',ecl:'#4DC99A','ecl-q':'#4DC99A99',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
@@ -2240,7 +2292,20 @@ function getCompClass(nat){
   if(nat==='Super kup')return'superkup';
   return'hnl';
 }
-function getResult(r){const p=r.split('-').map(Number);return p[0]>p[1]?'win':p[0]<p[1]?'loss':'draw';}
+function getResult(r,penali){
+  const p=r.split('-').map(Number);
+  const base=p[0]>p[1]?'win':p[0]<p[1]?'loss':'draw';
+  if(base==='draw'&&penali){
+    const pp=penali.split('-').map(Number);
+    if(pp.length===2&&!isNaN(pp[0])&&!isNaN(pp[1])) return pp[0]>pp[1]?'win':'loss';
+  }
+  return base;
+}
+function fmtRezultat(m){
+  if(!m.penali) return m.rezultat;
+  const res=getResult(m.rezultat,m.penali);
+  return `${m.rezultat} <span class="pen-tag">(PEN ${m.penali.replace('-',':')})</span>`;
+}
 if(typeof fmtDate==='undefined'){var fmtDate=function(d){const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;};}
 function fmtNum(n){return Number(n).toLocaleString('hr-HR');}
 function getSeason(datum){
@@ -2258,57 +2323,57 @@ function showToast(msg,bg,color){
 
 /* ===== DATA ===== */
 const INITIAL_MATCHES = [
-  {datum:'2008-08-31',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:3000},
-  {datum:'2009-05-17',natjecanje:'HNL',protivnik:'Slaven',rezultat:'2-1',gledatelji:25000},
-  {datum:'2009-08-01',natjecanje:'HNL',protivnik:'Međimurje',rezultat:'4-0',gledatelji:6000},
-  {datum:'2015-05-29',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'4-0',gledatelji:15000},
-  {datum:'2022-05-08',natjecanje:'HNL',protivnik:'Osijek',rezultat:'3-0',gledatelji:13901},
-  {datum:'2022-05-21',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'3-1',gledatelji:18353},
-  {datum:'2022-09-06',natjecanje:'UCL',protivnik:'Chelsea',rezultat:'1-0',gledatelji:20607},
+  {datum:'2008-08-31',natjecanje:'HNL',protivnik:'NK Varaždin',rezultat:'2-1',gledatelji:3000},
+  {datum:'2009-05-17',natjecanje:'HNL',protivnik:'NK Slaven Belupo Koprivnica',rezultat:'2-1',gledatelji:25000},
+  {datum:'2009-08-01',natjecanje:'HNL',protivnik:'NK Međimurje Čakovec',rezultat:'4-0',gledatelji:6000},
+  {datum:'2015-05-29',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'4-0',gledatelji:15000},
+  {datum:'2022-05-08',natjecanje:'HNL',protivnik:'NK Osijek',rezultat:'3-0',gledatelji:13901},
+  {datum:'2022-05-21',natjecanje:'HNL',protivnik:'HNK Hajduk Split',rezultat:'3-1',gledatelji:18353},
+  {datum:'2022-09-06',natjecanje:'UCL',protivnik:'Chelsea FC',rezultat:'1-0',gledatelji:20607},
   {datum:'2022-09-22',natjecanje:'Liga Nacija',protivnik:'Danska',rezultat:'2-1',gledatelji:22715},
-  {datum:'2022-10-11',natjecanje:'UCL',protivnik:'Salzburg',rezultat:'1-1',gledatelji:20779},
-  {datum:'2023-07-15',natjecanje:'Super kup',protivnik:'Hajduk',rezultat:'1-0',gledatelji:17707},
-  {datum:'2023-08-27',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-1',gledatelji:9305},
-  {datum:'2023-12-17',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'0-0',gledatelji:18313},
-  {datum:'2024-02-22',natjecanje:'ECL',protivnik:'Betis',rezultat:'1-1',gledatelji:18082},
-  {datum:'2024-02-25',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'1-0',gledatelji:17269},
-  {datum:'2024-03-07',natjecanje:'ECL',protivnik:'PAOK',rezultat:'2-0',gledatelji:18562},
-  {datum:'2024-05-15',natjecanje:'Kup',protivnik:'Rijeka',rezultat:'0-0',gledatelji:18709},
-  {datum:'2024-10-02',natjecanje:'UCL',protivnik:'Monaco',rezultat:'2-2',gledatelji:12426},
-  {datum:'2024-10-27',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-4',gledatelji:13477},
-  {datum:'2024-11-23',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'0-0',gledatelji:12066},
-  {datum:'2024-11-27',natjecanje:'UCL',protivnik:'Borussia',rezultat:'0-3',gledatelji:20019},
-  {datum:'2024-12-10',natjecanje:'UCL',protivnik:'Celtic',rezultat:'0-0',gledatelji:18158},
-  {datum:'2025-01-29',natjecanje:'UCL',protivnik:'Milan',rezultat:'2-1',gledatelji:18856},
-  {datum:'2025-02-07',natjecanje:'HNL',protivnik:'Šibenik',rezultat:'3-0',gledatelji:8191},
-  {datum:'2025-02-15',natjecanje:'HNL',protivnik:'Gorica',rezultat:'3-1',gledatelji:8368},
-  {datum:'2025-03-02',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'2-2',gledatelji:16901},
-  {datum:'2025-04-12',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-0',gledatelji:7497},
-  {datum:'2025-04-27',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'1-0',gledatelji:15711},
-  {datum:'2025-05-25',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'1-0',gledatelji:23756},
-  {datum:'2025-08-23',natjecanje:'HNL',protivnik:'Istra',rezultat:'3-0',gledatelji:11461},
+  {datum:'2022-10-11',natjecanje:'UCL',protivnik:'FC Red Bull Salzburg',rezultat:'1-1',gledatelji:20779},
+  {datum:'2023-07-15',natjecanje:'Super kup',protivnik:'HNK Hajduk Split',rezultat:'1-0',gledatelji:17707},
+  {datum:'2023-08-27',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'2-1',gledatelji:9305},
+  {datum:'2023-12-17',natjecanje:'HNL',protivnik:'HNK Hajduk Split',rezultat:'0-0',gledatelji:18313},
+  {datum:'2024-02-22',natjecanje:'ECL',protivnik:'Real Betis Balompié',rezultat:'1-1',gledatelji:18082},
+  {datum:'2024-02-25',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'1-0',gledatelji:17269},
+  {datum:'2024-03-07',natjecanje:'ECL',protivnik:'PAOK FC',rezultat:'2-0',gledatelji:18562},
+  {datum:'2024-05-15',natjecanje:'Kup',protivnik:'HNK Rijeka',rezultat:'0-0',gledatelji:18709},
+  {datum:'2024-10-02',natjecanje:'UCL',protivnik:'AS Monaco FC',rezultat:'2-2',gledatelji:12426},
+  {datum:'2024-10-27',natjecanje:'HNL',protivnik:'NK Osijek',rezultat:'2-4',gledatelji:13477},
+  {datum:'2024-11-23',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'0-0',gledatelji:12066},
+  {datum:'2024-11-27',natjecanje:'UCL',protivnik:'Borussia Dortmund',rezultat:'0-3',gledatelji:20019},
+  {datum:'2024-12-10',natjecanje:'UCL',protivnik:'Celtic FC',rezultat:'0-0',gledatelji:18158},
+  {datum:'2025-01-29',natjecanje:'UCL',protivnik:'AC Milan',rezultat:'2-1',gledatelji:18856},
+  {datum:'2025-02-07',natjecanje:'HNL',protivnik:'HNK Šibenik',rezultat:'3-0',gledatelji:8191},
+  {datum:'2025-02-15',natjecanje:'HNL',protivnik:'HNK Gorica',rezultat:'3-1',gledatelji:8368},
+  {datum:'2025-03-02',natjecanje:'HNL',protivnik:'HNK Hajduk Split',rezultat:'2-2',gledatelji:16901},
+  {datum:'2025-04-12',natjecanje:'HNL',protivnik:'NK Osijek',rezultat:'2-0',gledatelji:7497},
+  {datum:'2025-04-27',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'1-0',gledatelji:15711},
+  {datum:'2025-05-25',natjecanje:'HNL',protivnik:'NK Varaždin',rezultat:'1-0',gledatelji:23756},
+  {datum:'2025-08-23',natjecanje:'HNL',protivnik:'NK Istra 1961',rezultat:'3-0',gledatelji:11461},
   {datum:'2025-09-08',natjecanje:'Reprezentacija',protivnik:'Crna Gora',rezultat:'4-0',gledatelji:21209},
-  {datum:'2025-09-14',natjecanje:'HNL',protivnik:'Gorica',rezultat:'1-2',gledatelji:9670},
-  {datum:'2025-09-24',natjecanje:'UEL',protivnik:'Fenerbahce',rezultat:'3-1',gledatelji:13926},
-  {datum:'2025-09-28',natjecanje:'HNL',protivnik:'Slaven',rezultat:'4-1',gledatelji:9012},
-  {datum:'2025-10-18',natjecanje:'HNL',protivnik:'Osijek',rezultat:'2-1',gledatelji:13836},
-  {datum:'2025-11-01',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-1',gledatelji:10237},
-  {datum:'2025-11-06',natjecanje:'UEL',protivnik:'Celta',rezultat:'0-3',gledatelji:19431},
-  {datum:'2025-11-22',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'3-1',gledatelji:4022},
-  {datum:'2025-12-06',natjecanje:'HNL',protivnik:'Hajduk',rezultat:'1-1',gledatelji:17028},
-  {datum:'2025-12-11',natjecanje:'UEL',protivnik:'Betis',rezultat:'1-3',gledatelji:11437},
-  {datum:'2025-12-20',natjecanje:'HNL',protivnik:'Lokomotiva',rezultat:'2-0',gledatelji:6270},
-  {datum:'2026-01-22',natjecanje:'UEL',protivnik:'FCSB',rezultat:'4-1',gledatelji:9040},
-  {datum:'2026-02-02',natjecanje:'HNL',protivnik:'Vukovar',rezultat:'3-1',gledatelji:4500},
-  {datum:'2026-02-14',natjecanje:'HNL',protivnik:'Istra',rezultat:'4-0',gledatelji:5600},
-  {datum:'2026-02-19',natjecanje:'UEL',protivnik:'Genk',rezultat:'1-3',gledatelji:10554},
-  {datum:'2026-03-01',natjecanje:'HNL',protivnik:'Gorica',rezultat:'4-2',gledatelji:7548},
-  {datum:'2026-03-04',natjecanje:'Kup',protivnik:'Kurilovec',rezultat:'2-0',gledatelji:4605},
-  {datum:'2026-03-14',natjecanje:'HNL',protivnik:'Slaven',rezultat:'4-2',gledatelji:7752},
-  {datum:'2026-04-04',natjecanje:'HNL',protivnik:'Osijek',rezultat:'7-0',gledatelji:9109},
-  {datum:'2026-04-18',natjecanje:'HNL',protivnik:'Rijeka',rezultat:'2-2',gledatelji:8200},
-  {datum:'2026-04-23',natjecanje:'HNL',protivnik:'Istra',rezultat:'2-0',gledatelji:5100},
-  {datum:'2026-04-26',natjecanje:'HNL',protivnik:'Varaždin',rezultat:'2-1',gledatelji:12800},
+  {datum:'2025-09-14',natjecanje:'HNL',protivnik:'HNK Gorica',rezultat:'1-2',gledatelji:9670},
+  {datum:'2025-09-24',natjecanje:'UEL',protivnik:'Fenerbahçe SK',rezultat:'3-1',gledatelji:13926},
+  {datum:'2025-09-28',natjecanje:'HNL',protivnik:'NK Slaven Belupo Koprivnica',rezultat:'4-1',gledatelji:9012},
+  {datum:'2025-10-18',natjecanje:'HNL',protivnik:'NK Osijek',rezultat:'2-1',gledatelji:13836},
+  {datum:'2025-11-01',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'2-1',gledatelji:10237},
+  {datum:'2025-11-06',natjecanje:'UEL',protivnik:'RC Celta de Vigo',rezultat:'0-3',gledatelji:19431},
+  {datum:'2025-11-22',natjecanje:'HNL',protivnik:'NK Varaždin',rezultat:'3-1',gledatelji:4022},
+  {datum:'2025-12-06',natjecanje:'HNL',protivnik:'HNK Hajduk Split',rezultat:'1-1',gledatelji:17028},
+  {datum:'2025-12-11',natjecanje:'UEL',protivnik:'Real Betis Balompié',rezultat:'1-3',gledatelji:11437},
+  {datum:'2025-12-20',natjecanje:'HNL',protivnik:'NK Lokomotiva Zagreb',rezultat:'2-0',gledatelji:6270},
+  {datum:'2026-01-22',natjecanje:'UEL',protivnik:'FC FCSB',rezultat:'4-1',gledatelji:9040},
+  {datum:'2026-02-02',natjecanje:'HNL',protivnik:'HNK Vukovar 1991',rezultat:'3-1',gledatelji:4500},
+  {datum:'2026-02-14',natjecanje:'HNL',protivnik:'NK Istra 1961',rezultat:'4-0',gledatelji:5600},
+  {datum:'2026-02-19',natjecanje:'UEL',protivnik:'KRC Genk',rezultat:'1-3',gledatelji:10554},
+  {datum:'2026-03-01',natjecanje:'HNL',protivnik:'HNK Gorica',rezultat:'4-2',gledatelji:7548},
+  {datum:'2026-03-04',natjecanje:'Kup',protivnik:'NK Kurilovec',rezultat:'2-0',gledatelji:4605},
+  {datum:'2026-03-14',natjecanje:'HNL',protivnik:'NK Slaven Belupo Koprivnica',rezultat:'4-2',gledatelji:7752},
+  {datum:'2026-04-04',natjecanje:'HNL',protivnik:'NK Osijek',rezultat:'7-0',gledatelji:9109},
+  {datum:'2026-04-18',natjecanje:'HNL',protivnik:'HNK Rijeka',rezultat:'2-2',gledatelji:8200},
+  {datum:'2026-04-23',natjecanje:'HNL',protivnik:'NK Istra 1961',rezultat:'2-0',gledatelji:5100},
+  {datum:'2026-04-26',natjecanje:'HNL',protivnik:'NK Varaždin',rezultat:'2-1',gledatelji:12800},
 ];
 
 let matches=[], goals=[], predictions=[];
@@ -2420,7 +2485,7 @@ function renderTable(){
     ?'<tr class="empty-row"><td colspan="6">Nema rezultata</td></tr>'
     :slice.map(m=>{
       const cls=getCompClass(m.natjecanje);
-      const res=getResult(m.rezultat);
+      const res=getResult(m.rezultat,m.penali);
       const idx=matches.indexOf(m);
       const vrijemeStr=m.vrijemePoc||'';
       const isRepMatch = REP_COMPS.includes(m.natjecanje);
@@ -2428,8 +2493,8 @@ function renderTable(){
         <td class="date-cell">${fmtDate(m.datum)}</td>
         <td>${vrijemeStr?`<span class="time-badge">🕐 ${vrijemeStr}</span>`:''}</td>
         <td><span class="badge badge-${cls}">${m.natjecanje}</span></td>
-        <td class="opponent-cell">${isRepMatch?`🇭🇷 ${m.protivnik}`:m.protivnik}</td>
-        <td><span class="result-pill ${res}">${m.rezultat}</span></td>
+        <td class="opponent-cell">${isRepMatch?`🇭🇷 ${officialName(m.protivnik)}`:officialName(m.protivnik)}</td>
+        <td><span class="result-pill ${res}">${fmtRezultat(m)}</span></td>
         <td class="viewers-num td-right">${fmtNum(m.gledatelji)}</td>
       </tr>`;
     }).join('');
@@ -2445,7 +2510,7 @@ function buildOppData(filtered){
   const g={};
   filtered.forEach(m=>{
     if(!g[m.protivnik])g[m.protivnik]={wins:0,draws:0,losses:0,gle:[],scored:0,conceded:0};
-    const r=getResult(m.rezultat);
+    const r=getResult(m.rezultat,m.penali);
     if(r==='win')g[m.protivnik].wins++;else if(r==='draw')g[m.protivnik].draws++;else g[m.protivnik].losses++;
     g[m.protivnik].gle.push(m.gledatelji);
     const p=m.rezultat.split('-').map(Number);
@@ -2520,9 +2585,9 @@ function renderPageBtns(id,pages,cur,cb){
 
 function updateStats(filtered){
   const total=filtered.length;
-  const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
-  const draws=filtered.filter(m=>getResult(m.rezultat)==='draw').length;
-  const losses=filtered.filter(m=>getResult(m.rezultat)==='loss').length;
+  const wins=filtered.filter(m=>getResult(m.rezultat,m.penali)==='win').length;
+  const draws=filtered.filter(m=>getResult(m.rezultat,m.penali)==='draw').length;
+  const losses=filtered.filter(m=>getResult(m.rezultat,m.penali)==='loss').length;
   const totalViews=filtered.reduce((s,m)=>s+m.gledatelji,0);
   const avg=total?Math.round(totalViews/total):0;
   const best=filtered.reduce((b,m)=>m.gledatelji>(b?.gledatelji||0)?m:b,null);
@@ -2610,9 +2675,9 @@ function renderCompStats(){
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${(a.avg/max*100).toFixed(1)}%;background:${COMP_COLORS[a.cls]||'#888'}"></div></div></div>`).join('');
 }
 function renderWinStats(filtered){
-  const wins=filtered.filter(m=>getResult(m.rezultat)==='win').length;
-  const draws=filtered.filter(m=>getResult(m.rezultat)==='draw').length;
-  const losses=filtered.filter(m=>getResult(m.rezultat)==='loss').length;
+  const wins=filtered.filter(m=>getResult(m.rezultat,m.penali)==='win').length;
+  const draws=filtered.filter(m=>getResult(m.rezultat,m.penali)==='draw').length;
+  const losses=filtered.filter(m=>getResult(m.rezultat,m.penali)==='loss').length;
   const t=filtered.length||1;
   document.getElementById('win-stats').innerHTML=[
     {label:'Pobjede',count:wins,color:'#4ADE80',pct:(wins/t*100).toFixed(0)},
@@ -2691,7 +2756,7 @@ function buildTimeData(){
     if(!norm)return;
     if(!timeData[norm])timeData[norm]={matches:[],wins:0,draws:0,losses:0,zone:getTimeSlot(m.vrijemePoc)};
     timeData[norm].matches.push(m);
-    const r=getResult(m.rezultat);
+    const r=getResult(m.rezultat,m.penali);
     if(r==='win')timeData[norm].wins++;
     else if(r==='draw')timeData[norm].draws++;
     else timeData[norm].losses++;
@@ -2780,11 +2845,11 @@ window.selectTermin=function(t){
     <div style="font-size:10px;color:var(--text-muted);margin-bottom:5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">Utakmice</div>
     <div style="max-height:160px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;display:flex;flex-direction:column;gap:3px;">
       ${[...d.matches].sort((a,b)=>a.datum<b.datum?1:-1).map(m=>{
-        const res=getResult(m.rezultat);
+        const res=getResult(m.rezultat,m.penali);
         const col=res==='win'?'#4ADE80':res==='draw'?'#888':'#F87171';
         return`<div style="display:flex;align-items:center;gap:6px;padding:4px 7px;background:var(--surface2);border-radius:6px;font-size:11px;">
           <span style="color:${col};font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;min-width:30px;">${m.rezultat}</span>
-          <span style="flex:1;font-weight:600;">vs ${m.protivnik}</span>
+          <span style="flex:1;font-weight:600;">vs ${officialName(m.protivnik)}</span>
           <span style="font-size:10px;color:var(--text-muted);">${fmtDate(m.datum)}</span>
         </div>`;
       }).join('')}
@@ -2909,6 +2974,9 @@ async function addMatch(){
   const gle=parseInt(document.getElementById('f-gledatelji').value);
   if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  const penaliCheck=document.getElementById('f-penali-check')?.checked;
+  const penaliVal=penaliCheck?(document.getElementById('f-penali')?.value.trim()||''):'';
+  if(penaliVal&&!/^\d+-\d+$/.test(penaliVal)){alert('Penali mora biti u formatu npr. 5-4');return;}
   const vrijemePoc=(document.getElementById('f-vrijeme')||{value:''}).value||'';
   // Stadion — custom ili iz selecta
   const stadionSel = document.getElementById('f-stadion-select')?.value||'Stadion Maksimir';
@@ -2916,7 +2984,9 @@ async function addMatch(){
   const stadion = stadionSel === 'custom' ? stadionCustom : stadionSel;
   const prisutanLuka  = document.getElementById('f-prisutan-luka')?.checked !== false;
   const prisutanLovro = document.getElementById('f-prisutan-lovro')?.checked !== false;
-  matches.push({datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro});
+  const entry={datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro};
+  if(penaliVal) entry.penali=penaliVal;
+  matches.push(entry);
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
   document.getElementById('f-protivnik').value='';
@@ -2925,6 +2995,9 @@ async function addMatch(){
   const vtEl=document.getElementById('f-vrijeme');if(vtEl)vtEl.value='';
   const selEl=document.getElementById('f-stadion-select');if(selEl)selEl.value='Stadion Maksimir';
   const custEl=document.getElementById('f-stadion-custom');if(custEl){custEl.value='';custEl.style.display='none';}
+  const penChk=document.getElementById('f-penali-check');if(penChk){penChk.checked=false;}
+  const penWrap=document.getElementById('f-penali-wrap');if(penWrap)penWrap.style.display='none';
+  const penInp=document.getElementById('f-penali');if(penInp)penInp.value='';
   renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();
   showToast('✅ Utakmica dodana!','#0A3A0A','#4ADE80');
 }
@@ -2936,11 +3009,13 @@ function showMatchModal(idx){
   const m=matches[idx];
   const labels={win:'✅ Pobjeda',draw:'🤝 Remi',loss:'❌ Poraz'};
   const isRep = REP_COMPS.includes(m.natjecanje);
-  document.getElementById('m-title').textContent=isRep?`Hrvatska vs ${m.protivnik}`:`vs ${m.protivnik}`;
-  document.getElementById('m-comp').textContent=m.natjecanje+' · '+labels[getResult(m.rezultat)];
+  document.getElementById('m-title').textContent=isRep?`Hrvatska vs ${m.protivnik}`:`vs ${officialName(m.protivnik)}`;
+  document.getElementById('m-comp').textContent=m.natjecanje+' · '+labels[getResult(m.rezultat,m.penali)];
   document.getElementById('m-datum').textContent=fmtDate(m.datum);
   document.getElementById('m-nat').textContent=m.natjecanje;
-  document.getElementById('m-rez').textContent=m.rezultat;
+  document.getElementById('m-rez').innerHTML=m.penali
+    ?`${m.rezultat} <span style="font-size:12px;font-weight:700;opacity:0.8">(PEN ${m.penali.replace('-',':')})</span>`
+    :m.rezultat;
   document.getElementById('m-gle').textContent=fmtNum(m.gledatelji);
   document.getElementById('m-vrijemePoc').textContent=m.vrijemePoc||'—';
   // Load goals for this match
@@ -3097,13 +3172,22 @@ function openEditMatch(){
   if(_editMatchIdx<0)return;
   const m=matches[_editMatchIdx];
   document.getElementById('modal').classList.remove('open');
-  document.getElementById('em-sub').textContent=`${fmtDate(m.datum)} vs ${m.protivnik}`;
+  document.getElementById('em-sub').textContent=`${fmtDate(m.datum)} vs ${officialName(m.protivnik)}`;
   document.getElementById('em-datum').value=m.datum||'';
   document.getElementById('em-vrijemePoc').value=m.vrijemePoc||'';
   document.getElementById('em-natjecanje').value=m.natjecanje||'HNL';
   document.getElementById('em-protivnik').value=m.protivnik||'';
   _updateEditRepHint();
   document.getElementById('em-rezultat').value=m.rezultat||'';
+  // Penali
+  const emPenChk=document.getElementById('em-penali-check');
+  const emPenWrap=document.getElementById('em-penali-wrap');
+  const emPenInp=document.getElementById('em-penali');
+  if(emPenChk&&emPenInp&&emPenWrap){
+    emPenChk.checked=!!m.penali;
+    emPenInp.value=m.penali||'';
+    emPenWrap.style.display=m.penali?'flex':'none';
+  }
   document.getElementById('em-gledatelji').value=m.gledatelji||'';
   // Stadion — postavi select ili custom
   const knownStadions = ['Stadion Maksimir','Opus Arena','Stadion Poljud','NK Gorica Stadion','Stadion Rujevica','Stadion Koprivnica'];
@@ -3139,12 +3223,17 @@ async function saveEditMatch(){
   const gle=parseInt(document.getElementById('em-gledatelji').value);
   if(!datum||!prot||!rez||isNaN(gle)){alert('Molimo ispunite sva polja!');return;}
   if(!/^\d+-\d+$/.test(rez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
+  const emPenaliCheck=document.getElementById('em-penali-check')?.checked;
+  const emPenaliVal=emPenaliCheck?(document.getElementById('em-penali')?.value.trim()||''):'';
+  if(emPenaliVal&&!/^\d+-\d+$/.test(emPenaliVal)){alert('Penali mora biti u formatu npr. 5-4');return;}
   const emStadionSel = document.getElementById('em-stadion-select')?.value||'Stadion Maksimir';
   const emStadionCust = document.getElementById('em-stadion-custom')?.value.trim()||'';
   const stadion = emStadionSel === 'custom' ? emStadionCust : emStadionSel;
   const emPrisutanLuka  = document.getElementById('em-prisutan-luka')?.checked !== false;
   const emPrisutanLovro = document.getElementById('em-prisutan-lovro')?.checked !== false;
-  matches[_editMatchIdx]={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro};
+  const updated={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro};
+  if(emPenaliVal) updated.penali=emPenaliVal; else delete updated.penali;
+  matches[_editMatchIdx]=updated;
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
   closeEditMatch();
@@ -3329,7 +3418,7 @@ function _renderMinutePanel(goalList, label){
       <span class="min-time" style="color:${col}">${minStr}'</span>
       <span style="flex:1;font-weight:600;">${g.player||'Nepoznat'}</span>
       ${badges.join(' ')}
-      <span style="font-size:11px;color:var(--text-muted);">vs ${g.matchProtivnik}</span>
+      <span style="font-size:11px;color:var(--text-muted);">vs ${officialName(g.matchProtivnik||"")}</span>
     </div>`;
   }).join('');
 }
@@ -3381,7 +3470,7 @@ function populatePlayerFilters(){
     // Only populate/show club filter when on opponents tab
     if(scorerTab==='opp'){
       cEl.style.display='';
-      const clubs=new Set(goals.filter(g=>g.type==='conceded'&&(g.oppClub||g.matchProtivnik)).map(g=>g.oppClub||g.matchProtivnik));
+      const clubs=new Set(goals.filter(g=>g.type==='conceded'&&(officialName(g.oppClub||g.matchProtivnik||""))).map(g=>officialName(g.oppClub||g.matchProtivnik||"")));
       const cur=cEl.value;
       cEl.innerHTML='<option value="all">Svi klubovi</option>'+[...clubs].sort().map(c=>`<option value="${c}">${c}</option>`).join('');
       if([...clubs].includes(cur))cEl.value=cur;
@@ -3437,7 +3526,7 @@ function renderPlayerStats(){
     if(g.pen==='yes')dinP[n].pen++;
     if(g.autogol==='yes')dinP[n].og++;
     dinP[n].minutes.push(g.minuteRaw||String(g.minute));
-    const opp=g.matchProtivnik||'?';
+    const opp=officialName(g.matchProtivnik||'?');
     dinP[n].vsTeams[opp]=(dinP[n].vsTeams[opp]||0)+1;
     dinP[n].goalList.push(g);
   });
@@ -3457,9 +3546,13 @@ function renderPlayerStats(){
       :dinSlice.map(p=>{
         const sm=sortMins(p.minutes).map(m=>m+"'").join(' · ');
         const pIdx=dinList.indexOf(p);
+        // Determine club: if all goals have same oppClub (scored), show it; otherwise GNK Dinamo Zagreb
+        const allClubs=[...new Set(p.goalList.map(g=>g.oppClub||DINAMO_CLUB))];
+        const clubBadge=allClubs.length===1?allClubs[0]:(allClubs.includes('Hrvatska')?'Hrvatska':DINAMO_CLUB);
         return`<div class="player-row" style="cursor:pointer;" onclick="openPlayerModal('din',${pIdx})">
           <div style="flex:1;min-width:0;">
             <span class="player-name">${p.name}</span>
+            ${clubBadge?`<span style="font-size:10px;color:var(--text-muted);margin-left:6px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:4px;">${clubBadge}</span>`:''}
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:normal;">⏱ ${sm}</div>
           </div>
           <div class="player-goals" style="flex-shrink:0;">
@@ -3476,7 +3569,7 @@ function renderPlayerStats(){
   // ── Golovi po ekipi (Dinamo) ──
   const vsTeamTotal={};
   fg.filter(g=>g.type==='scored').forEach(g=>{
-    const opp=g.matchProtivnik||'?';
+    const opp=officialName(g.matchProtivnik||'?');
     vsTeamTotal[opp]=(vsTeamTotal[opp]||0)+1;
   });
   const vsEntries=Object.entries(vsTeamTotal).sort((a,b)=>b[1]-a[1]);
@@ -3500,11 +3593,11 @@ function renderPlayerStats(){
   // ── PROTIVNIČKI strijelci ──
   const oppP={};
   let oppGoals=fg.filter(g=>g.type==='conceded');
-  if(clubF!=='all')oppGoals=oppGoals.filter(g=>(g.oppClub||g.matchProtivnik||'')===clubF);
-  if(clubSearchQ)oppGoals=oppGoals.filter(g=>(g.oppClub||g.matchProtivnik||'').toLowerCase().includes(clubSearchQ)||(g.player||'').toLowerCase().includes(clubSearchQ));
+  if(clubF!=='all')oppGoals=oppGoals.filter(g=>(officialName(g.oppClub||g.matchProtivnik||"")||'')===clubF);
+  if(clubSearchQ)oppGoals=oppGoals.filter(g=>(officialName(g.oppClub||g.matchProtivnik||"")||'').toLowerCase().includes(clubSearchQ)||(g.player||'').toLowerCase().includes(clubSearchQ));
   oppGoals.forEach(g=>{
     const n=g.player||'Nepoznat';
-    const club=g.oppClub||g.matchProtivnik||'';
+    const club=officialName(g.oppClub||g.matchProtivnik||"")||'';
     const key=n+'|||'+club;
     if(!oppP[key])oppP[key]={total:0,pen:0,og:0,minutes:[],club,displayName:n,goalList:[]};
     oppP[key].total++;
@@ -3586,7 +3679,7 @@ function openPlayerModal(type, idx){
     const editBtn=gIdx>=0?`<button class="pm-edit-btn" onclick="closePlayerModal();openEditGoal(${gIdx})">✏️</button>`:'';
     return`<div class="pm-goal-item">
       <span class="pm-minute">${minStr}'</span>
-      <span style="flex:1;font-size:12px;color:var(--text-muted);">${fmtDateG(g.matchDatum)} vs ${g.matchProtivnik}</span>
+      <span style="flex:1;font-size:12px;color:var(--text-muted);">${fmtDateG(g.matchDatum)} vs ${officialName(g.matchProtivnik||"")}</span>
       <span style="display:flex;gap:3px;align-items:center;">${badges.join('')}${editBtn}</span>
     </div>`;
   }).join('');
@@ -3618,7 +3711,7 @@ function populateMatchSelect(){
   const sel=document.getElementById('g-match-select');
   if(!sel)return;
   const sorted=[...matches].sort((a,b)=>a.datum<b.datum?1:-1);
-  sel.innerHTML=sorted.map(m=>`<option value="${m.datum}||${m.protivnik}">${fmtDate(m.datum)} vs ${m.protivnik} (${m.natjecanje})</option>`).join('');
+  sel.innerHTML=sorted.map(m=>`<option value="${m.datum}||${m.protivnik}">${fmtDate(m.datum)} vs ${officialName(m.protivnik)} (${m.natjecanje})</option>`).join('');
   // auto-fill club if conceded type is selected
   if(document.getElementById('g-type')?.value==='conceded') _autoFillClub();
 }
@@ -3627,9 +3720,12 @@ window.populateMatchSelect=populateMatchSelect;
 function _autoFillClub(){
   const v=document.getElementById('g-match-select')?.value||'';
   const clubEl=document.getElementById('g-opp-club');
-  if(!v||!clubEl)return;
-  const[,protivnik]=v.split('||');
-  if(protivnik&&!clubEl.value)clubEl.value=protivnik;
+  const type=document.getElementById('g-type')?.value||'conceded';
+  if(!clubEl)return;
+  if(type==='conceded'){
+    const[,protivnik]=v.split('||');
+    if(protivnik) clubEl.value=officialName(protivnik);
+  }
 }
 
 async function addGoal(){
@@ -3645,7 +3741,10 @@ async function addGoal(){
   const minute=parseInt(minuteRaw);
   if(isNaN(minute)){alert('Neispravna minuta!');return;}
   const[matchDatum,matchProtivnik]=matchVal.split('||');
-  const oppClub=type==='conceded'?(document.getElementById('g-opp-club')?.value.trim()||''):'';
+  const _matchObj=matches.find(m=>m.datum===matchDatum&&m.protivnik===matchProtivnik)||{};
+  const isRep=REP_COMPS.includes(_matchObj.natjecanje||'');
+  const scoredClub=isRep?'Hrvatska':DINAMO_CLUB;
+  const oppClub=type==='conceded'?(document.getElementById('g-opp-club')?.value.trim()||officialName(matchProtivnik||'')):scoredClub;
   const autogol=document.getElementById('g-autogol')?.value||'no';
   goals.push({matchDatum,matchProtivnik,player,minute,minuteRaw,type,pen,autogol,oppClub,extraFirst,extraSecond});
   await set(ref(db,'goals'),goals);
@@ -3667,7 +3766,7 @@ function renderGoalList(){
   if(typeF!=='all') list=list.filter(g=>g.type===typeF);
   if(q) list=list.filter(g=>{
     const player=(g.player||'').toLowerCase();
-    const opp=(g.matchProtivnik||'').toLowerCase();
+    const opp=officialName(g.matchProtivnik||'').toLowerCase();
     const club=(g.oppClub||'').toLowerCase();
     return player.includes(q)||opp.includes(q)||club.includes(q);
   });
@@ -3687,7 +3786,7 @@ function renderGoalList(){
     return`<div class="goal-list-row">
       <div class="goal-list-info">
         <div class="goal-list-main"><span style="color:${iconColor}">⚽</span> ${g.player||'Nepoznat'}${clubStr} <span style="font-size:11px;font-weight:400;color:var(--text-muted)">${minStr}'${penStr}${ogStr}</span></div>
-        <div class="goal-list-sub">${fmtDate(g.matchDatum)} vs ${g.matchProtivnik} · <span style="color:${iconColor}">${typeLabel}</span></div>
+        <div class="goal-list-sub">${fmtDate(g.matchDatum)} vs ${officialName(g.matchProtivnik||"")} · <span style="color:${iconColor}">${typeLabel}</span></div>
       </div>
       <div style="display:flex;gap:5px;flex-shrink:0;">
         <button class="pm-edit-btn" style="padding:4px 9px;font-size:11px;" onclick="openEditGoal(${g._idx})">✏️ Uredi</button>
@@ -3711,7 +3810,7 @@ function openEditGoal(idx){
   editGoalIdx=idx;
   const g=goals[idx];
   if(!g)return;
-  document.getElementById('eg-sub').textContent=`${fmtDate(g.matchDatum)} vs ${g.matchProtivnik}`;
+  document.getElementById('eg-sub').textContent=`${fmtDate(g.matchDatum)} vs ${officialName(g.matchProtivnik||"")}`;
   document.getElementById('eg-player').value=g.player||'';
   document.getElementById('eg-minute').value=g.minuteRaw||String(g.minute||'');
   document.getElementById('eg-type').value=g.type||'scored';
@@ -4744,16 +4843,16 @@ window._loadKarteInit = loadKarte;
 // Spremi hardkodirane nadolazeće utakmice u Firebase (pokreni jednom kad dodaš nove)
 window.pushRasporedToFirebase = async function() {
   const upcoming = [
-    {datum:'2026-05-02',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
-    {datum:'2026-05-09',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
-    {datum:'2026-05-17',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
-    {datum:'2026-05-23',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-02',protivnik:'HNK Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
+    {datum:'2026-05-09',protivnik:'HNK Hajduk Split',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-17',protivnik:'NK Slaven Belupo Koprivnica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
+    {datum:'2026-05-23',protivnik:'NK Lokomotiva Zagreb',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
   ];
   const results = [
-    {datum:'2026-04-04',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
-    {datum:'2026-04-18',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
-    {datum:'2026-04-23',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
-    {datum:'2026-04-26',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
+    {datum:'2026-04-04',protivnik:'NK Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
+    {datum:'2026-04-18',protivnik:'HNK Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
+    {datum:'2026-04-23',protivnik:'NK Istra 1961',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-04-26',protivnik:'NK Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
   ];
   try {
     await set(ref(db,'raspored'), { upcoming, results, updated: new Date().toISOString() });
@@ -4788,14 +4887,45 @@ async function init(){
       await set(ref(db,'matches'),matches);
     }
     const goalSnap=await get(ref(db,'goals'));
-    if(goalSnap.exists()&&Array.isArray(goalSnap.val())){goals=goalSnap.val();}else{goals=[];}
+    if(goalSnap.exists()&&Array.isArray(goalSnap.val())){goals=goalSnap.val();}
+    else if(goalSnap.exists()&&goalSnap.val()&&typeof goalSnap.val()==='object'){goals=Object.values(goalSnap.val()).filter(Boolean);}
+    else{goals=[];}
+
+    // ── Migracija: zamijeni kratke nazive s službenim imenima ──
+    try{
+      let matchPatched=false;
+      matches=matches.map(m=>{
+        if(!m)return m;
+        const on=officialName(m.protivnik);
+        if(on!==m.protivnik){matchPatched=true;return{...m,protivnik:on};}
+        return m;
+      });
+      if(matchPatched) await set(ref(db,'matches'),matches);
+      let goalPatched=false;
+      goals=goals.map(g=>{
+        if(!g)return g;
+        const on=officialName(g.matchProtivnik||'');
+        const oc=g.type==='scored'&&!g.oppClub?DINAMO_CLUB:(g.type==='conceded'&&g.oppClub?officialName(g.oppClub):g.oppClub);
+        if(on!==(g.matchProtivnik||'')||oc!==g.oppClub){goalPatched=true;return{...g,matchProtivnik:on,oppClub:oc||g.oppClub};}
+        return g;
+      }).filter(Boolean);
+      if(goalPatched) await set(ref(db,'goals'),goals);
+    }catch(migErr){console.warn('Migracija naziv kluba:',migErr);}
     const predSnap=await get(ref(db,'predictions'));
     if(predSnap.exists()&&Array.isArray(predSnap.val())){predictions=predSnap.val();}else{predictions=[];}
     const awayPredSnap=await get(ref(db,'predictions_away'));
     if(awayPredSnap.exists()&&Array.isArray(awayPredSnap.val())){awayPredictions=awayPredSnap.val();}else{awayPredictions=[];}
 
     onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();}});
-    onValue(ref(db,'goals'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){goals=snap.val();renderGoalStats();renderPlayerStats();renderGoalList();}else{goals=[];}});
+    onValue(ref(db,'goals'),(snap)=>{
+      if(snap.exists()){
+        const v=snap.val();
+        if(Array.isArray(v)) goals=v.filter(Boolean);
+        else if(v&&typeof v==='object') goals=Object.values(v).filter(Boolean);
+        else goals=[];
+      }else{goals=[];}
+      renderGoalStats();renderPlayerStats();renderGoalList();
+    });
     onValue(ref(db,'predictions'),(snap)=>{
       const val=snap.exists()&&Array.isArray(snap.val())?snap.val():[];
       _livePredictions=val;
@@ -5723,40 +5853,40 @@ async function fetchTsdbSchedule(){
 
   // Hardkodirane prošle utakmice (popunjavaju praznine iz API-ja)
   const hardcodedResults = [
-    {datum:'2025-07-19',protivnik:'Šibenik',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'4-0',form:'W'},
-    {datum:'2025-07-26',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'20:00',rezultat:'1-1',form:'D'},
-    {datum:'2025-08-02',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'20:30',rezultat:'3-1',form:'W'},
-    {datum:'2025-08-09',protivnik:'Hajduk',natjecanje:'HNL',domace:false,koDisplay:'20:30',rezultat:'1-2',form:'L'},
-    {datum:'2025-08-16',protivnik:'Gorica',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'5-0',form:'W'},
-    {datum:'2025-08-23',protivnik:'Istra',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'3-0',form:'W'},
-    {datum:'2025-09-13',protivnik:'Osijek',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'2-1',form:'W'},
-    {datum:'2025-09-20',protivnik:'Slaven',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
-    {datum:'2025-09-27',protivnik:'Lokomotiva',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
-    {datum:'2025-10-04',protivnik:'Šibenik',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
-    {datum:'2025-10-18',protivnik:'Rijeka',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-1',form:'W'},
-    {datum:'2025-11-01',protivnik:'Varaždin',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'3-1',form:'W'},
-    {datum:'2025-11-08',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'2-0',form:'W'},
-    {datum:'2025-11-22',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
-    {datum:'2025-11-29',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'4-0',form:'W'},
-    {datum:'2025-12-06',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
-    {datum:'2026-02-07',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'4-2',form:'W'},
-    {datum:'2026-02-14',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'4-0',form:'W'},
-    {datum:'2026-02-19',protivnik:'Genk',natjecanje:'UEL',domace:false,koDisplay:'18:45',rezultat:'1-3',form:'L'},
-    {datum:'2026-02-22',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'2-0',form:'W'},
-    {datum:'2026-03-01',protivnik:'Gorica',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
-    {datum:'2026-03-04',protivnik:'Kurilovec',natjecanje:'Kup',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
-    {datum:'2026-03-14',protivnik:'Slaven',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
-    {datum:'2026-04-04',protivnik:'Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
-    {datum:'2026-04-18',protivnik:'Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
-    {datum:'2026-04-23',protivnik:'Istra',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
-    {datum:'2026-04-26',protivnik:'Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
+    {datum:'2025-07-19',protivnik:'HNK Šibenik',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'4-0',form:'W'},
+    {datum:'2025-07-26',protivnik:'HNK Rijeka',natjecanje:'HNL',domace:false,koDisplay:'20:00',rezultat:'1-1',form:'D'},
+    {datum:'2025-08-02',protivnik:'NK Varaždin',natjecanje:'HNL',domace:true,koDisplay:'20:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-08-09',protivnik:'HNK Hajduk Split',natjecanje:'HNL',domace:false,koDisplay:'20:30',rezultat:'1-2',form:'L'},
+    {datum:'2025-08-16',protivnik:'HNK Gorica',natjecanje:'HNL',domace:true,koDisplay:'20:00',rezultat:'5-0',form:'W'},
+    {datum:'2025-08-23',protivnik:'NK Istra 1961',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'3-0',form:'W'},
+    {datum:'2025-09-13',protivnik:'NK Osijek',natjecanje:'HNL',domace:false,koDisplay:'18:00',rezultat:'2-1',form:'W'},
+    {datum:'2025-09-20',protivnik:'NK Slaven Belupo Koprivnica',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
+    {datum:'2025-09-27',protivnik:'NK Lokomotiva Zagreb',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-10-04',protivnik:'HNK Šibenik',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-10-18',protivnik:'HNK Rijeka',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-11-01',protivnik:'NK Varaždin',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'3-1',form:'W'},
+    {datum:'2025-11-08',protivnik:'HNK Hajduk Split',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-11-22',protivnik:'HNK Gorica',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'2-0',form:'W'},
+    {datum:'2025-11-29',protivnik:'NK Istra 1961',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'4-0',form:'W'},
+    {datum:'2025-12-06',protivnik:'NK Osijek',natjecanje:'HNL',domace:true,koDisplay:'17:30',rezultat:'3-0',form:'W'},
+    {datum:'2026-02-07',protivnik:'NK Slaven Belupo Koprivnica',natjecanje:'HNL',domace:false,koDisplay:'17:30',rezultat:'4-2',form:'W'},
+    {datum:'2026-02-14',protivnik:'NK Istra 1961',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'4-0',form:'W'},
+    {datum:'2026-02-19',protivnik:'KRC Genk',natjecanje:'UEL',domace:false,koDisplay:'18:45',rezultat:'1-3',form:'L'},
+    {datum:'2026-02-22',protivnik:'NK Lokomotiva Zagreb',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'2-0',form:'W'},
+    {datum:'2026-03-01',protivnik:'HNK Gorica',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
+    {datum:'2026-03-04',protivnik:'NK Kurilovec',natjecanje:'Kup',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-03-14',protivnik:'NK Slaven Belupo Koprivnica',natjecanje:'HNL',domace:true,koDisplay:'17:15',rezultat:'4-2',form:'W'},
+    {datum:'2026-04-04',protivnik:'NK Osijek',natjecanje:'HNL',domace:true,koDisplay:'15:00',rezultat:'7-0',form:'W'},
+    {datum:'2026-04-18',protivnik:'HNK Rijeka',natjecanje:'HNL',domace:false,koDisplay:'16:00',rezultat:'2-2',form:'D'},
+    {datum:'2026-04-23',protivnik:'NK Istra 1961',natjecanje:'HNL',domace:true,koDisplay:'18:00',rezultat:'2-0',form:'W'},
+    {datum:'2026-04-26',protivnik:'NK Varaždin',natjecanje:'HNL',domace:true,koDisplay:'18:45',rezultat:'2-1',form:'W'},
   ].map(m=>normMatch({...m,isPast:true,source:'manual',isCroatia:false}));
 
   const hardcodedUpcoming = [
-    {datum:'2026-05-02',protivnik:'Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
-    {datum:'2026-05-09',protivnik:'Hajduk',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
-    {datum:'2026-05-17',protivnik:'Slaven',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
-    {datum:'2026-05-23',protivnik:'Lokomotiva',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-02',protivnik:'HNK Gorica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'NK Gorica Stadion'},
+    {datum:'2026-05-09',protivnik:'HNK Hajduk Split',natjecanje:'HNL',domace:true,koDisplay:'14:00',stadion:'Stadion Maksimir'},
+    {datum:'2026-05-17',protivnik:'NK Slaven Belupo Koprivnica',natjecanje:'HNL',domace:false,koDisplay:'14:00',stadion:'Stadion Koprivnica'},
+    {datum:'2026-05-23',protivnik:'NK Lokomotiva Zagreb',natjecanje:'HNL',domace:true,koDisplay:'15:00',stadion:'Stadion Maksimir'},
   ].map(m=>normMatch({...m,isPast:false,rezultat:'',form:'',source:'manual',isCroatia:false}));
 
   // API podaci imaju prednost, hardkodirani popunjavaju praznine
@@ -6038,7 +6168,7 @@ function openTop5(type){
       const parts=m.rezultat.split('-').map(Number);
       return{...m,scored:parts[0]||0};
     }).sort((a,b)=>b.scored-a.scored).slice(0,5).map((m,i)=>({
-      rank:i+1, name:`${m.protivnik} (${m.rezultat})`,
+      rank:i+1, name:`${officialName(m.protivnik)} (${m.rezultat})`,
       detail:`${fmtDate(m.datum)} · ${m.natjecanje}`,
       val:m.scored+'⚽', color:'#4ADE80'
     }));
@@ -6049,7 +6179,7 @@ function openTop5(type){
       const parts=m.rezultat.split('-').map(Number);
       return{...m,conceded:parts[1]||0};
     }).sort((a,b)=>b.conceded-a.conceded).slice(0,5).map((m,i)=>({
-      rank:i+1, name:`${m.protivnik} (${m.rezultat})`,
+      rank:i+1, name:`${officialName(m.protivnik)} (${m.rezultat})`,
       detail:`${fmtDate(m.datum)} · ${m.natjecanje}`,
       val:m.conceded+'⚽', color:'#F87171'
     }));
