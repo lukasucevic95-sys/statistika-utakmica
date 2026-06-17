@@ -1248,7 +1248,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div class="g-section-title">👟 Strijelci</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div class="view-tabs" id="scorer-tabs">
-            <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)">🔵 <span id="scorer-tab-dinamo-label">Dinamo</span></button>
+            <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)"><span id="scorer-tab-dinamo-emoji">🔵</span> <span id="scorer-tab-dinamo-label">Dinamo</span></button>
             <button class="view-tab" id="scorer-tab-opp" onclick="setScorerTab('opp',this)">🔴 Protivnici</button>
           </div>
           <select class="form-input" style="width:auto;font-size:11px;" id="player-sort" onchange="renderPlayerStats()">
@@ -1330,15 +1330,16 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="g-section-header" style="flex-wrap:wrap;gap:8px;">
         <div class="g-section-title">🗑️ Upravljanje golovima</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <select class="form-input" style="width:auto;font-size:11px;" id="gl-type-filter" onchange="renderGoalList()">
+          <select class="form-input" style="width:auto;font-size:11px;" id="gl-type-filter" onchange="glPage=1;renderGoalList()">
             <option value="all">Svi golovi</option>
             <option value="scored">Zabijeni</option>
             <option value="conceded">Primljeni</option>
           </select>
-          <input class="search-box" type="text" placeholder="🔍 Igrač / utakmica..." id="gl-search" oninput="renderGoalList()" style="width:170px;">
+          <input class="search-box" type="text" placeholder="🔍 Igrač / utakmica..." id="gl-search" oninput="glPage=1;renderGoalList()" style="width:170px;">
         </div>
       </div>
-      <div id="goal-list-body" style="max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;"></div>
+      <div id="goal-list-body"></div>
+      <div id="goal-list-pagination" style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 0 4px;flex-wrap:wrap;"></div>
     </div>
   </div>
 </div>
@@ -2276,6 +2277,104 @@ const OFFICIAL_NAMES={
 };
 function officialName(n){ return OFFICIAL_NAMES[n]||n; }
 const DINAMO_CLUB='GNK Dinamo Zagreb';
+/* ── Grbovi klubova — inline SVG shield ── */
+const CLUB_CRESTS={
+  'GNK Dinamo Zagreb':       {custom:'dinamo'},
+  'Hrvatska':                {bg:'#CC0000',bd:'#fff',fg:'#fff',abbr:'HRV',check:[[0,'#CC0000'],[1,'#fff'],[2,'#CC0000'],[3,'#fff']]},
+  'HNK Hajduk Split':        {bg:'#fff',bd:'#0057B8',fg:'#003',abbr:'HAJ'},
+  'HNK Rijeka':              {bg:'#00307A',bd:'#B8001C',fg:'#fff',abbr:'RIJ'},
+  'NK Osijek':               {bg:'#E07000',bd:'#333',fg:'#fff',abbr:'OSI'},
+  'NK Varaždin':             {bg:'#00439B',bd:'#F5C400',fg:'#fff',abbr:'VAR'},
+  'NK Slaven Belupo Koprivnica':{bg:'#2B5EBF',bd:'#F5C400',fg:'#fff',abbr:'SBK'},
+  'HNK Gorica':              {bg:'#C00028',bd:'#003CA6',fg:'#fff',abbr:'GOR'},
+  'NK Istra 1961':           {bg:'#FFD700',bd:'#003CA6',fg:'#003',abbr:'IST'},
+  'NK Lokomotiva Zagreb':    {bg:'#C00028',bd:'#fff',fg:'#fff',abbr:'LOK'},
+  'NK Međimurje Čakovec':    {bg:'#00439B',bd:'#fff',fg:'#fff',abbr:'MEĐ'},
+  'HNK Šibenik':             {bg:'#005B99',bd:'#fff',fg:'#fff',abbr:'ŠIB'},
+  'HNK Vukovar 1991':        {bg:'#003CA6',bd:'#C00028',fg:'#fff',abbr:'VUK'},
+  'NK Kurilovec':            {bg:'#003CA6',bd:'#fff',fg:'#fff',abbr:'KUR'},
+  'Chelsea FC':              {bg:'#034694',bd:'#D1AF01',fg:'#fff',abbr:'CFC'},
+  'FC Red Bull Salzburg':    {bg:'#C5002E',bd:'#D1AF01',fg:'#fff',abbr:'RBS'},
+  'PAOK FC':                 {bg:'#1a1a1a',bd:'#fff',fg:'#fff',abbr:'PAO'},
+  'AS Monaco FC':            {bg:'#C00028',bd:'#fff',fg:'#fff',abbr:'MON'},
+  'Borussia Dortmund':       {bg:'#FFD700',bd:'#1a1a1a',fg:'#1a1a1a',abbr:'BVB'},
+  'Celtic FC':               {bg:'#1A7A3C',bd:'#fff',fg:'#fff',abbr:'CEL'},
+  'AC Milan':                {bg:'#C00028',bd:'#1a1a1a',fg:'#fff',abbr:'ACM',stripes:['#C00028','#1a1a1a']},
+  'Fenerbahçe SK':           {bg:'#003F7F',bd:'#F5C400',fg:'#F5C400',abbr:'FEN'},
+  'RC Celta de Vigo':        {bg:'#87CEEB',bd:'#fff',fg:'#003',abbr:'CEL'},
+  'FC FCSB':                 {bg:'#C00028',bd:'#00439B',fg:'#fff',abbr:'FSB'},
+  'KRC Genk':                {bg:'#00439B',bd:'#F5C400',fg:'#fff',abbr:'GEN'},
+  'Real Betis Balompié':     {bg:'#00A650',bd:'#fff',fg:'#fff',abbr:'BET'},
+};
+function getClubCrest(name,sz=18){
+  const c=CLUB_CRESTS[name];
+  // ── Custom Dinamo grb ──
+  if(c&&c.custom==='dinamo'){
+    const r=sz/2, cs=Math.max(2,Math.round(sz*0.135));
+    const cid=`dcc${sz}`;
+    // Diagonal clip: top-left+top-right → right side ~38% → left side ~75%
+    const rx1=sz, ry1=Math.round(sz*0.38);
+    const lx2=0, ly2=Math.round(sz*0.76);
+    const diagClip=`M0,0 L${sz},0 L${rx1},${ry1} L${lx2},${ly2} Z`;
+    // Generate full-circle checker squares
+    let chk='';
+    const rows=Math.ceil(sz/cs)+1, cols=Math.ceil(sz/cs)+1;
+    for(let row=0;row<rows;row++){
+      for(let col=0;col<cols;col++){
+        chk+=`<rect x="${col*cs}" y="${row*cs}" width="${cs}" height="${cs}" fill="${(row+col)%2===0?'#1a4fa0':'#003591'}"/>`;
+      }
+    }
+    const sw=Math.max(1,Math.round(sz*0.055));
+    const fs=Math.round(sz*0.5);
+    // "d" in lower-right blue area
+    const dx=Math.round(sz*0.62);
+    const dy=Math.round(sz*0.94);
+    return`<svg title="GNK Dinamo Zagreb" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sz} ${sz}" width="${sz}" height="${sz}" style="vertical-align:middle;flex-shrink:0;">
+      <defs>
+        <clipPath id="${cid}c"><circle cx="${r}" cy="${r}" r="${r}"/></clipPath>
+        <clipPath id="${cid}d"><path d="${diagClip}"/></clipPath>
+      </defs>
+      <circle cx="${r}" cy="${r}" r="${r}" fill="#003591"/>
+      <g clip-path="url(#${cid}c)"><g clip-path="url(#${cid}d)">${chk}</g></g>
+      <text x="${dx}" y="${dy}" text-anchor="middle" dominant-baseline="auto"
+        font-family="Georgia,'Times New Roman',serif" font-size="${fs}" font-weight="900"
+        font-style="italic" fill="#fff" clip-path="url(#${cid}c)">d</text>
+    </svg>`;
+  }
+  if(name==='Hrvatska'||(!c&&name.match(/^(Slovenija|Srbija|Bosna|Italija|Španjolska|Francuska|Engleska|Njemačka|Portugal|Belgija|Danska|Austrija|Turska|Škotska|Rumunjska|Crna Gora|Sjeverna Makedonija|Albanija|Kosovo|Mađarska|Češka|Slovačka|Poljska|Grčka|Izrael|Armenija|Latvija|Litva|Estonija|Finska|Wales|Irska|Island)$/))){
+    const flag=name==='Hrvatska'?'🇭🇷':name==='Slovenija'?'🇸🇮':name==='Srbija'?'🇷🇸':name==='Bosna'?'🇧🇦':name==='Italija'?'🇮🇹':name==='Španjolska'?'🇪🇸':name==='Francuska'?'🇫🇷':name==='Engleska'?'🏴󠁧󠁢󠁥󠁮󠁧󠁿':name==='Njemačka'?'🇩🇪':name==='Portugal'?'🇵🇹':name==='Belgija'?'🇧🇪':name==='Danska'?'🇩🇰':name==='Austrija'?'🇦🇹':name==='Turska'?'🇹🇷':name==='Škotska'?'🏴󠁧󠁢󠁳󠁣󠁴󠁿':name==='Crna Gora'?'🇲🇪':'🌍';
+    return`<span title="${name}" style="font-size:${sz}px;line-height:1;vertical-align:middle;">${flag}</span>`;
+  }
+  if(!c){
+    const abbr=(name.split(' ').map(w=>w[0]).join('').slice(0,3)).toUpperCase();
+    return`<span title="${name}" style="display:inline-flex;align-items:center;justify-content:center;width:${sz}px;height:${sz}px;border-radius:3px;background:rgba(255,255,255,0.12);color:var(--text-muted);font-size:${Math.round(sz*0.42)}px;font-weight:900;font-family:'Barlow Condensed',sans-serif;vertical-align:middle;letter-spacing:-0.5px;">${abbr}</span>`;
+  }
+  const h=Math.round(sz*1.2);
+  const hasCheck=c.check;
+  const hasStripes=c.stripes;
+  const cq=Math.round(sz*0.22);
+  const innerW=Math.round(sz*0.7);
+  const tx=Math.round(sz/2); const ty=Math.round(h*0.62);
+  const fs=Math.round(sz*0.34);
+  let interior='';
+  if(hasCheck){
+    interior=`<rect x="${Math.round(sz*0.18)}" y="${Math.round(h*0.18)}" width="${cq}" height="${cq}" fill="${hasCheck[0][1]}"/>
+    <rect x="${Math.round(sz*0.18)+cq}" y="${Math.round(h*0.18)}" width="${cq}" height="${cq}" fill="${hasCheck[1][1]}"/>
+    <rect x="${Math.round(sz*0.18)}" y="${Math.round(h*0.18)+cq}" width="${cq}" height="${cq}" fill="${hasCheck[2][1]}"/>
+    <rect x="${Math.round(sz*0.18)+cq}" y="${Math.round(h*0.18)+cq}" width="${cq}" height="${cq}" fill="${hasCheck[3][1]}"/>`;
+  } else if(hasStripes){
+    const sw=Math.round(sz*0.16);
+    interior=`<rect x="${Math.round(sz*0.18)}" y="${Math.round(h*0.15)}" width="${sw}" height="${Math.round(h*0.4)}" fill="${hasStripes[0]}"/>
+    <rect x="${Math.round(sz*0.18)+sw}" y="${Math.round(h*0.15)}" width="${sw}" height="${Math.round(h*0.4)}" fill="${hasStripes[1]}"/>
+    <rect x="${Math.round(sz*0.18)+sw*2}" y="${Math.round(h*0.15)}" width="${sw}" height="${Math.round(h*0.4)}" fill="${hasStripes[0]}"/>`;
+  }
+  return`<svg title="${name}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${sz} ${h}" width="${sz}" height="${h}" style="vertical-align:middle;flex-shrink:0;">
+    <path d="M${sz/2} 1 L2 ${Math.round(h*0.18)} L2 ${Math.round(h*0.55)} Q2 ${Math.round(h*0.82)} ${sz/2} ${h-1} Q${sz-2} ${Math.round(h*0.82)} ${sz-2} ${Math.round(h*0.55)} L${sz-2} ${Math.round(h*0.18)} Z" fill="${c.bg}" stroke="${c.bd}" stroke-width="1"/>
+    ${interior}
+    <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-family="'Barlow Condensed',sans-serif" font-size="${fs}" font-weight="900" fill="${c.fg}" opacity="0.95">${c.abbr}</text>
+  </svg>`;
+}
+window.getClubCrest=getClubCrest;
 
 const REP_COMPS=['Liga Nacija','FIFA WCQ','UEFA EURO Q','UEFA EURO','FIFA World Cup','Reprezentacija'];
 const EUR_MAP={UCL:'ucl','UCL Q':'ucl-q',UEL:'uel','UEL Q':'uel-q',ECL:'ecl','ECL Q':'ecl-q'};
@@ -3509,7 +3608,9 @@ function renderPlayerStats(){
   const isRepFilter = gCompFilter==='rep' || REP_COMPS.includes(gCompFilter);
   const scoringTeamLabel = isRepFilter ? 'Hrvatska' : 'Dinamo';
   const tabLabel = document.getElementById('scorer-tab-dinamo-label');
+  const tabEmoji = document.getElementById('scorer-tab-dinamo-emoji');
   if(tabLabel) tabLabel.textContent = scoringTeamLabel;
+  if(tabEmoji) tabEmoji.textContent = isRepFilter ? '🇭🇷' : '🔵';
   const vsTeamTitleEl = document.getElementById('din-vs-team-title');
   if(vsTeamTitleEl) vsTeamTitleEl.textContent = `GOLOVI PO EKIPI — ${scoringTeamLabel.toUpperCase()}`;
   const q=(document.getElementById('player-search')||{value:''}).value.toLowerCase();
@@ -3546,13 +3647,28 @@ function renderPlayerStats(){
       :dinSlice.map(p=>{
         const sm=sortMins(p.minutes).map(m=>m+"'").join(' · ');
         const pIdx=dinList.indexOf(p);
-        // Determine club: if all goals have same oppClub (scored), show it; otherwise GNK Dinamo Zagreb
-        const allClubs=[...new Set(p.goalList.map(g=>g.oppClub||DINAMO_CLUB))];
-        const clubBadge=allClubs.length===1?allClubs[0]:(allClubs.includes('Hrvatska')?'Hrvatska':DINAMO_CLUB);
+        // Sve unikatne ekipe za koje je igrač zabijao — gledaj natjecanje utakmice
+        const clubSet=new Map();
+        p.goalList.forEach(g=>{
+          let club;
+          const matchObj=matches.find(mm=>mm.datum===g.matchDatum&&mm.protivnik===g.matchProtivnik);
+          if(matchObj&&REP_COMPS.includes(matchObj.natjecanje)){
+            club='Hrvatska';
+          } else {
+            club=g.oppClub&&g.oppClub!==DINAMO_CLUB&&g.oppClub!=='Hrvatska'?g.oppClub:DINAMO_CLUB;
+          }
+          clubSet.set(club,(clubSet.get(club)||0)+1);
+        });
+        const clubBadges=[...clubSet.entries()].sort((a,b)=>b[1]-a[1]).map(([club,cnt])=>{
+          const crest=getClubCrest(club,16);
+          const cntBadge=clubSet.size>1?`<span style="font-size:9px;color:var(--text-muted);margin-left:2px;">${cnt}</span>`:'';
+          return`<span style="display:inline-flex;align-items:center;gap:2px;margin-left:4px;background:rgba(255,255,255,0.05);padding:1px 4px 1px 3px;border-radius:4px;" title="${club}">${crest}${cntBadge}</span>`;
+        }).join('');
         return`<div class="player-row" style="cursor:pointer;" onclick="openPlayerModal('din',${pIdx})">
           <div style="flex:1;min-width:0;">
-            <span class="player-name">${p.name}</span>
-            ${clubBadge?`<span style="font-size:10px;color:var(--text-muted);margin-left:6px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:4px;">${clubBadge}</span>`:''}
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;">
+              <span class="player-name">${p.name}</span>${clubBadges}
+            </div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:normal;">⏱ ${sm}</div>
           </div>
           <div class="player-goals" style="flex-shrink:0;">
@@ -3621,10 +3737,13 @@ function renderPlayerStats(){
       :oppSlice.map(p=>{
         const sm=sortMins(p.minutes).map(m=>m+"'").join(' · ');
         const pIdx=oppList.indexOf(p);
+        const crest=p.club?getClubCrest(p.club,16):'';
         return`<div class="player-row" style="cursor:pointer;" onclick="openPlayerModal('opp',${pIdx})">
           <div style="flex:1;min-width:0;">
-            <span class="player-name" style="color:#F87171;">${p.name}</span>
-            ${p.club?`<span style="font-size:10px;color:var(--text-muted);margin-left:6px;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:4px;">${p.club}</span>`:''}
+            <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;">
+              <span class="player-name" style="color:#F87171;">${p.name}</span>
+              ${crest?`<span style="display:inline-flex;align-items:center;gap:2px;margin-left:4px;background:rgba(255,255,255,0.05);padding:1px 4px 1px 3px;border-radius:4px;" title="${p.club}">${crest}</span>`:''}
+            </div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:normal;">⏱ ${sm}</div>
           </div>
           <div class="player-goals" style="flex-shrink:0;">
@@ -3757,10 +3876,14 @@ async function addGoal(){
 }
 window.addGoal=addGoal;
 
+const GL_PER_PAGE=10;
+let glPage=1;
+
 function renderGoalList(){
   const typeF=(document.getElementById('gl-type-filter')||{value:'all'}).value;
   const q=(document.getElementById('gl-search')||{value:''}).value.toLowerCase();
   const el=document.getElementById('goal-list-body');
+  const pgEl=document.getElementById('goal-list-pagination');
   if(!el)return;
   let list=[...goals].map((g,i)=>({...g,_idx:i}));
   if(typeF!=='all') list=list.filter(g=>g.type===typeF);
@@ -3773,9 +3896,13 @@ function renderGoalList(){
   list.sort((a,b)=>a.matchDatum<b.matchDatum?1:-1);
   if(list.length===0){
     el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text-muted);font-style:italic;">Nema golova za prikaz.</div>';
+    if(pgEl)pgEl.innerHTML='';
     return;
   }
-  el.innerHTML=list.map(g=>{
+  const totalPages=Math.max(1,Math.ceil(list.length/GL_PER_PAGE));
+  if(glPage>totalPages)glPage=totalPages;
+  const slice=list.slice((glPage-1)*GL_PER_PAGE, glPage*GL_PER_PAGE);
+  el.innerHTML=slice.map(g=>{
     const isScored=g.type==='scored';
     const iconColor=isScored?'#4ADE80':'#F87171';
     const typeLabel=isScored?'Zabijen':'Primljen';
@@ -3794,7 +3921,26 @@ function renderGoalList(){
       </div>
     </div>`;
   }).join('');
+  // Pagination bar
+  if(pgEl){
+    if(totalPages<=1){pgEl.innerHTML='';return;}
+    const btnStyle=`style="min-width:32px;height:28px;padding:0 8px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-primary);font-size:12px;cursor:pointer;"`;
+    const activeBtnStyle=`style="min-width:32px;height:28px;padding:0 8px;border-radius:6px;border:1px solid #4D9FFF;background:rgba(77,159,255,0.18);color:#4D9FFF;font-size:12px;cursor:pointer;font-weight:700;"`;
+    let html=`<button ${btnStyle} onclick="glGoPage(1)" ${glPage===1?'disabled':''}>«</button>`;
+    html+=`<button ${btnStyle} onclick="glGoPage(${glPage-1})" ${glPage===1?'disabled':''}>‹</button>`;
+    // Page numbers — show max 5 around current
+    const start=Math.max(1,glPage-2), end=Math.min(totalPages,glPage+2);
+    if(start>1) html+=`<span style="color:var(--text-muted);font-size:12px;padding:0 2px;">…</span>`;
+    for(let p=start;p<=end;p++)
+      html+=`<button ${p===glPage?activeBtnStyle:btnStyle} onclick="glGoPage(${p})">${p}</button>`;
+    if(end<totalPages) html+=`<span style="color:var(--text-muted);font-size:12px;padding:0 2px;">…</span>`;
+    html+=`<button ${btnStyle} onclick="glGoPage(${glPage+1})" ${glPage===totalPages?'disabled':''}>›</button>`;
+    html+=`<button ${btnStyle} onclick="glGoPage(${totalPages})" ${glPage===totalPages?'disabled':''}>»</button>`;
+    html+=`<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">${list.length} golova</span>`;
+    pgEl.innerHTML=html;
+  }
 }
+window.glGoPage=function(p){glPage=p;renderGoalList();};
 window.renderGoalList=renderGoalList;
 
 async function deleteGoal(idx){
