@@ -462,20 +462,38 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .lb-score{font-size:38px;}
 }
 @media(max-width:768px){
-  .header{padding:22px 18px 18px;overflow:hidden;}
+  .header{padding:22px 18px 0 18px;overflow:hidden;display:flex;flex-direction:column;}
   .header h1{font-size:34px;letter-spacing:2px;}
-  /* Shrink trophy ticker on tablet */
+  .header-inner{order:1;}
+  .header>div[style*="position:absolute"][style*="right:0"]{
+    order:2;position:relative!important;width:calc(100% + 36px)!important;
+    right:auto!important;top:auto!important;bottom:auto!important;
+    height:72px!important;margin-top:12px!important;
+    margin-left:-18px!important;margin-right:-18px!important;
+    border-top:1px solid rgba(255,255,255,0.07)!important;
+  }
+  #trophy-ticker-wrap{padding-left:12px!important;}
   #trophy-inner>div{min-width:200px!important;padding:7px 11px!important;}
   #trophy-inner>div>div:first-child{font-size:12px!important;}
   #trophy-inner>div>div:not(:first-child){font-size:10px!important;line-height:1.5!important;}
+  #trophy-bbb{display:none!important;}
 }
 @media(max-width:600px){
-  /* Na mobitelu, sakrij ticker i stavi kompaktni prikaz */
-  #trophy-ticker-wrap{height:38px!important;}
-  #trophy-inner>div{min-width:160px!important;padding:5px 10px!important;border-radius:7px!important;}
-  #trophy-inner>div>div:first-child{font-size:11px!important;margin-bottom:2px!important;}
-  #trophy-inner>div>div:not(:first-child){font-size:9.5px!important;line-height:1.4!important;}
-  /* Sakrij BBB na mobitelu */
+  .header{padding:16px 14px 0 14px!important;display:flex!important;flex-direction:column!important;}
+  .header h1{font-size:22px!important;letter-spacing:1.5px!important;}
+  .header p{font-size:10px!important;letter-spacing:1px!important;margin-bottom:0!important;}
+  .header-inner{order:1;}
+  .header>div[style*="position:absolute"][style*="right:0"]{
+    order:2;position:relative!important;width:calc(100% + 28px)!important;
+    right:auto!important;top:auto!important;bottom:auto!important;
+    height:60px!important;margin-top:10px!important;
+    margin-left:-14px!important;margin-right:-14px!important;
+    border-top:1px solid rgba(255,255,255,0.07)!important;
+  }
+  #trophy-ticker-wrap{padding-left:8px!important;height:60px!important;}
+  #trophy-inner>div{min-width:140px!important;padding:6px 10px!important;border-radius:7px!important;}
+  #trophy-inner>div>div:first-child{font-size:10px!important;margin-bottom:2px!important;letter-spacing:1px!important;}
+  #trophy-inner>div>div:not(:first-child){font-size:9px!important;line-height:1.4!important;}
   #trophy-bbb{display:none!important;}
 }
 
@@ -604,6 +622,55 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .pred-grid{ grid-template-columns:1fr!important; }
 }
 
+/* ===== COUNTDOWN BANNER ===== */
+.next-match-banner{background:linear-gradient(135deg,rgba(0,57,115,0.6) 0%,rgba(0,30,70,0.8) 100%);border:1px solid rgba(77,159,255,0.3);border-radius:16px;padding:18px 22px;margin-bottom:18px;position:relative;overflow:hidden;}
+.next-match-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(77,159,255,0.12) 0%,transparent 70%);pointer-events:none;}
+.nmb-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#4D9FFF;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.nmb-label::before{content:'';width:6px;height:6px;border-radius:50%;background:#4D9FFF;animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+.nmb-match{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:#fff;margin-bottom:6px;}
+.nmb-meta{font-size:11px;color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.nmb-countdown{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.nmb-unit{display:flex;flex-direction:column;align-items:center;background:rgba(0,0,0,0.3);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:8px 12px;min-width:52px;}
+.nmb-num{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;color:#fff;letter-spacing:1px;}
+.nmb-lbl{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#4D9FFF;margin-top:2px;}
+.nmb-sep{font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(77,159,255,0.4);margin-top:-4px;}
+.nmb-weather{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 14px;margin-top:14px;}
+.nmb-weather-icon{font-size:28px;line-height:1;}
+.nmb-weather-info{display:flex;flex-direction:column;gap:2px;}
+.nmb-weather-temp{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:1px;}
+.nmb-weather-desc{font-size:10px;color:var(--text-muted);text-transform:capitalize;}
+.nmb-weather-loading{font-size:11px;color:var(--text-muted);font-style:italic;}
+/* ===== SEASON COMPARE ===== */
+.sc-wrap{padding:0;}
+.sc-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px;}
+.sc-select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;cursor:pointer;outline:none;min-width:110px;}
+.sc-vs{font-family:'Bebas Neue',sans-serif;font-size:18px;color:rgba(255,255,255,0.3);letter-spacing:2px;}
+.sc-compare-btn{background:rgba(77,159,255,0.15);border:1px solid rgba(77,159,255,0.35);border-radius:8px;padding:6px 16px;color:#7FB5FF;font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.sc-compare-btn:hover{background:rgba(77,159,255,0.3);}
+.sc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.sc-col{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.sc-col-header{padding:12px 16px;border-bottom:1px solid var(--border);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;text-align:center;}
+.sc-col-header.a{background:rgba(0,87,184,0.2);color:#60A5FA;}
+.sc-col-header.b{background:rgba(167,139,250,0.1);color:#A78BFA;}
+.sc-stat-row{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;}
+.sc-stat-row:last-child{border-bottom:none;}
+.sc-stat-label{color:var(--text-muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.sc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;}
+.sc-stat-val.better{color:#4ADE80;}.sc-stat-val.worse{color:#F87171;}.sc-stat-val.neutral{color:#fff;}
+.sc-bar-wrap{padding:12px 16px;}
+.sc-bar-label{font-size:10px;color:var(--text-muted);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.sc-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.sc-bar-bg{flex:1;height:6px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;}
+.sc-bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease;}
+.sc-bar-val{font-size:11px;font-weight:700;color:#fff;min-width:28px;text-align:right;}
+.sc-empty{text-align:center;padding:40px;color:var(--text-muted);font-size:13px;}
+.sc-form-dots{display:flex;gap:4px;flex-wrap:wrap;padding:10px 16px;}
+.sc-form-dot{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:900;color:#fff;}
+@media(max-width:600px){
+  .sc-grid{grid-template-columns:1fr;}
+  .nmb-num{font-size:24px;}.nmb-unit{min-width:44px;padding:6px 8px;}.nmb-match{font-size:18px;}
+}
 .rasp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:12px;transition:border-color 0.2s;}
 .rasp-card:hover{border-color:rgba(167,139,250,0.4);}
 .rasp-card-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
@@ -1251,6 +1318,13 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)"><span id="scorer-tab-dinamo-emoji">🔵</span> <span id="scorer-tab-dinamo-label">Dinamo</span></button>
             <button class="view-tab" id="scorer-tab-opp" onclick="setScorerTab('opp',this)">🔴 Protivnici</button>
           </div>
+          <!-- Luka / Lobro filter -->
+          <div style="display:flex;gap:4px;" id="scorer-person-tabs">
+            <button class="stat-person-tab active-all" id="scpt-sve" onclick="setScorerPerson('sve')" title="Sve utakmice">📋 Sve</button>
+            <button class="stat-person-tab" id="scpt-all" onclick="setScorerPerson('all')" title="Samo utakmice gdje su oba prisutna">👥 Zajedno</button>
+            <button class="stat-person-tab" id="scpt-luka" onclick="setScorerPerson('luka')">🔵 Luka</button>
+            <button class="stat-person-tab" id="scpt-lovro" onclick="setScorerPerson('lovro')">🔷 Lovro</button>
+          </div>
           <select class="form-input" style="width:auto;font-size:11px;" id="player-sort" onchange="renderPlayerStats()">
             <option value="goals_desc">Golovi ↓</option>
             <option value="goals_asc">Golovi ↑</option>
@@ -1895,10 +1969,14 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="sched-page-tabs">
       <button class="sched-page-tab active" id="ptab-raspored" onclick="switchSchedPage('raspored')">📅 Raspored</button>
       <button class="sched-page-tab" id="ptab-tablica" onclick="switchSchedPage('tablica')">🏆 Tablica</button>
+      <button class="sched-page-tab" id="ptab-compare" onclick="switchSchedPage('compare')">📊 Sezone</button>
     </div>
 
     <!-- ===== RASPORED VIEW ===== -->
     <div id="sched-view-raspored">
+
+    <!-- NEXT MATCH COUNTDOWN -->
+    <div id="next-match-banner"></div>
 
     <!-- forma -->
     <div id="sched-forma"></div>
@@ -2052,6 +2130,17 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       </div>
 
     </div><!-- /sched-view-tablica -->
+
+    <!-- ===== COMPARE SEZONE VIEW ===== -->
+    <div id="sched-view-compare" style="display:none;" class="sc-wrap">
+      <div class="sc-controls">
+        <select class="sc-select" id="sc-sel-a"></select>
+        <div class="sc-vs">VS</div>
+        <select class="sc-select" id="sc-sel-b"></select>
+        <button class="sc-compare-btn" onclick="runSeasonCompare()">📊 Usporedi</button>
+      </div>
+      <div id="sc-result"></div>
+    </div><!-- /sched-view-compare -->
 
   </div><!-- /sched-wrap -->
 
@@ -2341,8 +2430,8 @@ function getClubCrest(name,sz=18){
         font-style="italic" fill="#fff" clip-path="url(#${cid}c)">d</text>
     </svg>`;
   }
-  if(name==='Hrvatska'||(!c&&name.match(/^(Slovenija|Srbija|Bosna|Italija|Španjolska|Francuska|Engleska|Njemačka|Portugal|Belgija|Danska|Austrija|Turska|Škotska|Rumunjska|Crna Gora|Sjeverna Makedonija|Albanija|Kosovo|Mađarska|Češka|Slovačka|Poljska|Grčka|Izrael|Armenija|Latvija|Litva|Estonija|Finska|Wales|Irska|Island)$/))){
-    const flag=name==='Hrvatska'?'🇭🇷':name==='Slovenija'?'🇸🇮':name==='Srbija'?'🇷🇸':name==='Bosna'?'🇧🇦':name==='Italija'?'🇮🇹':name==='Španjolska'?'🇪🇸':name==='Francuska'?'🇫🇷':name==='Engleska'?'🏴󠁧󠁢󠁥󠁮󠁧󠁿':name==='Njemačka'?'🇩🇪':name==='Portugal'?'🇵🇹':name==='Belgija'?'🇧🇪':name==='Danska'?'🇩🇰':name==='Austrija'?'🇦🇹':name==='Turska'?'🇹🇷':name==='Škotska'?'🏴󠁧󠁢󠁳󠁣󠁴󠁿':name==='Crna Gora'?'🇲🇪':'🌍';
+  if(name==='Hrvatska'||(!c&&name.match(/^(Slovenija|Srbija|Bosna|Italija|Španjolska|Francuska|Engleska|Njemačka|Portugal|Belgija|Danska|Austrija|Turska|Škotska|Rumunjska|Crna Gora|Sjeverna Makedonija|Albanija|Nizozemska|Kosovo|Mađarska|Češka|Slovačka|Poljska|Grčka|Izrael|Armenija|Latvija|Litva|Estonija|Finska|Wales|Irska|Island)$/))){
+    const flag=name==='Hrvatska'?'🇭🇷':name==='Slovenija'?'🇸🇮':name==='Srbija'?'🇷🇸':name==='Bosna'?'🇧🇦':name==='Italija'?'🇮🇹':name==='Španjolska'?'🇪🇸':name==='Francuska'?'🇫🇷':name==='Engleska'?'🏴󠁧󠁢󠁥󠁮󠁧󠁿':name==='Njemačka'?'🇩🇪':name==='Portugal'?'🇵🇹':name==='Belgija'?'🇧🇪':name==='Danska'?'🇩🇰':name==='Austrija'?'🇦🇹':name==='Turska'?'🇹🇷':name==='Škotska'?'🏴󠁧󠁢󠁳󠁣󠁴󠁿':name==='Crna Gora'?'🇲🇪':name==='Albanija'?'🇦🇱':name==='Nizozemska'?'🇳🇱':name==='Rumunjska'?'🇷🇴':name==='Sjeverna Makedonija'?'🇲🇰':name==='Kosovo'?'🇽🇰':name==='Mađarska'?'🇭🇺':name==='Češka'?'🇨🇿':name==='Slovačka'?'🇸🇰':name==='Poljska'?'🇵🇱':name==='Grčka'?'🇬🇷':name==='Izrael'?'🇮🇱':name==='Armenija'?'🇦🇲':name==='Latvija'?'🇱🇻':name==='Litva'?'🇱🇹':name==='Estonija'?'🇪🇪':name==='Finska'?'🇫🇮':name==='Wales'?'🏴󠁧󠁢󠁷󠁬󠁳󠁿':name==='Irska'?'🇮🇪':name==='Island'?'🇮🇸':'🌍';
     return`<span title="${name}" style="font-size:${sz}px;line-height:1;vertical-align:middle;">${flag}</span>`;
   }
   if(!c){
@@ -2483,7 +2572,19 @@ let currentPage=1, oppPage=1, activeView='matches';
 let activeSeason='all', listFilter='all', confirmIdx=null;
 let gCompFilter='all', scorerTab='dinamo';
 let editGoalIdx=-1;
+let scorerPersonFilter='sve'; // 'sve'=sve utakmice | 'all'=oba zajedno | 'luka' | 'lovro'
 const PER_PAGE=15;
+
+function setScorerPerson(p){
+  scorerPersonFilter=p;
+  const tabs={sve:'active-all',all:'active-all',luka:'active-luka',lovro:'active-lovro'};
+  ['sve','all','luka','lovro'].forEach(k=>{
+    const el=document.getElementById('scpt-'+k);
+    if(el) el.className='stat-person-tab'+(k===p?' '+tabs[k]:'');
+  });
+  renderPlayerStats();
+}
+window.setScorerPerson=setScorerPerson;
 
 /* ===== SEASON BAR ===== */
 function getSeasons(){
@@ -3548,7 +3649,20 @@ function sortMins(arr){
 
 function getPlayerFilteredGoals(){
   const sF=(document.getElementById('player-season-filter')||{value:'all'}).value;
-  const fg=getFilteredGoals();
+  let fg=getFilteredGoals();
+  // Luka/Lovro filter u strijelcima
+  if(scorerPersonFilter !== 'sve'){
+    fg = fg.filter(g=>{
+      const m=matches.find(m=>m.datum===g.matchDatum&&m.protivnik===g.matchProtivnik);
+      if(!m) return scorerPersonFilter==='sve';
+      const lukaB  = m.prisutanLuka  !== false;
+      const lovroB = m.prisutanLovro !== false;
+      if(scorerPersonFilter==='all')   return lukaB && lovroB;
+      if(scorerPersonFilter==='luka')  return lukaB;
+      if(scorerPersonFilter==='lovro') return lovroB;
+      return true;
+    });
+  }
   if(sF==='all')return fg;
   return fg.filter(g=>{
     const m=matches.find(m=>m.datum===g.matchDatum&&m.protivnik===g.matchProtivnik);
@@ -5284,6 +5398,9 @@ async function renderRaspored(){
   // Forma momčadi (zadnjih 5 iz matches baze)
   schedRenderForma();
 
+  // Odbrojavanje + prognoza
+  renderNextMatchBanner();
+
   // Stats bar
   const today = new Date(); today.setHours(0,0,0,0);
   const todayNum = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
@@ -5579,11 +5696,204 @@ function switchSchedPage(page){
   _currentSchedPage = page;
   document.getElementById('sched-view-raspored').style.display = page==='raspored' ? '' : 'none';
   document.getElementById('sched-view-tablica').style.display  = page==='tablica'  ? '' : 'none';
+  document.getElementById('sched-view-compare').style.display  = page==='compare'  ? '' : 'none';
   document.getElementById('ptab-raspored').classList.toggle('active', page==='raspored');
   document.getElementById('ptab-tablica').classList.toggle('active',  page==='tablica');
+  document.getElementById('ptab-compare').classList.toggle('active',  page==='compare');
   if(page==='tablica') renderTablica();
+  if(page==='compare') initSeasonCompare();
 }
 window.switchSchedPage = switchSchedPage;
+
+/* ============================================================
+   NEXT MATCH COUNTDOWN + WEATHER (Open-Meteo, bez API ključa)
+   ============================================================ */
+let _countdownTimer = null;
+
+async function renderNextMatchBanner(){
+  const el = document.getElementById('next-match-banner');
+  if(!el) return;
+  if(!_schedMatches) await schedLoad();
+
+  const now = new Date();
+  const todayNum = now.getFullYear()*10000 + (now.getMonth()+1)*100 + now.getDate();
+  const upcoming = _schedMatches.filter(m=>m.sortDate>=todayNum).sort((a,b)=>a.sortDate-b.sortDate);
+  if(!upcoming.length){ el.innerHTML=''; return; }
+
+  const next = upcoming[0];
+  const [y,mo,d] = next.datum.split('-').map(Number);
+  let matchDate;
+  if(next.time){ const [hh,mm]=next.time.split(':').map(Number); matchDate=new Date(y,mo-1,d,hh,mm,0); }
+  else { matchDate=new Date(y,mo-1,d,20,0,0); }
+
+  const isHome = next.home===true;
+  const isMaksimir = isHome && (!next.venue || next.venue.toLowerCase().includes('maksimir') || next.venue==='');
+
+  function renderBanner(weather){
+    const t1=next.home?'<strong>Dinamo</strong>':next.opp;
+    const t2=next.home?next.opp:'<strong>Dinamo</strong>';
+    const tagCls=next.competition==='euro'?(next.home?'euro-home':'euro-away'):(next.home?'home':'away');
+    const tagTxt=next.home?'🏟️ Doma':'✈️ Gostovanje';
+    let weatherHTML='';
+    if(isMaksimir && weather){
+      weatherHTML=`<div class="nmb-weather">
+        <div class="nmb-weather-icon">${weather.icon}</div>
+        <div class="nmb-weather-info">
+          <div class="nmb-weather-temp">${weather.temp}°C</div>
+          <div class="nmb-weather-desc">${weather.desc}</div>
+        </div>
+        <div style="margin-left:auto;display:flex;flex-direction:column;gap:2px;text-align:right;">
+          <div style="font-size:10px;color:var(--text-muted);">💧 ${weather.rain}mm kiše</div>
+          <div style="font-size:10px;color:var(--text-muted);">💨 ${weather.wind} km/h vjetar</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.3);">prognoza za Maksimir</div>
+        </div>
+      </div>`;
+    } else if(isMaksimir && weather===null){
+      weatherHTML=`<div class="nmb-weather"><div class="nmb-weather-loading">⏳ Učitavanje prognoze za Maksimir...</div></div>`;
+    }
+    el.innerHTML=`<div class="next-match-banner">
+      <div class="nmb-label">⚡ SLJEDEĆA UTAKMICA</div>
+      <div class="nmb-match">${t1} — ${t2}</div>
+      <div class="nmb-meta">
+        <span class="sched-tag ${tagCls}" style="font-size:10px;">${tagTxt}</span>
+        <span>${next.datum.split('-').reverse().join('.')}</span>
+        ${next.time?`<span>🕐 ${next.time}</span>`:''}
+        <span>${next.label||next.natjecanje||''}</span>
+      </div>
+      <div class="nmb-countdown" id="nmb-countdown-units"></div>
+      ${weatherHTML}
+    </div>`;
+    if(_countdownTimer) clearInterval(_countdownTimer);
+    function tick(){
+      const diff=matchDate-new Date();
+      const units=document.getElementById('nmb-countdown-units');
+      if(!units){clearInterval(_countdownTimer);return;}
+      if(diff<=0){units.innerHTML=`<div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#4ADE80;letter-spacing:2px;">⚽ UTAKMICA JE POČELA!</div>`;clearInterval(_countdownTimer);return;}
+      const days=Math.floor(diff/86400000),hours=Math.floor((diff%86400000)/3600000),mins=Math.floor((diff%3600000)/60000),secs=Math.floor((diff%60000)/1000);
+      units.innerHTML=`
+        <div class="nmb-unit"><div class="nmb-num">${String(days).padStart(2,'0')}</div><div class="nmb-lbl">Dana</div></div>
+        <div class="nmb-sep">:</div>
+        <div class="nmb-unit"><div class="nmb-num">${String(hours).padStart(2,'0')}</div><div class="nmb-lbl">Sati</div></div>
+        <div class="nmb-sep">:</div>
+        <div class="nmb-unit"><div class="nmb-num">${String(mins).padStart(2,'0')}</div><div class="nmb-lbl">Min</div></div>
+        <div class="nmb-sep">:</div>
+        <div class="nmb-unit"><div class="nmb-num">${String(secs).padStart(2,'0')}</div><div class="nmb-lbl">Sek</div></div>`;
+    }
+    tick(); _countdownTimer=setInterval(tick,1000);
+  }
+
+  renderBanner(isMaksimir?null:undefined);
+
+  if(isMaksimir){
+    try{
+      const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
+      const resp=await fetch(url);
+      const data=await resp.json();
+      if(data.daily){
+        const wcode=data.daily.weathercode[0];
+        const tmax=Math.round(data.daily.temperature_2m_max[0]);
+        const tmin=Math.round(data.daily.temperature_2m_min[0]);
+        const rain=(data.daily.precipitation_sum[0]||0).toFixed(1);
+        const wind=Math.round(data.daily.windspeed_10m_max[0]);
+        const temp=Math.round((tmax+tmin)/2);
+        const wmoIcon=(c)=>{
+          if(c===0)return{icon:'☀️',desc:'Vedro'};if(c<=2)return{icon:'🌤️',desc:'Djelomično oblačno'};
+          if(c===3)return{icon:'☁️',desc:'Oblačno'};if(c<=49)return{icon:'🌫️',desc:'Magla'};
+          if(c<=59)return{icon:'🌦️',desc:'Rosulja'};if(c<=69)return{icon:'🌧️',desc:'Kiša'};
+          if(c<=79)return{icon:'🌨️',desc:'Snijeg'};if(c<=82)return{icon:'🌧️',desc:'Obilna kiša'};
+          if(c<=99)return{icon:'⛈️',desc:'Grmljavina'};return{icon:'🌡️',desc:'Nepoznato'};
+        };
+        const wi=wmoIcon(wcode);
+        renderBanner({icon:wi.icon,desc:wi.desc,temp,rain,wind});
+      }
+    }catch(e){console.warn('Weather fetch failed:',e);}
+  }
+}
+window.renderNextMatchBanner=renderNextMatchBanner;
+
+/* ============================================================
+   SEASON COMPARE
+   ============================================================ */
+function initSeasonCompare(){
+  const seasons=getSeasons().filter(s=>s!=='all');
+  const selA=document.getElementById('sc-sel-a');
+  const selB=document.getElementById('sc-sel-b');
+  if(!selA||!selB)return;
+  const opts=seasons.map(s=>`<option value="${s}">${s}</option>`).join('');
+  selA.innerHTML=opts; selB.innerHTML=opts;
+  if(seasons.length>=2){selA.value=seasons[0];selB.value=seasons[1];}
+  runSeasonCompare();
+}
+window.initSeasonCompare=initSeasonCompare;
+
+function calcSeasonStats(season){
+  const ms=matches.filter(m=>getSeason(m.datum)===season&&m.rezultat);
+  if(!ms.length)return null;
+  let w=0,d=0,l=0,gf=0,ga=0;
+  const forms=[];
+  ms.forEach(m=>{
+    const p=m.rezultat.split('-').map(Number);
+    if(p.length!==2)return;
+    gf+=p[0];ga+=p[1];
+    if(p[0]>p[1]){w++;forms.push('W');}else if(p[0]===p[1]){d++;forms.push('D');}else{l++;forms.push('L');}
+  });
+  const total=w+d+l,pts=w*3+d;
+  const avgGf=total?(gf/total).toFixed(2):0,avgGa=total?(ga/total).toFixed(2):0,winPct=total?Math.round(w/total*100):0;
+  return{season,total,w,d,l,gf,ga,pts,avgGf,avgGa,winPct,forms:forms.slice(-10)};
+}
+
+function runSeasonCompare(){
+  const selA=document.getElementById('sc-sel-a'),selB=document.getElementById('sc-sel-b'),res=document.getElementById('sc-result');
+  if(!selA||!selB||!res)return;
+  const a=calcSeasonStats(selA.value),b=calcSeasonStats(selB.value);
+  if(!a||!b){res.innerHTML='<div class="sc-empty">Nema dovoljno podataka za odabrane sezone.</div>';return;}
+  function statRow(label,vA,vB,higherIsBetter=true){
+    const nA=parseFloat(vA),nB=parseFloat(vB);
+    let cA='neutral',cB='neutral';
+    if(!isNaN(nA)&&!isNaN(nB)&&nA!==nB){const aW=higherIsBetter?nA>nB:nA<nB;cA=aW?'better':'worse';cB=aW?'worse':'better';}
+    return`<div class="sc-stat-row"><div class="sc-stat-val ${cA}">${vA}</div><div class="sc-stat-label">${label}</div><div class="sc-stat-val ${cB}" style="text-align:right;">${vB}</div></div>`;
+  }
+  function bar(label,vA,vB,maxV,cA,cB){
+    const pA=maxV?Math.round(vA/maxV*100):0,pB=maxV?Math.round(vB/maxV*100):0;
+    return`<div class="sc-bar-label">${label}</div>
+      <div class="sc-bar-row"><div class="sc-bar-bg"><div class="sc-bar-fill" style="width:${pA}%;background:${cA};"></div></div><div class="sc-bar-val" style="color:${cA};">${vA}</div></div>
+      <div class="sc-bar-row"><div class="sc-bar-bg"><div class="sc-bar-fill" style="width:${pB}%;background:${cB};"></div></div><div class="sc-bar-val" style="color:${cB};">${vB}</div></div>`;
+  }
+  const bs=['#1E3A8A','#1D4ED8','#2563EB','#3B82F6','#60A5FA'];
+  function fdots(forms){return forms.map((f,i)=>`<div class="sc-form-dot" style="background:${bs[i%bs.length]};">${f==='W'?'P':f==='L'?'G':'R'}</div>`).join('');}
+  res.innerHTML=`
+    <div class="sc-grid">
+      <div class="sc-col"><div class="sc-col-header a">${a.season}</div>
+        ${statRow('UTAKMICA',a.total,b.total)}${statRow('BODOVA',a.pts,b.pts)}${statRow('POBJEDA',a.w,b.w)}
+        ${statRow('REMIJA',a.d,b.d,false)}${statRow('PORAZA',a.l,b.l,false)}
+        ${statRow('GOLOVA DAT',a.gf,b.gf)}${statRow('GOLOVA PRIM',a.ga,b.ga,false)}
+        ${statRow('PROSJEK GF',a.avgGf,b.avgGf)}${statRow('PROSJEK GA',a.avgGa,b.avgGa,false)}
+        ${statRow('% POBJEDA',a.winPct+'%',b.winPct+'%')}
+      </div>
+      <div class="sc-col"><div class="sc-col-header b">${b.season}</div>
+        ${statRow('UTAKMICA',b.total,a.total)}${statRow('BODOVA',b.pts,a.pts)}${statRow('POBJEDA',b.w,a.w)}
+        ${statRow('REMIJA',b.d,a.d,false)}${statRow('PORAZA',b.l,a.l,false)}
+        ${statRow('GOLOVA DAT',b.gf,a.gf)}${statRow('GOLOVA PRIM',b.ga,a.ga,false)}
+        ${statRow('PROSJEK GF',b.avgGf,a.avgGf)}${statRow('PROSJEK GA',b.avgGa,a.avgGa,false)}
+        ${statRow('% POBJEDA',b.winPct+'%',a.winPct+'%')}
+      </div>
+    </div>
+    <div class="sc-col" style="margin-top:14px;">
+      <div class="sc-col-header" style="background:rgba(0,0,0,0.3);color:#fff;display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;gap:10px;font-size:14px;">
+        <span style="color:#60A5FA;">${a.season}</span><span style="opacity:0.4;font-size:12px;">VIZUALNI PREGLED</span><span style="color:#A78BFA;">${b.season}</span>
+      </div>
+      <div class="sc-bar-wrap">
+        ${bar('Ukupno utakmica',a.total,b.total,Math.max(a.total,b.total),'#60A5FA','#A78BFA')}
+        ${bar('Golovi dati',a.gf,b.gf,Math.max(a.gf,b.gf),'#60A5FA','#A78BFA')}
+        ${bar('Bodovi',a.pts,b.pts,Math.max(a.pts,b.pts),'#60A5FA','#A78BFA')}
+      </div>
+      <div style="padding:0 16px 12px;">
+        <div class="sc-bar-label">ZADNJIH 10 — ${a.season}</div><div class="sc-form-dots">${fdots(a.forms)}</div>
+        <div class="sc-bar-label" style="margin-top:8px;">ZADNJIH 10 — ${b.season}</div><div class="sc-form-dots">${fdots(b.forms)}</div>
+      </div>
+    </div>`;
+}
+window.runSeasonCompare=runSeasonCompare;
 
 async function tablLoad(){
   try{
