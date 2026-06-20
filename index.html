@@ -53,16 +53,33 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .legend-item{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:2px solid transparent;}
 .legend-item:hover{transform:translateY(-1px);}
 .legend-item.active{border-color:rgba(255,255,255,0.4);}
+.leg-rep.active{border-color:rgba(0,0,0,0.5);}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.leg-all{background:rgba(255,255,255,0.08);color:#ccc;}.leg-all .legend-dot{background:#888;}
-.leg-hnl{background:rgba(0,63,142,0.35);color:#7FB5FF;}.leg-hnl .legend-dot{background:#4D9FFF;}
-.leg-ucl{background:rgba(0,27,94,0.5);color:#F0C030;}.leg-ucl .legend-dot{background:#F0C030;}
+.leg-all{background:rgba(255,255,255,0.08);color:#fff;}.leg-all .legend-dot{background:#888;}
+.leg-hnl{background:rgba(228,0,43,0.22);color:#fff;}.leg-hnl .legend-dot{background:#E4002B;}
+.leg-ucl{background:rgba(27,45,107,0.45);color:#fff;}.leg-ucl .legend-dot{background:#3B5BDB;}
 .leg-uel{background:rgba(232,100,12,0.25);color:#FF9A5C;}.leg-uel .legend-dot{background:#E8640C;}
 .leg-ecl{background:rgba(0,135,90,0.25);color:#4DC99A;}.leg-ecl .legend-dot{background:#00AD72;}
-.leg-rep{background:rgba(204,0,0,0.25);color:#FF7070;}.leg-rep .legend-dot{background:#CC0000;}
-.leg-kup{background:rgba(91,45,142,0.35);color:#B88EFF;}.leg-kup .legend-dot{background:#7B4DB5;}
+.leg-rep{
+  background-color:#fff;
+  background-image:
+    linear-gradient(45deg, #CC0000 25%, transparent 25%, transparent 75%, #CC0000 75%, #CC0000),
+    linear-gradient(45deg, #CC0000 25%, transparent 25%, transparent 75%, #CC0000 75%, #CC0000);
+  background-size:10px 10px;
+  background-position:0 0, 5px 5px;
+  color:#0033CC;
+  font-weight:900;
+  text-shadow:
+    -2px -2px 0 #fff, -1px -2px 0 #fff, 0 -2px 0 #fff, 1px -2px 0 #fff, 2px -2px 0 #fff,
+    -2px -1px 0 #fff, 2px -1px 0 #fff,
+    -2px 0 0 #fff, 2px 0 0 #fff,
+    -2px 1px 0 #fff, 2px 1px 0 #fff,
+    -2px 2px 0 #fff, -1px 2px 0 #fff, 0 2px 0 #fff, 1px 2px 0 #fff, 2px 2px 0 #fff;
+}
+.leg-rep .legend-dot{display:none;}
+.leg-kup{background:rgba(228,0,43,0.16);color:#fff;}.leg-kup .legend-dot{background:#E4002B;}
 .leg-superkup{background:rgba(193,122,0,0.3);color:#FFCC44;}.leg-superkup .legend-dot{background:#E8A800;}
-.leg-dinamo{background:rgba(0,87,184,0.35);color:#93C5FD;}.leg-dinamo .legend-dot{background:#1D4ED8;}
+.leg-dinamo{background:rgba(0,87,184,0.35);color:#fff;}.leg-dinamo .legend-dot{background:#1D4ED8;}
 /* Rep sub-filter bar */
 .rep-subfilter{display:none;flex-wrap:wrap;gap:5px;padding:6px 16px 8px;background:rgba(204,0,0,0.06);border-top:1px solid rgba(204,0,0,0.15);}
 .rep-subfilter.open{display:flex;}
@@ -161,15 +178,15 @@ tbody td.td-right{text-align:right;}
 
 /* BADGES */
 .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;}
-.badge-hnl{background:rgba(0,102,204,0.25);color:#7FB5FF;border:1px solid rgba(0,102,204,0.4);}
-.badge-ucl{background:rgba(0,27,94,0.6);color:#F0C030;border:1px solid rgba(240,192,48,0.4);}
+.badge-hnl{background:rgba(228,0,43,0.22);color:#fff;border:1px solid rgba(228,0,43,0.45);}
+.badge-ucl{background:rgba(27,45,107,0.55);color:#5B7FE0;border:1px solid rgba(27,45,107,0.7);}
 .badge-uel{background:rgba(232,100,12,0.2);color:#FFAA70;border:1px solid rgba(232,100,12,0.4);}
 .badge-ecl{background:rgba(0,135,90,0.2);color:#50D49A;border:1px solid rgba(0,135,90,0.4);}
 .badge-rep{background:rgba(204,0,0,0.2);color:#FF7070;border:1px solid rgba(204,0,0,0.4);}
-.badge-ucl-q{background:rgba(240,192,48,0.12);color:#FDE68A;border:1px solid rgba(240,192,48,0.35);opacity:0.8;}
+.badge-ucl-q{background:rgba(27,45,107,0.25);color:#8FA6EE;border:1px solid rgba(27,45,107,0.5);opacity:0.85;}
 .badge-uel-q{background:rgba(255,140,62,0.12);color:#FDBA74;border:1px solid rgba(255,140,62,0.35);opacity:0.8;}
 .badge-ecl-q{background:rgba(77,201,154,0.12);color:#86EFAC;border:1px solid rgba(77,201,154,0.35);opacity:0.8;}
-.badge-kup{background:rgba(91,45,142,0.3);color:#C09AFF;border:1px solid rgba(91,45,142,0.5);}
+.badge-kup{background:rgba(228,0,43,0.16);color:#fff;border:1px solid rgba(228,0,43,0.4);}
 .badge-superkup{background:rgba(193,122,0,0.25);color:#FFCC44;border:1px solid rgba(193,122,0,0.5);}
 .result-pill{display:inline-block;padding:2px 8px;border-radius:100px;font-size:12px;font-weight:700;font-family:'Barlow Condensed',sans-serif;}
 .win{background:rgba(0,180,90,0.2);color:#4ADE80;}
@@ -180,8 +197,8 @@ tbody td.td-right{text-align:right;}
 .date-cell{color:var(--text-muted);font-size:12px;}
 .opponent-cell{font-weight:600;}
 
-tbody tr.row-hnl{border-left:3px solid #003F8E;}
-tbody tr.row-ucl{border-left:3px solid #F0C030;}
+tbody tr.row-hnl{border-left:3px solid #E4002B;}
+tbody tr.row-ucl{border-left:3px solid #3B5BDB;}
 tbody tr.row-uel{border-left:3px solid #E8640C;}
 tbody tr.row-ecl{border-left:3px solid #00AD72;}
 tbody tr.row-rep{border-left:3px solid #CC0000;}
@@ -220,7 +237,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .btn-add{border:none;border-radius:8px;padding:9px;color:#fff;font-family:'Barlow',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all 0.2s;background:linear-gradient(135deg,#003F8E,#0066CC);}
 .btn-add:hover{transform:translateY(-1px);filter:brightness(1.1);}
-.btn-add.ucl{background:linear-gradient(135deg,#001B5E,#1B6AC9);}
+.btn-add.ucl{background:linear-gradient(135deg,#0F1A40,#1B2D6B);}
 .btn-add.uel{background:linear-gradient(135deg,#B54800,#E8640C);}
 .btn-add.ecl{background:linear-gradient(135deg,#005C3C,#00875A);}
 .btn-add.rep{background:linear-gradient(135deg,#990000,#CC0000);}
@@ -749,7 +766,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .sched-month-sm{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#4D9FFF;opacity:0.8;}
 .sched-divider{width:1px;height:34px;background:var(--border);flex-shrink:0;}
 .sched-info{flex:1;min-width:0;}
-.sched-teams{font-weight:600;font-size:14px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sched-teams{font-weight:600;font-size:14px;color:#fff;white-space:normal;line-height:1.3;}
 .sched-teams strong{color:#FACC15;}
 .sched-meta{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap;}
 .sched-kolo{font-size:11px;color:var(--text-muted);}
@@ -807,7 +824,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .tabl-pos.playoff-pos{color:#FB923C;}
 /* badge pored rednog broja */
 .comp-badge{display:inline-block;font-size:8px;font-weight:900;letter-spacing:0.5px;padding:1px 5px;border-radius:3px;vertical-align:middle;margin-left:3px;text-transform:uppercase;}
-.comp-badge.ucl{background:#1565C0;color:#90CAF9;}
+.comp-badge.ucl{background:#1B2D6B;color:#A8BBF5;}
 .comp-badge.ecl{background:#00965A;color:#A7F3D0;}
 .comp-badge.rel{background:#7F1D1D;color:#FCA5A5;}
 .comp-badge.playoff{background:#7C2D12;color:#FDBA74;}
@@ -1031,12 +1048,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="legend-item leg-ucl" onclick="filterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
     <div class="legend-item leg-uel" onclick="filterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
     <div class="legend-item leg-ecl" onclick="filterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
-    <div class="legend-item leg-rep" onclick="filterComp('rep',this);toggleRepSubfilter('main')"><span class="legend-dot"></span>Reprezentacija ▾</div>
     <div class="legend-item leg-kup" onclick="filterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
     <div class="legend-item leg-superkup" onclick="filterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+    <div class="legend-item leg-rep" onclick="filterComp('rep',this);toggleRepSubfilter('main')"><span class="legend-dot"></span>HRVATSKA ▾</div>
   </div>
   <div class="rep-subfilter" id="rep-subfilter-main">
-    <span class="leg-sub active" onclick="filterRepSub('rep',this,'main')">Sve reprezentacije</span>
+    <span class="leg-sub active" onclick="filterRepSub('rep',this,'main')">Hrvatska</span>
     <span class="leg-sub" onclick="filterRepSub('Liga Nacija',this,'main')">Liga Nacija</span>
     <span class="leg-sub" onclick="filterRepSub('FIFA WCQ',this,'main')">FIFA WCQ</span>
     <span class="leg-sub" onclick="filterRepSub('UEFA EURO Q',this,'main')">UEFA EURO Q</span>
@@ -1237,6 +1254,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div><div class="m-label">Rezultat</div><div class="m-val" id="m-rez"></div></div>
         <div><div class="m-label">Gledatelji</div><div class="m-val" id="m-gle"></div></div>
         <div><div class="m-label">Početak</div><div class="m-val" id="m-vrijemePoc">—</div></div>
+        <div><div class="m-label">Stadion</div><div class="m-val" id="m-stadion" style="font-size:14px;">🏟️ —</div></div>
       </div>
       <!-- Strijelci section -->
       <div id="m-strijelci-wrap" style="margin-top:12px;display:none;">
@@ -1298,12 +1316,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="legend-item leg-ucl" onclick="gFilterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
     <div class="legend-item leg-uel" onclick="gFilterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
     <div class="legend-item leg-ecl" onclick="gFilterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
-    <div class="legend-item leg-rep" onclick="gFilterComp('rep',this);toggleRepSubfilter('goals')"><span class="legend-dot"></span>Reprezentacija ▾</div>
     <div class="legend-item leg-kup" onclick="gFilterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
     <div class="legend-item leg-superkup" onclick="gFilterComp('Super kup',this)"><span class="legend-dot"></span>Super kup</div>
+    <div class="legend-item leg-rep" onclick="gFilterComp('rep',this);toggleRepSubfilter('goals')"><span class="legend-dot"></span>HRVATSKA ▾</div>
   </div>
   <div class="rep-subfilter" id="rep-subfilter-goals">
-    <span class="leg-sub active" onclick="gFilterRepSub('rep',this)">Sve reprezentacije</span>
+    <span class="leg-sub active" onclick="gFilterRepSub('rep',this)">Hrvatska</span>
     <span class="leg-sub" onclick="gFilterRepSub('Liga Nacija',this)">Liga Nacija</span>
     <span class="leg-sub" onclick="gFilterRepSub('FIFA WCQ',this)">FIFA WCQ</span>
     <span class="leg-sub" onclick="gFilterRepSub('UEFA EURO Q',this)">UEFA EURO Q</span>
@@ -2518,7 +2536,7 @@ window.getClubCrest=getClubCrest;
 
 const REP_COMPS=['Liga Nacija','FIFA WCQ','UEFA EURO Q','UEFA EURO','FIFA World Cup','Reprezentacija'];
 const EUR_MAP={UCL:'ucl','UCL Q':'ucl-q',UEL:'uel','UEL Q':'uel-q',ECL:'ecl','ECL Q':'ecl-q'};
-const COMP_COLORS={hnl:'#4D9FFF',ucl:'#F0C030','ucl-q':'#F0C03099',uel:'#FF8C3E','uel-q':'#FF8C3E99',ecl:'#4DC99A','ecl-q':'#4DC99A99',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
+const COMP_COLORS={hnl:'#FF5C7A',ucl:'#5B7FE0','ucl-q':'#5B7FE099',uel:'#FF8C3E','uel-q':'#FF8C3E99',ecl:'#4DC99A','ecl-q':'#4DC99A99',rep:'#FF7070',kup:'#B88EFF',superkup:'#FFCC44'};
 
 // Službene boje natjecanja (za rasporedne kartice / next-match banner)
 // Prepoznaje sve varijante naziva natjecanja koje se koriste u rasporedu
@@ -2908,7 +2926,7 @@ function updateStats(filtered){
   let scored=0,conceded=0;
   filtered.forEach(m=>{const p=m.rezultat.split('-').map(Number);if(p.length===2){scored+=p[0];conceded+=p[1];}});
   const personLabel=activeStatPerson==='luka'?'🔵 Luka':activeStatPerson==='lovro'?'🔷 Lovro':activeStatPerson==='all'?'👥 Luka & Lovro':'📋 Sve';
-  const repSubLabel=currentRepSub==='rep'?'Reprezentacija':currentRepSub;
+  const repSubLabel=currentRepSub==='rep'?'Hrvatska':currentRepSub;
   const compLabel=currentFilter==='all'?'svih natjecanja':currentFilter==='dinamo'?'Dinamo — sva natjecanja':currentFilter==='rep'?repSubLabel:currentFilter;
   const label=activeStatPerson==='sve'?compLabel:`${personLabel} · ${compLabel}`;
   document.getElementById('stat-total').textContent=total;
@@ -3332,6 +3350,8 @@ function showMatchModal(idx){
     :m.rezultat;
   document.getElementById('m-gle').textContent=fmtNum(m.gledatelji);
   document.getElementById('m-vrijemePoc').textContent=m.vrijemePoc||'—';
+  const stadionEl=document.getElementById('m-stadion');
+  if(stadionEl) stadionEl.textContent='🏟️ '+(getStadion(m)||'—');
   // Load goals for this match
   const matchGoals=goals.filter(g=>g.matchDatum===m.datum&&g.matchProtivnik===m.protivnik);
   const wrap=document.getElementById('m-strijelci-wrap');
@@ -5730,8 +5750,8 @@ function schedBuildCard(m){
 
   const t1 = m.home ? 'Dinamo' : m.opp;
   const t2 = m.home ? m.opp   : 'Dinamo';
-  const t1html = t1==='Dinamo' ? `<strong>Dinamo</strong>` : t1;
-  const t2html = t2==='Dinamo' ? `<strong>Dinamo</strong>` : t2;
+  const t1html = t1==='Dinamo' ? `<strong>GNK Dinamo Zagreb</strong>` : t1;
+  const t2html = t2==='Dinamo' ? `<strong>GNK Dinamo Zagreb</strong>` : t2;
 
   const tagTxt  = m.home ? '🏟️ Maksimir' : '✈️ Gostovanje';
   const tagHTML = isEuro
@@ -5968,8 +5988,8 @@ async function renderNextMatchBanner(){
   const isMaksimir = isHome && (!next.venue || next.venue.toLowerCase().includes('maksimir') || next.venue==='');
 
   function renderBanner(weather){
-    const t1=next.home?'<strong>Dinamo</strong>':next.opp;
-    const t2=next.home?next.opp:'<strong>Dinamo</strong>';
+    const t1=next.home?'<strong>GNK Dinamo Zagreb</strong>':next.opp;
+    const t2=next.home?next.opp:'<strong>GNK Dinamo Zagreb</strong>';
     const tagTxt=next.home?'🏟️ Maksimir':'✈️ Gostovanje';
     const compColor=getNatjecanjeColor(next.natjecanje);
     const compColorLight=getNatjecanjeColorLight(next.natjecanje);
