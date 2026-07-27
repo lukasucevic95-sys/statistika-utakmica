@@ -6289,10 +6289,12 @@ window.switchSchedPage = switchSchedPage;
    NEXT MATCH COUNTDOWN + WEATHER (Open-Meteo, bez API ključa)
    ============================================================ */
 let _countdownTimer = null;
+let _weatherRefreshTimer = null;
 
 async function renderNextMatchBanner(){
   const el = document.getElementById('next-match-banner');
   if(!el) return;
+  if(_weatherRefreshTimer){ clearTimeout(_weatherRefreshTimer); _weatherRefreshTimer=null; }
   if(!_schedMatches) await schedLoad();
 
   const now = new Date();
@@ -6335,7 +6337,7 @@ async function renderNextMatchBanner(){
         <div style="margin-left:auto;display:flex;flex-direction:column;gap:2px;text-align:right;">
           <div style="font-size:10px;color:var(--text-muted);">💧 ${weather.rain}mm kiše</div>
           <div style="font-size:10px;color:var(--text-muted);">💨 ${weather.wind} km/h vjetar</div>
-          <div style="font-size:9px;color:rgba(255,255,255,0.3);">prognoza za Maksimir</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.3);">prognoza za ${next.time||'20:00'}h · Maksimir</div>
         </div>
       </div>`;
     } else if(isMaksimir && weather===null){
@@ -6381,38 +6383,53 @@ async function renderNextMatchBanner(){
   renderBanner(isMaksimir?null:undefined);
 
   if(isMaksimir){
-    // Open-Meteo daje pouzdanu dnevnu prognozu samo za idućih ~16 dana.
+    // Open-Meteo daje pouzdanu satnu prognozu samo za idućih ~16 dana.
     // Za utakmice dalje u budućnosti odmah prikaži poruku umjesto vječnog "Učitavanje..."
     const diffDays = Math.ceil((matchDate - now) / 86400000);
     if(diffDays > 16 || diffDays < 0){
       renderBanner(false);
-      return;
+    } else {
+      try{
+        const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&hourly=temperature_2m,precipitation,windspeed_10m,weathercode&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
+        const resp=await fetch(url);
+        const data=await resp.json();
+        if(data.hourly && Array.isArray(data.hourly.weathercode) && data.hourly.weathercode.length){
+          // Pronađi sat najbliži točnom početku utakmice (zaokruženo na najbližu punu uru)
+          const [khh,kmm] = (next.time || '20:00').split(':').map(Number);
+          const targetHour = (kmm>=30 ? khh+1 : khh) % 24;
+          let idx = data.hourly.time.findIndex(t=>{
+            const hp = t.split('T')[1];
+            return hp && parseInt(hp.split(':')[0],10)===targetHour;
+          });
+          if(idx<0) idx=0;
+          const wcode=data.hourly.weathercode[idx];
+          const temp=Math.round(data.hourly.temperature_2m[idx]);
+          const rain=(data.hourly.precipitation[idx]||0).toFixed(1);
+          const wind=Math.round(data.hourly.windspeed_10m[idx]);
+          const wmoIcon=(c)=>{
+            if(c===0)return{icon:'☀️',desc:'Vedro'};if(c<=2)return{icon:'🌤️',desc:'Djelomično oblačno'};
+            if(c===3)return{icon:'☁️',desc:'Oblačno'};if(c<=49)return{icon:'🌫️',desc:'Magla'};
+            if(c<=59)return{icon:'🌦️',desc:'Rosulja'};if(c<=69)return{icon:'🌧️',desc:'Kiša'};
+            if(c<=79)return{icon:'🌨️',desc:'Snijeg'};if(c<=82)return{icon:'🌧️',desc:'Obilna kiša'};
+            if(c<=99)return{icon:'⛈️',desc:'Grmljavina'};return{icon:'🌡️',desc:'Nepoznato'};
+          };
+          const wi=wmoIcon(wcode);
+          renderBanner({icon:wi.icon,desc:wi.desc,temp,rain,wind});
+        } else {
+          renderBanner(false);
+        }
+      }catch(e){console.warn('Weather fetch failed:',e); renderBanner(false);}
     }
-    try{
-      const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
-      const resp=await fetch(url);
-      const data=await resp.json();
-      if(data.daily && Array.isArray(data.daily.weathercode) && data.daily.weathercode.length){
-        const wcode=data.daily.weathercode[0];
-        const tmax=Math.round(data.daily.temperature_2m_max[0]);
-        const tmin=Math.round(data.daily.temperature_2m_min[0]);
-        const rain=(data.daily.precipitation_sum[0]||0).toFixed(1);
-        const wind=Math.round(data.daily.windspeed_10m_max[0]);
-        const temp=Math.round((tmax+tmin)/2);
-        const wmoIcon=(c)=>{
-          if(c===0)return{icon:'☀️',desc:'Vedro'};if(c<=2)return{icon:'🌤️',desc:'Djelomično oblačno'};
-          if(c===3)return{icon:'☁️',desc:'Oblačno'};if(c<=49)return{icon:'🌫️',desc:'Magla'};
-          if(c<=59)return{icon:'🌦️',desc:'Rosulja'};if(c<=69)return{icon:'🌧️',desc:'Kiša'};
-          if(c<=79)return{icon:'🌨️',desc:'Snijeg'};if(c<=82)return{icon:'🌧️',desc:'Obilna kiša'};
-          if(c<=99)return{icon:'⛈️',desc:'Grmljavina'};return{icon:'🌡️',desc:'Nepoznato'};
-        };
-        const wi=wmoIcon(wcode);
-        renderBanner({icon:wi.icon,desc:wi.desc,temp,rain,wind});
-      } else {
-        renderBanner(false);
-      }
-    }catch(e){console.warn('Weather fetch failed:',e); renderBanner(false);}
   }
+
+  // Automatsko osvježavanje — češće što je utakmica bliže (osobito na dan utakmice)
+  const msToKickoff = matchDate - new Date();
+  let refreshMs;
+  if(msToKickoff <= 0) refreshMs = 5*60*1000;                 // utakmica u tijeku/prošla — provjeri je li nova sljedeća
+  else if(msToKickoff <= 3*3600000) refreshMs = 5*60*1000;    // zadnja 3h prije početka — svakih 5 min
+  else if(msToKickoff <= 24*3600000) refreshMs = 15*60*1000;  // na dan utakmice — svakih 15 min
+  else refreshMs = 60*60*1000;                                 // inače — svaki sat
+  _weatherRefreshTimer = setTimeout(()=>{ renderNextMatchBanner(); }, refreshMs);
 }
 window.renderNextMatchBanner=renderNextMatchBanner;
 
