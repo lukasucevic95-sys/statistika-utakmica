@@ -1182,6 +1182,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="side-card">
         <div class="side-card-header">➕ Nova utakmica</div>
         <div class="add-form">
+          <div class="form-row"><label class="form-label">📅 Iz rasporeda (automatski popuni)</label>
+            <select class="form-select" id="f-sched-pick" onchange="schedFillMatchForm()">
+              <option value="">— Odaberi utakmicu iz rasporeda —</option>
+            </select>
+          </div>
           <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="f-datum"></div>
           <div class="form-row"><label class="form-label">Početak (hh:mm)</label><input class="form-input" type="time" id="f-vrijeme" placeholder="npr. 20:30"></div>
           <div class="form-row"><label class="form-label">Natjecanje</label>
@@ -2120,6 +2125,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button class="sched-filter-btn" onclick="schedFilter('euro',this)">Europa</button>
       <button class="sched-filter-btn" onclick="schedFilter('doma',this)">Doma</button>
       <button class="sched-filter-btn" onclick="schedFilter('gostovanje',this)">Gostovanje</button>
+      <button class="sched-filter-btn" onclick="schedFilter('odigrano',this)">✅ Odigrano</button>
     </div>
 
     <!-- match list -->
@@ -2308,6 +2314,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <option value="false">✈️ Gostovanje</option>
         </select>
       </div>
+      <div class="modal-row"><label class="form-label">Rezultat (ako je odigrano)</label><input class="form-input-pred" type="text" id="esm-rezultat" placeholder="npr. 2-1 (Dinamo - protivnik)"></div>
     </div>
     <div class="modal-btns">
       <button class="modal-btn-ok" onclick="schedSaveEdit()">💾 Spremi</button>
@@ -3408,9 +3415,89 @@ async function addMatch(){
   const penWrap=document.getElementById('f-penali-wrap');if(penWrap)penWrap.style.display='none';
   const penInp=document.getElementById('f-penali');if(penInp)penInp.value='';
   renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();
+  document.getElementById('f-sched-pick').value='';
+  schedPopulateAddSelect();
   showToast('✅ Utakmica dodana!','#0A3A0A','#4ADE80');
 }
 window.addMatch=addMatch;
+
+// ===== Auto-popuna forme "Nova utakmica" iz rasporeda (raspored_2627) =====
+const SCHED_AWAY_STADIUM_MAP = {
+  'Osijek':'Opus Arena','NK Osijek':'Opus Arena',
+  'Hajduk':'Stadion Poljud','HNK Hajduk Split':'Stadion Poljud',
+  'Gorica':'NK Gorica Stadion','HNK Gorica':'NK Gorica Stadion',
+  'Rijeka':'Stadion Rujevica','HNK Rijeka':'Stadion Rujevica',
+  'Slaven Belupo':'Stadion Koprivnica','NK Slaven Belupo':'Stadion Koprivnica'
+};
+
+function schedNatToFormNat(natText){
+  const t=(natText||'').toLowerCase();
+  if(t.includes('ucl')) return (t.includes('pretkolo')||t.includes('playoff'))?'UCL Q':'UCL';
+  if(t.includes('uel')) return (t.includes('pretkolo')||t.includes('playoff'))?'UEL Q':'UEL';
+  if(t.includes('ecl')) return (t.includes('pretkolo')||t.includes('playoff'))?'ECL Q':'ECL';
+  if(t.includes('playoff')) return 'UCL Q';
+  if(t.includes('super kup')) return 'Super kup';
+  if(t.includes('kup')) return 'Kup';
+  if(t.includes('hnl')) return 'HNL';
+  return 'HNL';
+}
+
+function schedPopulateAddSelect(){
+  const sel = document.getElementById('f-sched-pick');
+  if(!sel || !_schedMatches) return;
+  const recordedKeys = new Set((matches||[]).map(m=>m.datum+'|'+officialName(m.protivnik||'').toLowerCase()));
+  const opts = _schedMatches
+    .filter(m=>!recordedKeys.has(m.datum+'|'+officialName(m.opp||'').toLowerCase()))
+    .slice()
+    .sort((a,b)=>a.sortDate-b.sortDate);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Odaberi utakmicu iz rasporeda —</option>' +
+    opts.map(m=>`<option value="${m.id}">${m.datum.split('-').reverse().join('.')} · ${m.home?'Dinamo - '+m.opp:m.opp+' - Dinamo'} (${m.natjecanje})</option>`).join('');
+  if(opts.some(m=>String(m.id)===cur)) sel.value = cur;
+}
+window.schedPopulateAddSelect = schedPopulateAddSelect;
+
+function schedFillMatchForm(){
+  const sel = document.getElementById('f-sched-pick');
+  const id = sel.value;
+  if(!id) return;
+  const m = _schedMatches.find(x=>String(x.id)===id);
+  if(!m) return;
+
+  document.getElementById('f-datum').value = m.datum;
+  const vtEl = document.getElementById('f-vrijeme'); if(vtEl) vtEl.value = m.time || '';
+
+  const natSel = document.getElementById('f-natjecanje');
+  const wantNat = schedNatToFormNat(m.natjecanje);
+  for(let i=0;i<natSel.options.length;i++){ if(natSel.options[i].value===wantNat){ natSel.selectedIndex=i; break; } }
+
+  document.getElementById('f-protivnik').value = m.opp;
+
+  const stadSel = document.getElementById('f-stadion-select');
+  const stadCustom = document.getElementById('f-stadion-custom');
+  if(m.home){
+    stadSel.value='Stadion Maksimir';
+    stadCustom.style.display='none'; stadCustom.value='';
+  } else {
+    const mapped = SCHED_AWAY_STADIUM_MAP[m.opp] || SCHED_AWAY_STADIUM_MAP[officialName(m.opp)];
+    if(mapped){
+      stadSel.value = mapped;
+      stadCustom.style.display='none'; stadCustom.value='';
+    } else {
+      stadSel.value='custom';
+      stadCustom.style.display='block'; stadCustom.value='';
+      stadCustom.placeholder = 'Stadion – '+m.opp;
+    }
+  }
+
+  if(typeof updateBtnColor==='function') updateBtnColor();
+  if(typeof _updateRepHint==='function') _updateRepHint();
+
+  const rezEl = document.getElementById('f-rezultat');
+  if(rezEl) rezEl.focus();
+  showToast('📅 Podaci popunjeni iz rasporeda — samo unesi rezultat!','#0A1A2A','#7FB5FF');
+}
+window.schedFillMatchForm = schedFillMatchForm;
 
 let _editMatchIdx=-1;
 function showMatchModal(idx){
@@ -5568,7 +5655,7 @@ async function init(){
     const awayPredSnap=await get(ref(db,'predictions_away'));
     if(awayPredSnap.exists()&&Array.isArray(awayPredSnap.val())){awayPredictions=awayPredSnap.val();}else{awayPredictions=[];}
 
-    onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();}});
+    onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();schedPopulateAddSelect();if(typeof schedRenderForma==='function')schedRenderForma();if(document.getElementById('sched-list'))schedRenderList();}});
     onValue(ref(db,'goals'),(snap)=>{
       if(snap.exists()){
         const v=snap.val();
@@ -5609,6 +5696,8 @@ async function init(){
     document.getElementById('fb-loading').style.display='none';
   }
   renderSeasonBar();
+  await schedLoad();
+  schedPopulateAddSelect();
   const hash=window.location.hash.replace('#','');
   if(['statistika','golovi','prediktor','karte','raspored'].includes(hash))goTo(hash);else goTo('statistika');
   renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
@@ -5809,15 +5898,25 @@ async function renderRaspored(){
     <div class="sched-stat"><div class="sched-stat-num" style="color:#FACC15;">${remaining}</div><div class="sched-stat-lbl">Preostalo</div></div>`;
 
   schedRenderList();
+  schedPopulateAddSelect();
 }
 window.renderRaspored = renderRaspored;
 
 function schedRenderForma(){
   const el = document.getElementById('sched-forma');
   if(!el) return;
-  // Use last 5 from matches array (Firebase-loaded match data)
-  const recent = [...matches]
+  // Utakmice na kojima smo bili (baza 'matches')
+  const attended = (matches||[])
     .filter(m => m.rezultat && m.datum)
+    .map(m => ({datum:m.datum, protivnik:m.protivnik, rezultat:m.rezultat}));
+  const attendedKeys = new Set(attended.map(m => m.datum+'|'+officialName(m.protivnik||'').toLowerCase()));
+  // Utakmice kojima je rezultat ručno dodan izravno u rasporedu (npr. nismo bili na njima)
+  const fromSchedule = (_schedMatches||[])
+    .filter(m => m.rezultat && m.datum)
+    .filter(m => !attendedKeys.has(m.datum+'|'+officialName(m.opp||'').toLowerCase()))
+    .map(m => ({datum:m.datum, protivnik:m.opp, rezultat:m.rezultat}));
+  // Zadnjih 5 po datumu, iz oba izvora zajedno
+  const recent = [...attended, ...fromSchedule]
     .sort((a,b) => b.datum.localeCompare(a.datum))
     .slice(0,5)
     .reverse();
@@ -5872,32 +5971,93 @@ function schedRenderList(){
     if(_schedFilter==='euro') return m.competition==='euro';
     if(_schedFilter==='doma') return m.home===true;
     if(_schedFilter==='gostovanje') return m.home===false;
+    if(_schedFilter==='odigrano') return true;
     return true;
   });
-  filtered.sort((a,b)=>a.sortDate-b.sortDate);
 
   if(!filtered.length){
     listEl.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-muted);">Nema utakmica za ovaj filter.</div>';
     return;
   }
 
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayNum = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate();
+
+  // Poseban prikaz: samo odigrane utakmice, najnovije prve
+  if(_schedFilter==='odigrano'){
+    const playedOnly = filtered.filter(m=>m.sortDate<todayNum).sort((a,b)=>b.sortDate-a.sortDate);
+    if(!playedOnly.length){
+      listEl.innerHTML='<div style="text-align:center;padding:50px;color:var(--text-muted);">Još nema odigranih utakmica.</div>';
+      return;
+    }
+    let html='', lastMonth='';
+    playedOnly.forEach(m=>{
+      if(m.monthKey !== lastMonth){
+        lastMonth = m.monthKey;
+        html += `<div class="sched-month-sep">${m.monthKey}</div>`;
+      }
+      html += schedBuildCard(m, true);
+    });
+    listEl.innerHTML = html;
+    return;
+  }
+
+  // Nadolazeće utakmice idu prvo (sljedeća na vrhu), odigrane padaju na dno popisa
+  const upcoming = filtered.filter(m=>m.sortDate>=todayNum).sort((a,b)=>a.sortDate-b.sortDate);
+  const played   = filtered.filter(m=>m.sortDate<todayNum).sort((a,b)=>a.sortDate-b.sortDate);
+
   let html='', lastMonth='';
-  filtered.forEach(m=>{
+  upcoming.forEach(m=>{
     if(m.monthKey !== lastMonth){
       lastMonth = m.monthKey;
       html += `<div class="sched-month-sep">${m.monthKey}</div>`;
     }
     html += schedBuildCard(m);
   });
+  if(played.length){
+    html += `<div class="sched-month-sep" style="opacity:0.6;cursor:pointer;" onclick="schedShowPlayedOnly()" title="Klikni za prikaz samo odigranih utakmica">✅ ODIGRANE UTAKMICE</div>`;
+    lastMonth = '';
+    played.forEach(m=>{
+      if(m.monthKey !== lastMonth){
+        lastMonth = m.monthKey;
+        html += `<div class="sched-month-sep" style="opacity:0.6;">${m.monthKey}</div>`;
+      }
+      html += schedBuildCard(m, true);
+    });
+  }
   listEl.innerHTML = html;
 }
 
-function schedBuildCard(m){
+function schedShowPlayedOnly(){
+  const btns = document.querySelectorAll('#sched-filters .sched-filter-btn');
+  const target = Array.from(btns).find(b=>b.textContent.includes('Odigrano'));
+  schedFilter('odigrano', target);
+}
+window.schedShowPlayedOnly = schedShowPlayedOnly;
+
+function schedFindResult(m){
+  // Prvo provjeri je li rezultat ručno upisan izravno na utakmicu u rasporedu
+  if(m.rezultat) return m.rezultat;
+  // Zatim pokušaj pronaći odigrani rezultat u bazi utakmica (matches) za ovaj termin
+  if(!matches || !matches.length) return null;
+  const oppNorm = officialName(m.opp);
+  const found = matches.find(x=>{
+    if(x.datum !== m.datum) return false;
+    const xOpp = officialName(x.protivnik||'');
+    return xOpp === oppNorm || x.protivnik === m.opp;
+  });
+  return found ? found.rezultat : null;
+}
+
+function schedBuildCard(m, played){
   const isEuro = m.competition==='euro';
   const cardCls = 'sched-match-card';
   const compColor = getNatjecanjeColor(m.natjecanje);
   const compColorLight = getNatjecanjeColorLight(m.natjecanje);
   const cardBg = isEuro ? `background:${compColor}1A;border:1px solid ${compColor}40;` : '';
+  const playedStyle = played ? 'opacity:0.68;' : '';
+  const foundResult = played ? schedFindResult(m) : null;
+  const resultBadge = foundResult ? `<span style="background:#0A1A0A;border:1px solid #4ADE8080;color:#4ADE80;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:800;">${foundResult}</span>` : (played ? `<span style="color:var(--text-muted);font-size:10px;">✅ Odigrano</span>` : '');
 
   const t1 = m.home ? 'Dinamo' : m.opp;
   const t2 = m.home ? m.opp   : 'Dinamo';
@@ -5921,7 +6081,7 @@ function schedBuildCard(m){
     </div>` : '';
 
   return `
-    <div class="${cardCls}" style="${cardBg}border-left:4px solid ${compColor};">
+    <div class="${cardCls}" style="${cardBg}${playedStyle}border-left:4px solid ${compColor};">
       <div class="sched-date-col">
         <div class="sched-day">${m.day}</div>
         <div class="sched-month-sm">${m.month}</div>
@@ -5934,7 +6094,7 @@ function schedBuildCard(m){
           ${natTag}
           ${tagHTML}
           ${euroB}
-          ${timeB}
+          ${played ? resultBadge : timeB}
         </div>
       </div>
       ${adminBtns}
@@ -6004,6 +6164,7 @@ async function schedAddMatch(){
   const arrow=document.getElementById('sched-add-arrow'); if(arrow) arrow.textContent='▼';
   const btn=document.getElementById('sched-add-toggle'); if(btn){ btn.style.borderRadius='8px'; btn.style.borderBottom='1px solid rgba(77,159,255,0.25)'; };
   schedRenderList();
+  schedPopulateAddSelect();
   const statsEl = document.getElementById('sched-stats');
   if(statsEl){
     const hnlC=_schedMatches.filter(m=>m.competition==='hnl').length;
@@ -6028,6 +6189,7 @@ function schedOpenEdit(id){
   document.getElementById('esm-label').value = m.label;
   document.getElementById('esm-opp').value   = m.opp;
   document.getElementById('esm-home').value  = m.home ? 'true' : 'false';
+  document.getElementById('esm-rezultat').value = m.rezultat || '';
   // Set natjecanje select
   const natSel = document.getElementById('esm-nat');
   for(let i=0;i<natSel.options.length;i++){
@@ -6052,8 +6214,10 @@ async function schedSaveEdit(){
   const label   = document.getElementById('esm-label').value.trim();
   const opp     = document.getElementById('esm-opp').value.trim();
   const home    = document.getElementById('esm-home').value === 'true';
+  const rezultat = document.getElementById('esm-rezultat').value.trim();
 
   if(!datum || !opp){ showToast('⚠️ Unesite datum i protivnika!','#1A0A0A','#F87171'); return; }
+  if(rezultat && !/^\d+-\d+$/.test(rezultat)){ showToast('⚠️ Rezultat mora biti u formatu npr. 2-1','#1A0A0A','#F87171'); return; }
 
   const parts = dateToSchedParts(datum);
   Object.assign(_schedMatches[idx], {
@@ -6062,11 +6226,15 @@ async function schedSaveEdit(){
     sortDate: parts.sortDate,
     day: parts.day, month: parts.month, monthKey: parts.monthKey
   });
+  if(rezultat){ _schedMatches[idx].rezultat = rezultat; }
+  else { delete _schedMatches[idx].rezultat; }
   _schedMatches.sort((a,b)=>a.sortDate-b.sortDate);
   await set(ref(db,'raspored_2627'), _schedMatches);
   document.getElementById('edit-sched-modal').classList.remove('open');
   showToast('✅ Utakmica ažurirana!','#0A1A0A','#4ADE80');
   schedRenderList();
+  schedPopulateAddSelect();
+  if(typeof schedRenderForma==='function') schedRenderForma();
 }
 window.schedSaveEdit = schedSaveEdit;
 
@@ -6079,6 +6247,7 @@ async function schedDelete(id){
   await set(ref(db,'raspored_2627'), _schedMatches);
   showToast('🗑️ Utakmica obrisana!','#1A0A0A','#F87171');
   renderRaspored();
+  schedPopulateAddSelect();
 }
 window.schedDelete = schedDelete;
 
@@ -6171,6 +6340,8 @@ async function renderNextMatchBanner(){
       </div>`;
     } else if(isMaksimir && weather===null){
       weatherHTML=`<div class="nmb-weather"><div class="nmb-weather-loading">⏳ Učitavanje prognoze za Maksimir...</div></div>`;
+    } else if(isMaksimir && weather===false){
+      weatherHTML=`<div class="nmb-weather"><div class="nmb-weather-loading">🌦️ Prognoza za Maksimir bit će dostupna ~10 dana prije utakmice</div></div>`;
     }
     el.innerHTML=`<div class="next-match-banner" style="background:linear-gradient(135deg,${compColor}66 0%,${compColor}26 60%,rgba(0,30,70,0.85) 100%);border-color:${compColor}80;">
       ${bgPhotoHTML}
@@ -6210,11 +6381,18 @@ async function renderNextMatchBanner(){
   renderBanner(isMaksimir?null:undefined);
 
   if(isMaksimir){
+    // Open-Meteo daje pouzdanu dnevnu prognozu samo za idućih ~16 dana.
+    // Za utakmice dalje u budućnosti odmah prikaži poruku umjesto vječnog "Učitavanje..."
+    const diffDays = Math.ceil((matchDate - now) / 86400000);
+    if(diffDays > 16 || diffDays < 0){
+      renderBanner(false);
+      return;
+    }
     try{
       const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,weathercode&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
       const resp=await fetch(url);
       const data=await resp.json();
-      if(data.daily){
+      if(data.daily && Array.isArray(data.daily.weathercode) && data.daily.weathercode.length){
         const wcode=data.daily.weathercode[0];
         const tmax=Math.round(data.daily.temperature_2m_max[0]);
         const tmin=Math.round(data.daily.temperature_2m_min[0]);
@@ -6230,8 +6408,10 @@ async function renderNextMatchBanner(){
         };
         const wi=wmoIcon(wcode);
         renderBanner({icon:wi.icon,desc:wi.desc,temp,rain,wind});
+      } else {
+        renderBanner(false);
       }
-    }catch(e){console.warn('Weather fetch failed:',e);}
+    }catch(e){console.warn('Weather fetch failed:',e); renderBanner(false);}
   }
 }
 window.renderNextMatchBanner=renderNextMatchBanner;
@@ -7085,6 +7265,10 @@ onAuthStateChanged(auth, user=>{
   }
   document.querySelectorAll('.requires-auth').forEach(el=>el.style.display=user?'':'none');
   document.querySelectorAll('.guest-msg').forEach(el=>el.style.display=user?'none':'');
+  // Re-renderiraj raspored da se admin gumbi (npr. "Uredi" za unos rezultata) odmah pojave/nestanu
+  if(document.getElementById('sched-list')) schedRenderList();
+  const addSec = document.getElementById('sched-add-section');
+  if(addSec) addSec.style.display = user ? 'block' : 'none';
 });
 
 // ── Top 5 Modal ───────────────────────────────────────────────────────
