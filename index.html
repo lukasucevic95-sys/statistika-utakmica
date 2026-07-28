@@ -692,6 +692,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .nmb-weather-temp{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:1px;}
 .nmb-weather-desc{font-size:10px;color:var(--text-muted);text-transform:capitalize;}
 .nmb-weather-loading{font-size:11px;color:var(--text-muted);font-style:italic;}
+.nmb-transit{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 14px;margin-top:8px;flex-wrap:wrap;}
+.nmb-transit-line{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 4px;border-radius:6px;background:#1E3A8A;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:13px;font-weight:700;flex-shrink:0;}
+.nmb-transit-link{margin-left:auto;font-size:10.5px;color:#7FB5FF;text-decoration:none;white-space:nowrap;padding:5px 10px;background:rgba(127,181,255,0.12);border:1px solid rgba(127,181,255,0.3);border-radius:100px;}
+.nmb-transit-link:hover{background:rgba(127,181,255,0.22);}
 .nmb-comp-logo{
   position:absolute;
   top:0;
@@ -2010,6 +2014,17 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button class="modal-btn-ok" onclick="doLogin()">Prijavi se</button>
       <button class="modal-btn-cancel" onclick="closeLogin()">Odustani</button>
     </div>
+  </div>
+</div>
+
+<!-- Weather detail modal -->
+<div class="top5-overlay" id="weather-detail-overlay" onclick="if(event.target===this)closeWeatherDetail()">
+  <div class="top5-box">
+    <div class="top5-header">
+      <div class="top5-title" id="weather-detail-title">🌦️ Detaljna prognoza</div>
+      <button class="top5-close" onclick="closeWeatherDetail()">✕</button>
+    </div>
+    <div class="top5-list" id="weather-detail-body"></div>
   </div>
 </div>
 
@@ -6290,6 +6305,20 @@ window.switchSchedPage = switchSchedPage;
    ============================================================ */
 let _countdownTimer = null;
 let _weatherRefreshTimer = null;
+let _weatherDetailData = null; // podaci za modal s detaljnom prognozom
+
+function wmoIconGlobal(c){
+  if(c===0)return{icon:'☀️',desc:'Vedro'};if(c<=2)return{icon:'🌤️',desc:'Djelomično oblačno'};
+  if(c===3)return{icon:'☁️',desc:'Oblačno'};if(c<=49)return{icon:'🌫️',desc:'Magla'};
+  if(c<=59)return{icon:'🌦️',desc:'Rosulja'};if(c<=69)return{icon:'🌧️',desc:'Kiša'};
+  if(c<=79)return{icon:'🌨️',desc:'Snijeg'};if(c<=82)return{icon:'🌧️',desc:'Obilna kiša'};
+  if(c<=99)return{icon:'⛈️',desc:'Grmljavina'};return{icon:'🌡️',desc:'Nepoznato'};
+}
+function windDirCompass(deg){
+  if(deg==null||isNaN(deg)) return '';
+  const dirs=['S','SI','I','JI','J','JZ','Z','SZ'];
+  return dirs[Math.round(deg/45)%8];
+}
 
 async function renderNextMatchBanner(){
   const el = document.getElementById('next-match-banner');
@@ -6328,7 +6357,7 @@ async function renderNextMatchBanner(){
       : `<span class="sched-tag ${next.home?'home':'away'}" style="font-size:10px;">${tagTxt}</span>`;
     let weatherHTML='';
     if(isMaksimir && weather){
-      weatherHTML=`<div class="nmb-weather">
+      weatherHTML=`<div class="nmb-weather" onclick="openWeatherDetail()" style="cursor:pointer;" title="Klikni za detaljnu prognozu">
         <div class="nmb-weather-icon">${weather.icon}</div>
         <div class="nmb-weather-info">
           <div class="nmb-weather-temp">${weather.temp}°C</div>
@@ -6337,13 +6366,29 @@ async function renderNextMatchBanner(){
         <div style="margin-left:auto;display:flex;flex-direction:column;gap:2px;text-align:right;">
           <div style="font-size:10px;color:var(--text-muted);">💧 ${weather.rain}mm kiše</div>
           <div style="font-size:10px;color:var(--text-muted);">💨 ${weather.wind} km/h vjetar</div>
-          <div style="font-size:9px;color:rgba(255,255,255,0.3);">prognoza za ${next.time||'20:00'}h · Maksimir</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.3);">prognoza za ${next.time||'20:00'}h · Maksimir · 🔍 klikni za detalje</div>
         </div>
       </div>`;
     } else if(isMaksimir && weather===null){
       weatherHTML=`<div class="nmb-weather"><div class="nmb-weather-loading">⏳ Učitavanje prognoze za Maksimir...</div></div>`;
     } else if(isMaksimir && weather===false){
       weatherHTML=`<div class="nmb-weather"><div class="nmb-weather-loading">🌦️ Prognoza za Maksimir bit će dostupna ~10 dana prije utakmice</div></div>`;
+    }
+
+    let transitHTML='';
+    if(isMaksimir){
+      transitHTML=`<div class="nmb-transit">
+        <div style="font-size:22px;line-height:1;">🚋</div>
+        <span class="nmb-transit-line">4</span>
+        <span class="nmb-transit-line">5</span>
+        <span class="nmb-transit-line">7</span>
+        <span class="nmb-transit-line">11</span>
+        <span class="nmb-transit-line">12</span>
+        <div style="font-size:11px;color:var(--text-muted);line-height:1.3;">
+          Tramvaji <strong style="color:#fff;">4, 5, 7, 11</strong> i <strong style="color:#fff;">12</strong> voze s Kvatrića prema Maksimiru — najbitnija stanica je <strong style="color:#fff;">Mašićeva</strong> (zadnja prije stadiona)
+        </div>
+        <a class="nmb-transit-link" href="https://gdjejetramvaj.hr" target="_blank" rel="noopener">🔴 Uživo pozicije</a>
+      </div>`;
     }
     el.innerHTML=`<div class="next-match-banner" style="background:linear-gradient(135deg,${compColor}66 0%,${compColor}26 60%,rgba(0,30,70,0.85) 100%);border-color:${compColor}80;">
       ${bgPhotoHTML}
@@ -6359,6 +6404,7 @@ async function renderNextMatchBanner(){
         </div>
         <div class="nmb-countdown" id="nmb-countdown-units"></div>
         ${weatherHTML}
+        ${transitHTML}
       </div>
     </div>`;
     if(_countdownTimer) clearInterval(_countdownTimer);
@@ -6390,7 +6436,7 @@ async function renderNextMatchBanner(){
       renderBanner(false);
     } else {
       try{
-        const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&hourly=temperature_2m,precipitation,windspeed_10m,weathercode&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
+        const url=`https://api.open-meteo.com/v1/forecast?latitude=45.8219&longitude=16.0120&hourly=temperature_2m,apparent_temperature,precipitation,precipitation_probability,windspeed_10m,winddirection_10m,weathercode,relative_humidity_2m,cloudcover&timezone=Europe%2FZagreb&start_date=${next.datum}&end_date=${next.datum}`;
         const resp=await fetch(url);
         const data=await resp.json();
         if(data.hourly && Array.isArray(data.hourly.weathercode) && data.hourly.weathercode.length){
@@ -6406,19 +6452,14 @@ async function renderNextMatchBanner(){
           const temp=Math.round(data.hourly.temperature_2m[idx]);
           const rain=(data.hourly.precipitation[idx]||0).toFixed(1);
           const wind=Math.round(data.hourly.windspeed_10m[idx]);
-          const wmoIcon=(c)=>{
-            if(c===0)return{icon:'☀️',desc:'Vedro'};if(c<=2)return{icon:'🌤️',desc:'Djelomično oblačno'};
-            if(c===3)return{icon:'☁️',desc:'Oblačno'};if(c<=49)return{icon:'🌫️',desc:'Magla'};
-            if(c<=59)return{icon:'🌦️',desc:'Rosulja'};if(c<=69)return{icon:'🌧️',desc:'Kiša'};
-            if(c<=79)return{icon:'🌨️',desc:'Snijeg'};if(c<=82)return{icon:'🌧️',desc:'Obilna kiša'};
-            if(c<=99)return{icon:'⛈️',desc:'Grmljavina'};return{icon:'🌡️',desc:'Nepoznato'};
-          };
-          const wi=wmoIcon(wcode);
+          const wi=wmoIconGlobal(wcode);
           renderBanner({icon:wi.icon,desc:wi.desc,temp,rain,wind});
+          _weatherDetailData = { hourly: data.hourly, idx, targetHour, next, matchDate };
         } else {
           renderBanner(false);
+          _weatherDetailData = null;
         }
-      }catch(e){console.warn('Weather fetch failed:',e); renderBanner(false);}
+      }catch(e){console.warn('Weather fetch failed:',e); renderBanner(false); _weatherDetailData=null;}
     }
   }
 
@@ -6432,6 +6473,78 @@ async function renderNextMatchBanner(){
   _weatherRefreshTimer = setTimeout(()=>{ renderNextMatchBanner(); }, refreshMs);
 }
 window.renderNextMatchBanner=renderNextMatchBanner;
+
+function openWeatherDetail(){
+  if(!_weatherDetailData){ showToast('⚠️ Prognoza još nije učitana','#1A0A0A','#F87171'); return; }
+  const { hourly, idx, targetHour, next, matchDate } = _weatherDetailData;
+  const wcode = hourly.weathercode[idx];
+  const wi = wmoIconGlobal(wcode);
+  const temp = Math.round(hourly.temperature_2m[idx]);
+  const feels = Math.round(hourly.apparent_temperature[idx]);
+  const humidity = Math.round(hourly.relative_humidity_2m[idx]);
+  const cloud = Math.round(hourly.cloudcover[idx]);
+  const rain = (hourly.precipitation[idx]||0).toFixed(1);
+  const rainProb = Math.round(hourly.precipitation_probability[idx]||0);
+  const wind = Math.round(hourly.windspeed_10m[idx]);
+  const windDir = windDirCompass(hourly.winddirection_10m[idx]);
+
+  document.getElementById('weather-detail-title').textContent = `🌦️ Prognoza · ${next.datum.split('-').reverse().join('.')} · ${next.time||'20:00'}h`;
+
+  const mainStats = `
+    <div class="top5-row" style="background:rgba(77,159,255,0.08);border-color:rgba(77,159,255,0.3);">
+      <div style="font-size:34px;">${wi.icon}</div>
+      <div style="flex:1;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;letter-spacing:1px;">${temp}°C <span style="font-size:13px;color:var(--text-muted);font-family:inherit;">(osjeća se ${feels}°C)</span></div>
+        <div style="font-size:12px;color:var(--text-muted);text-transform:capitalize;">${wi.desc} · Stadion Maksimir</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;">
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>💧 Kiša</span><strong style="color:#fff;">${rain}mm</strong></div>
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>☔ Šansa</span><strong style="color:#fff;">${rainProb}%</strong></div>
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>💨 Vjetar</span><strong style="color:#fff;">${wind} km/h ${windDir}</strong></div>
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>💦 Vlaga</span><strong style="color:#fff;">${humidity}%</strong></div>
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>☁️ Naoblaka</span><strong style="color:#fff;">${cloud}%</strong></div>
+      <div class="top5-row" style="margin:0;justify-content:space-between;"><span>🕐 Termin</span><strong style="color:#fff;">${next.time||'20:00'}h</strong></div>
+    </div>`;
+
+  // Vremenska linija: 3h prije, sat utakmice, 3h poslije
+  let timelineHTML = '<div style="font-size:11px;color:var(--text-muted);margin:14px 0 6px;text-transform:uppercase;letter-spacing:0.5px;">Po satima oko utakmice</div><div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;">';
+  for(let off=-3; off<=3; off++){
+    let h = targetHour + off;
+    let dayOffset = 0;
+    if(h<0){ h+=24; dayOffset=-1; }
+    if(h>23){ h-=24; dayOffset=1; }
+    // Podaci su samo za next.datum, pa satove izvan tog dana (dayOffset != 0) preskačemo
+    if(dayOffset!==0 || h>=hourly.time.length){
+      timelineHTML += `<div style="min-width:56px;text-align:center;opacity:0.25;padding:8px 4px;"><div style="font-size:10px;">--</div></div>`;
+      continue;
+    }
+    const hi = hourly.time.findIndex(t=>{
+      const hp=t.split('T')[1];
+      return hp && parseInt(hp.split(':')[0],10)===h;
+    });
+    if(hi<0) continue;
+    const hwi = wmoIconGlobal(hourly.weathercode[hi]);
+    const isKickoff = off===0;
+    timelineHTML += `<div style="min-width:56px;text-align:center;padding:8px 4px;border-radius:10px;${isKickoff?'background:rgba(77,159,255,0.15);border:1px solid rgba(77,159,255,0.4);':''}">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:2px;">${String(h).padStart(2,'0')}:00${isKickoff?' ⚽':''}</div>
+        <div style="font-size:20px;">${hwi.icon}</div>
+        <div style="font-size:12px;color:#fff;font-weight:600;">${Math.round(hourly.temperature_2m[hi])}°</div>
+      </div>`;
+  }
+  timelineHTML += '</div>';
+
+  document.getElementById('weather-detail-body').innerHTML = mainStats + timelineHTML +
+    `<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:12px;text-align:center;">Izvor: Open-Meteo · osvježava se automatski</div>`;
+
+  document.getElementById('weather-detail-overlay').classList.add('open');
+}
+window.openWeatherDetail = openWeatherDetail;
+
+function closeWeatherDetail(){
+  document.getElementById('weather-detail-overlay')?.classList.remove('open');
+}
+window.closeWeatherDetail = closeWeatherDetail;
 
 /* ============================================================
    SEASON COMPARE
