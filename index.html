@@ -1241,6 +1241,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <span style="font-size:11px;color:var(--text-muted);">(Dinamo - protivnik)</span>
             </div>
           </div>
+          <div class="form-row" id="f-produzeci-row" style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+              <input type="checkbox" id="f-produzeci-check" style="accent-color:#F59E0B;width:14px;height:14px;cursor:pointer;">
+              <span>⏱️ Produžeci (ET)</span>
+            </label>
+          </div>
           <div class="form-row" style="margin-bottom:8px;">
             <label class="form-label">Tko je bio prisutan</label>
             <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
@@ -1557,6 +1563,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <input class="form-input-pred" type="text" id="em-penali" placeholder="5-4" style="width:70px;text-align:center;">
           <span style="font-size:11px;color:var(--text-muted);">(Dinamo - protivnik)</span>
         </div>
+      </div>
+      <div class="modal-row" style="display:flex;align-items:center;gap:10px;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text-muted);">
+          <input type="checkbox" id="em-produzeci-check" style="accent-color:#F59E0B;width:14px;height:14px;cursor:pointer;">
+          <span>⏱️ Produžeci (ET)</span>
+        </label>
       </div>
       <div class="modal-row"><label class="form-label">Gledatelji</label><input class="form-input-pred" type="number" id="em-gledatelji" placeholder="15000"></div>
       <div class="modal-row">
@@ -2717,9 +2729,11 @@ function getResult(r,penali){
   return base;
 }
 function fmtRezultat(m){
-  if(!m.penali) return m.rezultat;
-  const res=getResult(m.rezultat,m.penali);
-  return `${m.rezultat} <span class="pen-tag">(PEN ${m.penali.replace('-',':')})</span>`;
+  if(!m.penali && !m.produzeci) return m.rezultat;
+  let out = m.rezultat;
+  if(m.produzeci) out += ` <span class="pen-tag" style="background:rgba(127,181,255,0.15);border-color:rgba(127,181,255,0.4);color:#7FB5FF;">ET</span>`;
+  if(m.penali) out += ` <span class="pen-tag">(PEN ${m.penali.replace('-',':')})</span>`;
+  return out;
 }
 if(typeof fmtDate==='undefined'){var fmtDate=function(d){const[y,m,day]=d.split('-');return`${day}.${m}.${y}`;};}
 function fmtNum(n){return Number(n).toLocaleString('hr-HR');}
@@ -3408,6 +3422,7 @@ async function addMatch(){
   const penaliCheck=document.getElementById('f-penali-check')?.checked;
   const penaliVal=penaliCheck?(document.getElementById('f-penali')?.value.trim()||''):'';
   if(penaliVal&&!/^\d+-\d+$/.test(penaliVal)){alert('Penali mora biti u formatu npr. 5-4');return;}
+  const produzeciVal=document.getElementById('f-produzeci-check')?.checked||false;
   const vrijemePoc=(document.getElementById('f-vrijeme')||{value:''}).value||'';
   // Stadion — custom ili iz selecta
   const stadionSel = document.getElementById('f-stadion-select')?.value||'Stadion Maksimir';
@@ -3417,6 +3432,7 @@ async function addMatch(){
   const prisutanLovro = document.getElementById('f-prisutan-lovro')?.checked !== false;
   const entry={datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro};
   if(penaliVal) entry.penali=penaliVal;
+  if(produzeciVal) entry.produzeci=true;
   matches.push(entry);
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
@@ -3427,6 +3443,7 @@ async function addMatch(){
   const selEl=document.getElementById('f-stadion-select');if(selEl)selEl.value='Stadion Maksimir';
   const custEl=document.getElementById('f-stadion-custom');if(custEl){custEl.value='';custEl.style.display='none';}
   const penChk=document.getElementById('f-penali-check');if(penChk){penChk.checked=false;}
+  const prodChk=document.getElementById('f-produzeci-check');if(prodChk){prodChk.checked=false;}
   const penWrap=document.getElementById('f-penali-wrap');if(penWrap)penWrap.style.display='none';
   const penInp=document.getElementById('f-penali');if(penInp)penInp.value='';
   renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();
@@ -3531,9 +3548,7 @@ function showMatchModal(idx){
   document.getElementById('m-comp').textContent=m.natjecanje+' · '+labels[getResult(m.rezultat,m.penali)];
   document.getElementById('m-datum').textContent=fmtDate(m.datum);
   document.getElementById('m-nat').textContent=m.natjecanje;
-  document.getElementById('m-rez').innerHTML=m.penali
-    ?`${m.rezultat} <span style="font-size:12px;font-weight:700;opacity:0.8">(PEN ${m.penali.replace('-',':')})</span>`
-    :m.rezultat;
+  document.getElementById('m-rez').innerHTML=fmtRezultat(m);
   document.getElementById('m-gle').textContent=fmtNum(m.gledatelji);
   document.getElementById('m-vrijemePoc').textContent=m.vrijemePoc||'—';
   const stadionEl=document.getElementById('m-stadion');
@@ -3708,6 +3723,8 @@ function openEditMatch(){
     emPenInp.value=m.penali||'';
     emPenWrap.style.display=m.penali?'flex':'none';
   }
+  const emProdChk=document.getElementById('em-produzeci-check');
+  if(emProdChk) emProdChk.checked=!!m.produzeci;
   document.getElementById('em-gledatelji').value=m.gledatelji||'';
   // Stadion — postavi select ili custom
   const knownStadions = ['Stadion Maksimir','Opus Arena','Stadion Poljud','NK Gorica Stadion','Stadion Rujevica','Stadion Koprivnica'];
@@ -3746,6 +3763,7 @@ async function saveEditMatch(){
   const emPenaliCheck=document.getElementById('em-penali-check')?.checked;
   const emPenaliVal=emPenaliCheck?(document.getElementById('em-penali')?.value.trim()||''):'';
   if(emPenaliVal&&!/^\d+-\d+$/.test(emPenaliVal)){alert('Penali mora biti u formatu npr. 5-4');return;}
+  const emProdužeciVal=document.getElementById('em-produzeci-check')?.checked||false;
   const emStadionSel = document.getElementById('em-stadion-select')?.value||'Stadion Maksimir';
   const emStadionCust = document.getElementById('em-stadion-custom')?.value.trim()||'';
   const stadion = emStadionSel === 'custom' ? emStadionCust : emStadionSel;
@@ -3753,6 +3771,7 @@ async function saveEditMatch(){
   const emPrisutanLovro = document.getElementById('em-prisutan-lovro')?.checked !== false;
   const updated={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro};
   if(emPenaliVal) updated.penali=emPenaliVal; else delete updated.penali;
+  if(emProdužeciVal) updated.produzeci=true; else delete updated.produzeci;
   matches[_editMatchIdx]=updated;
   matches.sort((a,b)=>a.datum<b.datum?-1:1);
   await set(ref(db,'matches'),matches);
