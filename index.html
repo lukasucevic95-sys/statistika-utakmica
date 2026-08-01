@@ -2166,10 +2166,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
       <!-- Graf bodova -->
       <div class="pts-graph-wrap">
-        <div class="pts-graph-title">📈 BODOVI PO KOLU — SEZONA 2026/27</div>
+        <div class="pts-graph-title">📈 BODOVI PO KOLU — SEZONA 2026/27 <span id="pts-graph-auto-note" style="display:none;font-size:9px;font-weight:400;color:#4ADE80;">🔄 automatski iz baze utakmica</span></div>
         <div id="pts-graph-container"><div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px 0;">Nema podataka za prikaz grafa.</div></div>
-        <div id="pts-graph-admin" style="display:none;margin-top:10px;display:none;">
-          <button class="tabl-btn-sm" onclick="tablAddPtsRound()">➕ Dodaj kolo</button>
+        <div id="pts-graph-admin" style="display:none;margin-top:10px;">
+          <button class="tabl-btn-sm" onclick="tablAddPtsRound()">➕ Dodaj kolo (ručno)</button>
           <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetPts()">🗑️ Reset bodova</button>
         </div>
       </div>
@@ -6762,6 +6762,21 @@ async function tablLoad(){
   }
 }
 
+function tablComputePtsFromMatches(){
+  try{
+    if(!matches || !matches.length) return [];
+    const season = getSeason(new Date().toISOString().split('T')[0]);
+    const hnlMatches = matches
+      .filter(m => m.natjecanje==='HNL' && m.rezultat && getSeason(m.datum)===season)
+      .sort((a,b)=> a.datum<b.datum ? -1 : (a.datum>b.datum ? 1 : 0));
+    return hnlMatches.map((m,i)=>{
+      const parts = m.rezultat.split('-').map(Number);
+      const pts = parts[0]>parts[1] ? 3 : parts[0]===parts[1] ? 1 : 0;
+      return { kolo:i+1, pts };
+    });
+  }catch(e){ console.warn('Izračun grafa bodova nije uspio:', e); return []; }
+}
+
 function renderHnlScorersAssists(){
   const scEl = document.getElementById('hnl-scorers-list');
   const asEl = document.getElementById('hnl-assists-list');
@@ -6793,7 +6808,16 @@ async function renderTablica(){
     const el=document.getElementById(id); if(el) el.style.display=isAdmin?'flex':'none';
   });
   const ptsAdmin = document.getElementById('pts-graph-admin');
-  if(ptsAdmin) ptsAdmin.style.display = isAdmin ? 'flex' : 'none';
+  const ptsAutoNote = document.getElementById('pts-graph-auto-note');
+  const computedPts = tablComputePtsFromMatches();
+  if(computedPts.length >= 2){
+    _tablPts = computedPts;
+    if(ptsAutoNote) ptsAutoNote.style.display = '';
+    if(ptsAdmin) ptsAdmin.style.display = 'none';
+  } else {
+    if(ptsAutoNote) ptsAutoNote.style.display = 'none';
+    if(ptsAdmin) ptsAdmin.style.display = isAdmin ? 'flex' : 'none';
+  }
 
   // Europa section - show only if data
   const euroSec = document.getElementById('euro-tabl-section');
