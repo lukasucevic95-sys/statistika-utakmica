@@ -498,6 +498,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .pred-type-tabs{flex-direction:column;gap:6px;}
   .leaderboard{gap:10px;}
   .lb-score{font-size:38px;}
+  .hnl-scorers-grid{grid-template-columns:1fr!important;}
 }
 @media(max-width:768px){
   .header{padding:22px 18px 0 18px;overflow:hidden;display:flex;flex-direction:column;}
@@ -2177,6 +2178,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="tabl-section">
         <div class="tabl-heading">🇭🇷 HNL — Tablica
           <span id="hnl-tabl-season">2026/27</span>
+          <span id="hnl-tabl-live-note" style="display:none;font-size:9px;font-weight:400;color:#4ADE80;margin-left:8px;">🔄 uživo (TheSportsDB)</span>
+          <button class="tabl-btn-sm" style="margin-left:auto;font-size:10px;" onclick="tablLoad().then(renderTablica)" title="Ručno ponovno učitaj tablicu iz baze">🔃 Osvježi</button>
         </div>
         <div class="tabl-wrap">
           <table class="tabl-table">
@@ -2200,6 +2203,22 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <button class="tabl-btn-sm" onclick="tablAddRow('hnl')">➕ Dodaj klub</button>
             <button class="tabl-btn-sm" onclick="tablEditAll('hnl')">✏️ Uredi sve</button>
             <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetTable('hnl')">🗑️ Reset</button>
+          </div>
+          <div id="hnl-tabl-api-note" style="display:none;font-size:10px;color:var(--text-muted);padding:6px 10px;">ℹ️ Automatski scraper još nije spremio podatke. Ažuriraj ručno gumbima iznad dok se scraper prvi put ne pokrene.</div>
+        </div>
+      </div>
+
+      <!-- HNL Strijelci / Asistenti -->
+      <div class="tabl-section" id="hnl-scorers-section">
+        <div class="tabl-heading">⚽ HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:var(--text-muted);">(tekuća sezona)</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" class="hnl-scorers-grid">
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">⚽ Strijelci</div>
+            <div id="hnl-scorers-list"></div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🎯 Asistenti</div>
+            <div id="hnl-assists-list"></div>
           </div>
         </div>
       </div>
@@ -6714,22 +6733,56 @@ function runSeasonCompare(){
 }
 window.runSeasonCompare=runSeasonCompare;
 
+let _tablHnlUpdated = null;
+let _tablScorers = [];
+let _tablAssists = [];
 async function tablLoad(){
   try{
-    const [snapHnl, snapEuro, snapPts] = await Promise.all([
+    const [snapHnl, snapEuro, snapPts, snapUpd, snapSc, snapAs] = await Promise.all([
       get(ref(db,'tablica_hnl')),
       get(ref(db,'tablica_euro')),
       get(ref(db,'tablica_pts')),
+      get(ref(db,'tablica_hnl_updated')),
+      get(ref(db,'tablica_hnl_strijelci')),
+      get(ref(db,'tablica_hnl_asistenti')),
     ]);
     _tablHnl  = snapHnl.exists()  ? snapHnl.val()  : JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = snapEuro.exists() ? snapEuro.val() : [];
     _tablPts  = snapPts.exists()  ? snapPts.val()  : [];
+    _tablHnlUpdated = snapUpd.exists() ? snapUpd.val() : null;
+    _tablScorers = snapSc.exists() ? (snapSc.val()||[]) : [];
+    _tablAssists = snapAs.exists() ? (snapAs.val()||[]) : [];
   }catch(e){
     _tablHnl  = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = [];
     _tablPts  = [];
+    _tablHnlUpdated = null;
+    _tablScorers = [];
+    _tablAssists = [];
   }
 }
+
+function renderHnlScorersAssists(){
+  const scEl = document.getElementById('hnl-scorers-list');
+  const asEl = document.getElementById('hnl-assists-list');
+  if(!scEl || !asEl) return;
+  const rowHtml = (rank, name, club, count) => {
+    const isDinamo = (club||'').toLowerCase().includes('dinamo');
+    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;${isDinamo?'background:rgba(30,58,138,0.15);border-radius:6px;':''}">
+      <span style="font-size:10px;color:var(--text-muted);width:14px;">${rank}.</span>
+      <span style="flex:1;font-size:12px;color:#fff;${isDinamo?'font-weight:700;':''}">${name}</span>
+      <span style="font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">${club}</span>
+      <span style="font-size:13px;font-weight:800;color:#4D9FFF;min-width:18px;text-align:right;">${count}</span>
+    </div>`;
+  };
+  scEl.innerHTML = (_tablScorers && _tablScorers.length)
+    ? _tablScorers.slice(0,10).map((s,i)=>rowHtml(i+1, s.player, s.club, s.goals)).join('')
+    : `<div style="font-size:11px;color:var(--text-muted);padding:8px;">Podaci još nisu dostupni.</div>`;
+  asEl.innerHTML = (_tablAssists && _tablAssists.length)
+    ? _tablAssists.slice(0,10).map((s,i)=>rowHtml(i+1, s.player, s.club, s.assists)).join('')
+    : `<div style="font-size:11px;color:var(--text-muted);padding:8px;">Podaci još nisu dostupni.</div>`;
+}
+window.renderHnlScorersAssists = renderHnlScorersAssists;
 
 async function renderTablica(){
   if(!_tablHnl) await tablLoad();
@@ -6746,9 +6799,25 @@ async function renderTablica(){
   const euroSec = document.getElementById('euro-tabl-section');
   if(euroSec) euroSec.style.display = (_tablEuro && _tablEuro.length) ? '' : (isAdmin ? '' : 'none');
 
+  // Automatski dohvat sad radi GitHub Actions scraper u pozadini (piše u tablica_hnl),
+  // ovdje samo prikazujemo kad je zadnje ažurirano.
+  const liveNote = document.getElementById('hnl-tabl-live-note');
+  const apiNote  = document.getElementById('hnl-tabl-api-note');
+  if(_tablHnlUpdated && liveNote){
+    const d = new Date(_tablHnlUpdated);
+    const stamp = isNaN(d.getTime()) ? _tablHnlUpdated : d.toLocaleString('hr-HR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    liveNote.textContent = `🔄 ažurirano ${stamp}`;
+    liveNote.style.display = '';
+    if(apiNote) apiNote.style.display = 'none';
+  } else {
+    if(liveNote) liveNote.style.display = 'none';
+    if(apiNote) apiNote.style.display = isAdmin ? '' : 'none';
+  }
+
   tablRenderTable('hnl');
   tablRenderTable('euro');
   tablRenderGraph();
+  renderHnlScorersAssists();
 }
 window.renderTablica = renderTablica;
 
@@ -6766,7 +6835,11 @@ function tablPosMeta(rank, total){
 
 function tablFormDots(formStr){
   if(!formStr) return '<span style="color:var(--text-muted);font-size:10px;">—</span>';
-  const letters = formStr.trim().toUpperCase().split(/[\s,]+/).filter(Boolean).slice(-5);
+  const trimmed = formStr.trim().toUpperCase();
+  // Podrži i "P, P, N, I" (ručni unos) i zbijeni format bez razdjelnika npr. "WLDWW" (API)
+  const letters = /[\s,]/.test(trimmed)
+    ? trimmed.split(/[\s,]+/).filter(Boolean).slice(-5)
+    : trimmed.split('').filter(Boolean).slice(-5);
   return letters.map(l=>{
     const cls = l==='P'||l==='W' ? 'W' : l==='G'||l==='L' ? 'L' : 'D';
     const show = l==='P'||l==='W' ? 'P' : l==='G'||l==='L' ? 'I' : 'R';
