@@ -1,8 +1,11 @@
 // scraper/tablica.js
 // GitHub Actions pokreće ovaj script (raspored u tablica.yml — vidi komentar tamo).
-// Povlači HNL tablicu, listu strijelaca i listu asistenata s worldfootball.net —
-// statične, server-renderirane stranice bez JS-a, pa je scraping brz i pouzdan
-// (Cheerio, bez Puppeteera).
+// Povlači HNL tablicu, listu strijelaca i listu asistenata s worldfootball.net.
+//
+// NAPOMENA: worldfootball.net vraća HTTP 403 na obični fetch() zahtjev s GitHub Actions
+// servera (bot-zaštita), pa se stranica dohvaća pravim headless Chrome preglednikom
+// (Puppeteer, isto kao scraper za karte) — HTML se zatim parsira s Cheeriom kao i prije.
+//
 // Sprema rezultat u Firebase Realtime Database:
 //   tablica_hnl              -> [{club,p,w,d,l,gf,ga,form}, ...]  (jedan objekt po klubu)
 //   tablica_hnl_strijelci    -> [{player,club,matches,goals}, ...]  (top 10, poredano)
@@ -14,6 +17,7 @@
 // već poredani po rangu sa stranice).
 
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer');
 
 const STANDINGS_URL = 'https://www.worldfootball.net/competition/co2/croatia-1-hnl/standings-calculator/';
 const SCORERS_URL   = 'https://www.worldfootball.net/competition/co2/croatia-1-hnl/statistics-goals/';
@@ -28,16 +32,40 @@ admin.initializeApp({
 });
 const db = admin.database();
 
-// ── Scraping ───────────────────────────────────────────────────────────────
+// ── Dohvat stranice pravim headless Chromeom (zaobilazi bot-zaštitu) ──────
+let _browser = null;
+async function getBrowser() {
+  if (!_browser) {
+    _browser = await puppeteer.launch({
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+      ],
+    });
+  }
+  return _browser;
+}
+
 async function fetchHtml(url) {
-  const res = await fetch(url, {
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36',
-      'Accept-Language': 'hr,en;q=0.8',
-    },
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status} dohvaćajući ${url}`);
-  return await res.text();
+  const browser = await getBrowser();
+  const page = await browser.newPage();
+  try {
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    );
+    await page.setExtraHTTPHeaders({ 'Accept-Language': 'hr,en;q=0.8' });
+    await page.setViewport({ width: 1280, height: 900 });
+    const res = await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
+    if (res && res.status() >= 400) {
+      throw new Error(`HTTP ${res.status()} dohvaćajući ${url}`);
+    }
+    return await page.content();
+  } finally {
+    await page.close();
+  }
 }
 
 // Zajednička logika za tablice strijelaca/asistenata (ista struktura stranice).
@@ -192,7 +220,11 @@ async function main() {
   console.log('✅ Završeno u', new Date().toISOString());
 }
 
-main().catch(err => {
-  console.error('❌ Scraper greška:', err);
-  process.exit(1);
-});
+main()
+  .catch(err => {
+    console.error('❌ Scraper greška:', err);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    if (_browser) await _browser.close();
+  });
