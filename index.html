@@ -890,13 +890,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .tabl-btn-sm:hover{background:rgba(77,159,255,0.25);}
 .tabl-btn-red{background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.25);color:#F87171;}
 .tabl-btn-red:hover{background:rgba(239,68,68,0.22);}
-/* Graf */
-.pts-graph-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:18px;}
-.pts-graph-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:#FACC15;margin-bottom:12px;}
-.pts-graph-svg{width:100%;overflow:visible;}
-.pts-graph-bar{transition:opacity 0.2s;}
-.pts-graph-bar:hover{opacity:0.8;}
-
 /* ===== YT LINK ===== */
 .yt-section{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;}
 .yt-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
@@ -2165,12 +2158,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <!-- ===== TABLICA VIEW ===== -->
     <div id="sched-view-tablica" style="display:none;">
 
-      <!-- Graf bodova -->
-      <div class="pts-graph-wrap">
-        <div class="pts-graph-title">📈 BODOVI SVIH KLUBOVA — HNL <span style="font-size:9px;font-weight:400;color:#4ADE80;">🔄 automatski iz tablice</span></div>
-        <div id="pts-graph-container"><div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px 0;">Nema podataka za prikaz grafa.</div></div>
-      </div>
-
       <!-- Sofascore embed (uživo, bez scrapanja) -->
       <div class="tabl-section" id="sofascore-embed-section">
         <div class="tabl-heading">⚡ HNL — Tablica uživo <span style="font-size:9px;font-weight:400;color:#4ADE80;">Sofascore</span></div>
@@ -2186,9 +2173,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="tabl-section" id="sofascore-players-embed-section">
         <div class="tabl-heading">⚡ HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:#4ADE80;">ScoreAxis</span></div>
         <div id="sofascore-players-widget" style="min-height:60px;">
-          <div id="widget-clxemsc6i8l5" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;background-color: #111827;color: #F0F4FF;border: 1px solid;border-color: #2A3A5C;overflow: auto;border-radius:10px;">
-            <script src="https://widgets.scoreaxis.com/api/football/league-top-players/62323129995d465a9061e08c?widgetId=clxemsc6i8l5&lang=en&playersCount=10&goalsBlock=1&assistsBlock=1&cardsBlock=1&links=1&font=heebo&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto&bodyColor=%23111827&textColor=%23F0F4FF&linkColor=%234D9FFF&borderColor=%232A3A5C&tabColor=%231C2439" async></script>
-            <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="https://www.scoreaxis.com/" style="color: inherit;">Scoreaxis</a></div>
+          <div style="border-radius:10px;overflow:hidden;border:1px solid #2A3A5C;">
+            <div id="widget-clxemsc6i8l5" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;">
+              <script src="https://widgets.scoreaxis.com/api/football/league-top-players/62323129995d465a9061e08c?widgetId=clxemsc6i8l5&lang=en&playersCount=10&goalsBlock=1&assistsBlock=1&cardsBlock=1&links=1&font=heebo&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto" async></script>
+              <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="https://www.scoreaxis.com/" style="color: inherit;">Scoreaxis</a></div>
+            </div>
           </div>
         </div>
       </div>
@@ -2333,21 +2322,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="modal-btns">
       <button class="modal-btn-ok" onclick="tablSaveRow()">💾 Spremi</button>
       <button class="modal-btn-cancel" onclick="document.getElementById('edit-tabl-modal').classList.remove('open')">Odustani</button>
-    </div>
-  </div>
-</div>
-
-<!-- ADD PTS ROUND MODAL -->
-<div class="modal-overlay" id="add-pts-modal" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal" style="max-width:320px;">
-    <h3>📈 Dodaj kolo</h3>
-    <div class="modal-inputs">
-      <div class="modal-row"><label class="form-label">Kolo (br.)</label><input class="form-input-pred" id="apm-kolo" type="number" min="1" max="36" placeholder="1" style="width:100%;"></div>
-      <div class="modal-row"><label class="form-label">Bodovi (ukupno)</label><input class="form-input-pred" id="apm-pts" type="number" min="0" placeholder="npr. 3" style="width:100%;"></div>
-    </div>
-    <div class="modal-btns">
-      <button class="modal-btn-ok" onclick="tablSavePtsRound()">💾 Dodaj</button>
-      <button class="modal-btn-cancel" onclick="document.getElementById('add-pts-modal').classList.remove('open')">Odustani</button>
     </div>
   </div>
 </div>
@@ -6343,7 +6317,6 @@ const TABL_HNL_DEFAULT = [
 
 let _tablHnl  = null;
 let _tablEuro = null;
-let _tablPts  = null; // [{kolo:1, pts:3}, ...]
 let _currentSchedPage = 'raspored';
 
 function switchSchedPage(page){
@@ -6757,24 +6730,21 @@ let _tablScorers = [];
 let _tablAssists = [];
 async function tablLoad(){
   try{
-    const [snapHnl, snapEuro, snapPts, snapUpd, snapSc, snapAs] = await Promise.all([
+    const [snapHnl, snapEuro, snapUpd, snapSc, snapAs] = await Promise.all([
       get(ref(db,'tablica_hnl')),
       get(ref(db,'tablica_euro')),
-      get(ref(db,'tablica_pts')),
       get(ref(db,'tablica_hnl_updated')),
       get(ref(db,'tablica_hnl_strijelci')),
       get(ref(db,'tablica_hnl_asistenti')),
     ]);
     _tablHnl  = snapHnl.exists()  ? snapHnl.val()  : JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = snapEuro.exists() ? snapEuro.val() : [];
-    _tablPts  = snapPts.exists()  ? snapPts.val()  : [];
     _tablHnlUpdated = snapUpd.exists() ? snapUpd.val() : null;
     _tablScorers = snapSc.exists() ? (snapSc.val()||[]) : [];
     _tablAssists = snapAs.exists() ? (snapAs.val()||[]) : [];
   }catch(e){
     _tablHnl  = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = [];
-    _tablPts  = [];
     _tablHnlUpdated = null;
     _tablScorers = [];
     _tablAssists = [];
@@ -6811,8 +6781,6 @@ async function renderTablica(){
   ['hnl-tabl-admin','euro-tabl-admin'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.style.display=isAdmin?'flex':'none';
   });
-  const ptsAdmin = document.getElementById('pts-graph-admin');
-  if(ptsAdmin) ptsAdmin.style.display = 'none'; // graf je sad potpuno automatski, izravno iz tablice
 
   // Europa section - show only if data
   const euroSec = document.getElementById('euro-tabl-section');
@@ -6835,7 +6803,6 @@ async function renderTablica(){
 
   tablRenderTable('hnl');
   tablRenderTable('euro');
-  tablRenderGraph();
   renderHnlScorersAssists();
 }
 window.renderTablica = renderTablica;
@@ -6913,52 +6880,6 @@ function tablRenderTable(type){
     </tr>`;
   });
   el.innerHTML = html;
-}
-
-function tablRenderGraph(){
-  const el = document.getElementById('pts-graph-container');
-  if(!el) return;
-  if(!_tablHnl || !_tablHnl.length || !_tablHnl.some(r=>r.p>0)){
-    el.innerHTML = `<div style="color:var(--text-muted);font-size:12px;text-align:center;padding:18px 0;">
-      Graf bodova bit će dostupan kada sezona počne.
-    </div>`;
-    return;
-  }
-  const sorted = [..._tablHnl]
-    .map(r=>({club:r.club, pts:tablCalcPts(r)}))
-    .sort((a,b)=>b.pts-a.pts);
-
-  const maxPts = Math.max(1, ...sorted.map(d=>d.pts));
-  const W = 600, H = 170, PAD = 30, BAR_GAP = 4;
-  const n = sorted.length;
-  const barW = Math.max(8, Math.floor((W - PAD*2 - BAR_GAP*(n-1)) / n));
-  const totalBarW = n*barW + (n-1)*BAR_GAP;
-  const startX = (W - totalBarW) / 2;
-
-  let bars = '', labels = '';
-  sorted.forEach((d, i)=>{
-    const isDinamo = (d.club||'').toLowerCase().includes('dinamo');
-    const color = isDinamo ? '#4D9FFF' : '#8B95A5';
-    const shadow = isDinamo ? '#4D9FFF66' : '#8B95A533';
-    const barH = Math.max(8, Math.round((d.pts / maxPts) * (H - 48)));
-    const x = startX + i*(barW + BAR_GAP);
-    const y = H - 28 - barH;
-    const shortClub = (d.club||'').replace(/^(HNK|NK|FC)\s+/i,'').slice(0,8);
-    bars += `<rect class="pts-graph-bar" x="${x}" y="${y}" width="${barW}" height="${barH}"
-      rx="4" fill="${color}" opacity="0.9" style="filter:drop-shadow(0 2px 6px ${shadow})">
-      <title>${d.club}: ${d.pts} bod.</title></rect>`;
-    labels += `<text x="${x + barW/2}" y="${H - 12}" text-anchor="middle"
-      font-family="Barlow,sans-serif" font-size="8" fill="${isDinamo?'#4D9FFF':'#6B7280'}"
-      transform="rotate(-40,${x + barW/2},${H - 12})">${shortClub}</text>`;
-    labels += `<text x="${x + barW/2}" y="${y - 3}" text-anchor="middle"
-      font-family="Bebas Neue,sans-serif" font-size="11" fill="${color}">${d.pts}</text>`;
-  });
-
-  el.innerHTML = `<svg class="pts-graph-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-    ${bars}${labels}
-    <text x="${PAD/2}" y="${H/2}" text-anchor="middle" font-family="Barlow,sans-serif" font-size="9"
-      fill="#4B5563" transform="rotate(-90,${PAD/2},${H/2})">Bodovi</text>
-  </svg>`;
 }
 
 function tablOpenEdit(type, idx){
@@ -7040,39 +6961,6 @@ async function tablResetTable(type){
   showToast('🗑️ Tablica resetirana.','#1A0A0A','#F87171');
 }
 window.tablResetTable = tablResetTable;
-
-function tablAddPtsRound(){
-  document.getElementById('apm-kolo').value = (_tablPts && _tablPts.length) ? _tablPts[_tablPts.length-1].kolo+1 : 1;
-  document.getElementById('apm-pts').value = '';
-  document.getElementById('add-pts-modal').classList.add('open');
-}
-window.tablAddPtsRound = tablAddPtsRound;
-
-async function tablSavePtsRound(){
-  const kolo = parseInt(document.getElementById('apm-kolo').value);
-  const pts  = parseInt(document.getElementById('apm-pts').value);
-  if(isNaN(kolo)||isNaN(pts)){ showToast('⚠️ Unesite kolo i bodove!','#1A0A0A','#F87171'); return; }
-  if(!_tablPts) _tablPts = [];
-  const existing = _tablPts.findIndex(d=>d.kolo===kolo);
-  if(existing>=0) _tablPts[existing].pts = pts;
-  else _tablPts.push({kolo, pts});
-  _tablPts.sort((a,b)=>a.kolo-b.kolo);
-  await set(ref(db,'tablica_pts'), _tablPts);
-  document.getElementById('add-pts-modal').classList.remove('open');
-  tablRenderGraph();
-  showToast('✅ Bodovi dodani!','#0A1A0A','#4ADE80');
-}
-window.tablSavePtsRound = tablSavePtsRound;
-
-async function tablResetPts(){
-  if(!_currentUser) return;
-  if(!confirm('Resetirati graf bodova?')) return;
-  _tablPts = [];
-  await set(ref(db,'tablica_pts'), []);
-  tablRenderGraph();
-  showToast('🗑️ Graf resetiran.','#1A0A0A','#F87171');
-}
-window.tablResetPts = tablResetPts;
 
 
 // ═══════════════════════════════════════════════════════
