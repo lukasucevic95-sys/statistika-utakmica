@@ -2,9 +2,11 @@
 // GitHub Actions pokreće ovaj script (raspored u tablica.yml — vidi komentar tamo).
 // Povlači HNL tablicu, listu strijelaca i listu asistenata s worldfootball.net.
 //
-// NAPOMENA: worldfootball.net vraća HTTP 403 na obični fetch() zahtjev s GitHub Actions
-// servera (bot-zaštita), pa se stranica dohvaća pravim headless Chrome preglednikom
-// (Puppeteer, isto kao scraper za karte) — HTML se zatim parsira s Cheeriom kao i prije.
+// NAPOMENA: worldfootball.net vraća HTTP 403 čak i na pravi headless Chrome pokrenut
+// s GitHub Actionsa (bot-zaštita prepoznaje automatizacijske "otiske" — navigator.webdriver
+// i sl. — čak i kad je User-Agent naizgled normalan). Zato se koristi puppeteer-extra sa
+// stealth pluginom koji te otiske uklanja, tako da stranica izgleda kao pravi posjet
+// iz preglednika. HTML se zatim parsira s Cheeriom kao i prije.
 //
 // Sprema rezultat u Firebase Realtime Database:
 //   tablica_hnl              -> [{club,p,w,d,l,gf,ga,form}, ...]  (jedan objekt po klubu)
@@ -17,7 +19,9 @@
 // već poredani po rangu sa stranice).
 
 const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
 
 const STANDINGS_URL = 'https://www.worldfootball.net/competition/co2/croatia-1-hnl/standings-calculator/';
 const SCORERS_URL   = 'https://www.worldfootball.net/competition/co2/croatia-1-hnl/statistics-goals/';
@@ -32,7 +36,9 @@ admin.initializeApp({
 });
 const db = admin.database();
 
-// ── Dohvat stranice pravim headless Chromeom (zaobilazi bot-zaštitu) ──────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Dohvat stranice pravim headless Chromeom (stealth, zaobilazi bot-zaštitu) ──
 let _browser = null;
 async function getBrowser() {
   if (!_browser) {
@@ -49,22 +55,33 @@ async function getBrowser() {
   return _browser;
 }
 
-async function fetchHtml(url) {
+async function fetchHtml(url, attempt = 1) {
   const browser = await getBrowser();
   const page = await browser.newPage();
   try {
     await page.setUserAgent(
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
     );
     await page.setExtraHTTPHeaders({ 'Accept-Language': 'hr,en;q=0.8' });
-    await page.setViewport({ width: 1280, height: 900 });
+    await page.setViewport({ width: 1366, height: 900 });
     const res = await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
-    if (res && res.status() >= 400) {
-      throw new Error(`HTTP ${res.status()} dohvaćajući ${url}`);
+    const status = res ? res.status() : 0;
+    if (status >= 400) {
+      throw new Error(`HTTP ${status} dohvaćajući ${url}`);
     }
+    // Kratka pauza da se sve eventualne odgođene provjere/skripte stignu izvršiti
+    await sleep(800);
     return await page.content();
+  } catch (e) {
+    if (attempt < 3) {
+      console.warn(`   ↻ Pokušaj ${attempt} nije uspio (${e.message}), pokušavam ponovno...`);
+      await page.close();
+      await sleep(2000 * attempt);
+      return fetchHtml(url, attempt + 1);
+    }
+    throw e;
   } finally {
-    await page.close();
+    if (!page.isClosed()) await page.close();
   }
 }
 
