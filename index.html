@@ -849,6 +849,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .sched-page-tab{flex:1;padding:9px 10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-align:center;transition:all 0.2s;}
 .sched-page-tab.active{background:rgba(0,87,184,0.4);border-color:rgba(77,159,255,0.5);color:#fff;}
 .tabl-section{margin-bottom:22px;}
+#sofascore-tablica-widget iframe,#sofascore-players-widget iframe{width:100%!important;border:none;border-radius:10px;overflow:hidden;}
 .tabl-heading{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:#4D9FFF;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
 .tabl-heading span{font-size:10px;color:var(--text-muted);font-family:'Barlow',sans-serif;font-weight:600;letter-spacing:1px;margin-left:auto;}
 .tabl-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
@@ -2166,15 +2167,33 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
       <!-- Graf bodova -->
       <div class="pts-graph-wrap">
-        <div class="pts-graph-title">📈 BODOVI PO KOLU — SEZONA 2026/27 <span id="pts-graph-auto-note" style="display:none;font-size:9px;font-weight:400;color:#4ADE80;">🔄 automatski iz baze utakmica</span></div>
+        <div class="pts-graph-title">📈 BODOVI SVIH KLUBOVA — HNL <span style="font-size:9px;font-weight:400;color:#4ADE80;">🔄 automatski iz tablice</span></div>
         <div id="pts-graph-container"><div style="color:var(--text-muted);font-size:12px;text-align:center;padding:20px 0;">Nema podataka za prikaz grafa.</div></div>
-        <div id="pts-graph-admin" style="display:none;margin-top:10px;">
-          <button class="tabl-btn-sm" onclick="tablAddPtsRound()">➕ Dodaj kolo (ručno)</button>
-          <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetPts()">🗑️ Reset bodova</button>
+      </div>
+
+      <!-- Sofascore embed (uživo, bez scrapanja) -->
+      <div class="tabl-section" id="sofascore-embed-section">
+        <div class="tabl-heading">⚡ HNL — Tablica uživo <span style="font-size:9px;font-weight:400;color:#4ADE80;">Sofascore</span></div>
+        <div id="sofascore-tablica-widget" style="min-height:60px;">
+          <iframe id="sofa-standings-embed-48-95727" src="https://widgets.sofascore.com/hr-HR/embed/tournament/48/season/95727/standings/HNL%2026%2F27?widgetTitle=HNL%2026%2F27&showCompetitionLogo=true" style="height:723px!important;max-width:768px!important;width:100%!important;" frameborder="0" scrolling="no"></iframe>
+          <div style="font-size:11px;font-family:Arial,sans-serif;text-align:left;color:var(--text-muted);margin-top:4px;">
+            Tablicu omogućuje <a target="_blank" href="https://www.sofascore.com/hr/football/tournament/croatia/hnl/170#id:95727" style="color:#4D9FFF;">Sofascore</a>
+          </div>
         </div>
       </div>
 
-      <!-- HNL Tablica -->
+      <!-- Sofascore embed - strijelci/asistenti -->
+      <div class="tabl-section" id="sofascore-players-embed-section">
+        <div class="tabl-heading">⚡ HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:#4ADE80;">ScoreAxis</span></div>
+        <div id="sofascore-players-widget" style="min-height:60px;">
+          <div id="widget-clxemsc6i8l5" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;background-color: #111827;color: #F0F4FF;border: 1px solid;border-color: #2A3A5C;overflow: auto;border-radius:10px;">
+            <script src="https://widgets.scoreaxis.com/api/football/league-top-players/62323129995d465a9061e08c?widgetId=clxemsc6i8l5&lang=en&playersCount=10&goalsBlock=1&assistsBlock=1&cardsBlock=1&links=1&font=heebo&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto&bodyColor=%23111827&textColor=%23F0F4FF&linkColor=%234D9FFF&borderColor=%232A3A5C&tabColor=%231C2439" async></script>
+            <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="https://www.scoreaxis.com/" style="color: inherit;">Scoreaxis</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HNL Tablica (rezerva — ručni/scraper unos, ostaje kao fallback) -->
       <div class="tabl-section">
         <div class="tabl-heading">🇭🇷 HNL — Tablica
           <span id="hnl-tabl-season">2026/27</span>
@@ -6762,21 +6781,6 @@ async function tablLoad(){
   }
 }
 
-function tablComputePtsFromMatches(){
-  try{
-    if(!matches || !matches.length) return [];
-    const season = getSeason(new Date().toISOString().split('T')[0]);
-    const hnlMatches = matches
-      .filter(m => m.natjecanje==='HNL' && m.rezultat && getSeason(m.datum)===season)
-      .sort((a,b)=> a.datum<b.datum ? -1 : (a.datum>b.datum ? 1 : 0));
-    return hnlMatches.map((m,i)=>{
-      const parts = m.rezultat.split('-').map(Number);
-      const pts = parts[0]>parts[1] ? 3 : parts[0]===parts[1] ? 1 : 0;
-      return { kolo:i+1, pts };
-    });
-  }catch(e){ console.warn('Izračun grafa bodova nije uspio:', e); return []; }
-}
-
 function renderHnlScorersAssists(){
   const scEl = document.getElementById('hnl-scorers-list');
   const asEl = document.getElementById('hnl-assists-list');
@@ -6808,16 +6812,7 @@ async function renderTablica(){
     const el=document.getElementById(id); if(el) el.style.display=isAdmin?'flex':'none';
   });
   const ptsAdmin = document.getElementById('pts-graph-admin');
-  const ptsAutoNote = document.getElementById('pts-graph-auto-note');
-  const computedPts = tablComputePtsFromMatches();
-  if(computedPts.length >= 2){
-    _tablPts = computedPts;
-    if(ptsAutoNote) ptsAutoNote.style.display = '';
-    if(ptsAdmin) ptsAdmin.style.display = 'none';
-  } else {
-    if(ptsAutoNote) ptsAutoNote.style.display = 'none';
-    if(ptsAdmin) ptsAdmin.style.display = isAdmin ? 'flex' : 'none';
-  }
+  if(ptsAdmin) ptsAdmin.style.display = 'none'; // graf je sad potpuno automatski, izravno iz tablice
 
   // Europa section - show only if data
   const euroSec = document.getElementById('euro-tabl-section');
@@ -6923,44 +6918,43 @@ function tablRenderTable(type){
 function tablRenderGraph(){
   const el = document.getElementById('pts-graph-container');
   if(!el) return;
-  if(!_tablPts || _tablPts.length < 2){
+  if(!_tablHnl || !_tablHnl.length || !_tablHnl.some(r=>r.p>0)){
     el.innerHTML = `<div style="color:var(--text-muted);font-size:12px;text-align:center;padding:18px 0;">
-      ${_currentUser ? 'Dodaj podatke po kolima za prikaz grafa.' : 'Graf bodova bit će dostupan kada sezona počne.'}
+      Graf bodova bit će dostupan kada sezona počne.
     </div>`;
     return;
   }
-  const sorted = [..._tablPts].sort((a,b)=>a.kolo-b.kolo);
-  const maxPts = Math.max(...sorted.map(d=>d.pts));
-  const W = 600, H = 160, PAD = 30, BAR_GAP = 4;
+  const sorted = [..._tablHnl]
+    .map(r=>({club:r.club, pts:tablCalcPts(r)}))
+    .sort((a,b)=>b.pts-a.pts);
+
+  const maxPts = Math.max(1, ...sorted.map(d=>d.pts));
+  const W = 600, H = 170, PAD = 30, BAR_GAP = 4;
   const n = sorted.length;
   const barW = Math.max(8, Math.floor((W - PAD*2 - BAR_GAP*(n-1)) / n));
   const totalBarW = n*barW + (n-1)*BAR_GAP;
   const startX = (W - totalBarW) / 2;
 
-  let bars = '', labels = '', trend = '';
+  let bars = '', labels = '';
   sorted.forEach((d, i)=>{
-    const prev = i>0 ? sorted[i-1].pts : d.pts;
-    const isUp = d.pts >= prev;
-    const color = isUp ? '#4ADE80' : '#F87171';
-    const shadow = isUp ? '#4ADE8066' : '#F8717166';
-    const barH = maxPts > 0 ? Math.max(8, Math.round((d.pts / maxPts) * (H - 40))) : 8;
+    const isDinamo = (d.club||'').toLowerCase().includes('dinamo');
+    const color = isDinamo ? '#4D9FFF' : '#8B95A5';
+    const shadow = isDinamo ? '#4D9FFF66' : '#8B95A533';
+    const barH = Math.max(8, Math.round((d.pts / maxPts) * (H - 48)));
     const x = startX + i*(barW + BAR_GAP);
-    const y = H - 20 - barH;
+    const y = H - 28 - barH;
+    const shortClub = (d.club||'').replace(/^(HNK|NK|FC)\s+/i,'').slice(0,8);
     bars += `<rect class="pts-graph-bar" x="${x}" y="${y}" width="${barW}" height="${barH}"
-      rx="4" fill="${color}" opacity="0.85" style="filter:drop-shadow(0 2px 6px ${shadow})">
-      <title>Kolo ${d.kolo}: ${d.pts} bod</title></rect>`;
-    labels += `<text x="${x + barW/2}" y="${H - 4}" text-anchor="middle"
-      font-family="Barlow,sans-serif" font-size="9" fill="#6B7280">${d.kolo}</text>`;
+      rx="4" fill="${color}" opacity="0.9" style="filter:drop-shadow(0 2px 6px ${shadow})">
+      <title>${d.club}: ${d.pts} bod.</title></rect>`;
+    labels += `<text x="${x + barW/2}" y="${H - 12}" text-anchor="middle"
+      font-family="Barlow,sans-serif" font-size="8" fill="${isDinamo?'#4D9FFF':'#6B7280'}"
+      transform="rotate(-40,${x + barW/2},${H - 12})">${shortClub}</text>`;
     labels += `<text x="${x + barW/2}" y="${y - 3}" text-anchor="middle"
       font-family="Bebas Neue,sans-serif" font-size="11" fill="${color}">${d.pts}</text>`;
-    // trend line points
-    const cx = x + barW/2;
-    const cy = y;
-    trend += i===0 ? `M${cx},${cy}` : ` L${cx},${cy}`;
   });
 
   el.innerHTML = `<svg class="pts-graph-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
-    <path d="${trend}" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="4,3"/>
     ${bars}${labels}
     <text x="${PAD/2}" y="${H/2}" text-anchor="middle" font-family="Barlow,sans-serif" font-size="9"
       fill="#4B5563" transform="rotate(-90,${PAD/2},${H/2})">Bodovi</text>
