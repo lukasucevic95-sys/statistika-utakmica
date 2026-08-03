@@ -2175,7 +2175,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div id="sofascore-players-widget" style="min-height:60px;">
           <div style="border-radius:10px;overflow:hidden;border:1px solid #2A3A5C;">
             <div id="widget-clxemsc6i8l5" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;">
-              <script src="https://widgets.scoreaxis.com/api/football/league-top-players/62323129995d465a9061e08c?widgetId=clxemsc6i8l5&lang=en&playersCount=10&goalsBlock=1&assistsBlock=1&cardsBlock=1&links=1&font=heebo&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto" async></script>
               <div class="widget-main-link" style="padding: 6px 12px;font-weight: 500;">Live data by <a href="https://www.scoreaxis.com/" style="color: inherit;">Scoreaxis</a></div>
             </div>
           </div>
@@ -2385,18 +2384,31 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
   <div class="karte-main">
     <div class="karte-header-bar">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;">Nadolazeće utakmice — status karata</div>
-      <button class="karte-refresh-btn" id="karte-refresh-btn" onclick="loadKarte()">
-        <svg id="karte-refresh-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        Osvježi
-      </button>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;">⚡ Uživo — zona-karata.live</div>
+      <a href="https://zona-karata.live" target="_blank" rel="noopener" class="karte-refresh-btn" style="text-decoration:none;">🔗 Otvori u novom tabu</a>
     </div>
-    <div id="karte-content">
-      <div class="karte-loading-state">
-        <div class="karte-loading-dot"></div>
-        <div class="karte-loading-dot"></div>
-        <div class="karte-loading-dot"></div>
-        <span>Dohvaćam podatke s zona-karata.live...</span>
+    <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:24px;">
+      <iframe src="https://zona-karata.live" title="Zona Karata — status ulaznica uživo" style="width:100%;height:850px;border:none;display:block;background:#0A0F1E;" loading="lazy"></iframe>
+    </div>
+
+    <div style="text-align:center;margin-bottom:8px;">
+      <a href="javascript:void(0)" onclick="const el=document.getElementById('karte-rezervni');el.style.display=el.style.display==='none'?'':'none';" style="font-size:11px;color:var(--text-muted);text-decoration:underline;">🔧 Prikaži rezervni prikaz (ručni unos / scraper)</a>
+    </div>
+    <div id="karte-rezervni" style="display:none;">
+      <div class="karte-header-bar">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--text-muted);">Rezervni prikaz (ručni unos / scraper)</div>
+        <button class="karte-refresh-btn" id="karte-refresh-btn" onclick="loadKarte()">
+          <svg id="karte-refresh-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Osvježi
+        </button>
+      </div>
+      <div id="karte-content">
+        <div class="karte-loading-state">
+          <div class="karte-loading-dot"></div>
+          <div class="karte-loading-dot"></div>
+          <div class="karte-loading-dot"></div>
+          <span>Dohvaćam podatke s zona-karata.live...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -6318,6 +6330,24 @@ const TABL_HNL_DEFAULT = [
 let _tablHnl  = null;
 let _tablEuro = null;
 let _currentSchedPage = 'raspored';
+let _scoreAxisLoaded = false;
+
+function loadScoreAxisWidget(){
+  // ScoreAxisova skripta interno provjerava je li njihov "Live data by Scoreaxis"
+  // link stvarno vidljiv (ne display:none) u trenutku pokretanja — zato je NE smijemo
+  // učitati dok je tab "Tablica" još sakriven, inače njihova provjera pogrešno javi
+  // "hidden by styles" i widget se nikad ne inicijalizira. Zato je učitavamo tek ovdje,
+  // lijeno, u trenutku kad korisnik stvarno otvori taj tab (kad je već display:'').
+  if(_scoreAxisLoaded) return;
+  _scoreAxisLoaded = true;
+  const container = document.getElementById('widget-clxemsc6i8l5');
+  if(!container) return;
+  const script = document.createElement('script');
+  script.src = 'https://widgets.scoreaxis.com/api/football/league-top-players/62323129995d465a9061e08c?widgetId=clxemsc6i8l5&lang=en&playersCount=10&goalsBlock=1&assistsBlock=1&cardsBlock=1&links=1&font=heebo&fontSize=14&rowDensity=100&widgetWidth=auto&widgetHeight=auto';
+  script.async = true;
+  container.appendChild(script);
+}
+window.loadScoreAxisWidget = loadScoreAxisWidget;
 
 function switchSchedPage(page){
   _currentSchedPage = page;
@@ -6327,7 +6357,7 @@ function switchSchedPage(page){
   document.getElementById('ptab-raspored').classList.toggle('active', page==='raspored');
   document.getElementById('ptab-tablica').classList.toggle('active',  page==='tablica');
   document.getElementById('ptab-compare').classList.toggle('active',  page==='compare');
-  if(page==='tablica') renderTablica();
+  if(page==='tablica'){ renderTablica(); loadScoreAxisWidget(); }
   if(page==='compare') initSeasonCompare();
 }
 window.switchSchedPage = switchSchedPage;
