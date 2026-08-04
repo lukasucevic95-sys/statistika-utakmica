@@ -498,7 +498,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .pred-type-tabs{flex-direction:column;gap:6px;}
   .leaderboard{gap:10px;}
   .lb-score{font-size:38px;}
-  .hnl-scorers-grid{grid-template-columns:1fr!important;}
 }
 @media(max-width:768px){
   .header{padding:22px 18px 0 18px;overflow:hidden;display:flex;flex-direction:column;}
@@ -1458,7 +1457,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <select class="form-input" id="g-match-select" onchange="_autoFillClub()"></select>
         </div>
         <div class="goal-form-row"><label class="form-label">Igrač / Strijelac</label>
-          <input class="form-input" type="text" id="g-player" placeholder="Ime igrača">
+          <input class="form-input" type="text" id="g-player" list="g-player-list" placeholder="Ime igrača" autocomplete="off">
+          <datalist id="g-player-list"></datalist>
         </div>
         <div class="goal-form-row"><label class="form-label">Minuta</label>
           <input class="form-input" type="text" id="g-minute" placeholder="npr. 23 ili 45+">
@@ -2160,7 +2160,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
       <!-- Sofascore embed (uživo, bez scrapanja) -->
       <div class="tabl-section" id="sofascore-embed-section">
-        <div class="tabl-heading">⚡ HNL — Tablica uživo <span style="font-size:9px;font-weight:400;color:#4ADE80;">Sofascore</span></div>
+        <div class="tabl-heading">🇭🇷 HNL — Tablica uživo <span style="font-size:9px;font-weight:400;color:#4ADE80;">Sofascore</span></div>
         <div id="sofascore-tablica-widget" style="min-height:60px;">
           <iframe id="sofa-standings-embed-48-95727" src="https://widgets.sofascore.com/hr-HR/embed/tournament/48/season/95727/standings/HNL%2026%2F27?widgetTitle=HNL%2026%2F27&showCompetitionLogo=true" style="height:723px!important;max-width:768px!important;width:100%!important;" frameborder="0" scrolling="no"></iframe>
           <div style="font-size:11px;font-family:Arial,sans-serif;text-align:left;color:var(--text-muted);margin-top:4px;">
@@ -2171,7 +2171,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
       <!-- Sofascore embed - strijelci/asistenti -->
       <div class="tabl-section" id="sofascore-players-embed-section">
-        <div class="tabl-heading">⚡ HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:#4ADE80;">ScoreAxis</span></div>
+        <div class="tabl-heading">⚽👟 HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:#4ADE80;">ScoreAxis</span></div>
         <div id="sofascore-players-widget" style="min-height:60px;">
           <div style="border-radius:10px;overflow:hidden;border:1px solid #2A3A5C;">
             <div id="widget-clxemsc6i8l5" class="scoreaxis-widget" style="width: auto;height: auto;font-size: 14px;">
@@ -2181,58 +2181,29 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         </div>
       </div>
 
-      <!-- HNL Tablica (rezerva — ručni/scraper unos, ostaje kao fallback) -->
-      <div class="tabl-section">
-        <div class="tabl-heading">🇭🇷 HNL — Tablica
-          <span id="hnl-tabl-season">2026/27</span>
-          <span id="hnl-tabl-live-note" style="display:none;font-size:9px;font-weight:400;color:#4ADE80;margin-left:8px;">🔄 uživo (TheSportsDB)</span>
-          <button class="tabl-btn-sm" style="margin-left:auto;font-size:10px;" onclick="tablLoad().then(renderTablica)" title="Ručno ponovno učitaj tablicu iz baze">🔃 Osvježi</button>
-        </div>
-        <div class="tabl-wrap">
-          <table class="tabl-table">
-            <thead>
-              <tr>
-                <th style="width:28px;">#</th>
-                <th class="left">Klub</th>
-                <th class="hide-mobile">U</th>
-                <th class="hide-mobile">P</th>
-                <th class="hide-mobile">N</th>
-                <th class="hide-mobile">G</th>
-                <th class="hide-mobile">GR</th>
-                <th>GD</th>
-                <th>Bod</th>
-                <th>Forma</th>
-              </tr>
-            </thead>
-            <tbody id="hnl-tabl-body"></tbody>
-          </table>
-          <div id="hnl-tabl-admin" style="display:none;" class="tabl-admin-row">
-            <button class="tabl-btn-sm" onclick="tablAddRow('hnl')">➕ Dodaj klub</button>
-            <button class="tabl-btn-sm" onclick="tablEditAll('hnl')">✏️ Uredi sve</button>
-            <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetTable('hnl')">🗑️ Reset</button>
-          </div>
-          <div id="hnl-tabl-api-note" style="display:none;font-size:10px;color:var(--text-muted);padding:6px 10px;">ℹ️ Automatski scraper još nije spremio podatke. Ažuriraj ručno gumbima iznad dok se scraper prvi put ne pokrene.</div>
-        </div>
-      </div>
-
-      <!-- HNL Strijelci / Asistenti -->
-      <div class="tabl-section" id="hnl-scorers-section">
-        <div class="tabl-heading">⚽ HNL — Strijelci i asistenti <span style="font-size:9px;font-weight:400;color:var(--text-muted);">(tekuća sezona)</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;" class="hnl-scorers-grid">
-          <div>
-            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">⚽ Strijelci</div>
-            <div id="hnl-scorers-list"></div>
-          </div>
-          <div>
-            <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🎯 Asistenti</div>
-            <div id="hnl-assists-list"></div>
-          </div>
-        </div>
-      </div>
-
       <!-- Europa Tablica -->
+      <!-- Sofascore embed - Europa ždrijeb -->
+      <div class="tabl-section" id="sofascore-europa-embed-section">
+
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">UCL Q raspored</div>
+        <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:8px;">
+          <iframe id="sofa-cupTree-embed-7-96518-10858876" src="https://widgets.sofascore.com/hr-HR/embed/unique-tournament/7/season/96518/cuptree/10858876?widgetTitle=UEFA%20Champions%20League%2026%2F27%2C%20Playoff%20Round&showCompetitionLogo=true&widgetTheme=light" style="height:344px!important;max-width:700px!important;width:100%!important;" frameborder="0" scrolling="yes"></iframe>
+        </div>
+        <div style="font-size:11px;font-family:Arial,sans-serif;text-align:left;color:var(--text-muted);margin-bottom:18px;">
+          Prikaz ždrijeba omogućuje <a target="_blank" href="https://www.sofascore.com/hr/football/tournament/europe/uefa-champions-league/7#id:96518" style="color:#4D9FFF;">Sofascore</a>
+        </div>
+
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px;">UCL Q kostur utakmica</div>
+        <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:8px;">
+          <iframe id="sofa-cupTree-embed-7-96518-10855877" src="https://widgets.sofascore.com/hr-HR/embed/unique-tournament/7/season/96518/cuptree/10855877?widgetTitle=UEFA%20Champions%20League%2026%2F27%2C%20Qualification&showCompetitionLogo=true&widgetTheme=light" style="height:696px!important;max-width:700px!important;width:100%!important;" frameborder="0" scrolling="yes"></iframe>
+        </div>
+        <div style="font-size:11px;font-family:Arial,sans-serif;text-align:left;color:var(--text-muted);">
+          Prikaz ždrijeba omogućuje <a target="_blank" href="https://www.sofascore.com/hr/football/tournament/europe/uefa-champions-league/7#id:96518" style="color:#4D9FFF;">Sofascore</a>
+        </div>
+      </div>
+
       <div class="tabl-section" id="euro-tabl-section">
-        <div class="tabl-heading">⭐ Europa — Tablica
+        <div class="tabl-heading">⭐ Europa — Tablica (ručno, rezerva)
           <span id="euro-tabl-label" style="color:#b39aff;">UCL</span>
         </div>
         <div class="tabl-wrap">
@@ -2258,26 +2229,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <button class="tabl-btn-sm" onclick="tablEditAll('euro')">✏️ Uredi sve</button>
             <button class="tabl-btn-sm tabl-btn-red" onclick="tablResetTable('euro')">🗑️ Reset</button>
           </div>
-        </div>
-      </div>
-
-      <!-- Legenda -->
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;">
-        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
-          <div style="width:3px;height:14px;border-radius:2px;background:#1565C0;"></div>
-          <span class="comp-badge ucl">UCL</span> 1. mjesto — UCL kvalifikacije
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
-          <div style="width:3px;height:14px;border-radius:2px;background:#00965A;"></div>
-          <span class="comp-badge ecl">ECL</span> 2.–4. mjesto — ECL kvalifikacije
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
-          <div style="width:3px;height:14px;border-radius:2px;background:#F97316;"></div>
-          <span class="comp-badge playoff">KVO</span> 9. mjesto — kval. za ostanak
-        </div>
-        <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);">
-          <div style="width:3px;height:14px;border-radius:2px;background:#EF4444;"></div>
-          <span class="comp-badge rel">ISP</span> 10. mjesto — ispadanje iz HNL
         </div>
       </div>
 
@@ -3504,8 +3455,13 @@ function schedPopulateAddSelect(){
   const sel = document.getElementById('f-sched-pick');
   if(!sel || !_schedMatches) return;
   const recordedKeys = new Set((matches||[]).map(m=>m.datum+'|'+officialName(m.protivnik||'').toLowerCase()));
+  // Utakmice starije od 3 dana maknemo iz izbora — ako nisi stigao unijeti rezultat
+  // odmah, vjerojatno više ne treba zatrpavati padajući izbornik njome.
+  const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-3); cutoff.setHours(0,0,0,0);
+  const cutoffNum = cutoff.getFullYear()*10000 + (cutoff.getMonth()+1)*100 + cutoff.getDate();
   const opts = _schedMatches
     .filter(m=>!recordedKeys.has(m.datum+'|'+officialName(m.opp||'').toLowerCase()))
+    .filter(m=>m.sortDate>=cutoffNum)
     .slice()
     .sort((a,b)=>a.sortDate-b.sortDate);
   const cur = sel.value;
@@ -4346,8 +4302,25 @@ function populateMatchSelect(){
   sel.innerHTML=sorted.map(m=>`<option value="${m.datum}||${m.protivnik}">${fmtDate(m.datum)} vs ${officialName(m.protivnik)} (${m.natjecanje})</option>`).join('');
   // auto-fill club if conceded type is selected
   if(document.getElementById('g-type')?.value==='conceded') _autoFillClub();
+  populatePlayerDatalist();
 }
 window.populateMatchSelect=populateMatchSelect;
+
+function populatePlayerDatalist(){
+  // Ponudi već upisane strijelce kao prijedloge (autocomplete) — najplodniji prvi,
+  // da se ne mora svaki put ručno upisivati isto ime.
+  const dl = document.getElementById('g-player-list');
+  if(!dl) return;
+  const counts = {};
+  (goals||[]).forEach(g=>{
+    const n=(g.player||'').trim();
+    if(!n || g.type==='conceded') return;
+    counts[n]=(counts[n]||0)+1;
+  });
+  const names = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]);
+  dl.innerHTML = names.map(n=>`<option value="${n.replace(/"/g,'&quot;')}"></option>`).join('');
+}
+window.populatePlayerDatalist = populatePlayerDatalist;
 
 function _autoFillClub(){
   const v=document.getElementById('g-match-select')?.value||'';
@@ -6756,84 +6729,36 @@ function runSeasonCompare(){
 window.runSeasonCompare=runSeasonCompare;
 
 let _tablHnlUpdated = null;
-let _tablScorers = [];
-let _tablAssists = [];
 async function tablLoad(){
   try{
-    const [snapHnl, snapEuro, snapUpd, snapSc, snapAs] = await Promise.all([
+    const [snapHnl, snapEuro, snapUpd] = await Promise.all([
       get(ref(db,'tablica_hnl')),
       get(ref(db,'tablica_euro')),
       get(ref(db,'tablica_hnl_updated')),
-      get(ref(db,'tablica_hnl_strijelci')),
-      get(ref(db,'tablica_hnl_asistenti')),
     ]);
     _tablHnl  = snapHnl.exists()  ? snapHnl.val()  : JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = snapEuro.exists() ? snapEuro.val() : [];
     _tablHnlUpdated = snapUpd.exists() ? snapUpd.val() : null;
-    _tablScorers = snapSc.exists() ? (snapSc.val()||[]) : [];
-    _tablAssists = snapAs.exists() ? (snapAs.val()||[]) : [];
   }catch(e){
     _tablHnl  = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     _tablEuro = [];
     _tablHnlUpdated = null;
-    _tablScorers = [];
-    _tablAssists = [];
   }
 }
-
-function renderHnlScorersAssists(){
-  const scEl = document.getElementById('hnl-scorers-list');
-  const asEl = document.getElementById('hnl-assists-list');
-  if(!scEl || !asEl) return;
-  const rowHtml = (rank, name, club, count) => {
-    const isDinamo = (club||'').toLowerCase().includes('dinamo');
-    return `<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;${isDinamo?'background:rgba(30,58,138,0.15);border-radius:6px;':''}">
-      <span style="font-size:10px;color:var(--text-muted);width:14px;">${rank}.</span>
-      <span style="flex:1;font-size:12px;color:#fff;${isDinamo?'font-weight:700;':''}">${name}</span>
-      <span style="font-size:10px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">${club}</span>
-      <span style="font-size:13px;font-weight:800;color:#4D9FFF;min-width:18px;text-align:right;">${count}</span>
-    </div>`;
-  };
-  scEl.innerHTML = (_tablScorers && _tablScorers.length)
-    ? _tablScorers.slice(0,10).map((s,i)=>rowHtml(i+1, s.player, s.club, s.goals)).join('')
-    : `<div style="font-size:11px;color:var(--text-muted);padding:8px;">Podaci još nisu dostupni.</div>`;
-  asEl.innerHTML = (_tablAssists && _tablAssists.length)
-    ? _tablAssists.slice(0,10).map((s,i)=>rowHtml(i+1, s.player, s.club, s.assists)).join('')
-    : `<div style="font-size:11px;color:var(--text-muted);padding:8px;">Podaci još nisu dostupni.</div>`;
-}
-window.renderHnlScorersAssists = renderHnlScorersAssists;
 
 async function renderTablica(){
   if(!_tablHnl) await tablLoad();
   const isAdmin = !!_currentUser;
 
-  // admin controls
-  ['hnl-tabl-admin','euro-tabl-admin'].forEach(id=>{
-    const el=document.getElementById(id); if(el) el.style.display=isAdmin?'flex':'none';
-  });
+  // admin controls (samo Europa tablica - HNL sad dolazi sa Sofascore embeda)
+  const euroAdmin = document.getElementById('euro-tabl-admin');
+  if(euroAdmin) euroAdmin.style.display = isAdmin ? 'flex' : 'none';
 
   // Europa section - show only if data
   const euroSec = document.getElementById('euro-tabl-section');
   if(euroSec) euroSec.style.display = (_tablEuro && _tablEuro.length) ? '' : (isAdmin ? '' : 'none');
 
-  // Automatski dohvat sad radi GitHub Actions scraper u pozadini (piše u tablica_hnl),
-  // ovdje samo prikazujemo kad je zadnje ažurirano.
-  const liveNote = document.getElementById('hnl-tabl-live-note');
-  const apiNote  = document.getElementById('hnl-tabl-api-note');
-  if(_tablHnlUpdated && liveNote){
-    const d = new Date(_tablHnlUpdated);
-    const stamp = isNaN(d.getTime()) ? _tablHnlUpdated : d.toLocaleString('hr-HR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-    liveNote.textContent = `🔄 ažurirano ${stamp}`;
-    liveNote.style.display = '';
-    if(apiNote) apiNote.style.display = 'none';
-  } else {
-    if(liveNote) liveNote.style.display = 'none';
-    if(apiNote) apiNote.style.display = isAdmin ? '' : 'none';
-  }
-
-  tablRenderTable('hnl');
   tablRenderTable('euro');
-  renderHnlScorersAssists();
 }
 window.renderTablica = renderTablica;
 
