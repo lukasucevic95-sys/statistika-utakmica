@@ -83,6 +83,10 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .leg-dinamo{background:rgba(0,87,184,0.35);color:#fff;}.leg-dinamo .legend-dot{background:#1D4ED8;}
 /* Rep sub-filter bar */
 .rep-subfilter{display:none;flex-wrap:wrap;gap:5px;padding:6px 16px 8px;background:rgba(204,0,0,0.06);border-top:1px solid rgba(204,0,0,0.15);}
+.rep-subfilter.ucl-tint{background:rgba(27,45,107,0.1);border-top:1px solid rgba(59,91,219,0.2);}
+.rep-subfilter.ucl-tint .leg-sub{background:rgba(27,45,107,0.18);color:#8FA6EE;border-color:rgba(59,91,219,0.3);}
+.rep-subfilter.ucl-tint .leg-sub:hover{background:rgba(27,45,107,0.3);}
+.rep-subfilter.ucl-tint .leg-sub.active{background:rgba(27,45,107,0.45);border-color:#3B5BDB;color:#fff;}
 .rep-subfilter.open{display:flex;}
 .leg-sub{padding:3px 10px;font-size:10px;border-width:1px;border-style:solid;border-radius:100px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.2s;background:rgba(204,0,0,0.12);color:#FCA5A5;border-color:rgba(204,0,0,0.25);}
 .leg-sub:hover{background:rgba(204,0,0,0.25);}
@@ -1355,7 +1359,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <div class="legend-item leg-all active" onclick="gFilterComp('all',this)"><span class="legend-dot"></span>Sve</div>
     <div class="legend-item leg-dinamo" onclick="gFilterComp('dinamo',this)"><span class="legend-dot"></span>Dinamo</div>
     <div class="legend-item leg-hnl" onclick="gFilterComp('HNL',this)"><span class="legend-dot"></span>HNL</div>
-    <div class="legend-item leg-ucl" onclick="gFilterComp('UCL',this)"><span class="legend-dot"></span>UCL</div>
+    <div class="legend-item leg-ucl" onclick="gFilterComp('UCL',this);toggleRepSubfilter('ucl-goals')"><span class="legend-dot"></span>UCL ▾</div>
     <div class="legend-item leg-uel" onclick="gFilterComp('UEL',this)"><span class="legend-dot"></span>UEL</div>
     <div class="legend-item leg-ecl" onclick="gFilterComp('ECL',this)"><span class="legend-dot"></span>ECL</div>
     <div class="legend-item leg-kup" onclick="gFilterComp('Kup',this)"><span class="legend-dot"></span>Kup</div>
@@ -1370,6 +1374,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <span class="leg-sub" onclick="gFilterRepSub('UEFA EURO',this)">UEFA EURO</span>
     <span class="leg-sub" onclick="gFilterRepSub('FIFA World Cup',this)">FIFA World Cup</span>
     <span class="leg-sub" onclick="gFilterRepSub('Reprezentacija',this)">Prijateljska</span>
+  </div>
+  <div class="rep-subfilter ucl-tint" id="rep-subfilter-ucl-goals">
+    <span class="leg-sub active" onclick="gFilterUclSub('all',this)">Sve UCL</span>
+    <span class="leg-sub" onclick="gFilterUclSub('UCL',this)">Grupna faza</span>
+    <span class="leg-sub" onclick="gFilterUclSub('UCL Q',this)">Kvalifikacije</span>
+    <span class="leg-sub" onclick="gFilterUclSub('UCL Play-off',this)">Play-off</span>
   </div>
 
   <div class="g-main">
@@ -3368,6 +3378,15 @@ function filterRepSub(comp,el,which){
 window.filterRepSub=filterRepSub;
 
 let gRepSub='rep';
+let gUclSub='all';
+window.gFilterUclSub=function(sub,el){
+  gUclSub=sub;
+  document.querySelectorAll('#rep-subfilter-ucl-goals .leg-sub').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  _selectedBucket=-1;
+  document.getElementById('min-detail-panel')?.classList.remove('open');
+  renderGoalStats();renderPlayerStats();
+};
 window.gFilterRepSub=function(comp,el){
   gRepSub=comp;
   document.querySelectorAll('#rep-subfilter-goals .leg-sub').forEach(e=>e.classList.remove('active'));
@@ -3956,6 +3975,12 @@ function getFilteredGoals(){
         if(gRepSub==='rep') return REP_COMPS.includes(m.natjecanje);
         return m.natjecanje===gRepSub;
       }
+      if(gCompFilter==='UCL'){
+        if(gUclSub==='all') return ['UCL','UCL Q','UCL Play-off'].includes(m.natjecanje);
+        return m.natjecanje===gUclSub;
+      }
+      if(gCompFilter==='UEL') return ['UEL','UEL Q'].includes(m.natjecanje);
+      if(gCompFilter==='ECL') return ['ECL','ECL Q'].includes(m.natjecanje);
       return m.natjecanje===gCompFilter;
     }
     return true;
@@ -3971,6 +3996,12 @@ window.gFilterComp=function(filter,el){
   if(filter!=='rep'){
     document.getElementById('rep-subfilter-goals').classList.remove('open');
     gRepSub='rep';
+  }
+  if(filter!=='UCL'){
+    document.getElementById('rep-subfilter-ucl-goals').classList.remove('open');
+    gUclSub='all';
+    document.querySelectorAll('#rep-subfilter-ucl-goals .leg-sub').forEach(e=>e.classList.remove('active'));
+    document.querySelector('#rep-subfilter-ucl-goals .leg-sub')?.classList.add('active');
   }
   renderGoalStats();renderPlayerStats();
 };
