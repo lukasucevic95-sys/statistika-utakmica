@@ -1,26 +1,21 @@
 {
-  "name": "GNK Dinamo Zagreb · Statistika",
+  "name": "GNK Dinamo Zagreb",
   "short_name": "Dinamo",
-  "description": "Statistika utakmica, golovi, raspored i karte GNK Dinamo Zagreb",
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#060C1A",
-  "theme_color": "#060C1A",
-  "orientation": "portrait-primary",
+  "background_color": "#060d1f",
+  "theme_color": "#0a1e4a",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "categories": ["sports", "utilities"],
-  "lang": "hr"
+  ]
 }
