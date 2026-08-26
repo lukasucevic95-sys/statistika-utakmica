@@ -1196,7 +1196,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="form-row"><label class="form-label">Početak (hh:mm)</label><input class="form-input" type="time" id="f-vrijeme" placeholder="npr. 20:30"></div>
           <div class="form-row"><label class="form-label">Natjecanje</label>
             <select class="form-select" id="f-natjecanje" onchange="updateBtnColor();_updateRepHint()">
-              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
+              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UCL Play-off</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
               <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
               <option>Super kup</option><option>Kup</option>
             </select>
@@ -1546,7 +1546,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <div class="modal-row"><label class="form-label">Početak (hh:mm)</label><input class="form-input-pred" type="time" id="em-vrijemePoc"></div>
       <div class="modal-row"><label class="form-label">Natjecanje</label>
         <select class="form-input-pred" id="em-natjecanje" onchange="_updateEditRepHint()">
-          <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
+          <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UCL Play-off</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
           <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
           <option>Reprezentacija</option><option>Super kup</option><option>Kup</option>
         </select>
@@ -1679,6 +1679,18 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         </div>
       </div>
 
+      <!-- GRAF BODOVA PO KOLIMA -->
+      <div class="pred-chart-card" id="pred-rounds-chart-card">
+        <div class="pred-chart-header">
+          <span class="section-title" style="color:#fff">📈 Bodovi po kolima</span>
+          <div class="pred-chart-legend">
+            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
+            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
+          </div>
+        </div>
+        <div id="pred-rounds-chart"></div>
+      </div>
+
       <div class="pred-type-tabs">
         <div class="pred-type-tab active-home" id="pred-tab-home" onclick="switchPredType('home',this)">🏟️ DOMAĆE</div>
         <div class="pred-type-tab" id="pred-tab-away" onclick="switchPredType('away',this)">✈️ GOSTOVANJE</div>
@@ -1703,8 +1715,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         </div>
       </div>
 
-      <div class="score-legend">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;margin-bottom:6px;color:#fff;">BODOVANJE</div>
+      <div class="score-legend" style="padding:0;">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+          <span>📖 BODOVANJE</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div style="display:none;padding:10px 14px 14px;display:flex;flex-direction:column;gap:5px;">
         <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan rezultat (konačni)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
@@ -1715,11 +1731,15 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div class="score-legend-item"><div class="sl-dot" style="background:#C4B5FD"></div>2 boda — točan poluvremeni rezultat</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
         <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji + oba kašnjenja</div>
+        </div>
       </div>
 
       <div class="form-card">
-        <div class="card-header">➕ Nova predikcija</div>
-        <div class="form-body">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+          <span>➕ Nova predikcija</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div class="form-body" style="display:none;">
           <div class="form-group"><label class="form-label">📅 Iz rasporeda (automatski popuni)</label>
             <select class="form-input-pred" id="p-sched-pick" onchange="predFillFromSchedule()">
               <option value="">— Odaberi utakmicu iz rasporeda —</option>
@@ -1729,7 +1749,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <div class="form-group"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="p-datum"></div>
             <div class="form-group"><label class="form-label">Natjecanje</label>
               <select class="form-input-pred" id="p-natjecanje">
-                <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
+                <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UCL Play-off</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
                 <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
                 <option>Super kup</option><option>Kup</option>
               </select>
@@ -1794,8 +1814,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         </div>
 
         <!-- Away score legend -->
-        <div class="score-legend" style="margin-bottom:14px;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;margin-bottom:5px;color:#F87171;">BODOVANJE — GOSTOVANJE</div>
+        <div class="score-legend" style="margin-bottom:14px;padding:0;">
+          <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+            <span style="color:#F87171;">📖 BODOVANJE — GOSTOVANJE</span>
+            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          </div>
+          <div style="display:none;padding:10px 14px 14px;display:flex;flex-direction:column;gap:5px;">
           <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan konačni rezultat</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
@@ -1804,12 +1828,16 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
           <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji</div>
+          </div>
         </div>
 
         <!-- Away form -->
         <div class="form-card">
-          <div class="card-header">✈️ Nova gostujuća predikcija</div>
-          <div class="form-body">
+          <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+            <span>✈️ Nova gostujuća predikcija</span>
+            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          </div>
+          <div class="form-body" style="display:none;">
             <div class="form-group"><label class="form-label">📅 Iz rasporeda (automatski popuni)</label>
               <select class="form-input-pred" id="pa-sched-pick" onchange="predFillAwayFromSchedule()">
                 <option value="">— Odaberi utakmicu iz rasporeda —</option>
@@ -1819,7 +1847,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <div class="form-group"><label class="form-label">Datum</label><input class="form-input-pred" type="date" id="pa-datum"></div>
               <div class="form-group"><label class="form-label">Natjecanje</label>
                 <select class="form-input-pred" id="pa-natjecanje">
-                  <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
+                  <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UCL Play-off</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option>
                   <option>Liga Nacija</option><option>FIFA WCQ</option><option>UEFA EURO Q</option><option>UEFA EURO</option><option>FIFA World Cup</option>
                   <option>Super kup</option><option>Kup</option>
                 </select>
@@ -1850,18 +1878,6 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           </div>
         </div>
       </div><!-- end pred-away-section -->
-    </div>
-
-    <!-- GRAF BODOVA PO KOLIMA -->
-    <div class="pred-chart-card" id="pred-rounds-chart-card">
-      <div class="pred-chart-header">
-        <span class="section-title" style="color:#fff">📈 Bodovi po kolima</span>
-        <div class="pred-chart-legend">
-          <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
-          <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
-        </div>
-      </div>
-      <div id="pred-rounds-chart"></div>
     </div>
 
     <div class="preds-section">
@@ -2875,8 +2891,8 @@ function filterMatches(){
       else pass=m.natjecanje===currentRepSub;
     }
     else if(currentFilter!=='all'){
-    // UCL filter prikazuje i UCL Q, UEL→UEL Q, ECL→ECL Q
-    const qMap={'UCL':['UCL','UCL Q'],'UEL':['UEL','UEL Q'],'ECL':['ECL','ECL Q']};
+    // UCL filter prikazuje i UCL Q, UCL Play-off; UEL→UEL Q; ECL→ECL Q
+    const qMap={'UCL':['UCL','UCL Q','UCL Play-off'],'UEL':['UEL','UEL Q'],'ECL':['ECL','ECL Q']};
     pass=qMap[currentFilter]?qMap[currentFilter].includes(m.natjecanje):m.natjecanje===currentFilter;
   }
     if(!pass) return false;
@@ -3550,6 +3566,16 @@ function schedFillMatchForm(){
 window.schedFillMatchForm = schedFillMatchForm;
 
 // ===== Auto-popuna forme "Nova predikcija" (doma) iz rasporeda =====
+// Sklapanje/otvaranje kartica u prediktoru (Bodovanje, Nova predikcija)
+function toggleCollapse(headerEl){
+  const body = headerEl.nextElementSibling;
+  const chevron = headerEl.querySelector('.collapse-chevron');
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'flex';
+  if(chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+window.toggleCollapse = toggleCollapse;
+
 function predPopulateSchedSelect(){
   const sel = document.getElementById('p-sched-pick');
   if(!sel || !_schedMatches) return;
@@ -5376,7 +5402,7 @@ function renderKarte(){
           <div><label class="form-label">Protivnik</label><input class="form-input" type="text" id="km-prot" placeholder="npr. Hajduk" style="width:100%;"></div>
           <div><label class="form-label">Natjecanje</label>
             <select class="form-select" id="km-nat" style="width:100%;">
-              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option><option>Kup</option><option>Super kup</option>
+              <option>HNL</option><option>UCL</option><option>UCL Q</option><option>UCL Play-off</option><option>UEL</option><option>UEL Q</option><option>ECL</option><option>ECL Q</option><option>Kup</option><option>Super kup</option>
             </select>
           </div>
         </div>
