@@ -413,6 +413,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .prc-tooltip-wrap{position:relative;}
 .prc-point{cursor:pointer;}
 .prc-point:hover{r:6;}
+.prc-hit{cursor:pointer;}
+.prc-toggle-btn{padding:6px 14px;border-radius:100px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;}
+.prc-toggle-btn.active{background:rgba(96,165,250,0.18);border-color:#60A5FA;color:#fff;}
+.prc-toggle-btn:hover{border-color:rgba(96,165,250,0.5);}
+.prc-tooltip{position:absolute;z-index:20;background:#0A1A3E;border:1px solid rgba(96,165,250,0.4);border-radius:10px;padding:10px 12px;min-width:150px;box-shadow:0 8px 24px rgba(0,0,0,0.5);pointer-events:none;animation:prcTipIn 0.15s ease-out;}
+@keyframes prcTipIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 .preds-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
 .filter-tabs{display:flex;gap:5px;}
 .filter-tab{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:5px 10px;color:var(--text-muted);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;}
@@ -1699,7 +1705,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
           </div>
         </div>
-        <div id="pred-rounds-chart"></div>
+        <div id="pred-rounds-chart" style="position:relative;"></div>
       </div>
 
       <div class="pred-type-tabs">
@@ -4838,6 +4844,14 @@ function renderTotalLB(){
 window.renderTotalLB=renderTotalLB;
 
 /* ===== GRAF BODOVA PO KOLIMA ===== */
+let _predChartMode = 'cumulative';
+window.setPredChartMode = function(mode, el){
+  _predChartMode = mode;
+  document.querySelectorAll('#pred-chart-toggle .prc-toggle-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderRoundsChart();
+};
+
 function renderRoundsChart(){
   const el=document.getElementById('pred-rounds-chart');
   if(!el) return;
@@ -4849,12 +4863,17 @@ function renderRoundsChart(){
   ].filter(p=>p.resolved && p.luka?.score && p.lovro?.score)
    .sort((a,b)=>a.datum<b.datum?-1:a.datum>b.datum?1:0);
 
+  const toggleHTML = `<div id="pred-chart-toggle" style="display:flex;gap:6px;margin-bottom:12px;">
+    <button class="prc-toggle-btn${_predChartMode==='cumulative'?' active':''}" onclick="setPredChartMode('cumulative',this)">📈 Kumulativno</button>
+    <button class="prc-toggle-btn${_predChartMode==='perMatch'?' active':''}" onclick="setPredChartMode('perMatch',this)">📊 Po utakmici</button>
+  </div>`;
+
   if(all.length===0){
-    el.innerHTML='<div class="prc-empty">📊 Nema još završenih utakmica za prikaz grafa.</div>';
+    el.innerHTML=toggleHTML+'<div class="prc-empty">📊 Nema još završenih utakmica za prikaz grafa.</div>';
     return;
   }
 
-  // Kumulativni bodovi kroz kola
+  // Kumulativni bodovi + bodovi te utakmice, kroz kola
   let lCum=0, loCum=0;
   const points=all.map((p,i)=>{
     lCum+=p.luka.score.pts;
@@ -4863,12 +4882,97 @@ function renderRoundsChart(){
       idx:i+1,
       luka:lCum,
       lovro:loCum,
+      lukaMatch:p.luka.score.pts,
+      lovroMatch:p.lovro.score.pts,
+      opp:p.protivnik,
+      nat:p.natjecanje||'',
+      isAway:p._isAway,
       label:`${p._isAway?'✈️':'🏟️'} ${p.protivnik}`,
       datum:p.datum
     };
   });
+  _predChartPoints = points; // globalno spremljeno za tooltip klikove
 
-  const W=Math.max(320, points.length*46), H=200;
+  el.innerHTML = toggleHTML + `<div id="pred-chart-inner"></div>
+    <div id="pred-chart-tooltip" class="prc-tooltip" style="display:none;"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;padding:0 4px;font-size:11px;color:var(--text-muted);">
+      <span>Ukupno odigrano: <strong style="color:#fff;">${points.length}</strong></span>
+      <span>🔵 Luka: <strong style="color:#60A5FA;">${lCum}</strong> · 🔷 Lovro: <strong style="color:#2DD4BF;">${loCum}</strong></span>
+    </div>`;
+
+  if(_predChartMode==='cumulative') renderCumulativeChart(points);
+  else renderPerMatchChart(points);
+}
+window.renderRoundsChart=renderRoundsChart;
+
+let _predChartPoints = [];
+
+// Catmull-Rom → glatka bezier krivulja kroz sve točke
+function smoothPath(pts, xFor, yFor, key){
+  if(pts.length<2) return `M${xFor(0)},${yFor(pts[0][key])}`;
+  const xs = pts.map((p,i)=>xFor(i));
+  const ys = pts.map(p=>yFor(p[key]));
+  let d = `M${xs[0].toFixed(1)},${ys[0].toFixed(1)}`;
+  for(let i=0;i<xs.length-1;i++){
+    const x0 = i>0 ? xs[i-1] : xs[i];
+    const y0 = i>0 ? ys[i-1] : ys[i];
+    const x1 = xs[i], y1 = ys[i];
+    const x2 = xs[i+1], y2 = ys[i+1];
+    const x3 = i<xs.length-2 ? xs[i+2] : x2;
+    const y3 = i<xs.length-2 ? ys[i+2] : y2;
+    const cp1x = x1 + (x2-x0)/6, cp1y = y1 + (y2-y0)/6;
+    const cp2x = x2 - (x3-x1)/6, cp2y = y2 - (y3-y1)/6;
+    d += ` C${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${x2.toFixed(1)},${y2.toFixed(1)}`;
+  }
+  return d;
+}
+
+function showPredChartTooltip(idx, evt){
+  const tip = document.getElementById('pred-chart-tooltip');
+  const wrap = document.getElementById('pred-rounds-chart');
+  const p = _predChartPoints[idx];
+  if(!tip || !p || !wrap) return;
+  tip.innerHTML = `
+    <div style="font-weight:700;font-size:12px;color:#fff;margin-bottom:4px;">${p.isAway?'✈️':'🏟️'} ${p.opp}</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${fmtDate(p.datum)}${p.nat?' · '+p.nat:''}</div>
+    <div style="display:flex;justify-content:space-between;gap:14px;font-size:11px;">
+      <span style="color:#60A5FA;">🔵 Luka: <strong>+${p.lukaMatch}</strong> <span style="color:var(--text-muted);">(${p.luka})</span></span>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:14px;font-size:11px;margin-top:2px;">
+      <span style="color:#2DD4BF;">🔷 Lovro: <strong>+${p.lovroMatch}</strong> <span style="color:var(--text-muted);">(${p.lovro})</span></span>
+    </div>`;
+  tip.style.display='block';
+  // Pozicioniraj relativno na kontejner koristeći stvarni bounding rect elementa
+  // koji je pokrenuo event, neovisno o layoutu/scrollu iznad grafa.
+  const wrapRect = wrap.getBoundingClientRect();
+  const targetRect = evt.target.getBoundingClientRect();
+  const anchorX = targetRect.left + targetRect.width/2 - wrapRect.left;
+  const anchorY = targetRect.top - wrapRect.top;
+  const tipW = 172;
+  let left = anchorX - tipW/2;
+  left = Math.max(4, Math.min(left, wrap.offsetWidth - tipW - 4));
+  tip.style.left = left+'px';
+  tip.style.top = Math.max(0, anchorY-98)+'px';
+}
+window.showPredChartTooltip = showPredChartTooltip;
+
+function hidePredChartTooltip(){
+  const tip = document.getElementById('pred-chart-tooltip');
+  if(tip) tip.style.display='none';
+}
+window.hidePredChartTooltip = hidePredChartTooltip;
+
+if(!window._prcOutsideClickBound){
+  document.addEventListener('click', (e)=>{
+    if(!e.target.closest('.prc-hit')) hidePredChartTooltip();
+  });
+  window._prcOutsideClickBound = true;
+}
+
+function renderCumulativeChart(points){
+  const inner = document.getElementById('pred-chart-inner');
+  if(!inner) return;
+  const W=Math.max(320, points.length*46), H=210;
   const padL=34, padR=14, padT=18, padB=30;
   const innerW=W-padL-padR, innerH=H-padT-padB;
   const maxVal=Math.max(...points.map(p=>Math.max(p.luka,p.lovro)), 1);
@@ -4876,15 +4980,11 @@ function renderRoundsChart(){
   const xFor=(i)=>padL + (points.length===1 ? innerW/2 : (i/(points.length-1))*innerW);
   const yFor=(v)=>padT + innerH - (v/maxVal*innerH);
 
-  function pathFor(key){
-    return points.map((p,i)=>`${i===0?'M':'L'}${xFor(i).toFixed(1)},${yFor(p[key]).toFixed(1)}`).join(' ');
-  }
-  function areaFor(key){
-    const line=points.map((p,i)=>`${i===0?'M':'L'}${xFor(i).toFixed(1)},${yFor(p[key]).toFixed(1)}`).join(' ');
-    return `${line} L${xFor(points.length-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${xFor(0).toFixed(1)},${(padT+innerH).toFixed(1)} Z`;
-  }
+  const lukaPath = smoothPath(points, xFor, yFor, 'luka');
+  const lovroPath = smoothPath(points, xFor, yFor, 'lovro');
+  const lukaArea = `${lukaPath} L${xFor(points.length-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${xFor(0).toFixed(1)},${(padT+innerH).toFixed(1)} Z`;
+  const lovroArea = `${lovroPath} L${xFor(points.length-1).toFixed(1)},${(padT+innerH).toFixed(1)} L${xFor(0).toFixed(1)},${(padT+innerH).toFixed(1)} Z`;
 
-  // Y-axis gridlines (4 razine)
   const gridLines=[0,0.25,0.5,0.75,1].map(f=>{
     const v=Math.round(maxVal*f);
     const y=yFor(v);
@@ -4892,36 +4992,141 @@ function renderRoundsChart(){
             <text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${v}</text>`;
   }).join('');
 
-  const lukaDots=points.map((p,i)=>`<circle class="prc-point" cx="${xFor(i).toFixed(1)}" cy="${yFor(p.luka).toFixed(1)}" r="3.5" fill="#60A5FA" stroke="#0A1A3E" stroke-width="1.5"><title>${p.label} — Luka: ${p.luka}</title></circle>`).join('');
-  const lovroDots=points.map((p,i)=>`<circle class="prc-point" cx="${xFor(i).toFixed(1)}" cy="${yFor(p.lovro).toFixed(1)}" r="3.5" fill="#2DD4BF" stroke="#0A1A3E" stroke-width="1.5"><title>${p.label} — Lovro: ${p.lovro}</title></circle>`).join('');
+  const hitAreas = points.map((p,i)=>{
+    const x = xFor(i);
+    const bandW = points.length>1 ? innerW/(points.length-1) : innerW;
+    return `<rect class="prc-hit" data-idx="${i}" x="${(x-bandW/2).toFixed(1)}" y="${padT}" width="${bandW.toFixed(1)}" height="${innerH}" fill="transparent"
+             onmouseenter="showPredChartTooltip(${i}, event)"
+             onmouseleave="hidePredChartTooltip()"
+             onclick="showPredChartTooltip(${i}, event)"/>`;
+  }).join('');
 
-  // X-axis labels (broj kola, svaki ili svaki drugi ako ih je puno)
+  const guideLines = points.map((p,i)=>`<line class="prc-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${padT+innerH}" stroke="#fff" stroke-width="1" opacity="0" pointer-events="none"/>`).join('');
+
+  const lukaDots=points.map((p,i)=>`<circle class="prc-point" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(p.luka).toFixed(1)}" r="3.5" fill="#60A5FA" stroke="#0A1A3E" stroke-width="1.5"/>`).join('');
+  const lovroDots=points.map((p,i)=>`<circle class="prc-point" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(p.lovro).toFixed(1)}" r="3.5" fill="#2DD4BF" stroke="#0A1A3E" stroke-width="1.5"/>`).join('');
+
   const labelStep = points.length>14 ? 2 : 1;
   const xLabels=points.map((p,i)=>{
     if(i%labelStep!==0 && i!==points.length-1) return '';
     return `<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${i+1}</text>`;
   }).join('');
 
-  el.innerHTML=`
+  inner.innerHTML=`
+    <div style="overflow-x:auto;position:relative;">
+      <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">
+        <defs>
+          <linearGradient id="prcGradLuka" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="prcGradLovro" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2DD4BF" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#2DD4BF" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        ${gridLines}
+        <path d="${lukaArea}" fill="url(#prcGradLuka)"/>
+        <path d="${lovroArea}" fill="url(#prcGradLovro)"/>
+        <path class="prc-line" d="${lukaPath}" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path class="prc-line" d="${lovroPath}" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${guideLines}
+        ${lukaDots}
+        ${lovroDots}
+        ${hitAreas}
+        <text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">UTAKMICA →</text>
+        ${xLabels}
+      </svg>
+    </div>`;
+
+  // Animacija crtanja linija pri prvom renderu
+  requestAnimationFrame(()=>{
+    inner.querySelectorAll('.prc-line').forEach(path=>{
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      path.getBoundingClientRect(); // force reflow
+      path.style.transition = 'stroke-dashoffset 0.9s cubic-bezier(0.16,1,0.3,1)';
+      path.style.strokeDashoffset = '0';
+    });
+  });
+
+  // Hover/tap prikazuje vertikalnu vodilju
+  inner.querySelectorAll('.prc-hit').forEach(hit=>{
+    hit.addEventListener('mouseenter', ()=>{
+      const idx = hit.dataset.idx;
+      inner.querySelectorAll('.prc-guide').forEach(g=>g.style.opacity = g.dataset.idx===idx ? '0.25' : '0');
+    });
+    hit.addEventListener('mouseleave', ()=>{
+      inner.querySelectorAll('.prc-guide').forEach(g=>g.style.opacity='0');
+    });
+  });
+}
+
+function renderPerMatchChart(points){
+  const inner = document.getElementById('pred-chart-inner');
+  if(!inner) return;
+  const W=Math.max(320, points.length*52), H=210;
+  const padL=28, padR=14, padT=18, padB=30;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  const maxVal=Math.max(...points.map(p=>Math.max(p.lukaMatch,p.lovroMatch)), 1);
+  const yFor=(v)=>innerH - (v/maxVal*innerH);
+  const groupW = innerW/points.length;
+  const barW = Math.min(14, groupW*0.32);
+
+  const gridLines=[0,0.5,1].map(f=>{
+    const v=Math.round(maxVal*f);
+    const y=padT+yFor(v);
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${v}</text>`;
+  }).join('');
+
+  const bars = points.map((p,i)=>{
+    const cx = padL + groupW*i + groupW/2;
+    const lukaH = (p.lukaMatch/maxVal*innerH)||0;
+    const lovroH = (p.lovroMatch/maxVal*innerH)||0;
+    const lukaY = padT+innerH-lukaH;
+    const lovroY = padT+innerH-lovroH;
+    return `
+      <rect class="prc-bar" data-idx="${i}" x="${(cx-barW-2).toFixed(1)}" y="${lukaY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(lukaH,1).toFixed(1)}" rx="3" fill="#60A5FA"/>
+      <rect class="prc-bar" data-idx="${i}" x="${(cx+2).toFixed(1)}" y="${lovroY.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(lovroH,1).toFixed(1)}" rx="3" fill="#2DD4BF"/>
+      <rect class="prc-hit" data-idx="${i}" x="${(cx-groupW/2).toFixed(1)}" y="${padT}" width="${groupW.toFixed(1)}" height="${innerH}" fill="transparent"
+        onmouseenter="showPredChartTooltip(${i}, event)"
+        onmouseleave="hidePredChartTooltip()"
+        onclick="showPredChartTooltip(${i}, event)"/>`;
+  }).join('');
+
+  const labelStep = points.length>10 ? 2 : 1;
+  const xLabels=points.map((p,i)=>{
+    if(i%labelStep!==0 && i!==points.length-1) return '';
+    const cx = padL + groupW*i + groupW/2;
+    return `<text x="${cx.toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${i+1}</text>`;
+  }).join('');
+
+  inner.innerHTML = `
     <div style="overflow-x:auto;">
       <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">
         ${gridLines}
-        <path d="${areaFor('luka')}" fill="#60A5FA" opacity="0.08"/>
-        <path d="${areaFor('lovro')}" fill="#2DD4BF" opacity="0.08"/>
-        <path d="${pathFor('luka')}" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-        <path d="${pathFor('lovro')}" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
-        ${lukaDots}
-        ${lovroDots}
-        <text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">KOLO →</text>
+        <g class="prc-bars-group">${bars}</g>
+        <text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">UTAKMICA →</text>
         ${xLabels}
       </svg>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:10px;padding:0 4px;font-size:11px;color:var(--text-muted);">
-      <span>Ukupno odigrano: <strong style="color:#fff;">${points.length}</strong></span>
-      <span>🔵 Luka: <strong style="color:#60A5FA;">${lCum}</strong> · 🔷 Lovro: <strong style="color:#2DD4BF;">${loCum}</strong></span>
     </div>`;
+
+  requestAnimationFrame(()=>{
+    inner.querySelectorAll('.prc-bar').forEach((bar,i)=>{
+      const h = bar.getAttribute('height');
+      const y = parseFloat(bar.getAttribute('y'));
+      bar.setAttribute('height','0');
+      bar.setAttribute('y', (y+parseFloat(h)).toFixed(1));
+      bar.style.transition = 'height 0.5s cubic-bezier(0.16,1,0.3,1), y 0.5s cubic-bezier(0.16,1,0.3,1)';
+      setTimeout(()=>{
+        bar.setAttribute('height', h);
+        bar.setAttribute('y', y.toFixed(1));
+      }, 20 + i*15);
+    });
+  });
 }
-window.renderRoundsChart=renderRoundsChart;
 
 function calcLB(){
   let lPts=0,lHits=0,lTotal=0,loPts=0,loHits=0,loTotal=0;
