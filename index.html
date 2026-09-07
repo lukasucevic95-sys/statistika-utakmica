@@ -1128,8 +1128,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button id="spt-lovro" class="stat-person-tab"            onclick="setStatPerson('lovro')">🔷 Samo Lovro</button>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-      <span></span>
-      <button class="btn-sm" style="background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);" onclick="shareElementAsImage('stats-bar-share','statistika',this)">📤 Podijeli</button>
+      <button class="btn-sm" style="background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.3);" onclick="openAchievements()">🏆 Postignuća</button>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-sm" style="background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportAppData()">💾 Backup</button>
+        <button class="btn-sm" style="background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);" onclick="shareElementAsImage('stats-bar-share','statistika',this)">📤 Podijeli</button>
+      </div>
     </div>
     <div class="stats-bar" id="stats-bar-share">
       <div class="stat-card sc-total clickable" onclick="openTop5('totals')"><div class="stat-label">Ukupno utakmica</div><div class="stat-value" id="stat-total">0</div><div class="stat-sub" id="stat-comp-label">svih natjecanja</div></div>
@@ -1716,6 +1719,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             </div>
           </div>
         </div>
+        <div id="pred-streaks"></div>
       </div>
 
       <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
@@ -2135,6 +2139,17 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- Postignuća / milestone značke -->
+<div class="top5-overlay" id="achievements-overlay" onclick="if(event.target===this)closeAchievements()">
+  <div class="top5-box">
+    <div class="top5-header">
+      <div class="top5-title">🏆 Postignuća</div>
+      <button class="top5-close" onclick="closeAchievements()">✕</button>
+    </div>
+    <div class="top5-list" id="achievements-list" style="padding:14px;"></div>
+  </div>
+</div>
+
 <!-- Edit display name modal -->
 <div class="modal-overlay" id="edit-name-modal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="modal" style="max-width:320px;">
@@ -2190,6 +2205,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
     <!-- NEXT MATCH COUNTDOWN -->
     <div id="next-match-banner"></div>
+    <div id="on-this-day-widget" style="display:none;margin-bottom:14px;"></div>
     <div id="opponent-info"></div>
 
     <!-- forma -->
@@ -2244,12 +2260,20 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button class="sched-filter-btn" onclick="schedFilter('odigrano',this)">✅ Odigrano</button>
     </div>
 
+    <div style="display:flex;gap:6px;margin-bottom:14px;">
+      <button class="sched-filter-btn active" id="sched-view-list-btn" onclick="setSchedViewMode('list')">☰ Popis</button>
+      <button class="sched-filter-btn" id="sched-view-cal-btn" onclick="setSchedViewMode('calendar')">🗓️ Kalendar</button>
+    </div>
+
     <!-- match list -->
     <div id="sched-list">
       <div class="skel-match-card"><div class="skel skel-date"></div><div class="skel-lines"><div class="skel skel-line w60"></div><div class="skel skel-line w35"></div></div></div>
       <div class="skel-match-card"><div class="skel skel-date"></div><div class="skel-lines"><div class="skel skel-line w60"></div><div class="skel skel-line w35"></div></div></div>
       <div class="skel-match-card"><div class="skel skel-date"></div><div class="skel-lines"><div class="skel skel-line w60"></div><div class="skel skel-line w35"></div></div></div>
     </div>
+
+    <!-- calendar month view -->
+    <div id="sched-calendar" style="display:none;"></div>
 
     </div><!-- /sched-view-raspored -->
 
@@ -5012,8 +5036,41 @@ function renderTotalLB(){
   el('lb-total-luka-away',   t.lukaAway);
   el('lb-total-lovro-home',  t.lovroHome);
   el('lb-total-lovro-away',  t.lovroAway);
+  renderPredStreaks();
 }
 window.renderTotalLB=renderTotalLB;
+
+// ── Niz pogodaka (rezHit) — tko je trenutno "vruć" u pogađanju točnog rezultata ──
+function renderPredStreaks(){
+  const el = document.getElementById('pred-streaks');
+  if(!el) return;
+  const all=[
+    ...predictions.map(p=>({...p,_isAway:false})),
+    ...awayPredictions.map(p=>({...p,_isAway:true}))
+  ].filter(p=>p.resolved)
+   .sort((a,b)=>a.datum<b.datum?1:a.datum>b.datum?-1:0); // najnovije prvo
+
+  if(!all.length){ el.innerHTML=''; return; }
+
+  function currentStreak(who){
+    let streak=0;
+    for(const p of all){
+      if(p[who].score.rezHit) streak++;
+      else break;
+    }
+    return streak;
+  }
+  const lStreak = currentStreak('luka');
+  const loStreak = currentStreak('lovro');
+
+  const rows=[];
+  if(lStreak>=2) rows.push(`<span style="color:#60A5FA;">🔥 Luka je pogodio <strong>${lStreak}</strong> zaredom</span>`);
+  if(loStreak>=2) rows.push(`<span style="color:#2DD4BF;">🔥 Lovro je pogodio <strong>${loStreak}</strong> zaredom</span>`);
+  if(!rows.length){ el.innerHTML=''; return; }
+
+  el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;font-weight:700;margin-top:10px;">${rows.join('')}</div>`;
+}
+window.renderPredStreaks = renderPredStreaks;
 
 /* ===== RADAR GRAF — LUKA VS LOVRO ===== */
 function renderRadarChart(){
@@ -6720,6 +6777,43 @@ function renderDinamoPosBadge(el, info, comp){
 }
 window.fetchDinamoPosition = fetchDinamoPosition;
 
+// ── "Na ovaj dan" — pretraži bazu utakmica za isti kalendarski datum (dan+mjesec) kroz godine ──
+function renderOnThisDay(){
+  const el = document.getElementById('on-this-day-widget');
+  if(!el) return;
+  const today = new Date();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  const todayYear = today.getFullYear();
+
+  const hits = (matches||[]).filter(m=>{
+    if(!m.datum) return false;
+    const [y,mo,d] = m.datum.split('-');
+    return mo===mm && d===dd && parseInt(y)!==todayYear;
+  }).sort((a,b)=>b.datum.localeCompare(a.datum)); // najnovije prvo
+
+  if(!hits.length){ el.style.display='none'; return; }
+
+  const m = hits[0];
+  const [y] = m.datum.split('-');
+  const yearsAgo = todayYear - parseInt(y);
+  const parts = (m.rezultat||'').split('-').map(Number);
+  const resColor = parts.length===2 ? (parts[0]>parts[1]?'#4ADE80':parts[0]===parts[1]?'#9CA3AF':'#F87171') : '#9CA3AF';
+
+  el.innerHTML = `<div class="sched-forma-card" style="background:linear-gradient(135deg,rgba(77,159,255,0.08),rgba(10,15,30,0.4));">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:22px;">📅</div>
+      <div style="flex:1;">
+        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Na ovaj dan${yearsAgo===1?' prije godinu dana':` prije ${yearsAgo} godina`}</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">Dinamo — ${officialName(m.protivnik)}${m.rezultat?` <span style="color:${resColor};">${m.rezultat}</span>`:''}</div>
+        <div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;">${m.natjecanje||''}${m.gledatelji?' · 👁️ '+fmtNum(m.gledatelji):''}${hits.length>1?` · +${hits.length-1} više na isti datum kroz godine`:''}</div>
+      </div>
+    </div>
+  </div>`;
+  el.style.display='block';
+}
+window.renderOnThisDay = renderOnThisDay;
+
 async function renderRaspored(){
   const container = document.getElementById('raspored-content');
   if(!container) return;
@@ -6738,6 +6832,7 @@ async function renderRaspored(){
 
   // Odbrojavanje + prognoza
   renderNextMatchBanner();
+  renderOnThisDay();
 
   // Stats bar
   const today = new Date(); today.setHours(0,0,0,0);
@@ -7009,7 +7104,93 @@ function schedRenderList(){
     });
   }
   listEl.innerHTML = html;
+  renderSchedCalendar(filtered);
 }
+window.schedRenderList = schedRenderList;
+
+let _schedViewMode = 'list';
+function setSchedViewMode(mode){
+  _schedViewMode = mode;
+  document.getElementById('sched-view-list-btn')?.classList.toggle('active', mode==='list');
+  document.getElementById('sched-view-cal-btn')?.classList.toggle('active', mode==='calendar');
+  document.getElementById('sched-list').style.display = mode==='list' ? '' : 'none';
+  document.getElementById('sched-calendar').style.display = mode==='calendar' ? '' : 'none';
+}
+window.setSchedViewMode = setSchedViewMode;
+
+let _schedCalMonth = new Date().getMonth(), _schedCalYear = new Date().getFullYear();
+function schedCalNav(dir){
+  _schedCalMonth += dir;
+  if(_schedCalMonth<0){ _schedCalMonth=11; _schedCalYear--; }
+  if(_schedCalMonth>11){ _schedCalMonth=0; _schedCalYear++; }
+  renderSchedCalendar(_schedCalLastData||[]);
+}
+window.schedCalNav = schedCalNav;
+
+let _schedCalLastData = [];
+function renderSchedCalendar(matchesList){
+  _schedCalLastData = matchesList;
+  const el = document.getElementById('sched-calendar');
+  if(!el) return;
+
+  const monthNames=['Siječanj','Veljača','Ožujak','Travanj','Svibanj','Lipanj','Srpanj','Kolovoz','Rujan','Listopad','Studeni','Prosinac'];
+  const firstDay = new Date(_schedCalYear, _schedCalMonth, 1);
+  const startWeekday = (firstDay.getDay()+6)%7; // pon=0
+  const daysInMonth = new Date(_schedCalYear, _schedCalMonth+1, 0).getDate();
+
+  const byDate = {};
+  matchesList.forEach(m=>{
+    if(!m.datum) return;
+    const [y,mo,d] = m.datum.split('-').map(Number);
+    if(y===_schedCalYear && (mo-1)===_schedCalMonth){
+      (byDate[d] = byDate[d]||[]).push(m);
+    }
+  });
+
+  const todayObj = new Date();
+  const isCurMonth = todayObj.getFullYear()===_schedCalYear && todayObj.getMonth()===_schedCalMonth;
+  const todayDate = todayObj.getDate();
+
+  let cells = '';
+  for(let i=0;i<startWeekday;i++) cells += `<div></div>`;
+  for(let d=1; d<=daysInMonth; d++){
+    const dayMatches = byDate[d]||[];
+    const hasMatch = dayMatches.length>0;
+    const isToday = isCurMonth && d===todayDate;
+    const m0 = dayMatches[0];
+    const dotColor = hasMatch ? getNatjecanjeColor(m0.natjecanje) : null;
+    cells += `<div onclick="${hasMatch?`schedCalDayClick(${d})`:''}" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:11px;position:relative;cursor:${hasMatch?'pointer':'default'};background:${isToday?'rgba(77,159,255,0.15)':'transparent'};border:1px solid ${isToday?'rgba(77,159,255,0.4)':'transparent'};">
+      <span style="color:${hasMatch?'#fff':'var(--text-muted)'};font-weight:${hasMatch?700:400};">${d}</span>
+      ${hasMatch?`<div style="width:6px;height:6px;border-radius:50%;background:${dotColor};margin-top:2px;"></div>`:''}
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="sched-forma-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <button class="btn-sm" onclick="schedCalNav(-1)">←</button>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;">${monthNames[_schedCalMonth]} ${_schedCalYear}</div>
+        <button class="btn-sm" onclick="schedCalNav(1)">→</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:9px;color:var(--text-muted);text-align:center;margin-bottom:4px;">
+        <div>PON</div><div>UTO</div><div>SRI</div><div>ČET</div><div>PET</div><div>SUB</div><div>NED</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">${cells}</div>
+    </div>`;
+}
+window.renderSchedCalendar = renderSchedCalendar;
+
+function schedCalDayClick(day){
+  const dayMatches = (_schedCalLastData||[]).filter(m=>{
+    if(!m.datum) return false;
+    const [y,mo,d] = m.datum.split('-').map(Number);
+    return y===_schedCalYear && (mo-1)===_schedCalMonth && d===day;
+  });
+  if(!dayMatches.length) return;
+  const m = dayMatches[0];
+  showToast(`${officialName(m.opp)} · ${m.natjecanje||''}${m.rezultat?' · '+m.rezultat:''}`, '#0A1428', '#93C5FD');
+}
+window.schedCalDayClick = schedCalDayClick;
 
 function schedShowPlayedOnly(){
   const btns = document.querySelectorAll('#sched-filters .sched-filter-btn');
@@ -8678,6 +8859,89 @@ window.openTop5Detail = openTop5Detail;
 function closeTop5Detail(){ document.getElementById('top5-detail-overlay')?.classList.remove('open'); }
 window.closeTop5Detail = closeTop5Detail;
 
+// ── Postignuća / milestone značke — računaju se iz postojećih podataka ──
+function computeAchievements(){
+  const homeMatches = (matches||[]).filter(m=>m.rezultat);
+  const totalMatches = homeMatches.length;
+  const maksimirMatches = homeMatches.filter(m=>!m.natjecanje || true).length; // matches baza je uglavnom Maksimir/osobna evidencija
+  const totalGoalsScored = (goals||[]).filter(g=>g.type==='scored').length;
+  const totalViewers = homeMatches.reduce((s,m)=>s+(m.gledatelji||0),0);
+  const hasEuropean = homeMatches.some(m=>['UCL','UCL Q','UCL Play-off','UEL','UEL Q','ECL','ECL Q'].includes(m.natjecanje));
+
+  // Najduži niz pobjeda (isti princip kao Top 5 na Statistici)
+  const sorted=[...homeMatches].sort((a,b)=>a.datum<b.datum?-1:1);
+  let curStreak=0, maxStreak=0;
+  sorted.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && p[0]>p[1]){ curStreak++; if(curStreak>maxStreak)maxStreak=curStreak; }
+    else curStreak=0;
+  });
+
+  // Predikcije - točni rezultati (rezHit) ukupno, oba igrača zajedno
+  const allPreds=[...(predictions||[]),...(awayPredictions||[])].filter(p=>p.resolved);
+  const totalRezHits = allPreds.reduce((s,p)=>s + (p.luka?.score?.rezHit?1:0) + (p.lovro?.score?.rezHit?1:0), 0);
+
+  return [
+    { icon:'🏟️', title:'50 utakmica', desc:'50 zabilježenih utakmica u bazi', unlocked: totalMatches>=50, progress: Math.min(totalMatches,50), goal:50 },
+    { icon:'🎖️', title:'100 utakmica', desc:'100 zabilježenih utakmica u bazi', unlocked: totalMatches>=100, progress: Math.min(totalMatches,100), goal:100 },
+    { icon:'🔥', title:'10 pobjeda zaredom', desc:'Najdulji niz pobjeda u nizu', unlocked: maxStreak>=10, progress: Math.min(maxStreak,10), goal:10 },
+    { icon:'⚽', title:'100 zabilježenih golova', desc:'Golovi upisani u bazu golova', unlocked: totalGoalsScored>=100, progress: Math.min(totalGoalsScored,100), goal:100 },
+    { icon:'👁️', title:'500.000 gledatelja', desc:'Zbroj gledanosti svih utakmica', unlocked: totalViewers>=500000, progress: Math.min(totalViewers,500000), goal:500000 },
+    { icon:'🌍', title:'Europski put', desc:'Barem jedna europska utakmica zabilježena', unlocked: hasEuropean, progress: hasEuropean?1:0, goal:1 },
+    { icon:'🎯', title:'100 točnih predikcija', desc:'Ukupno točnih rezultata (Luka + Lovro)', unlocked: totalRezHits>=100, progress: Math.min(totalRezHits,100), goal:100 },
+  ];
+}
+
+function openAchievements(){
+  const list = document.getElementById('achievements-list');
+  const overlay = document.getElementById('achievements-overlay');
+  if(!list || !overlay) return;
+  const achievements = computeAchievements();
+  list.innerHTML = achievements.map(a=>{
+    const pct = Math.round((a.progress/a.goal)*100);
+    return `<div style="display:flex;align-items:center;gap:12px;background:${a.unlocked?'rgba(250,204,21,0.08)':'var(--surface2)'};border:1px solid ${a.unlocked?'rgba(250,204,21,0.3)':'var(--border)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;opacity:${a.unlocked?1:0.6};">
+      <div style="font-size:26px;filter:${a.unlocked?'none':'grayscale(1)'};">${a.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;color:#fff;">${a.title} ${a.unlocked?'✅':''}</div>
+        <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:5px;">${a.desc}</div>
+        <div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${a.unlocked?'#FACC15':'#60A5FA'};border-radius:3px;"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  overlay.classList.add('open');
+}
+window.openAchievements = openAchievements;
+function closeAchievements(){ document.getElementById('achievements-overlay')?.classList.remove('open'); }
+window.closeAchievements = closeAchievements;
+
+// ── Izvoz / backup svih podataka kao .json fajl ──
+function exportAppData(){
+  try{
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      matches: matches||[],
+      goals: goals||[],
+      predictions: predictions||[],
+      awayPredictions: awayPredictions||[],
+      raspored: _schedMatches||[]
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url; a.download = `dinamo-app-backup-${dateStr}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('💾 Backup preuzet','#0A1A0A','#4ADE80');
+  }catch(e){
+    console.warn('Export failed:', e);
+    showToast('⚠️ Izvoz nije uspio','#1A0A0A','#F87171');
+  }
+}
+window.exportAppData = exportAppData;
+
 function closeTop5(){ document.getElementById('top5-overlay')?.classList.remove('open'); }
 window.closeTop5=closeTop5;
 
@@ -8712,6 +8976,14 @@ window.saveDisplayName = saveDisplayName;
 
 
 init();
+</script>
+<script>
+// Registracija Service Workera za offline podršku (app shell caching)
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=>console.warn('SW registracija nije uspjela:', e));
+  });
+}
 </script>
 </body>
 </html>
