@@ -515,6 +515,23 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   #page-prediktor .pred-type-tabs{order:6;}
   #page-prediktor #pred-home-section{order:7;}
   #page-prediktor #pred-away-section{order:7;}
+
+  /* Kompaktniji Prediktor na manjim ekranima */
+  #page-prediktor .leaderboard{gap:8px;margin-bottom:12px;}
+  #page-prediktor .lb-card{padding:11px 8px;}
+  #page-prediktor .lb-score{font-size:32px;}
+  #page-prediktor .lb-name{font-size:12px;}
+  #page-prediktor .lb-sub,#page-prediktor .lb-pct{font-size:10px;}
+  #page-prediktor .form-card,#page-prediktor .pred-chart-card,#page-prediktor .score-legend{margin-bottom:10px;}
+  #page-prediktor .pred-chart-card{padding:12px;}
+  #page-prediktor .pred-card{margin-bottom:8px;}
+  #page-prediktor .pred-top{padding:10px 12px 8px;}
+  #page-prediktor .pred-opponent{font-size:15px;letter-spacing:1px;}
+  #page-prediktor .pred-guesses{gap:6px;}
+  #page-prediktor .pred-bottom{padding:8px 12px;}
+  #page-prediktor .card-header{padding:10px 12px 7px;font-size:13px;}
+  #page-prediktor #pred-total-leaderboard{padding:11px 12px;}
+  #page-prediktor .prc-toggle-btn{padding:5px 10px;font-size:10px;}
 }
 @media(max-width:600px){
   .header{padding:20px 16px 16px;}
@@ -883,6 +900,20 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   #pm-minutes-chart{gap:2px!important;}
   #pm-minutes-chart > div{min-width:0;}
   .form-input,.form-select,.form-input-pred{font-size:16px!important;}
+
+  /* Kalendarski prikaz rasporeda - manje ćelije/grbovi/razmaci na uskim ekranima */
+  #sched-calendar .sched-forma-card{padding:12px 10px;}
+  #sched-calendar div[style*="display:grid;grid-template-columns:repeat(7,1fr)"]{gap:2px!important;}
+  #sched-calendar div[style*="min-height:52px"]{min-height:40px!important;}
+  #sched-calendar img{width:12px!important;height:12px!important;}
+  #sched-calendar div[style*="font-family:'Bebas Neue',sans-serif;font-size:15px"]{font-size:13px!important;}
+
+  /* Modal s detaljima dana / postignuća - uže margine i manji razmaci */
+  #caldaymodal-list, #achievements-list{padding:10px!important;}
+  #ach-tab-luka, #ach-tab-lovro{font-size:11px;padding:6px 8px;}
+
+  /* Postignuća/backup/podijeli gumbi na Statistici - manji tekst da stanu na jedan red */
+  .stats-bar-actions .btn-sm{font-size:10.5px;padding:5px 8px;}
 }
 
 /* ===== TABLICA ===== */
@@ -1127,9 +1158,9 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button id="spt-luka"  class="stat-person-tab"            onclick="setStatPerson('luka')">🔵 Samo Luka</button>
       <button id="spt-lovro" class="stat-person-tab"            onclick="setStatPerson('lovro')">🔷 Samo Lovro</button>
     </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+    <div class="stats-bar-actions" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
       <button class="btn-sm" style="background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.3);" onclick="openAchievements()">🏆 Postignuća</button>
-      <div style="display:flex;gap:6px;">
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn-sm" style="background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportAppData()">💾 Backup</button>
         <button class="btn-sm" style="background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);" onclick="shareElementAsImage('stats-bar-share','statistika',this)">📤 Podijeli</button>
       </div>
@@ -2139,12 +2170,27 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- Detalji dana u kalendaru rasporeda -->
+<div class="top5-overlay" id="caldaymodal-overlay" onclick="if(event.target===this)closeCalDayModal()">
+  <div class="top5-box">
+    <div class="top5-header">
+      <div class="top5-title">📅 Utakmice tog dana</div>
+      <button class="top5-close" onclick="closeCalDayModal()">✕</button>
+    </div>
+    <div class="top5-list" id="caldaymodal-list" style="padding:14px;"></div>
+  </div>
+</div>
+
 <!-- Postignuća / milestone značke -->
 <div class="top5-overlay" id="achievements-overlay" onclick="if(event.target===this)closeAchievements()">
   <div class="top5-box">
     <div class="top5-header">
       <div class="top5-title">🏆 Postignuća</div>
       <button class="top5-close" onclick="closeAchievements()">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;padding:12px 14px 0;">
+      <button id="ach-tab-luka" class="sched-filter-btn active" style="flex:1;" onclick="setAchievementsPerson('luka')">🔵 Luka</button>
+      <button id="ach-tab-lovro" class="sched-filter-btn" style="flex:1;" onclick="setAchievementsPerson('lovro')">🔷 Lovro</button>
     </div>
     <div class="top5-list" id="achievements-list" style="padding:14px;"></div>
   </div>
@@ -6778,6 +6824,13 @@ function renderDinamoPosBadge(el, info, comp){
 window.fetchDinamoPosition = fetchDinamoPosition;
 
 // ── "Na ovaj dan" — pretraži bazu utakmica za isti kalendarski datum (dan+mjesec) kroz godine ──
+let _onThisDayHits = [];
+function toggleOnThisDayExpand(){
+  const box = document.getElementById('on-this-day-expand');
+  if(box) box.classList.toggle('js-collapsed');
+}
+window.toggleOnThisDayExpand = toggleOnThisDayExpand;
+
 function renderOnThisDay(){
   const el = document.getElementById('on-this-day-widget');
   if(!el) return;
@@ -6793,21 +6846,35 @@ function renderOnThisDay(){
   }).sort((a,b)=>b.datum.localeCompare(a.datum)); // najnovije prvo
 
   if(!hits.length){ el.style.display='none'; return; }
+  _onThisDayHits = hits;
 
-  const m = hits[0];
-  const [y] = m.datum.split('-');
-  const yearsAgo = todayYear - parseInt(y);
-  const parts = (m.rezultat||'').split('-').map(Number);
-  const resColor = parts.length===2 ? (parts[0]>parts[1]?'#4ADE80':parts[0]===parts[1]?'#9CA3AF':'#F87171') : '#9CA3AF';
+  function renderEntry(m, isFirst){
+    const [y] = m.datum.split('-');
+    const yearsAgo = todayYear - parseInt(y);
+    const parts = (m.rezultat||'').split('-').map(Number);
+    const resColor = parts.length===2 ? (parts[0]>parts[1]?'#4ADE80':parts[0]===parts[1]?'#9CA3AF':'#F87171') : '#9CA3AF';
+    const isRep = REP_COMPS.includes(m.natjecanje);
+    const homeTeam = isRep ? 'Hrvatska' : 'GNK Dinamo Zagreb';
+    const homeLabel = isRep ? 'Hrvatska' : 'Dinamo';
+    const homeCrest = getClubCrest(homeTeam, isFirst?22:18);
+    const oppCrest = getClubCrest(officialName(m.protivnik), isFirst?22:18);
+    return `<div style="display:flex;align-items:center;gap:10px;${isFirst?'':'padding-top:10px;margin-top:10px;border-top:1px solid var(--border);'}">
+      ${isFirst?'<div style="font-size:22px;">📅</div>':''}
+      <div style="flex:1;">
+        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Na ovaj dan${yearsAgo===1?' prije godinu dana':` prije ${yearsAgo} godina`}${isRep?' · 🇭🇷 reprezentacija':''}</div>
+        <div style="font-size:${isFirst?13:12}px;font-weight:700;color:#fff;margin-top:2px;display:flex;align-items:center;gap:6px;">${homeCrest}${homeLabel} — ${oppCrest}${officialName(m.protivnik)}${m.rezultat?` <span style="color:${resColor};">${m.rezultat}</span>`:''}</div>
+        <div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;">${m.natjecanje||''}${m.gledatelji?' · 👁️ '+fmtNum(m.gledatelji):''}</div>
+      </div>
+    </div>`;
+  }
 
   el.innerHTML = `<div class="sched-forma-card" style="background:linear-gradient(135deg,rgba(77,159,255,0.08),rgba(10,15,30,0.4));">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <div style="font-size:22px;">📅</div>
-      <div style="flex:1;">
-        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Na ovaj dan${yearsAgo===1?' prije godinu dana':` prije ${yearsAgo} godina`}</div>
-        <div style="font-size:13px;font-weight:700;color:#fff;margin-top:2px;">Dinamo — ${officialName(m.protivnik)}${m.rezultat?` <span style="color:${resColor};">${m.rezultat}</span>`:''}</div>
-        <div style="font-size:10.5px;color:var(--text-muted);margin-top:2px;">${m.natjecanje||''}${m.gledatelji?' · 👁️ '+fmtNum(m.gledatelji):''}${hits.length>1?` · +${hits.length-1} više na isti datum kroz godine`:''}</div>
-      </div>
+    <div style="${hits.length>1?'cursor:pointer;':''}" ${hits.length>1?'onclick="toggleOnThisDayExpand()"':''}>
+      ${renderEntry(hits[0], true)}
+      ${hits.length>1?`<div style="font-size:10px;color:#4D9FFF;margin-top:6px;text-align:center;">+${hits.length-1} više na isti datum kroz godine (klikni za sve) ▾</div>`:''}
+    </div>
+    <div id="on-this-day-expand" class="js-collapsed">
+      ${hits.slice(1).map(h=>renderEntry(h, false)).join('')}
     </div>
   </div>`;
   el.style.display='block';
@@ -7008,7 +7075,18 @@ function schedRenderForma(){
   }
   const prevBatch = allPlayed.slice(recent.length, recent.length*2);
   let trendHTML = '';
-  if(prevBatch.length>=3){ // treba dovoljno podataka za smislenu usporedbu
+
+  // Prioritetna provjera: ako su zadnje 2 utakmice poraz, forma je automatski lošija
+  // bez obzira što šira usporedba bodova možda ne pokazuje pad (npr. dobar niz prije toga).
+  const lastTwo = recent.slice(-2);
+  const lastTwoAllLosses = lastTwo.length===2 && lastTwo.every(m=>{
+    const p=m.rezultat.split('-').map(Number);
+    return p[0]<p[1];
+  });
+
+  if(lastTwoAllLosses){
+    trendHTML = `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:11px;color:#F87171;font-weight:700;" title="Zadnje 2 utakmice su poraz">↓ slabija forma</span>`;
+  } else if(prevBatch.length>=3){ // treba dovoljno podataka za smislenu usporedbu
     const curPts = formPts(recent);
     const prevPts = formPts(prevBatch);
     const diff = curPts - prevPts;
@@ -7158,12 +7236,35 @@ function renderSchedCalendar(matchesList){
     const hasMatch = dayMatches.length>0;
     const isToday = isCurMonth && d===todayDate;
     const m0 = dayMatches[0];
-    const dotColor = hasMatch ? getNatjecanjeColor(m0.natjecanje) : null;
-    cells += `<div onclick="${hasMatch?`schedCalDayClick(${d})`:''}" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:11px;position:relative;cursor:${hasMatch?'pointer':'default'};background:${isToday?'rgba(77,159,255,0.15)':'transparent'};border:1px solid ${isToday?'rgba(77,159,255,0.4)':'transparent'};">
-      <span style="color:${hasMatch?'#fff':'var(--text-muted)'};font-weight:${hasMatch?700:400};">${d}</span>
-      ${hasMatch?`<div style="width:6px;height:6px;border-radius:50%;background:${dotColor};margin-top:2px;"></div>`:''}
+    const compColor = hasMatch ? getNatjecanjeColor(m0.natjecanje) : null;
+    const crest = hasMatch ? getClubCrest(officialName(m0.opp), 16) : '';
+    cells += `<div onclick="${hasMatch?`schedCalDayClick(${d})`:''}" style="min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:9px;font-size:11px;position:relative;cursor:${hasMatch?'pointer':'default'};background:${hasMatch?compColor+'14':(isToday?'rgba(77,159,255,0.12)':'transparent')};border:1px solid ${isToday?'rgba(77,159,255,0.5)':hasMatch?compColor+'40':'transparent'};transition:transform 0.15s;" ${hasMatch?`onmouseenter="this.style.transform='scale(1.06)'" onmouseleave="this.style.transform='scale(1)'"`:''}>
+      <span style="color:${hasMatch?'#fff':'var(--text-muted)'};font-weight:${hasMatch||isToday?700:400};font-size:10px;">${d}</span>
+      ${hasMatch?crest:''}
+      ${dayMatches.length>1?`<span style="position:absolute;top:2px;right:3px;font-size:7px;color:${compColor};font-weight:800;">+${dayMatches.length-1}</span>`:''}
     </div>`;
   }
+
+  // Agenda popis utakmica ovog mjeseca ispod mreže (za jasan tekstualni pregled)
+  const monthMatches = matchesList.filter(m=>{
+    if(!m.datum) return false;
+    const [y,mo] = m.datum.split('-').map(Number);
+    return y===_schedCalYear && (mo-1)===_schedCalMonth;
+  }).sort((a,b)=>a.datum.localeCompare(b.datum));
+
+  const agendaHTML = monthMatches.length ? `
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;">
+      ${monthMatches.map(m=>{
+        const compColor = getNatjecanjeColor(m.natjecanje);
+        const d = parseInt(m.datum.split('-')[2]);
+        return `<div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="schedCalDayClick(${d})">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${compColor};width:26px;text-align:center;">${d}</div>
+          ${getClubCrest(officialName(m.opp),18)}
+          <div style="flex:1;font-size:11.5px;color:#fff;">${m.home?'vs':'@'} ${officialName(m.opp)}</div>
+          ${m.rezultat?`<div style="font-size:11px;font-weight:700;color:var(--text-muted);">${m.rezultat}</div>`:`<div style="font-size:9px;color:${compColor};">${m.time||''}</div>`}
+        </div>`;
+      }).join('')}
+    </div>` : `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-muted);">Nema utakmica ovaj mjesec.</div>`;
 
   el.innerHTML = `
     <div class="sched-forma-card">
@@ -7176,6 +7277,7 @@ function renderSchedCalendar(matchesList){
         <div>PON</div><div>UTO</div><div>SRI</div><div>ČET</div><div>PET</div><div>SUB</div><div>NED</div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;">${cells}</div>
+      ${agendaHTML}
     </div>`;
 }
 window.renderSchedCalendar = renderSchedCalendar;
@@ -7187,10 +7289,71 @@ function schedCalDayClick(day){
     return y===_schedCalYear && (mo-1)===_schedCalMonth && d===day;
   });
   if(!dayMatches.length) return;
-  const m = dayMatches[0];
-  showToast(`${officialName(m.opp)} · ${m.natjecanje||''}${m.rezultat?' · '+m.rezultat:''}`, '#0A1428', '#93C5FD');
+  openCalDayModal(dayMatches);
 }
 window.schedCalDayClick = schedCalDayClick;
+
+function openCalDayModal(dayMatches){
+  const overlay = document.getElementById('caldaymodal-overlay');
+  const list = document.getElementById('caldaymodal-list');
+  if(!overlay || !list) return;
+  list.innerHTML = dayMatches.map((m,i)=>{
+    const compColor = getNatjecanjeColor(m.natjecanje);
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        ${getClubCrest(officialName(m.opp),20)}
+        <div style="font-size:13px;font-weight:700;color:#fff;">${m.home?'Dinamo vs ':''}${officialName(m.opp)}${m.home===false?' vs Dinamo':''}</div>
+      </div>
+      <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:8px;">
+        <span style="color:${compColor};font-weight:700;">${m.natjecanje||''}</span>
+        ${m.time?' · 🕐 '+m.time:''} · ${m.home?'🏟️ Maksimir':'✈️ Gostovanje'}
+        ${m.rezultat?` · <strong style="color:#fff;">${m.rezultat}</strong>`:''}
+      </div>
+      <button class="btn-sm" style="width:100%;background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="downloadMatchICS(${i})">📅 Dodaj u kalendar telefona</button>
+    </div>`;
+  }).join('');
+  overlay.dataset.matches = JSON.stringify(dayMatches);
+  overlay.classList.add('open');
+}
+window.openCalDayModal = openCalDayModal;
+function closeCalDayModal(){ document.getElementById('caldaymodal-overlay')?.classList.remove('open'); }
+window.closeCalDayModal = closeCalDayModal;
+
+// Generira .ics fajl za utakmicu - kad se otvori na mobitelu, nudi "Dodaj u kalendar"
+function downloadMatchICS(idx){
+  const overlay = document.getElementById('caldaymodal-overlay');
+  const dayMatches = JSON.parse(overlay?.dataset.matches || '[]');
+  const m = dayMatches[idx];
+  if(!m || !m.datum) return;
+  const [y,mo,d] = m.datum.split('-').map(Number);
+  const [hh,mm] = (m.time||'20:00').split(':').map(Number);
+  const start = new Date(y, mo-1, d, hh||20, mm||0);
+  const end = new Date(start.getTime() + 2*3600000); // pretpostavka: 2h trajanje
+  const fmtICS = (dt)=>dt.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const oppName = officialName(m.opp);
+  const title = m.home ? `Dinamo Zagreb vs ${oppName}` : `${oppName} vs Dinamo Zagreb`;
+  const location = m.home ? 'Stadion Maksimir, Zagreb' : oppName;
+  const ics = [
+    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Dinamo Fan App//HR',
+    'BEGIN:VEVENT',
+    `UID:${m.datum}-${(m.opp||'').replace(/\s+/g,'')}@dinamo-fan-app`,
+    `DTSTAMP:${fmtICS(new Date())}`,
+    `DTSTART:${fmtICS(start)}`,
+    `DTEND:${fmtICS(end)}`,
+    `SUMMARY:${title}`,
+    `LOCATION:${location}`,
+    `DESCRIPTION:${m.natjecanje||''}`,
+    'END:VEVENT','END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `dinamo-${m.datum}.ics`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('📅 Dodaj u kalendar — otvori preuzeti fajl','#0A1A0A','#4ADE80');
+}
+window.downloadMatchICS = downloadMatchICS;
 
 function schedShowPlayedOnly(){
   const btns = document.querySelectorAll('#sched-filters .sched-filter-btn');
@@ -8860,15 +9023,19 @@ function closeTop5Detail(){ document.getElementById('top5-detail-overlay')?.clas
 window.closeTop5Detail = closeTop5Detail;
 
 // ── Postignuća / milestone značke — računaju se iz postojećih podataka ──
-function computeAchievements(){
-  const homeMatches = (matches||[]).filter(m=>m.rezultat);
+function computeAchievements(person){
+  // person: 'luka' ili 'lovro' - filtrira po prisutnosti te osobe na utakmici
+  const attField = person==='lovro' ? 'prisutanLovro' : 'prisutanLuka';
+  const homeMatches = (matches||[]).filter(m=>m.rezultat && m[attField]!==false);
   const totalMatches = homeMatches.length;
-  const maksimirMatches = homeMatches.filter(m=>!m.natjecanje || true).length; // matches baza je uglavnom Maksimir/osobna evidencija
-  const totalGoalsScored = (goals||[]).filter(g=>g.type==='scored').length;
   const totalViewers = homeMatches.reduce((s,m)=>s+(m.gledatelji||0),0);
-  const hasEuropean = homeMatches.some(m=>['UCL','UCL Q','UCL Play-off','UEL','UEL Q','ECL','ECL Q'].includes(m.natjecanje));
+  const europeanCount = homeMatches.filter(m=>['UCL','UCL Q','UCL Play-off','UEL','UEL Q','ECL','ECL Q'].includes(m.natjecanje)).length;
 
-  // Najduži niz pobjeda (isti princip kao Top 5 na Statistici)
+  // Golovi zabilježeni baš na utakmicama na kojima je ta osoba bila prisutna
+  const attendedKeys = new Set(homeMatches.map(m=>m.datum+'|'+m.protivnik));
+  const goalsAtAttended = (goals||[]).filter(g=>g.type==='scored' && attendedKeys.has(g.matchDatum+'|'+g.matchProtivnik)).length;
+
+  // Najduži niz pobjeda NA UTAKMICAMA KOJIMA JE TA OSOBA BILA (isti princip kao Top 5 na Statistici)
   const sorted=[...homeMatches].sort((a,b)=>a.datum<b.datum?-1:1);
   let curStreak=0, maxStreak=0;
   sorted.forEach(m=>{
@@ -8877,39 +9044,105 @@ function computeAchievements(){
     else curStreak=0;
   });
 
-  // Predikcije - točni rezultati (rezHit) ukupno, oba igrača zajedno
+  // Predikcije - točni rezultati (rezHit) te osobe
   const allPreds=[...(predictions||[]),...(awayPredictions||[])].filter(p=>p.resolved);
-  const totalRezHits = allPreds.reduce((s,p)=>s + (p.luka?.score?.rezHit?1:0) + (p.lovro?.score?.rezHit?1:0), 0);
+  // "Pogodak" = bilo kakav bod osvojen na predikciji (ne samo točan konačni rezultat),
+  // jer je pogađanje točnog rezultata rijetko - ovako se realno može napredovati kroz razine.
+  const predHits = allPreds.reduce((s,p)=>s + ((p[person]?.score?.pts||0)>0 ? 1 : 0), 0);
 
+  // Svaka kategorija ima niz pragova (razina) — kad se jedan dosegne, sljedeći
+  // automatski postaje novi cilj (progress bar se pomiče na njega).
   return [
-    { icon:'🏟️', title:'50 utakmica', desc:'50 zabilježenih utakmica u bazi', unlocked: totalMatches>=50, progress: Math.min(totalMatches,50), goal:50 },
-    { icon:'🎖️', title:'100 utakmica', desc:'100 zabilježenih utakmica u bazi', unlocked: totalMatches>=100, progress: Math.min(totalMatches,100), goal:100 },
-    { icon:'🔥', title:'10 pobjeda zaredom', desc:'Najdulji niz pobjeda u nizu', unlocked: maxStreak>=10, progress: Math.min(maxStreak,10), goal:10 },
-    { icon:'⚽', title:'100 zabilježenih golova', desc:'Golovi upisani u bazu golova', unlocked: totalGoalsScored>=100, progress: Math.min(totalGoalsScored,100), goal:100 },
-    { icon:'👁️', title:'500.000 gledatelja', desc:'Zbroj gledanosti svih utakmica', unlocked: totalViewers>=500000, progress: Math.min(totalViewers,500000), goal:500000 },
-    { icon:'🌍', title:'Europski put', desc:'Barem jedna europska utakmica zabilježena', unlocked: hasEuropean, progress: hasEuropean?1:0, goal:1 },
-    { icon:'🎯', title:'100 točnih predikcija', desc:'Ukupno točnih rezultata (Luka + Lovro)', unlocked: totalRezHits>=100, progress: Math.min(totalRezHits,100), goal:100 },
+    { icon:'🏟️', name:'Utakmice', unitDesc:(n)=>`${n} utakmica na kojima je bio/la prisutan/na`, tiers:[50,100,200,300,500], value: totalMatches },
+    { icon:'🔥', name:'Niz pobjeda', unitDesc:(n)=>`${n} pobjeda zaredom na utakmicama na kojima je bio/la`, tiers:[5,10,15,20], value: maxStreak },
+    { icon:'⚽', name:'Golovi uživo', unitDesc:(n)=>`${fmtNum(n)} golova na utakmicama na kojima je bio/la prisutan/na`, tiers:[50,100,200,300,500], value: goalsAtAttended },
+    { icon:'👁️', name:'Gledanost', unitDesc:(n)=>`${fmtNum(n)} gledatelja na utakmicama na kojima je bio/la`, tiers:[100000,500000,1000000,2000000,5000000,10000000], value: totalViewers },
+    { icon:'🌍', name:'Europski put', unitDesc:(n)=>`${n} europskih utakmica uživo`, tiers:[1,5,10,25,50], value: europeanCount },
+    { icon:'🎯', name:'Pogodci u predikcijama', unitDesc:(n)=>`${n} predikcija s barem jednim pogotkom`, tiers:[5,25,50,100,200], value: predHits },
   ];
 }
 
-function openAchievements(){
+let _achievementsPerson = 'luka';
+function setAchievementsPerson(person){
+  _achievementsPerson = person;
+  document.getElementById('ach-tab-luka')?.classList.toggle('active', person==='luka');
+  document.getElementById('ach-tab-lovro')?.classList.toggle('active', person==='lovro');
+  renderAchievementsList();
+}
+window.setAchievementsPerson = setAchievementsPerson;
+
+function renderAchievementsList(){
   const list = document.getElementById('achievements-list');
-  const overlay = document.getElementById('achievements-overlay');
-  if(!list || !overlay) return;
-  const achievements = computeAchievements();
-  list.innerHTML = achievements.map(a=>{
-    const pct = Math.round((a.progress/a.goal)*100);
-    return `<div style="display:flex;align-items:center;gap:12px;background:${a.unlocked?'rgba(250,204,21,0.08)':'var(--surface2)'};border:1px solid ${a.unlocked?'rgba(250,204,21,0.3)':'var(--border)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;opacity:${a.unlocked?1:0.6};">
-      <div style="font-size:26px;filter:${a.unlocked?'none':'grayscale(1)'};">${a.icon}</div>
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:#fff;">${a.title} ${a.unlocked?'✅':''}</div>
-        <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:5px;">${a.desc}</div>
-        <div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">
-          <div style="height:100%;width:${pct}%;background:${a.unlocked?'#FACC15':'#60A5FA'};border-radius:3px;"></div>
+  if(!list) return;
+  const categories = computeAchievements(_achievementsPerson);
+  const accentColor = _achievementsPerson==='lovro' ? '#2DD4BF' : '#60A5FA';
+
+  list.innerHTML = categories.map((cat,ci)=>{
+    const unlockedCount = cat.tiers.filter(t=>cat.value>=t).length;
+    const maxedOut = unlockedCount===cat.tiers.length;
+    const nextTier = maxedOut ? cat.tiers[cat.tiers.length-1] : cat.tiers[unlockedCount];
+    const prevTier = unlockedCount>0 ? cat.tiers[unlockedCount-1] : 0;
+    const progressInLevel = maxedOut ? 1 : (cat.value - prevTier) / (nextTier - prevTier);
+    const pct = Math.round(Math.min(1, Math.max(0, progressInLevel))*100);
+
+    // Traka malih kružića za svaku razinu (osvojena = puna, sljedeća = obrubljena, ostale = prazne)
+    const tierDots = cat.tiers.map((t,i)=>{
+      const isDone = cat.value>=t;
+      const isNext = !isDone && i===unlockedCount;
+      return `<span style="width:${cat.tiers.length===1?0:7}px;height:7px;border-radius:50%;display:${cat.tiers.length===1?'none':'inline-block'};background:${isDone?'#FACC15':'transparent'};border:1.5px solid ${isDone?'#FACC15':isNext?accentColor:'rgba(255,255,255,0.15)'};"></span>`;
+    }).join('');
+
+    // Popis SVIH razina s jasnom oznakom osvojeno/neosvojeno (otvara se klikom na karticu)
+    const tierHistory = cat.tiers.map((t,i)=>{
+      const isDone = cat.value>=t;
+      const isNext = !isDone && i===unlockedCount;
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;${i>0?'border-top:1px solid rgba(255,255,255,0.06);':''}">
+        <span style="font-size:11.5px;color:${isDone?'#fff':isNext?accentColor:'var(--text-muted)'};font-weight:${isDone||isNext?700:400};">${cat.unitDesc(t)}</span>
+        <span style="font-size:11px;">${isDone?'<span style="color:#FACC15;">✅ Osvojeno</span>':isNext?`<span style="color:${accentColor};">🎯 Cilj (još ${fmtNum(t-cat.value)})</span>`:'<span style="color:var(--text-muted);">🔒 Zaključano</span>'}</span>
+      </div>`;
+    }).join('');
+
+    return `<div style="background:${unlockedCount>0?'rgba(250,204,21,0.06)':'var(--surface2)'};border:1px solid ${unlockedCount>0?'rgba(250,204,21,0.25)':'var(--border)'};border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;" onclick="toggleAchievementHistory(${ci})">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:26px;filter:${unlockedCount>0?'none':'grayscale(1)'};opacity:${unlockedCount>0?1:0.5};">${cat.icon}</div>
+        <div style="flex:1;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+            <div style="font-size:13px;font-weight:700;color:#fff;">${cat.name} ${unlockedCount>0?`<span style="color:#FACC15;font-size:10.5px;">· razina ${unlockedCount}/${cat.tiers.length}</span>`:''}</div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="display:flex;gap:3px;">${tierDots}</div>
+              <span class="collapse-chevron" id="ach-chevron-${ci}" style="font-size:10px;color:var(--text-muted);transition:transform 0.2s;">▾</span>
+            </div>
+          </div>
+          <div style="font-size:10.5px;color:var(--text-muted);margin:2px 0 6px;">
+            ${maxedOut ? `🏆 Sve razine osvojene! (${cat.unitDesc(cat.value)})` : `Sljedeći cilj: <strong style="color:#fff;">${cat.unitDesc(nextTier)}</strong> · trenutno ${fmtNum ? fmtNum(cat.value) : cat.value}`}
+          </div>
+          <div style="height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;">
+            <div style="height:100%;width:${pct}%;background:${maxedOut?'#FACC15':accentColor};border-radius:3px;"></div>
+          </div>
         </div>
+      </div>
+      <div id="ach-history-${ci}" class="js-collapsed" style="margin-top:4px;padding-top:8px;margin-left:38px;border-top:1px solid var(--border);" onclick="event.stopPropagation()">
+        ${tierHistory}
       </div>
     </div>`;
   }).join('');
+}
+window.renderAchievementsList = renderAchievementsList;
+
+function toggleAchievementHistory(idx){
+  const box = document.getElementById('ach-history-'+idx);
+  const chevron = document.getElementById('ach-chevron-'+idx);
+  if(!box) return;
+  const willOpen = box.classList.contains('js-collapsed');
+  box.classList.toggle('js-collapsed');
+  if(chevron) chevron.style.transform = willOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+window.toggleAchievementHistory = toggleAchievementHistory;
+
+function openAchievements(){
+  const overlay = document.getElementById('achievements-overlay');
+  if(!overlay) return;
+  renderAchievementsList();
   overlay.classList.add('open');
 }
 window.openAchievements = openAchievements;
