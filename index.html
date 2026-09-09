@@ -360,6 +360,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
 /* ===== PREDIKTOR PAGE ===== */
 .p-main{padding:22px 40px;display:grid;grid-template-columns:420px 1fr;gap:24px;}
+.p-main > *{min-width:0;}
 .leaderboard{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
 .lb-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;position:relative;overflow:hidden;}
 .lb-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
@@ -5144,7 +5145,7 @@ function renderRadarChart(){
     {label:'Prosj./ut.',  l: totalPredsL?+(totalPtsL/totalPredsL).toFixed(1):0, lo: totalPredsLo?+(totalPtsLo/totalPredsLo).toFixed(1):0},
   ];
 
-  const n=metrics.length, W=280, H=280, cx=W/2, cy=H/2, R=95;
+  const n=metrics.length, W=340, H=320, cx=W/2, cy=150, R=90;
   const angleFor=(i)=>-Math.PI/2 + i*(2*Math.PI/n);
   const maxes = metrics.map(m=>Math.max(m.l, m.lo, 1));
   function norm(v, maxV){ if(maxV<=0) return 0; return v>0 ? Math.max(v/maxV, 0.08) : 0; }
@@ -5414,7 +5415,7 @@ function renderCumulativeChart(points){
   }).join('');
 
   inner.innerHTML=`
-    <div style="overflow-x:auto;position:relative;">
+    <div style="overflow-x:auto;position:relative;max-width:100%;">
       <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">
         <defs>
           <linearGradient id="prcGradLuka" x1="0" y1="0" x2="0" y2="1">
@@ -5505,7 +5506,7 @@ function renderPerMatchChart(points){
   }).join('');
 
   inner.innerHTML = `
-    <div style="overflow-x:auto;">
+    <div style="overflow-x:auto;max-width:100%;">
       <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">
         ${gridLines}
         <g class="prc-bars-group">${bars}</g>
@@ -6778,13 +6779,11 @@ function schedApplyKnownResults(){
 }
 
 // Live pozicija Dinama na HNL ljestvici — pokušaj dohvata sa Sofascore API-ja.
-// Ovo je "best effort": ako izvor blokira cross-origin čitanje (CORS) ili je
-// nedostupan, badge se jednostavno ne prikazuje (ne ruši ništa u appu).
-const DINAMO_STANDINGS_SOURCES = {
-  hnl:  { tournament:48,     season:95727, label:'HNL' },
-  euro: { tournament:138315, season:96522, label:'UEL' }
-};
-let _dinamoPosCache = {}; // keširano po natjecanju: {hnl:{...,time}, euro:{...,time}}
+// Automatski fetch sa Sofascore API-ja blokira CORS na pravoj (deployed) domeni
+// — radi samo lokalno/dev okruženju, ne na GitHub/Netlify. Zato je pozicija
+// sad RUČNI unos (admin je povremeno ažurira), spremljen u Firebase.
+const DINAMO_STANDINGS_LABELS = { hnl:'HNL', euro:'UEL' };
+let _dinamoStandingsData = null; // {hnl:{position,points}, euro:{position,points}}
 async function fetchDinamoPosition(){
   const el = document.getElementById('forma-position-badge');
   if(!el) return;
@@ -6792,35 +6791,51 @@ async function fetchDinamoPosition(){
   const comp = (_formaFilter==='euro') ? 'euro' : (_formaFilter==='kup' ? null : 'hnl');
   if(!comp){ el.style.display='none'; return; }
 
-  const cached = _dinamoPosCache[comp];
-  if(cached && (Date.now()-cached.time) < 600000){
-    renderDinamoPosBadge(el, cached, comp);
+  if(!_dinamoStandingsData){
+    try{
+      const snap = await get(ref(db,'dinamoStandings'));
+      _dinamoStandingsData = snap.exists() ? snap.val() : {};
+    }catch(e){ _dinamoStandingsData = {}; }
+  }
+  const info = _dinamoStandingsData[comp];
+  if(!info || !info.position){
+    if(_currentUser){
+      el.innerHTML = `<button class="btn-sm" style="background:var(--surface2);color:var(--text-muted);border:1px solid var(--border);" onclick="editDinamoStanding('${comp}')">✏️ Unesi poziciju u ${DINAMO_STANDINGS_LABELS[comp]}-u</button>`;
+      el.style.display='block';
+    } else {
+      el.style.display='none';
+    }
     return;
   }
-  try{
-    const src = DINAMO_STANDINGS_SOURCES[comp];
-    const res = await fetch(`https://api.sofascore.com/api/v1/tournament/${src.tournament}/season/${src.season}/standings/total`);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data = await res.json();
-    const rows = (data.standings && data.standings[0] && data.standings[0].rows) || [];
-    const row = rows.find(r => (r.team && r.team.id===2032) || ((r.team?.name||'').toLowerCase().includes('dinamo')));
-    if(!row){ el.style.display='none'; return; }
-    const info = { position: row.position, points: row.points, label: src.label, time: Date.now() };
-    _dinamoPosCache[comp] = info;
-    renderDinamoPosBadge(el, info, comp);
-  }catch(e){
-    console.warn('Dinamo pozicija: izvor nedostupan (CORS/mreža), badge se preskače:', e.message);
-    el.style.display='none';
-  }
+  renderDinamoPosBadge(el, {...info, label:DINAMO_STANDINGS_LABELS[comp]}, comp);
 }
 function renderDinamoPosBadge(el, info, comp){
   const posColor = info.position===1?'#FACC15':info.position<=4?'#4ADE80':'#93C5FD';
   el.innerHTML = `<div style="display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:8px 14px;">
     <span style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:${posColor};line-height:1;">#${info.position}</span>
-    <span style="font-size:11px;color:var(--text-muted);">Dinamo je trenutno <strong style="color:#fff;">#${info.position}</strong> u ${info.label}-u · <strong style="color:#fff;">${info.points}</strong> bod.</span>
+    <span style="font-size:11px;color:var(--text-muted);flex:1;">Dinamo je trenutno <strong style="color:#fff;">#${info.position}</strong> u ${info.label}-u · <strong style="color:#fff;">${info.points}</strong> bod.</span>
+    ${_currentUser?`<button class="btn-sm" style="background:transparent;color:var(--text-muted);border:1px solid var(--border);padding:4px 8px;" onclick="editDinamoStanding('${comp}')">✏️</button>`:''}
   </div>`;
   el.style.display='block';
 }
+async function editDinamoStanding(comp){
+  const current = (_dinamoStandingsData && _dinamoStandingsData[comp]) || {};
+  const posStr = prompt(`Trenutna pozicija Dinama u ${DINAMO_STANDINGS_LABELS[comp]}-u:`, current.position||'');
+  if(posStr===null) return;
+  const ptsStr = prompt(`Trenutni bodovi Dinama u ${DINAMO_STANDINGS_LABELS[comp]}-u:`, current.points||'');
+  if(ptsStr===null) return;
+  const position = parseInt(posStr,10), points = parseInt(ptsStr,10);
+  if(isNaN(position) || isNaN(points)){ showToast('⚠️ Unesite brojeve','#1A0A0A','#F87171'); return; }
+  try{
+    await set(ref(db,'dinamoStandings/'+comp), {position, points});
+    _dinamoStandingsData = {..._dinamoStandingsData, [comp]:{position,points}};
+    fetchDinamoPosition();
+    showToast('✅ Pozicija spremljena','#0A1A0A','#4ADE80');
+  }catch(e){
+    showToast('⚠️ Spremanje nije uspjelo','#1A0A0A','#F87171');
+  }
+}
+window.editDinamoStanding = editDinamoStanding;
 window.fetchDinamoPosition = fetchDinamoPosition;
 
 // ── "Na ovaj dan" — pretraži bazu utakmica za isti kalendarski datum (dan+mjesec) kroz godine ──
@@ -7257,11 +7272,11 @@ function renderSchedCalendar(matchesList){
       ${monthMatches.map(m=>{
         const compColor = getNatjecanjeColor(m.natjecanje);
         const d = parseInt(m.datum.split('-')[2]);
-        return `<div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="schedCalDayClick(${d})">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${compColor};width:26px;text-align:center;">${d}</div>
-          ${getClubCrest(officialName(m.opp),18)}
-          <div style="flex:1;font-size:11.5px;color:#fff;">${m.home?'vs':'@'} ${officialName(m.opp)}</div>
-          ${m.rezultat?`<div style="font-size:11px;font-weight:700;color:var(--text-muted);">${m.rezultat}</div>`:`<div style="font-size:9px;color:${compColor};">${m.time||''}</div>`}
+        return `<div style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0;" onclick="schedCalDayClick(${d})">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;font-weight:700;color:${compColor};width:28px;text-align:center;">${d}</div>
+          ${getClubCrest(officialName(m.opp),22)}
+          <div style="flex:1;font-size:13.5px;font-weight:600;color:#fff;">${m.home?'vs':'@'} ${officialName(m.opp)}</div>
+          ${m.rezultat?`<div style="font-size:13px;font-weight:800;color:#fff;">${m.rezultat}</div>`:`<div style="font-size:13px;font-weight:800;color:${compColor};">${m.time||''}</div>`}
         </div>`;
       }).join('')}
     </div>` : `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-muted);">Nema utakmica ovaj mjesec.</div>`;
