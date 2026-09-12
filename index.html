@@ -1003,6 +1003,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <button class="nav-btn" id="nav-karte" onclick="goTo('karte')">🎫 Karte</button>
     <button class="nav-btn" id="nav-raspored" onclick="goTo('raspored')">📅 Raspored</button>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+      <button onclick="openAppSearch()" title="Pretraga" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:5px 9px;color:var(--text-muted);cursor:pointer;font-size:13px;">🔍</button>
       <span style="font-size:11px;color:var(--text-muted);font-family:'Barlow',sans-serif;" id="auth-user-label"></span>
       <button id="auth-action-btn" onclick="handleAuthBtn()"
         style="background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);border-radius:7px;padding:5px 12px;color:#60A5FA;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">
@@ -1160,7 +1161,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button id="spt-lovro" class="stat-person-tab"            onclick="setStatPerson('lovro')">🔷 Samo Lovro</button>
     </div>
     <div class="stats-bar-actions" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-      <button class="btn-sm" style="background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.3);" onclick="openAchievements()">🏆 Postignuća</button>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn-sm" style="background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.3);" onclick="openAchievements()">🏆 Postignuća</button>
+        <button class="btn-sm" style="background:rgba(167,139,250,0.15);color:#C4B5FD;border:1px solid rgba(167,139,250,0.3);" onclick="openHeatmap()">🗺️ Heatmap</button>
+        <button class="btn-sm" style="background:rgba(251,146,60,0.15);color:#FDBA74;border:1px solid rgba(251,146,60,0.3);" onclick="openFanCard()">🎫 Iskaznica</button>
+      </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn-sm" style="background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportAppData()">💾 Backup</button>
         <button class="btn-sm" style="background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);" onclick="shareElementAsImage('stats-bar-share','statistika',this)">📤 Podijeli</button>
@@ -1754,6 +1759,15 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div id="pred-streaks"></div>
       </div>
 
+      <!-- Točnost predikcija po protivniku -->
+      <div class="form-card" id="pred-by-opponent-card">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+          <span>🎯 Točnost po protivniku</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
+      </div>
+
       <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
       <div class="pred-chart-card" id="pred-rounds-chart-card">
         <div class="pred-chart-header">
@@ -2182,6 +2196,17 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- Brza pretraga kroz app -->
+<div class="top5-overlay" id="appsearch-overlay" onclick="if(event.target===this)closeAppSearch()">
+  <div class="top5-box">
+    <div class="top5-header">
+      <input type="text" id="appsearch-input" placeholder="Pretraži utakmice, protivnike, strijelce..." oninput="runAppSearch(this.value)" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:#fff;font-family:'Barlow',sans-serif;font-size:13px;outline:none;">
+      <button class="top5-close" onclick="closeAppSearch()">✕</button>
+    </div>
+    <div class="top5-list" id="appsearch-results" style="padding:10px 14px;"></div>
+  </div>
+</div>
+
 <!-- Postignuća / milestone značke -->
 <div class="top5-overlay" id="achievements-overlay" onclick="if(event.target===this)closeAchievements()">
   <div class="top5-box">
@@ -2194,6 +2219,32 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       <button id="ach-tab-lovro" class="sched-filter-btn" style="flex:1;" onclick="setAchievementsPerson('lovro')">🔷 Lovro</button>
     </div>
     <div class="top5-list" id="achievements-list" style="padding:14px;"></div>
+  </div>
+</div>
+
+<!-- Heatmap posjećenosti kroz godine -->
+<div class="top5-overlay" id="heatmap-overlay" onclick="if(event.target===this)closeHeatmap()">
+  <div class="top5-box" id="heatmap-box">
+    <div class="top5-header">
+      <div class="top5-title">🗺️ Heatmap posjećenosti</div>
+      <button class="top5-close" onclick="closeHeatmap()">✕</button>
+    </div>
+    <div class="top5-list" id="heatmap-content" style="padding:14px;"></div>
+  </div>
+</div>
+
+<!-- Navijačka iskaznica -->
+<div class="top5-overlay" id="fancard-overlay" onclick="if(event.target===this)closeFanCard()">
+  <div class="top5-box">
+    <div class="top5-header">
+      <div class="top5-title">🎫 Navijačka iskaznica</div>
+      <button class="top5-close" onclick="closeFanCard()">✕</button>
+    </div>
+    <div style="display:flex;gap:6px;padding:12px 14px 0;">
+      <button id="fc-tab-luka" class="sched-filter-btn active" style="flex:1;" onclick="setFanCardPerson('luka')">🔵 Luka</button>
+      <button id="fc-tab-lovro" class="sched-filter-btn" style="flex:1;" onclick="setFanCardPerson('lovro')">🔷 Lovro</button>
+    </div>
+    <div class="top5-list" id="fancard-content" style="padding:14px;"></div>
   </div>
 </div>
 
@@ -5084,6 +5135,7 @@ function renderTotalLB(){
   el('lb-total-lovro-home',  t.lovroHome);
   el('lb-total-lovro-away',  t.lovroAway);
   renderPredStreaks();
+  renderPredByOpponent();
 }
 window.renderTotalLB=renderTotalLB;
 
@@ -5118,6 +5170,46 @@ function renderPredStreaks(){
   el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:10px;font-size:11.5px;font-weight:700;margin-top:10px;">${rows.join('')}</div>`;
 }
 window.renderPredStreaks = renderPredStreaks;
+
+// ── Točnost predikcija po protivniku (samo tamo gdje ima dovoljno povijesti) ──
+function renderPredByOpponent(){
+  const el = document.getElementById('pred-by-opponent');
+  if(!el) return;
+  const all=[
+    ...predictions.map(p=>({...p,_isAway:false})),
+    ...awayPredictions.map(p=>({...p,_isAway:true}))
+  ].filter(p=>p.resolved && p.protivnik);
+
+  const byOpp = {};
+  all.forEach(p=>{
+    const n = officialName(p.protivnik);
+    if(!byOpp[n]) byOpp[n] = {luka:{pts:0,total:0}, lovro:{pts:0,total:0}};
+    ['luka','lovro'].forEach(who=>{
+      byOpp[n][who].total++;
+      byOpp[n][who].pts += (p[who]?.score?.pts || 0);
+    });
+  });
+
+  // Samo protivnici s barem 2 predikcije (smisleni uzorak)
+  const entries = Object.entries(byOpp).filter(([n,d])=>d.luka.total>=2);
+  if(!entries.length){
+    el.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:10px;">Treba barem 2 predikcije protiv istog protivnika za prikaz.</div>';
+    return;
+  }
+  entries.sort((a,b)=>b[1].luka.total-a[1].luka.total);
+
+  el.innerHTML = entries.map(([opp,d])=>{
+    const lAvg = d.luka.total ? (d.luka.pts/d.luka.total).toFixed(1) : '0.0';
+    const loAvg = d.lovro.total ? (d.lovro.pts/d.lovro.total).toFixed(1) : '0.0';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+      ${getClubCrest(opp,20)}
+      <div style="flex:1;font-size:12px;color:#fff;font-weight:600;">${opp} <span style="color:var(--text-muted);font-weight:400;">(${d.luka.total}x)</span></div>
+      <div style="font-size:11px;color:#60A5FA;font-weight:700;width:56px;text-align:right;" title="Luka: ${d.luka.pts} bod. ukupno u ${d.luka.total} predikcija">🔵 ${lAvg}/ut.</div>
+      <div style="font-size:11px;color:#2DD4BF;font-weight:700;width:56px;text-align:right;" title="Lovro: ${d.lovro.pts} bod. ukupno u ${d.lovro.total} predikcija">🔷 ${loAvg}/ut.</div>
+    </div>`;
+  }).join('');
+}
+window.renderPredByOpponent = renderPredByOpponent;
 
 /* ===== RADAR GRAF — LUKA VS LOVRO ===== */
 function renderRadarChart(){
@@ -7710,6 +7802,70 @@ function windDirCompass(deg){
   return dirs[Math.round(deg/45)%8];
 }
 
+// ── Podsjetnik prije utakmice (best-effort: radi dok je app otvorena/u pozadini,
+// NE radi kad je aplikacija potpuno zatvorena — za to bi trebao pravi push server) ──
+let _matchReminderTimer = null;
+function toggleMatchReminder(matchTs, oppName){
+  const btn = document.getElementById('nmb-reminder-btn');
+  const key = 'dinamo_reminder_'+matchTs;
+  if(localStorage.getItem(key)){
+    localStorage.removeItem(key);
+    if(_matchReminderTimer){ clearTimeout(_matchReminderTimer); _matchReminderTimer=null; }
+    if(btn){ btn.innerHTML='🔔 Podsjeti me 1h prije'; btn.style.background='rgba(255,255,255,0.08)'; btn.style.color='var(--text-muted)'; }
+    showToast('🔕 Podsjetnik isključen','#1A1A1A','#9CA3AF');
+    return;
+  }
+  if(!('Notification' in window)){
+    showToast('⚠️ Ovaj preglednik ne podržava obavijesti','#1A0A0A','#F87171');
+    return;
+  }
+  Notification.requestPermission().then(perm=>{
+    if(perm!=='granted'){
+      showToast('⚠️ Nisi dopustio obavijesti','#1A0A0A','#F87171');
+      return;
+    }
+    localStorage.setItem(key, '1');
+    scheduleMatchReminder(matchTs, oppName);
+    if(btn){ btn.innerHTML='🔔 Podsjetnik uključen'; btn.style.background='rgba(74,222,128,0.15)'; btn.style.color='#4ADE80'; }
+    showToast('🔔 Javit ćemo ti se 1h prije utakmice (dok je app otvorena/u pozadini)','#0A1A0A','#4ADE80');
+  });
+}
+window.toggleMatchReminder = toggleMatchReminder;
+
+function scheduleMatchReminder(matchTs, oppName){
+  if(_matchReminderTimer) clearTimeout(_matchReminderTimer);
+  const reminderTime = matchTs - 3600000; // 1h prije
+  const msUntil = reminderTime - Date.now();
+  if(msUntil <= 0) return; // već je prošlo vrijeme za podsjetnik
+  // setTimeout ima limit ~24.8 dana u JS-u; ako je utakmica dalje, provjeri opet za 12h
+  const MAX_TIMEOUT = 20*3600000;
+  if(msUntil > MAX_TIMEOUT){
+    _matchReminderTimer = setTimeout(()=>scheduleMatchReminder(matchTs, oppName), MAX_TIMEOUT);
+    return;
+  }
+  _matchReminderTimer = setTimeout(()=>{
+    try{
+      new Notification('⚽ Dinamo za sat vremena!', {
+        body: `Dinamo Zagreb vs ${oppName} počinje za 1h.`,
+        icon: 'icon-192.png'
+      });
+    }catch(e){ console.warn('Notification failed:', e); }
+    haptic([50,50,50]);
+    localStorage.removeItem('dinamo_reminder_'+matchTs);
+  }, msUntil);
+}
+
+// Pri učitavanju provjeri postoji li već aktivan podsjetnik za sljedeću utakmicu
+function checkExistingReminder(matchTs, oppName){
+  const key = 'dinamo_reminder_'+matchTs;
+  if(localStorage.getItem(key) && Notification.permission==='granted'){
+    scheduleMatchReminder(matchTs, oppName);
+    const btn = document.getElementById('nmb-reminder-btn');
+    if(btn){ btn.innerHTML='🔔 Podsjetnik uključen'; btn.style.background='rgba(74,222,128,0.15)'; btn.style.color='#4ADE80'; }
+  }
+}
+window.checkExistingReminder = checkExistingReminder;
+
 async function renderNextMatchBanner(){
   const el = document.getElementById('next-match-banner');
   if(!el) return;
@@ -7737,8 +7893,9 @@ async function renderNextMatchBanner(){
     const t1crest = next.home ? getClubCrest('GNK Dinamo Zagreb',20) : getClubCrest(officialName(next.opp),20);
     const t2crest = next.home ? getClubCrest(officialName(next.opp),20) : getClubCrest('GNK Dinamo Zagreb',20);
     const tagTxt=next.home?'🏟️ Maksimir':'✈️ Gostovanje';
-    const compColor=getNatjecanjeColor(next.natjecanje);
-    const compColorLight=getNatjecanjeColorLight(next.natjecanje);
+    const isDerby = (next.opp||'').toLowerCase().includes('hajduk');
+    const compColor= isDerby ? '#EF4444' : getNatjecanjeColor(next.natjecanje);
+    const compColorLight= isDerby ? '#FCA5A5' : getNatjecanjeColorLight(next.natjecanje);
     const compLogo=getNatjecanjeLogo(next.natjecanje);
     const compBgPhoto=getNatjecanjeBgPhoto(next.natjecanje);
     const bgPhotoHTML = compBgPhoto ? `<div class="nmb-comp-logo" style="background-image:url('${compBgPhoto}');"></div>` : '';
@@ -7785,7 +7942,7 @@ async function renderNextMatchBanner(){
       ${bgPhotoHTML}
       ${logoHTML}
       <div class="nmb-content">
-        <div class="nmb-label" style="color:#fff;">⚡ SLJEDEĆA UTAKMICA</div>
+        <div class="nmb-label" style="color:#fff;">⚡ SLJEDEĆA UTAKMICA${isDerby?' <span style="background:#EF4444;color:#fff;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:1px;margin-left:6px;animation:nmbPulse 1.4s ease-in-out infinite;">🔥 VJEČNI DERBI</span>':''}</div>
         <div class="nmb-match" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${t1crest}${t1}<span>—</span>${t2crest}${t2}</div>
         <div class="nmb-meta">
           ${tagHTML}
@@ -7794,10 +7951,12 @@ async function renderNextMatchBanner(){
           ${next.time?`<span>🕐 ${next.time}</span>`:''}
         </div>
         <div class="nmb-countdown" id="nmb-countdown-units"></div>
+        <button id="nmb-reminder-btn" class="btn-sm" style="margin-top:8px;background:rgba(255,255,255,0.08);color:var(--text-muted);border:1px solid var(--border);" onclick="toggleMatchReminder(${matchDate.getTime()}, '${(next.opp||'').replace(/'/g,"\\'")}')">🔔 Podsjeti me 1h prije</button>
         ${weatherHTML}
         ${transitHTML}
       </div>
     </div>`;
+    checkExistingReminder(matchDate.getTime(), next.opp||'');
     if(_countdownTimer) clearInterval(_countdownTimer);
     function tick(){
       const diff=matchDate-new Date();
@@ -9163,6 +9322,346 @@ function openAchievements(){
 window.openAchievements = openAchievements;
 function closeAchievements(){ document.getElementById('achievements-overlay')?.classList.remove('open'); }
 window.closeAchievements = closeAchievements;
+
+// ── Heatmap posjećenosti kroz godine (GitHub-contributions stil) ──
+let _heatmapFilter = 'zajedno';
+function setHeatmapFilter(filter, btn){
+  _heatmapFilter = filter;
+  document.querySelectorAll('#heatmap-filter-bar .sched-filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderHeatmapBody();
+}
+window.setHeatmapFilter = setHeatmapFilter;
+
+function openHeatmap(){
+  const overlay = document.getElementById('heatmap-overlay');
+  const content = document.getElementById('heatmap-content');
+  if(!overlay || !content) return;
+  overlay.classList.add('open');
+  renderHeatmapBody();
+}
+window.openHeatmap = openHeatmap;
+
+function renderHeatmapBody(){
+  const content = document.getElementById('heatmap-content');
+  if(!content) return;
+
+  const filterBar = `<div id="heatmap-filter-bar" style="display:flex;gap:6px;margin-bottom:12px;">
+    <button class="sched-filter-btn${_heatmapFilter==='zajedno'?' active':''}" onclick="setHeatmapFilter('zajedno',this)">Zajedno</button>
+    <button class="sched-filter-btn${_heatmapFilter==='luka'?' active':''}" onclick="setHeatmapFilter('luka',this)">🔵 Luka</button>
+    <button class="sched-filter-btn${_heatmapFilter==='lovro'?' active':''}" onclick="setHeatmapFilter('lovro',this)">🔷 Lovro</button>
+  </div>`;
+
+  const attField = _heatmapFilter==='luka' ? 'prisutanLuka' : _heatmapFilter==='lovro' ? 'prisutanLovro' : null;
+  const attended = (matches||[]).filter(m=>m.datum && m.rezultat && (!attField || m[attField]!==false));
+  if(!attended.length){
+    content.innerHTML = filterBar + '<div class="prc-empty">Nema još podataka.</div>';
+    return;
+  }
+  const byYearMonth = {};
+  let minYear = 9999, maxYear = 0;
+  attended.forEach(m=>{
+    const [y,mo] = m.datum.split('-').map(Number);
+    minYear = Math.min(minYear,y); maxYear = Math.max(maxYear,y);
+    const key = y+'-'+mo;
+    byYearMonth[key] = (byYearMonth[key]||0)+1;
+  });
+  const maxCount = Math.max(...Object.values(byYearMonth));
+  const monthAbbr = ['Sij','Vel','Ožu','Tra','Svi','Lip','Srp','Kol','Ruj','Lis','Stu','Pro'];
+
+  function colorFor(count){
+    if(!count) return 'rgba(255,255,255,0.04)';
+    const intensity = Math.min(1, count/Math.max(maxCount,5));
+    if(intensity<0.2)  return 'rgba(96,165,250,0.22)';
+    if(intensity<0.4)  return 'rgba(96,165,250,0.42)';
+    if(intensity<0.6)  return 'rgba(96,165,250,0.62)';
+    if(intensity<0.8)  return 'rgba(96,165,250,0.82)';
+    return '#60A5FA';
+  }
+
+  let rows = '';
+  for(let y=maxYear; y>=minYear; y--){
+    let cells = `<div style="width:34px;font-size:10px;color:var(--text-muted);text-align:right;padding-right:6px;flex-shrink:0;">${y}</div>`;
+    for(let mo=1; mo<=12; mo++){
+      const count = byYearMonth[y+'-'+mo] || 0;
+      cells += `<div class="heatmap-cell" onmouseenter="showHeatmapCellTip(event,'${monthAbbr[mo-1]} ${y}',${count})" onclick="showHeatmapCellTip(event,'${monthAbbr[mo-1]} ${y}',${count})" style="width:16px;height:16px;border-radius:3px;background:${colorFor(count)};flex-shrink:0;cursor:${count?'pointer':'default'};"></div>`;
+    }
+    rows += `<div style="display:flex;gap:3px;align-items:center;margin-bottom:3px;">${cells}</div>`;
+  }
+  const monthHeader = `<div style="display:flex;gap:3px;margin-bottom:4px;"><div style="width:34px;flex-shrink:0;"></div>${monthAbbr.map(m=>`<div style="width:16px;font-size:8px;color:var(--text-muted);text-align:center;flex-shrink:0;">${m}</div>`).join('')}</div>`;
+
+  // Utakmica po godinama
+  const byYear = {};
+  attended.forEach(m=>{ const y=m.datum.split('-')[0]; byYear[y]=(byYear[y]||0)+1; });
+  const yearRows = Object.entries(byYear).sort((a,b)=>b[0]-a[0]).map(([y,c])=>
+    `<div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.05);"><span style="color:var(--text-muted);">${y}</span><span style="color:#fff;font-weight:700;">${c}</span></div>`
+  ).join('');
+
+  // Najposjećeniji mjeseci (kalendarski, zbrojeno kroz sve godine)
+  const byCalMonth = Array(12).fill(0);
+  attended.forEach(m=>{ const mo=parseInt(m.datum.split('-')[1],10); byCalMonth[mo-1]++; });
+  const topMonths = byCalMonth.map((c,i)=>({m:monthAbbr[i],c})).sort((a,b)=>b.c-a.c).filter(x=>x.c>0).slice(0,5);
+  const maxMonthCount = Math.max(...topMonths.map(x=>x.c),1);
+  const monthRows = topMonths.map(x=>
+    `<div style="margin-bottom:6px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;"><span style="color:var(--text-muted);">${x.m}</span><span style="color:#fff;font-weight:700;">${x.c}</span></div>
+      <div style="height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;"><div style="height:100%;width:${x.c/maxMonthCount*100}%;background:#60A5FA;border-radius:2px;"></div></div>
+    </div>`
+  ).join('');
+
+  content.innerHTML = filterBar + `
+    <div id="heatmap-grid-wrap" style="overflow-x:auto;position:relative;">
+      <div style="min-width:${34+12*19}px;">
+        ${monthHeader}
+        ${rows}
+      </div>
+      <div id="heatmap-cell-tip" class="prc-tooltip" style="display:none;"></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:5px;margin-top:12px;font-size:10px;color:var(--text-muted);">
+      <span>Manje</span>
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(255,255,255,0.04);"></div>
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(96,165,250,0.22);"></div>
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(96,165,250,0.42);"></div>
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(96,165,250,0.62);"></div>
+      <div style="width:12px;height:12px;border-radius:2px;background:rgba(96,165,250,0.82);"></div>
+      <div style="width:12px;height:12px;border-radius:2px;background:#60A5FA;"></div>
+      <span>Više</span>
+      <span style="margin-left:auto;">Ukupno ${attended.length} utakmica kroz ${maxYear-minYear+1} godina</span>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">📅 Po godinama</div>
+        <div style="max-height:160px;overflow-y:auto;">${yearRows}</div>
+      </div>
+      <div style="flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">🔥 Najposjećeniji mjeseci</div>
+        ${monthRows}
+      </div>
+    </div>
+    <button class="btn-sm" style="margin-top:12px;width:100%;background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);padding:8px;" onclick="shareElementAsImage('heatmap-box','heatmap-posjecenosti',this)">📤 Podijeli</button>`;
+}
+window.renderHeatmapBody = renderHeatmapBody;
+function closeHeatmap(){ document.getElementById('heatmap-overlay')?.classList.remove('open'); }
+window.closeHeatmap = closeHeatmap;
+
+function showHeatmapCellTip(evt, label, count){
+  const wrap = document.getElementById('heatmap-grid-wrap');
+  let tip = document.getElementById('heatmap-cell-tip');
+  if(!wrap || !tip) return;
+  if(!count){ tip.style.display='none'; return; }
+  tip.innerHTML = `<div style="font-weight:700;font-size:12px;color:#fff;">${label}</div><div style="font-size:11px;color:#60A5FA;margin-top:2px;">${count} ${count===1?'utakmica':'utakmice'}</div>`;
+  tip.style.display='block';
+  const wrapRect = wrap.getBoundingClientRect();
+  const targetRect = evt.currentTarget.getBoundingClientRect();
+  let left = targetRect.left - wrapRect.left + wrap.scrollLeft + targetRect.width/2 - 60;
+  left = Math.max(4, left);
+  tip.style.left = left+'px';
+  // Ako nema dovoljno prostora iznad (npr. najgornji redovi - najnovije godine),
+  // prikaži tooltip ISPOD ćelije umjesto iznad, da se ne odreže rubom kontejnera.
+  const spaceAbove = targetRect.top - wrapRect.top;
+  if(spaceAbove >= 60){
+    tip.style.top = (targetRect.top - wrapRect.top - 54)+'px';
+  } else {
+    tip.style.top = (targetRect.bottom - wrapRect.top + 8)+'px';
+  }
+  clearTimeout(window._heatmapTipTimer);
+  window._heatmapTipTimer = setTimeout(()=>{ tip.style.display='none'; }, 2500);
+}
+window.showHeatmapCellTip = showHeatmapCellTip;
+
+// ── "Moja navijačka iskaznica" — personalizirani sažetak ──
+let _fanCardPerson = 'luka';
+function setFanCardPerson(person){
+  _fanCardPerson = person;
+  document.getElementById('fc-tab-luka')?.classList.toggle('active', person==='luka');
+  document.getElementById('fc-tab-lovro')?.classList.toggle('active', person==='lovro');
+  renderFanCard();
+}
+window.setFanCardPerson = setFanCardPerson;
+
+function renderFanCard(){
+  const content = document.getElementById('fancard-content');
+  if(!content) return;
+  const attField = _fanCardPerson==='lovro' ? 'prisutanLovro' : 'prisutanLuka';
+  const name = _fanCardPerson==='lovro' ? 'Lovro' : 'Luka';
+  const accentColor = _fanCardPerson==='lovro' ? '#2DD4BF' : '#60A5FA';
+  const attended = (matches||[]).filter(m=>m.datum && m.rezultat && m[attField]!==false);
+
+  if(!attended.length){
+    content.innerHTML = '<div class="prc-empty">Nema još podataka.</div>';
+    return;
+  }
+
+  const sorted = [...attended].sort((a,b)=>a.datum.localeCompare(b.datum));
+  const fanSince = sorted[0].datum.split('-')[0];
+  const total = attended.length;
+
+  // Najčešći protivnik
+  const oppCounts = {};
+  attended.forEach(m=>{ const n=officialName(m.protivnik); oppCounts[n]=(oppCounts[n]||0)+1; });
+  const favOpp = Object.entries(oppCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  // Najbolje sjećanje - najveća pobjeda po razlici u golovima
+  let bestMemory = null, bestDiff = -1;
+  attended.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && p[0]>p[1] && (p[0]-p[1])>bestDiff){ bestDiff=p[0]-p[1]; bestMemory=m; }
+  });
+
+  const totalViewers = attended.reduce((s,m)=>s+(m.gledatelji||0),0);
+
+  // Prva ikad odgledana utakmica
+  const firstMatch = sorted[0];
+
+  // Najdulji niz pobjeda kojem je svjedočio/la
+  let curStreak=0, maxStreak=0;
+  sorted.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && p[0]>p[1]){ curStreak++; if(curStreak>maxStreak)maxStreak=curStreak; }
+    else curStreak=0;
+  });
+
+  // Golovi Dinama zabilježeni na utakmicama na kojima je bio/la
+  const attendedKeys = new Set(attended.map(m=>m.datum+'|'+m.protivnik));
+  const goalsWitnessed = (goals||[]).filter(g=>g.type==='scored' && attendedKeys.has(g.matchDatum+'|'+g.matchProtivnik)).length;
+
+  // Najveća gledanost na kojoj je bio/la
+  const biggestCrowd = [...attended].sort((a,b)=>(b.gledatelji||0)-(a.gledatelji||0))[0];
+
+  // Omjer pobjeda/remija/poraza
+  let w=0,d=0,l=0;
+  attended.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2){ if(p[0]>p[1])w++; else if(p[0]===p[1])d++; else l++; }
+  });
+  const winPct = total ? Math.round(w/total*100) : 0;
+
+  content.innerHTML = `
+    <div id="fancard-capture" style="background:linear-gradient(160deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border:1px solid rgba(96,165,250,0.3);border-radius:14px;padding:20px;text-align:center;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-30px;right:-30px;width:150px;height:150px;background:radial-gradient(circle,${accentColor}22 0%,transparent 70%);"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px;color:${accentColor};">GNK DINAMO ZAGREB · NAVIJAČKA ISKAZNICA</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;margin:6px 0 2px;letter-spacing:1px;">${name}</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:18px;">Navija od ${fanSince}. godine</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;">
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Utakmica</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;">${total}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Gledatelja uživo</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;">${fmtNum(totalViewers)}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Golova uživo</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#4ADE80;">${goalsWitnessed}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">% pobjeda</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#FACC15;">${winPct}%</div>
+        </div>
+      </div>
+      ${favOpp?`<div style="margin-top:10px;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;text-align:left;display:flex;align-items:center;gap:10px;">
+        ${getClubCrest(favOpp[0],24)}
+        <div>
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Najčešći protivnik</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;">${favOpp[0]} <span style="color:${accentColor};">(${favOpp[1]}x)</span></div>
+        </div>
+      </div>`:''}
+      ${bestMemory?`<div style="margin-top:10px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-radius:10px;padding:10px 12px;text-align:left;">
+        <div style="font-size:9px;color:#4ADE80;text-transform:uppercase;">⭐ Najbolje sjećanje</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">Dinamo ${bestMemory.rezultat} ${officialName(bestMemory.protivnik)}</div>
+        <div style="font-size:10px;color:var(--text-muted);">${fmtDate(bestMemory.datum)}${bestMemory.natjecanje?' · '+bestMemory.natjecanje:''}</div>
+      </div>`:''}
+      ${firstMatch?`<div style="margin-top:10px;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;text-align:left;">
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">🎬 Prva odgledana utakmica</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">Dinamo ${firstMatch.rezultat||''} ${officialName(firstMatch.protivnik)}</div>
+        <div style="font-size:10px;color:var(--text-muted);">${fmtDate(firstMatch.datum)}</div>
+      </div>`:''}
+      ${maxStreak>=3?`<div style="margin-top:10px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:10px;padding:10px 12px;text-align:left;">
+        <div style="font-size:9px;color:#FACC15;text-transform:uppercase;">🔥 Najdulji niz pobjeda uživo</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">${maxStreak} pobjeda zaredom</div>
+      </div>`:''}
+      ${biggestCrowd&&biggestCrowd.gledatelji?`<div style="margin-top:10px;background:rgba(255,255,255,0.04);border-radius:10px;padding:10px 12px;text-align:left;">
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">👁️ Najveća gledanost uživo</div>
+        <div style="font-size:13px;font-weight:700;color:#fff;">${fmtNum(biggestCrowd.gledatelji)} · vs ${officialName(biggestCrowd.protivnik)}</div>
+        <div style="font-size:10px;color:var(--text-muted);">${fmtDate(biggestCrowd.datum)}</div>
+      </div>`:''}
+    </div>
+    <button class="btn-sm" style="margin-top:12px;width:100%;background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);padding:8px;" onclick="shareElementAsImage('fancard-capture','navijacka-iskaznica-${_fanCardPerson}',this)">📤 Podijeli iskaznicu</button>`;
+}
+window.renderFanCard = renderFanCard;
+
+function openFanCard(){
+  const overlay = document.getElementById('fancard-overlay');
+  if(!overlay) return;
+  renderFanCard();
+  overlay.classList.add('open');
+}
+window.openFanCard = openFanCard;
+function closeFanCard(){ document.getElementById('fancard-overlay')?.classList.remove('open'); }
+window.closeFanCard = closeFanCard;
+
+// ── Brza pretraga kroz cijelu app (utakmice, protivnici, strijelci) ──
+function openAppSearch(){
+  const overlay = document.getElementById('appsearch-overlay');
+  const input = document.getElementById('appsearch-input');
+  if(!overlay) return;
+  overlay.classList.add('open');
+  document.getElementById('appsearch-results').innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:16px;">Upiši ime protivnika ili igrača...</div>';
+  if(input){ input.value=''; setTimeout(()=>input.focus(), 100); }
+}
+window.openAppSearch = openAppSearch;
+function closeAppSearch(){ document.getElementById('appsearch-overlay')?.classList.remove('open'); }
+window.closeAppSearch = closeAppSearch;
+
+function runAppSearch(q){
+  const results = document.getElementById('appsearch-results');
+  if(!results) return;
+  const query = (q||'').trim().toLowerCase();
+  if(query.length<2){
+    results.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:16px;">Upiši barem 2 slova...</div>';
+    return;
+  }
+
+  // Utakmice (po protivniku)
+  const matchHits = (matches||[]).filter(m=>officialName(m.protivnik||'').toLowerCase().includes(query)).slice(0,6);
+  // Strijelci (po imenu igrača)
+  const playerCounts = {};
+  (goals||[]).forEach(g=>{
+    if(g.type==='scored' && (g.player||'').toLowerCase().includes(query)){
+      playerCounts[g.player] = (playerCounts[g.player]||0)+1;
+    }
+  });
+  const playerHits = Object.entries(playerCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  if(!matchHits.length && !playerHits.length){
+    results.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:16px;">Nema rezultata za "'+q+'".</div>';
+    return;
+  }
+
+  let html = '';
+  if(playerHits.length){
+    html += `<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:6px 0 6px;">⚽ Strijelci</div>`;
+    html += playerHits.map(([name,count])=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="closeAppSearch();goTo('golovi');">
+      <span style="font-size:12.5px;color:#fff;">${name}</span>
+      <span style="font-size:11px;color:#4ADE80;font-weight:700;">${count} ${count===1?'gol':'golova'}</span>
+    </div>`).join('');
+  }
+  if(matchHits.length){
+    html += `<div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin:10px 0 6px;">🏟️ Utakmice</div>`;
+    html += matchHits.map(m=>{
+      const idx = matches.indexOf(m);
+      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 4px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="closeAppSearch();goTo('statistika');setTimeout(()=>showMatchModal(${idx}),150);">
+        ${getClubCrest(officialName(m.protivnik),18)}
+        <span style="flex:1;font-size:12.5px;color:#fff;">${officialName(m.protivnik)}</span>
+        <span style="font-size:10.5px;color:var(--text-muted);">${fmtDate(m.datum)}</span>
+        ${m.rezultat?`<span style="font-size:11px;font-weight:700;color:var(--text-muted);">${m.rezultat}</span>`:''}
+      </div>`;
+    }).join('');
+  }
+  results.innerHTML = html;
+}
+window.runAppSearch = runAppSearch;
 
 // ── Izvoz / backup svih podataka kao .json fajl ──
 function exportAppData(){
