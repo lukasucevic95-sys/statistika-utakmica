@@ -986,6 +986,55 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .tabl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .tabl-form-dot{width:12px;height:12px;font-size:7px;}
 }
+
+/* ── Dinamo Wrapped ── */
+.wr-stage{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:12px;}
+.wr-prog{display:flex;gap:4px;width:100%;}
+.wr-pg{flex:1;height:3px;border-radius:2px;background:rgba(255,255,255,0.14);}
+.wr-pg.on{background:#93C5FD;}
+.wr-slide{position:relative;overflow:hidden;box-sizing:border-box;max-width:100%;height:min(54vh,470px);aspect-ratio:4/5;border-radius:16px;padding:22px 20px 16px;display:flex;flex-direction:column;justify-content:space-between;color:#F0F4FF;font-family:'Barlow',sans-serif;cursor:pointer;user-select:none;}
+.wr-navy{background:#001236;border:1px solid rgba(96,165,250,0.25);}
+.wr-blue{background:#1D4ED8;}
+.wr-num{font-family:'Bebas Neue',sans-serif;font-size:min(44vw,190px);line-height:.8;margin-left:-4px;white-space:nowrap;color:#F0F4FF;}
+.wr-num.sm{font-size:min(30vw,124px);}
+.wr-h{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1.02;color:#fff;}
+.wr-p{font-size:14px;line-height:1.35;color:rgba(240,244,255,0.82);}
+.wr-navy .wr-p{color:#93C5FD;}
+.wr-body{display:flex;flex-direction:column;gap:8px;}
+.wr-bar{display:flex;gap:3px;height:8px;}
+.wr-seg{display:block;border-radius:2px;}
+.wr-w{background:#F0F4FF;} .wr-d{background:rgba(240,244,255,0.45);} .wr-l{background:rgba(240,244,255,0.16);}
+.wr-row{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;}
+.wr-row b{font-family:'Bebas Neue',sans-serif;font-size:22px;font-weight:400;min-width:22px;text-align:right;}
+.wr-row i{display:block;height:6px;border-radius:3px;background:#F0F4FF;}
+.wr-mark{font-size:11px;color:rgba(240,244,255,0.55);}
+.wr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;}
+.wr-grid .wr-num{font-size:52px;line-height:.9;margin:0;}
+.wr-nav{display:flex;gap:8px;width:100%;}
+.wr-nav .btn-sm{flex:1;padding:8px;}
+.wr-nav .btn-sm:disabled{opacity:.35;}
+@media (prefers-reduced-motion:no-preference){.wr-pg{transition:background .15s;}}
+
+/* ── Kviz ── */
+.qz-wrap{max-width:560px;margin:0 auto;padding:16px;}
+.qz-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;}
+.qz-top{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text-muted);}
+.qz-top b{font-family:'Bebas Neue',sans-serif;font-size:30px;font-weight:400;color:#fff;}
+.qz-timer{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.qz-timer i{display:block;height:100%;width:100%;background:#60A5FA;}
+.qz-q{font-size:17px;font-weight:700;line-height:1.3;color:#fff;margin:4px 0;}
+.qz-opt{min-height:46px;padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;text-align:left;cursor:pointer;}
+.qz-opt.ok{background:rgba(74,222,128,0.2);border-color:#4ADE80;}
+.qz-opt.bad{background:rgba(248,113,113,0.2);border-color:#F87171;}
+.qz-big{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.9;color:#fff;}
+.qz-p{font-size:13px;color:var(--text-muted);line-height:1.4;}
+.qz-tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.qz-tbl th,.qz-tbl td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--border);}
+.qz-tbl td:first-child,.qz-tbl th:first-child{text-align:left;}
+.qz-win{color:#4ADE80;font-weight:700;}
+.qz-tot{display:flex;gap:10px;}
+.qz-tot>div{flex:1;background:var(--surface2);border-radius:12px;padding:12px;text-align:center;}
+.qz-tot b{display:block;font-family:'Bebas Neue',sans-serif;font-size:38px;font-weight:400;color:#fff;line-height:1;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1002,6 +1051,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <button class="nav-btn" id="nav-prediktor" onclick="goTo('prediktor')">🔮 Prediktor</button>
     <button class="nav-btn" id="nav-karte" onclick="goTo('karte')">🎫 Karte</button>
     <button class="nav-btn" id="nav-raspored" onclick="goTo('raspored')">📅 Raspored</button>
+    <button class="nav-btn" id="nav-kviz" onclick="goTo('kviz')">🧠 Kviz</button>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
       <button onclick="openAppSearch()" title="Pretraga" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:5px 9px;color:var(--text-muted);cursor:pointer;font-size:13px;">🔍</button>
       <span style="font-size:11px;color:var(--text-muted);font-family:'Barlow',sans-serif;" id="auth-user-label"></span>
@@ -1165,6 +1215,8 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <button class="btn-sm" style="background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.3);" onclick="openAchievements()">🏆 Postignuća</button>
         <button class="btn-sm" style="background:rgba(167,139,250,0.15);color:#C4B5FD;border:1px solid rgba(167,139,250,0.3);" onclick="openHeatmap()">🗺️ Heatmap</button>
         <button class="btn-sm" style="background:rgba(251,146,60,0.15);color:#FDBA74;border:1px solid rgba(251,146,60,0.3);" onclick="openFanCard()">🎫 Iskaznica</button>
+        <button class="btn-sm" style="background:rgba(45,212,191,0.15);color:#2DD4BF;border:1px solid rgba(45,212,191,0.3);" onclick="openSeasonCompare()">📈 Sezone</button>
+        <button class="btn-sm" style="background:rgba(244,114,182,0.15);color:#F9A8D4;border:1px solid rgba(244,114,182,0.3);" onclick="openWrapped()">🎁 Wrapped</button>
       </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn-sm" style="background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportAppData()">💾 Backup</button>
@@ -1316,6 +1368,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
               <input type="checkbox" id="f-produzeci-check" style="accent-color:#F59E0B;width:14px;height:14px;cursor:pointer;">
               <span>⏱️ Produžeci (ET)</span>
             </label>
+          </div>
+          <div class="form-row" style="margin-bottom:8px;">
+            <label class="form-label">Tribina (nije obavezno)</label>
+            <input class="form-input" type="text" id="f-tribina" list="tribine-list" placeholder="npr. Zapad">
+            <datalist id="tribine-list"><option value="Zapad"><option value="Istok"><option value="Jug"><option value="Sjever"></datalist>
           </div>
           <div class="form-row" style="margin-bottom:8px;">
             <label class="form-label">Tko je bio prisutan</label>
@@ -1670,6 +1727,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
           <option value="custom">✏️ Drugi stadion...</option>
         </select>
         <input class="form-input-pred" type="text" id="em-stadion-custom" placeholder="Upiši naziv stadiona" style="display:none;margin-top:5px;">
+      </div>
+      <div class="modal-row">
+        <label class="form-label">Tribina (nije obavezno)</label>
+        <input class="form-input-pred" type="text" id="em-tribina" list="tribine-list" placeholder="npr. Zapad">
       </div>
       <div class="modal-row">
         <label class="form-label">Tko je bio prisutan</label>
@@ -2207,6 +2268,47 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<!-- Usporedba sezona kroz vrijeme -->
+<div class="top5-overlay" id="seasoncompare-overlay" onclick="if(event.target===this)closeSeasonCompare()">
+  <div class="top5-box" id="seasoncompare-box">
+    <div class="top5-header">
+      <div class="top5-title">📈 Usporedba sezona</div>
+      <button class="top5-close" onclick="closeSeasonCompare()">✕</button>
+    </div>
+    <div class="top5-list" id="seasoncompare-content" style="padding:14px;"></div>
+  </div>
+</div>
+
+<div class="page" id="page-kviz">
+  <div class="qz-wrap">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;margin-bottom:2px;">🧠 Kviz</div>
+    <div class="qz-p" style="margin-bottom:12px;">3 pitanja na dan domaće utakmice, 5 sekundi za svako. Svatko igra za sebe.</div>
+    <div id="kviz-content"></div>
+  </div>
+</div>
+
+<!-- Dinamo Wrapped -->
+<div class="top5-overlay" id="wrapped-overlay" onclick="if(event.target===this)closeWrapped()">
+  <div class="top5-box" id="wrapped-box">
+    <div class="top5-header">
+      <div class="top5-title">🎁 Dinamo Wrapped</div>
+      <button class="top5-close" onclick="closeWrapped()">✕</button>
+    </div>
+    <div class="top5-list" id="wrapped-content" style="padding:14px;"></div>
+  </div>
+</div>
+
+<!-- Detaljna stranica po protivniku (klik na bilo koji grb) -->
+<div class="top5-overlay" id="oppdetail-overlay" onclick="if(event.target===this)closeOpponentDetail()">
+  <div class="top5-box" id="oppdetail-box">
+    <div class="top5-header">
+      <div class="top5-title" id="oppdetail-title">Protivnik</div>
+      <button class="top5-close" onclick="closeOpponentDetail()">✕</button>
+    </div>
+    <div class="top5-list" id="oppdetail-content" style="padding:14px;"></div>
+  </div>
+</div>
+
 <!-- Postignuća / milestone značke -->
 <div class="top5-overlay" id="achievements-overlay" onclick="if(event.target===this)closeAchievements()">
   <div class="top5-box">
@@ -2641,11 +2743,12 @@ function goTo(page) {
   if(page==='karte') { setTimeout(()=>loadKarte(),50); }
   if(page==='raspored') { setTimeout(()=>renderRaspored(),50); }
   if(page==='statistika') { setTimeout(()=>filterMatches(),50); }
+  if(page==='kviz') { setTimeout(()=>renderKviz(),50); }
 }
 window.goTo = goTo;
 window.addEventListener('hashchange', () => {
   const h=window.location.hash.replace('#','');
-  if(['statistika','golovi','prediktor','karte','raspored'].includes(h)) goTo(h);
+  if(['statistika','golovi','prediktor','karte','raspored','kviz'].includes(h)) goTo(h);
 });
 
 /* ===== HELPERS ===== */
@@ -2763,7 +2866,7 @@ const CLUB_CRESTS={
   'Hamburger SV':            {custom:'img',ratio:0.7429,src:"data:image/png;base64,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"},
   'NEC Nijmegen':            {custom:'img',ratio:0.9857,src:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIwAAACKCAYAAAB4maIjAABmXUlEQVR42u29d3gUZdv//ZmZ3U3vCQklQOihQygCAqIIggiKBUVBbyzcNuyCDRAbYkWxYOEWFfUGUUGRJl1AOoQSegkppJGebJs53z92Z92E0NHned6f13FcR2B355pyfefsBaoNEVG8fy0islc8Q5cLGy7v3/HmmvwzLukwn6mITK72zM936CIiuq7vEBHVxEH1ccoGKooiIqIpiuIWkdSTJ082f+GFFwxVVVUA75+zDlVVcTqd2qhRoyQlJWV0amrq+0CRiKiKohj/bPUlAYsK6NnZ2bWAURs2bJCvvvpKs1qtGMa5PWLDMBARRMR47bXX1PDw8O2KohheILrPF7VP2u12AVyAXMjs3r27W0SksrJyrndNzXuj/4yLBIv5HB0Ox68iIp07d3Zf6D4BLpfLJSLy0Jm4welYhAC43e7tAQEBdO3aVd2yZQsJCQk0adIEMQzPT+QMd6QobNi4kXXr1mnvvvuu/uijjw4tKyv7SFGU+80LUhTF/c/WXxgb8j47pbKy8gubzTZgypQp+qZNm7SgoCA6d+5chcIoilLD9iioqsqBAwfIycmhW7duqsViobKyMtUfA+dD6jh8+HADEXGMGjVKAOOuu+46L6b44osvCiAWi0U+/fRTt5dHzj969GhtU17yUhzlHxicdU8UEdHM/2dmZtbXdX2JiMiHH37oVlVVAHnttdfOa4+GDx8ugPHAAw+IiJSnpaXV8Zdlz4vCzJw5M3vixInZbdq0aeD9TDEMA3dZGXL0MBgGouvgnaK7we35a+vRk/HPP8++vXv55ttvuffee7WDBw+6J0+efF2DBg1SHA7Hc4qifAHofiTQ+Ee+qfHlVb0URQc0p9N5j9VqfQmIe+KJJ/S3335bA7jzzjsZO3Ys5eXlLF68GIvFUuPUNI3k5GRCQ0MREQBp27atAmSMHz8+x5RlzxvR3r+/L1q0SAD3o2PGiIhI6fKlkpEUL5mtG0tmcgPJbFFfMpsnSmazRMloUV+O146Q4g+nioiI4XLJv//9bx+v7NKli/v33383Ab7e5XLd2Lt3b0s13mz5f1nOqekZTJ06NcDhcAwXkS0iIsuXL5eOHTv6ZJaHH35Y3G63iIiMGzfurDLLggULRETkvvvuE8C9cuVKEZEl/hzmQtW1b9PS0kRRFNdbb0wREZHi72ZJRuPaktWplWR1SJasjn4zpaVkdUyWzJYNpfyn732k7/NPP5W4uDjzgo1bbrnFnZqaan6dKiJPHj16NKkGMmz5/7ug7AWIVpOgmZub21REnhWRNBGRzZs3y5AhQ9yAAUjt2rXliy++8D3nTz75RACxWq2iaZpomiaqqvqm1WoVRVHk008/FRGRSZMmiaIoriNHjoiIfHbB5g8/wLydn58vgGvRggViGIYUfT5dMpLiJSullWS1b37q7NBCsto1k8zmiVL87hvidjpFROTIoUNy1513islvAb1///76zz//bN5vuYgsEJF/5+TkNDnddfmD6P+S/ON9AXzg8JdJ/EdeXl4LEXlYRJaKiF1E5IcffpArr7zSZEtisVjk7rvvlqNHj4pXC5Wnn35aAFFVVbws5ZRpsVgEkDfffFMMw5C5c+cK4CopKRERmXQpAPNcWVmZxMTEuLIzMjwU5pMPzgwYEzQdWkhGowTJGzZEyteu8b0Ff6xfL7cNGyY2q9UHnMTERNdjjz0mmzZtMn/mEJENIjJFRK47fvx4vXMg4f5A+h8BUzVQaH7XdVoKeeTIkYYiMlRE3vGyHJeIyLp16+SBBx6Q2rVru0ygBAYGyu233+7/nGTRokWSkpJyVrD4A2byZI+d7/DhwxIbG+tyOBwiIo9cCsA8UVRUJHfeeadLRCSnuFgqZn4uGQ3PAhhzprSSzOb1JTO5oeQ/cr9Ubt3su9Fdu3fL0088IY0aNvSxKsBdv3599z333CPz5s2TwsJCf+qzVUT+IyIPOZ3O3vv3768HaOchE1SfWnWA1TBVv1kdBJbzYZkpKSnWw4cPN3C5XFeJyGMi8pWXHVeKiOTl5cmcOXNk5MiRUqdOHZfXcGYA0rhxYxk3bpzs27fP9/zWrFkj119/vQ8MmqadVXYxATN16lTxUhUZMWKEq7S0VERk1NkAo5xN1xeRJysrK99IT093OyoqLMu2bOWxpETSR92BNS7OoyGd3ewLIhglJShBQdh69CT45tsIvqofAOVuN0t/+YUfv/+epcuWkX3ihKmpiaqqRrt27ZTLL79c69WrF126dKF+/frmyhVAJnDIOw8Ah4uKijJyc3Nzf/nll5NPPPFE5d9JYb788suQbt26RcfFxcVHREQkAo2ApkAToCFQFwgEOHToEBs3bmTVqlWsXbtW37VrlwCqd1+UunXr0rdvX2666SauvfZanz3lhx9+4JNPPmHx4sU+m4qiKOdk3bVYLLjdbubOnUteXh69evVCRNyNGjWyBAYG3qkoypdnspGdFTBut/sFTdMmAe7bbrnFEtuoMe+PuI1jg/phi4k5N8CYQ9M8qnhZKSgKWrMWBPQbSPi1g1EbNQaguNLOupUrWLJwIatWr2ZHaiqGV/UzqVCtWrVo1aqV2rZtW7VDhw60atWKJk2aEBkZ6X+2CuAkkA/keGe+d+a53e5CoKi8vLzU7XaXlZeX20WkMj8/31VaWuoGiIiIsMbExFgDAwODLBZLUGBgYKjNZguzWCyRQBQQC8QBtfxmHBAJBJkXUlBQwMGDB9m1axfbt29n+/btRlpamlFQUIA/QCwWC23btqV3794MGDCAPn36YLF4XvY9e/bw7bffMnv2bPbv3+/3SDX089gD8/cbN27kq6++oqysjBkzZrgBi67r/7ZYLNMvCjAul+tti8XyWF5enrtO7dqWB598kncfHUP6Fd2wBgeDyPm/hpoGIkhlJWK3o4SHo7VuS2Cfq4i4sh8kNfL99MCRI2xat471a9eyefNm9uzdS0lpqb+9yDcTEhJITExUkpKStKSkJBo2bEhiYiJ169YlLi6OqKgogoODT3dVrmpTAaxeW5XtdDar8vJyTp48SW5uLllZWRw7doyjR49y5MgROXr0qJGeni75+fnms/afREZG0qJFCzp16sTll19O9+7dSUxM9K29Z88e5s+fz7x589i4caOPgqiqiqIo5wUUfwuviHDs2DGmTJnC559/Tk5Ojjs8PNyi6/pzFovl1TMBxnIa+4tiGu90XU+wWCx8+eWXuHWdytJSiK2FGhEB9krQLOcPGu+NKkFBKMEhoLvRN22gbN3vlL/3Nmrjpti6XEZIj140TelE09tvZ/jtt3vUzKIi9u/axc7UHezauVNJ25OmHD5yhIysLE6cOMGJEyfYtGmTP5jw49+Eh4cTFhZGRESEEhYWpoSFhSkhISFKSEiINSgoyBoQEIDNZsPro8HhcFBZWUl5eTnl5eVSUlIipaWlUlJSIiUlJZSWlpobVwUM3r8agM1mo3bt2iQlJZGcnEy7du1o3749rVq1IjQ01PdYSkpK+PXXX1m8eDHLly9n9+7dpmHNx04Mwzhnx+LpwBISEkJCQgJlZWXY7Xa++eYbRo8ejdvtTvSX+2oyop6JwmiKougi8gfQtVWrVnranj3agIEDWbBgATlDB6Kn7UEJDgbjEhhnVRUUxWMxttsRpwMsFpTYOLQmzbC1bU9QhxQCW7aGhNpVDrWLkH30KOnHj3P48CEOHzlCeno6mZmZnDhxgoL8fIqKirFXnlGcORvqT/usgoKDiIqKIiY2lvj4eOrWrUuDBg1o1KgRjZMakZiYSIMGDU45Lj09na1bt7J27Vr++OMPdu7cSXFx8Skyh4j4vMoX94hVDMOgbdu27Nixgz59+rBq1So6dOigb9myRdN1fanFYul3ThRGRBRvaEMi0ElRlB9TU1OjgKQtW7awZ88eVVEU9qeloQOBya0p27ENJSTk0kiL/s6y4GCUkFAP5SotRf9jLRVrVlGhaSjh4agJtVHrN8TapBm2Bg0Iat+RpCbNSEpKonevXqfymko7J4uKKDhZQMHJkxScPElxcTGFRYUUl5RQWlJCRUWFUlFRid1hx+lwoihgswUQGBRIcFAQwSEhhIeFERYWRlRklAcg0dFER0cTExVFdGQ0lkDbaW8vNTWVTZs2kZaWxu7du9m/fz/p6em43e5TZAxTgBWRU76/WMCICJ06dQJg7969AGzbtk3Zt28fzZs3T1qxYkWgoih2ERkKrFcUJdvERnWWpHp1/STg28rKytaHDh1yAnFe444iIhw5doyDmZk06XcNJd98icolNnWYlEYMD4gsVtTAQM/nuo64XBhHDmPs34frt8WUlxRRfv1NxH40g4WHtjJty6+0TWhMw4g46ofHUjssivjQSKISYomvnfCXaEaV6ORUlJCbm0V2WSHpxfkcLckj9cQhRne4huuapPDQww+xZvWaU461Wq1omoZhGLjdbnRdR1VVHzW4WKpSjWsgItx0000cPnyYEx5tFED58ccfGTduXGJeXp7F4XC0MQzjW1VVewDZ/iKKpTrJ1XU9WdO0gMDAwC9btGjxEaCsWLHCUBRFadasGfv27WP2F1/wwnPPoSYlQW4uBARcPFvyBmZJeRmGwwlWK9hsnnWdDjAM1MBAlKAQ1BArIoKiaYimogQEoKoqBY4KFu1by6Jj28AQUDXQLNisAYRYAwm3BhIREESYNYhwWxARtiBCbUGE2QIJsQYQbLERYLESoHkei1N3Y3e7qHQ7KXc5KHXZKXPaKXFW+maxs5JSp51Slx2n2wG6yyOjqQrYK7i5ZS9UVSUwKMjn+NN13UdFXC4XLperGrE1qgi45meXgrrUqVOHAQMGMG7cOABatGjB3r17leXLlzNu3LiAgQMHXmGz2V4BbLquJwObvcTEqFHo1TStc0FBgVgslm5hYWFtSktL2bt3rxoeHs4rr7zCzTffzEfvvccjjz9O9BPPkP/A3ViC4i8OMJqGlJdjGDrWDp2IuuZaglI6QWwtcLvgeDplG9ZTtuI3XHt2oyoKani4h2Xpuk/otqoaWlAolqAwdENHBAwxcOpunO4SCiuKPNcp4qFgyGkEduX0Yo3ilWsVBRTVM1Xzr4amWVEUsKgaLkXFqmq+t9vtdvu0G5NytGjRgsGDB3PFFVfQqFEjrFYr2dnZ/P7778yePZutW7dekPpckzrtcrl45513KC0tZfr06WiaxiuvvMIdd9zBrl27qKyslKCgoK8KCwsjFUWRyMjIzsBXVGNDPt3F+7f1zz//rNxyyy1uVVVDs7OzKSoqIjY2lhtvvJFBgwaRnZvL2MceI+jawQQNH4mRc8JDERTlwsBSXIzWvAX1vp5D/Hc/Infdw66QcFalH2ddXgGHGjUl4LGnSZi/hMTv5xN0ZV/cJSVIWZlHRfeeVxB0w8Bt6LgNA10MT0yGoqBoFlSLDdUWhBYQjBboAZYlOKKGGe6dNXwXFIYWFIoWEIJqC0K12lA0i8+opouB23sNumEgXtCpqurbNBHhmmuuYc2aNaSlpfH666/TsWNHKioqKCgoIDExkbFjx7JlyxaWLFlCy5Yt0XUdTdPO+/EqioLVasXlcnHnnXdyyy23cP/991NUVMT111/PDTfcQGxsLDk5ORQUFCiqqkZef/317uXLlytAa5PoVQGMKdTMnj07FEg6dOgQS5Ys0WbOnCmBgYEAJCV5HMlvvvEG4WFhfDx9OjM+/5zY197CesPNHtCYNpZzHRYLRlEh1r79if9pEfsT6vLv0aNpEh9Pm8aNueKyy+iRkkKT2rVpVr8+d999N4tKKoia/gWJc3/G2jEFd0EB4nRyNvVHRDBEMMQDJP+NPb9poHvBaIiB4ZULziZp2O12dF2ne/furFu3joULF6LrOnfddRd169YlISGBjh070qVLFxo0aEDt2rV56KGHaNeuHampqfTr1++8QWP+1uVycdNNN/HFF1/w3nvvMWvWLCIiInj99ddRFIWkpCQMwyAwMJBp06bJ6tWr1UOHDgE0njp1aoA3xlfxpzAKQJ8+feoBsTt27EBVVR5++GHl22+/BSAhoTaI0Kx5c6Z/8gkAo//9b76fM4daUz8i+Ilx6A4HRnGR543XLH8KsKejLCXFWFK6EPfR58ybP59OLVow/ZNPyM7NpUPbtlx33XVcc801NG/alKPHjzNjxgwG9O5Fl5QUZh/LJO7r76k97ROkVrzvbbKoKuo5UjoFBVVRsahajWGM/m+pRdVQFRXlHIV81Xst5rqJiYlMnz6dtWvXcuLECdq1a8cVV1zBzJkzycrKonnz5gwYMIDrrruO1q1bc+LECT744AOaNGnC8uXLWbhwIe3atTsjaMywS9M6bMpK48ePZ86cOXz55Zc8+uijAHz++ec0btwYwzBISPAoAzNmzODpp59WVFVVtm3bBpAwePDg2v4YqQKY2NjYeoB6+PBhwzAMpbS0lAkTJgAQGBYKupv8qW9y66238saUKbjdbobdeisfTJtG1JgnqPfTImxX9UN3ONBP5iMV5R4ZQ1E9lEezeP5aLOBwIFExxH88gz82bWLYTTdRWlHB/aNHsz89na07djB//nwWLlxI2v79HDiRw/sfT6dDu3Zs3rqVYYOvY9CgQaT37kv8pMmICC5Dx11RisvtQlNVH3hMX4uqKGhegGiKihg6hrMSd0Ux4nLWDG5FQdxO3BXFGI4KxNCrrKH6ra36fe50u3BXlOI2PPLK119+xcCBA+nXrx9Dhw4lNTWVlJQUZsyYwcmTJ9m7dy+//vor8+fPZ+fOnRw9epQ777yT0tJShgwZQlpaGr/88gvh4eGIiE+ANqPoTKHW1LYABg0aRGpqKi+++CJvvPEGd955JyLC22+/zY033si4ceNwuVyEh4cD8MILL1BZWYlhGMqhQ4cEsNWtW7duTYAxIVsH4Pjx40Z8fDwDBgzA4XCgKAr20lKwWHHMnU3hm6/x5FNP8daUKRiGwUMPP8ytt9zCgYBA4j7+D/UWLidyzBNordqiW624y0pxFxSgF+RhFBUiJcW47ZXETf2QfM3CrTfeiMPlYuL48Xz48cc0LS+lcOxjnLhhIDnXX0PhA/fQcNkiHhp+K5u3b+fr776jcVISCxYsoGtyC76eNQtFUbipVQ/GXXkX8QFh6OUluCtKMJx2xO1CdDeGy4luL8NdehK9vJiwoGA6JybzaLebGNG2D4rLUYU6qYqC4rJzZ5ureKLHLXRt2IrwoBDP2qUn0e1lGC6nZ223ywc+vaKE2oFhPHPVvxjWuieKojBjxgxatGjB0qVLadasGT/99BObN29m0KBBzJw5k4EDB5KcnEybNm0YOXIkhYWFfPHFFzz++ONUVlYyZMgQ4uLi+Oabb6qo4G63G7fbjWEYBAQE0KFDB55//nkOHDjAzz//THBwMEOGDOHpp58G4K233uKxxx5jzJgxfP755wQEBFBaWoqiKDidTgYOHEhMTAxHjx41vGp/7WoYqRLH8bTT6RTA1aRJEyktLZUuXboIIP2uvlrEMCT3zlvleEK4nHznDRER+X7uXImv5Ymks1ksMupfd8mK9es9UT8iIk6HyKH9IksXif3j96XomSfkxNCBUuGNxuvX9yoBZPB1g7zRfF/L8RYNJKNpPcls1UgyWzWSjOb1Jb1hvKS3ayZFE54VKS+TQrtd7vEEpwsgQ4YMkc0bN/pc//OPbZN7lkyX9jPHSvyHoyV62j3S4NOH5eofXpOXts2XVQUHZXfWESksKBARkTYznxam3CTqO7cLbw8X3h7u+feUm6TNzKdERORkXr7szUmXNQWH5eVtP0u/H1+Thp8+LDEf3CsJH/1bOn45Tu5b+qn8kr79z9ifdetk4MCBvuu8//77xTAMKSgokFGjRon1z5igKlNVVfn4449FROTKK68UQAYN8jyjjz76SDp37izDhw+XF198UebMmSM7d+6UiooK33nXrl0rd9xxhy82Jj4+Xn766ScREXnyyScFkF69eolhGHLFFVeYKUFSWloq9evXF4vF4jIMQ0TkwSpxRSJyja7rb5jBUqWlpQK4mjdvLiIixzMyJDYmRmonJIguIkVPjvFsZpO6kvfYQ57fZGXLvffeK5GRkb4bbtywoQwbNkxee/NN+WHhItlx6JDk2R2+FEqHiNw5cqTnt40aSU5BgZQt/lWOxIfJsQZxkt64jmQ2qSM5zetLVuPaktmmiScgq2G8HO/SRuw/e27+29lzpHFSku+8fa66Ur6YMUNyjmVUiY53iohDd0lhbr78vnS5PPXwo3LlFX2kMCtXnlz7nfDSQNHeHeEDizm1d0cILw2UJ9d9J7nHMqXX5T3l2ceelPXLV0lx/klxGbq4q0XiZx0+Jp998olc3qun77qaNm0qZmThjBkzJDw8/JzyhX788UfJzs6WunXrCiCjR4+umlrqcsnhw4dl0aJFMmXKFLnpppskMTHRd3xUVJTcd999kpOTIy6XS2688UYfIG+99VYREYmJiZFatWpJdna2iIgkeZ6nmaf0qFceektEeitut/txTdPeAj4FKgsKCsbExsbqrVq11lK3bUG12lj7xx/07NaN3cczaDpvDtlvvIY1PgH9ZD5KnXokzPgatXFTlv32G3eMGOFvQaS6Dp9Yrx5NmzcnNyeH1F27CAsLY+HChfTo0QPyciA7C8rLoaSY0rw8SkpKCGvQEOXgfspmfu4xxjkd6BXlBA29hZiJr1BqsTHjow/59LNP2b1rt+98cfG1aNQwiZioaJxOJ3n5+Rw5dpQSr79my4aNaM3r0P7jR9ACAj0aTw0WGVVR0B2V7Lh/GmXbDtLjCo/7ISIykqQGDYmLjcVisZBfWMDhI0coyMv3Hd+ufTvuu/c+HnjgAQoKCnjggQeYPXt2FSvvo48+SqtWrTh06BARERHUqlWLyMhIoqOjqVevHvXq1WPJkiXccMMNVFRU0K5dO6Kjo9m3bx9ZWVmnFbzr1KnD119/TZ8+fUhNTaV///6cOHGCgIAAHA4HL7zwAvfeey/169dn8+bNpKSkYLfbadeuHfv379fLy8u14ODgN7whG3fpun6vIiL/KSoqGmGz2bTg4GA5dOiQ0qRJE5IaN+bA7t0Uv/4S0c9O5IPPP0e3WBlTL570++7CllAbo6QYW5+riX3zPRYsX859o0eTlZVFdGQEV/e/hk7duhEbH09xURFb/viDbZs2sXdvGm6jqge2cePGJCQkEFO7Ng5DqLRXEhQcQquOHRl8/fW0Prwf+5RX0PNyUbwaAIqCUVIM4RHEjHuBwJtvA0NI257KgkULWbFqFTt2pZJZwwNVNY3Fvy6kV7+raTb9QdJL81AsARhinEbjURG3g8SwOA6O/oBF8+Yz+PohNWopdevWpX2btlzZ+wquvWYgzdq1AuC9997jueeeo6yszOcKMEeDBg148803adeuHfPmzWPr1q1UVlZimjRMJ+rBgwerHGemi3Tp0oXLLruMyMhIsrKyWLt2LYsWLaK0tJR69erxySef0KNHD26++WaWLFniA8y3335LWVkZqqpyyy238MQTT/Duu+/SvHlzsrOzOXr0KHXr1pWysjLFMAw9PDx8KiKy7ueff5YmTZo4Dx48KG63WwICAiQiLExK3LoU3nmrnBjUV8ThkF2HD4t91XLJbF5fsto0kcwru4s47LJx61YJDAgQQO4ZNUqyioo89LKyQiTzuEixL8xScioqZeWmzTLh5Zela5cuolYjwUn168t9d98tP/33v1L4xzopHTNaMpPiJbNVkidO2D/8s0sbyWwYLzn/Gi4ul0vWZqTJh7t/k2OuEik2HFJSXiZ5eXmSm5cnkyZN8oUwfvfttyIicvms8cLkG2pkRTWypsk3SI9ZL4iIyH9mzPDIbTabTHnjDcnPz5e8vDwprSiXEnHKMVeJfLj7N1mbsU9cLpd0vewy3+/979c//vaGG26QZcuWyVdffSV33XWX1KlT5xQWddlll8lrr70m27dvFy/L8DzXnBw5dOiQeEMtpbCwUG6//XYBJCgoSHbu3CllZWWSkJDgC8JfsGCBHD16VMrLyyU5OVl69uwpuq5LYGCgREREeMJod+2Shg0bOletWiUiMh8ROfbhhx8KYMTHx8v8+fOlZcuWAsihnFxxvPmaHI0JlNxhQ0QcdnFnZUpWR48sUf71F+IQkdbJyQLI2Kef9sgLy5dK9s3XSXqHFpLeor6kt2kiWVf3lIIH7xH7x++LbN4g4vJkEqRlZMib06bJ5T17ikVRJKVdOzmRmyeSky1ZyQ3keOM6ntSV6mBp31yyUlpKZtN6kvvwfSIi8sXOFcLY7sJL18qw+e9KhRjicrtl3DPPePh5TLT8PG+eGCJy1XeThFeHiOUcwGJOy7sjhFeHyJXfvSiGiHz/39kSGuGRRV580fNZmbjl5nlvC5OuFcb1kK92e4Lfr76mvyiKUmPcrf/nqqrK8ePHJSMjQ1q0aCGqqkqfPn3kk08+kZycHF+GwLJly2TixIkyYMAAqVevnm8tm80mnTt39gm4Dz74oADSunVrERGZPHmyL/73+PHjUlpaKh06dBBAnnjiCcnJyRFAOnXqJD/88INER0cLoM+aNUtEZIcKRB89ehRVVZWcnBwGDx5MdnY2AAcPHcKWWB8lIgrXti3kjRiGEhCIVicRIyCA4CFD+emnn9iVlsZlnTsz+fXXKfn6C07cfQfGnl1YFAVLcCgWTUMyM6hc/Ct5k1/i+C3Xk9E9hfy776DpyqU8ccMQ1qxezdaDh+h93WAGD76O5QcOE/7vh//09ZzOayvi82OpqHRo3pXvbnqOmdfczx/LV9ChfXsmv/YaN998M0f27CdlwJV0mjmWZUe2YgkOx22cu3/GbehYgsNZfmQbKTOfpvsNAzi6ex+DrxvMhAkT6NSpE9vXrOergQ/xzc3P0q5pZ5/hzvDzH9XkRTbHuHHjOHjwIEOHDuWOO+7g2LFjLF++nD59+jBr1iyuuOIKYmJiuOqqq5g4cSILFy4kIyPDx6LcbjebNm3i+uuv5/3332fatGm0atWKXbt2sXDhQu6++24AGjduTEBAAL169WLbtm2oqkrjxo05ePCgmcnA0KFDOXnyJKqqKkeOHAGopQJBBQUFGIbBHXfcQWhoKIWFhWiaxtbNm6BpM8TQUaOicW7awMlH70fRNCwNkyA0jLnffouiKDz23HPo2Znkj30cDAPDbscoLkIqy0EENTgYLToGS1wtLJGRaPZKHGtWkfXcWI73vZzcIf1pMf973hp+C7/9+AOxtWsTMuYJAtq0Q8rLfd7sM40Kt4MGUXUZ1qIbP3w/lyuvuopdu3bx+eefM3v2bH4u3Eurjx5m64mDaEFh5wUWf9BoQWFsO3GI5A8fYkHpQX6cP4/333+frVu2cHmvnixesJDbWnSnflQdKt3Oc/Ik67pO69ateeWVV2jQoAE//fQTffv25b333qNFixY0bdqUxx9/nFWrVlFRUYGmadhsNgICArBarT7Lrr+MM2bMGDIyMnj22WdRFIVvvvmG2NhYateujcViYdCgQWzbto2AgAAMw6BVq1Zs3LgRTdMoKCggPDyc22+/HcMwFG+YabgFUB0OBwBPPfUUTz31FLfecgtp+/axaf16uPUWtNBQxOFAjY7GuX0rRmkJYbfchhvYsH49AN0vuwwtLJRG384Flwvn0cNU7NuLfW8arvSjUFCAgqAGBnmi9KxWVKsVVVHB0HEf2MeJ1O3I++8Q3LgJzbt2w96rD8E33kLxyxPOaTOjAkP4afPPjImI480bhjF4yGDmz5uP6AZl4ubOn6dhiBtLYMgFgcXnpTV0LIEhFDvLuevnadzUohuGy2Ndve222xg4YAD3L5vBz1sWMLJVr3NyEKqqyj333MOcOXNYsGABy5Yt81GO6tF3JkVy+vnQVFWladOmtG/fnrZt29K0aVNCQkIIDw+ne/fuiAjr1q0DoFu3bvzwww++40zjbKNGjfjggw/QdZ3k5GTmzJmDw+Fg1qxZ2O12gAAL4LRYLAGmND5gwAA27N7D6BF38OOPP1L63lSCEhtgP3YUNSAAJTAQKSkhtHVbDufkcOz4cVq1akWgqrJ+9x6cIRFERISTcNnlxIcEEwlQVgrbt1L2+2pK16xE35eGFhLqcRHobm98bzCW4BAQwZmVSd6sL1G/+xq1VgJKaKjXxaCcZSMNYuLq882ulfRJas13X39Lo+ZNeODhhxh2w4282e8uHv/lQ8QWdPHBSABOB28Nfgh7Zj6PPvUESY2S+OqLmcw9vo3Ze9YQE9cA/RzCPsygqRdeeIHSPwPcqwRSmdZdMy4XoEmTJj53Q/fu3YmKivI5OrOysiguLubAgQPUrVuXpKQkDh8+TGFhISkpKfz4449YrVafG6FBgwZYLBZ+/PFHRowYwZdffgnA/Pnz/R2ZigUojomJqQXISbtDMVK3I2vX8M033/Dexx+zNyOLti1bU7l/LwQFedJEVAWtdVs2/bHBY3/Iz6d5ixacPHnyT5UPSGrUiPYpKVx+RR+6X9GbVuNeoPa4F3DMnU3Ba5NQ7JV/Bl/5h2jabGiBgZ5wldKSKiEMZxolzkru7TSIiV2uJ7+8hMCQIN54fQojR47k9bffZOKrr/Diyv9S7KpA0SwXHM2moKC7nUSExfJIm348/vAYFIG333obxaLRI6YRWfdP5/k/5lLiPLe0KMMwKC0t9TkWTZBUr/MiIoSGhjJ16lRGjRoFQFpaGt9++y3Lly9n69ateOUN34iNjfU4UC0WNm7cSOfOnRERn3MSoFOnTmRnZ/PBBx9w7733MmnSJAYMGOCjYtHR0QCVKpDZqFEjANmdmoqamMjJVyeSd/tNjLm6L53bt8PVIhnFfMN13RNvm9SY3xb+itvtJicnh7LiYnp0786gQYO4rGtXatWqxcHDh/l+zhweffABurRqRaO4OJ4eOxbXDTcR/+V/kZAQcLlOBYMZGGXoHip0jiPIYuP9jT9R5Kxk7H0P07RpUyZNmoSI8PLkV6nIL+SujleBowJNufDcfk1VwV7Bv1L6UpR5gqnT3scwDMaOHUuzZs148ZGnKXLZ+WDDPIIttvOKXdF1vUqAlT+1URSFyMhI1qxZw8iRI3n00UeJjo6mZcuWPPjgg8ydO5cjR45Qq1YtunbtyqBBg+jWrRsFBQXk5eXhdrtZuHAhrVq18oHSjOhLSUmhQ4cOdO3alW7dujFhwgSaNWvG9u3bURRFvOEt+RZgV9u2bTsAsua3pTBhPMFdu+P4fRUZ111N5EOPYW3XwQMSw0BcLmwJCbgDAjiZn8/Ie+5h0NChXH55T2qH/Zky4QBOFBaSeTyDfbt3sXrJEn6YO5c3pkzht4ULWbL+D2Le+YC8f92OdiZQnAcVCLEGUHEyh7f2LOVfI0cya853WCwWel/Rm6CAIHbv2sVdHa5g6u9zT2ukOydqIAaoFu5s05vUdTsZcM0AKiorWLV6NYjw1aczeG37AuzF+QRbA84r5vZsVGjOnDk0atSIli1bcuDAAcLDwxk1ahT9+vWjTZs2JCYmEhYWdkru1Jo1a5g7dy4nTpwgPDycmJgYCgoK0HUdq9VKx44dGT9+PC+99BLeUBciIiJYvHgxIiLt2rVTgAMW4Pe2bduOCAgIUDZu2MDxk4XE97uG3G2b0YKDKX5rMtYmTVFDQj0hAE4H1qYt0IKCmf2f/2Bz2GH/XuwzPiZ/2xbchSexxMQS0DCJug0b0aBBQ7pf0Yt/3XYbk999l4fvvZc5c+YwcugN/Lp4MSFDb6ZizreokVHnl0VZwyh12hEFvt22kin3TWPIoOtYsXoVP8/7mbDwMCpcDlRFpUFcfY4VZqFabGZW5bnHxioKhttJ/VqJNA+Ow7iqF79eczV5eXk0aNiQG6+/nm59ejH0o/sRBcqc9ouWl8z01hEjRtC3b18uv/xyDhw4wG233cYnn3xCaGgohw8fZufOnSxYsID9+/ezf/9+cnNziYuLo0ePHvTu3ZsXX3yR0NBQQkNDadeuHcuXL/dRr1GjRpGZmekLBX3wwQfJz89n69athIaGipcqrVNycnIa16pVa+eAAQOCFi1aJG9Nm6Y8Pvw20nt29qhrmubJTrR4YlmkshJry9ZYkxrh3r0Te8ZxjNIST76nzYaiaoiuI263pxaeokBgIFqTptR+6XXcrdrQtk0b9u7bx6/LljEguTnHr7ocS0DABfAGT3hnwDUDiXn/E7aeOEyms5jOMUlU5hfxzdezeP7555n88qvcO+4xOn3+FKGBwRwvO0mRvQxFUZHzll9AxCAiMJTE0CjKKivYcs+bvP38JF6Z/Bpvv/02N9x4I0GxEWzIO0y9wEg6xifRr38/li5ZekGxuaaccezYMVJTUxk0aBCtWrUiNTWVNWvW8MADD7Bnz55zWqtRo0Z07NiR3bt3k5aW5hOqTd+WruvUq1fPlxk5btw4rr/+evnhhx+kpKSkuxofH38IWOe1CBofv/MOzqhoIm64yeOrQUGx2TwbbxgogYG40nZT/uP3OI8dQdM0rDGxaLFxaBGRKMHBqGFhaNHRWGLjsMTEYAkORtJ2k/HvUVg1lVvvuANFUfjPRx9B7brYWrZGKivPydZyOiFUgI7R9Tn41RK6tWxHcrPmPP/88yiKwitvTCasUujRsBU7j2yn2FkJFwAWn3akqJQ4K9l1ZAc9G7UhqMTJG+++jaqqPP744yQ3a0b3Vh1In72SjjENfNd4MdH+bdu2JTExkQ8++ABFUbjnnntwuVwMGDCAPXv2+GKG/cuSmbYa8/8Ahw8f5vvvvyctLa1KNoIpUBuGwZQpU9B1nQ8++AAR0R988EGA1HvuuWezuUP/GTRokFK/fn0OHDrkifl8fCxGaJgnar+aTKEEBKBGRqIEBP6ZhOZwoBcUgNvtibAT8ajMuu5JEYmOgbxcZGcqPa68ChFh88aNuEQIatveE5erXNhDFe+bf8JewtU3D2Hk7SMwvGuNHDmSxYsWoyO81et2wiITUEQuKptK8SRpERoZzxs9h2OoCitXrOTmm2/2fG/RGHXXXVx1wyCyKorOKa3yTIAB6NGjh+eZbd6MiHD11Vezdu1aKisrMevymgKzYRg+AdrpdPqCrfyD0auHpKqqitvtpmfPngwbNozPPvuM9PR0mjVrJldddZUCfD5nzhxdFRFl/fr1PwDpL730kgoYk555hrKISKLHPIFeWHhqYLd/eoeqIpUV2Dp3JfTOuz2B3WZ4phkUrmke6mEYcOwI9ZMaAlBwsoBS3cBWuzYixpmyUc8uhALLMnbz761fc/eLT3Nw5x669+jBzJkziQuLYJsrj0cWTicoKATD0C/4XCZkDEMnKDCUMb9+TCqFBKtW/vvf/9Lnyis5vHsvI597jHs2fcHi9J1VrvFCR2JiIg6Hw2e6qF+/Pvv37/fF8JrTP0wzKCiIe++9l+7du1dJla2uhZngCQwM5LPPPqOkpIRJkyYBGK+88ooG5GzYsOFLEVFUQOvevXsl8NrIkSOVNm3ayNHjx3nl+ecJuXs0ls5d/rSFnEaLUWw2XGm7CXvwEeJ+WkjUM+OxtGqL2+nEnZ+PXlCAfuIEhgJG0+YYXstyYEAAAaqCUS2R60JHoGZl7f7NNJk6mgXOI6z9/XdGjhjBFf360jQ4hjlHt5FbnO+xwXDhGYWCoGgW8kry+CF9B/XVUK685mr+PXo0y5ct48fS/TSZOpp1+zcTZLFekntzOp1YLJYqhQLatWuHYRhUVlb6QjUBOnbsyKuvvsquXbuYOHEiu3fvrmLwqym7QNd1Jk+eTLNmzRg/fjxZWVl07drVuOmmmxTglcsuu6wET1Q2uoioEydOnDFx4sSHPv/881Zdu3Y13nnzTfWW4cNp/9b7ZF7bF83t9hUGOoXaWAPQs7Mpfm0SUW++h/veB6h17wNQkA+bN+A4uB/D4SDwiqtQklvx46uvoqoqyS1bEqKqFBw6gKJpF0G4TUojqIEhGBaNB358hxWHU/nuyy+Z8Myz7Pjtd0Z16c9nK79HswXgvsgUVE1R0J0O/tX9OrYuWsljYx7huYkTuHn+O3y/czlaSARqUOh5a2GnG7t378ZisdCiRQt27NjBrFmzeOSRR1i2bBmLFy/GarXSpk0bevXqRe3afxYrGDJkCMXFxacVtk2HZb9+/XjkkUdYv349H374IRaLxfj8888tQOonn3zysVmmXvXGYygvvviis6ys7JHOnTvz5JNPisPl4r6RI9EbJBHx7AT04iJPtFuNtm03alQU5b/MQ9+7h/RDhxk8aBBT58xlU4Mm5I+4h/IHH2dvdC1eefllXn7lFQzD4L4HHgJdx7FxA2rQpakCYRgGCiqWsGjm7FxBuy+eZNQLT5LSMYWGtkhEUS6SHf3JlkRVSLSEcfnll3PH2DG0/eJJvt+1AktoFIqiXnR6q+k2AFi2bJlP3TUMgxdeeIEpU6bQvHlzXnnlFZ555hnat2/Pjz/+yHXXXUdGRgYbNmxg/vz5pwWLKVDHxMTw+eef43A4uP/++3G5XPLCCy9Iq1atpKSk5N+jR492eTiX4qll5i3roSmKskxE/jNlypR/LVq0SN+8bZs26YXnmfTSy9h/X41ryUKUyCif/6d6OoaqKOQ/+yTN5i7g5ltvZeSIER47gqIQHBxMSXm57+cjhw9n+K3DKP30QyQrAyUq+qLtMP4sQzcMLKGR7Mo5TMpnj7P2zsm0i0n0YkUuyVkQaB/XgJwQg+6fPkphZSmWkEiPR1u9NFViRcTnPX799dd59tln+fnnn5k3bx5jx45l7NixBAcHU1FR4Ttm7ty5JCQk0L9//zOyIlPQ/eCDD6hXrx5PP/00O3bsoEuXLvr48eMtwOSIiIj1ZumX6qmyhoio27dvfxzI+Oqrr1SbzWZMfm0y6/74g7jJb3vqsjjsNau/hoESEoK+M5X8B+9hxB13sD89nduHDyc8PJyS8nJUoEWzZrzz7rvMnDWLyhXLKH3vbdTwiEsGliqhCLqOFhhKob2UK76dyOrMfSi2IHTj4gGjG4JiC2R15j56f/MihfYytMDQi/KCn4lqaprGhAkT+OWXX/jpp5+YMmUKXpcOFRUVREVF8a9//Yvc3FyGDh3Kddddx549e05b+85kRbfddhvDhg1j+fLlvP322wQHB+vffPONBdj2ySefjPeWhjX8NUR/NGuKouhFRUXXRERELHzttdfczz77rKVFs2Zs2b0b5fdVFNwzEi0i4vTsQ9OQ4iLUlq1JGP8SpHSh2K2TkZmJ1WqlUZ3aWIDSTz6gdNq7HgndW8LsQg131v4DiJv2KXP2rueWn6agBYaii7/TTkV0l0dAt1gvWQkNRVEQt8cXpmhWr6b3p79Jryxj1pAnGZ7cg779rmbZ0t8uOKne1GQ0TWPSpEk888wzAOTk5KDrOnXq1AFg+fLlPPzww+zZs+eMrMh0Su7atYuAgABSUlI4ePCgvP/++8ZDDz2k5+TkdE5ISEj1py5QrXqDlzVZFEVZpOv6R88888z9P/zwg75582Zt3KOP8t60aQTdfCv22d+iRkXXzJp0HSUiEmP/PjKG34S1XXvCe/SiVeMmGC4XZbt2UrZyGXL0sIeyKMqFgeW8yLqBolm8xRoubb0VRbOCQhWw/DX3ICiKgtvt5tlnn2XatGlcd911dOzYEZvNxp49e1iyZAk7duyoovmcycn5xhtvEBcXx3333cfBgwfp1auX/tBDD1l0XX/BC5ZTKlHV5PXTRURbsmTJU/369ev3n//8p1HHjh2NDz78UL1x2DB6PzeRzFXLPTEuFmvNm63rKMHBaICeuoOCTRt9G6WqqscaHBX9Z+mNv2HIX3QeOVsboL8ANKqqkpWVxfTp02sEw5kKJppAuuyyyxg5ciRLly7ls88+IygoSP/iiy8swCaLxTLFy4pOWUSt4YQC0L9///Li4uJ/t27dWnniiSfEEOGh0aNxhoYR+ejT6GVlp9eaTOuvV67RYmKwxMZiiY1FjY72uBr86rr8M84PNGbAVfUuJf751Wd7cd566y2cTicPPvggIiLPP/88SUlJ7qKiotEmUGrqaKKehmTpImKJjIz8Dfhq0qRJWmJior4rLY1p77xDyC23oSW39lhzz6YNGIavPY5v/gOUSyIIm8Y6//zqM4t8nnyovn370r17d9566y0OHDhAkyZNjGeffVYDpkVFRW3zsqIaSZR6ZjuYKMeOHRtrtVqL33jjDQWQyS+/TEFZGdEPPYphr7xg/88/43+GOgG8+OKLFBUV8frrrwMY77zzjgqc2L59+4umge60vq0zSOUGoDVs2DAbeGfYsGFqmzZt9LyTJ5n+wQcEDBiE0ripx8v8D2iqOib/F16XSV3atGlD9+7dmTp1KsXFxXTt2lUGDRqkAC936NChCE8zLzlvwPgJwMrOnTvfA/InTZqkAfLJtGnYDYOooTdjVJSfIst4s7POfZ67qey0x5sVJz2e5Jo38a+eKgqiKYhycSzXFGz9wxX8wxZUv0JF56uWjx49Gl3X+fjjjwGMV199VQWOfPHFF5+fjbqcFTBepGlt27YtBL64/vrrlYYNG+rHMjJYsWoVwTfdioSEnqJe23SdALebQP3MM8Dtxup0oJ2jTGMBbC5n1bXdbgIVj/ZlDbAhioFblSpoEdERRRCVv3QaOAkpcFC7RD1vNdsM0tY0zSe4+td/MacZvmBagGsKVahpbbfbjdVqZfjw4SxbtowTJ06QnJxsXHnllQow9V//+pf9bNTldGp1jbLM0aNHZzRs2PDRUaNGaRMmTGD+7NkM6PMR1uRWGDt3oISEoIiBrhtkhEdS6a0FdyZ2pSoKIaGhRBQWEORy+WJYaqIsGkKxolEal0BlRYXHJ6SqoIPmcBO1dy/ZR49Qq9wKFhu5qh0UhUC7EB8Y4fHoOl1/EfdU0BSFSIfKx4PHsPWPjTx5/BeoHX1WAd+/b4DpbbZarb6qDbVq1SI0NBRVVamoqCA3N5f09HTS09OrlGs1WU5N5gMzUS4lJYWoqCi+++47FEWR+++/3wIUbdy48WsvkdTP5aU9GzoNEVGTkpLSRGTDyJEje4wfP15ftmSJZgChPXtTvHmjJ3dI0dDLylnTbzB9n3iSKG9lzepvgHlPutvFj2t+Z/+LL/ASBmUWC2oNNywoBIjBEVUj/fHnuPbyHh5bj+qNYzMMDKeToe17MrhpZ157fTIfhWdAk9o0POFmSss+tO/Sicj4WHS3md8kl1Bq8VxlsC0IW3gwq1etAl3O+LKYbMe0lyQkJHDNNdfQv39/OnXqRP369X2hDNWHy+Xi6NGjrF27lrlz57J48WIfeMz6dv4pKubzHzhwIABLly4F0G+77TYL8EvXrl0Lqlt0L4bCeImBYgDzGzRo0KNRo0Zy4PBhjpzIoVGPnhS9/zaIx+EXHhlBrZmfsiE4iLtefOmMi2bl5fHb6Hu4PTQAV0wUymnUQhXBrmq01J38/q/bODjja3ped12Nv7168LX8VrwfbWAndJewN9TB4O8n02JBHKunfUNcXNxfJlialTUVzy6dkaqYLKd169aMGTOGG2+80cz9qaI6+2c6mkY5q9VK06ZNadq0KXfddRc7d+5k6tSpzJw5s8ZS8yZw+vbtS1ZWFhkZGbRu3VqJjY3F7Xb/5NeQ5OxAOHeNTCgoKFgF0KtXLw0gdfMmlFZtICIS3G5URaFcN7g2JpKkvbtxiCB+N+0/DbebWnFxPPXYo1xpUXCrZy5CLyLYbDYeCwvC2LHVs4a35q35YIuyctlAPsqdPTECNHC5ISwI9frO7G1mZeeRA54Cy96IsyrX45c4dsHTrXtSf8/0hno7koSGhvLWW2+xefNm7r33XqKjo6uEWFaPiPOn0v5Rdabm89lnn7Fp0yZGjhzJiBEjePTRR1EUxceqAgMDad++PRs2bACQvn37akDlwYMH13vlFv1SAsYA2Lt37x4gr2vXrgogO7duhcAg1PjaiDchTQHKDAOx2Xw3WuPUNCwiNH74UTbUbYitshLjLEZAQ4QiAc1cW622JhAYHoqUOT2l472B65TaURULmtVy2usx01IvZirqmbuimXnM7du3548//uDxxx8nICAAt9vtE2KruwBMwdacpsxjerD9qVX79u2ZOXMmX375JZs2bUJEfI7G+vXrExQUxJYtW8BTZwZgf3JycpXmE5eEJXm7nCiKopSKyMFWrVrFAcbetD0agLVuPVz794K34ZbqL6icgYcbuk5CeDjxE1/h8N230ygwEPtZaKN2lrXFMDx1/v1lFFXBOG2ZeM9wOhzolc4Ll2QUhYCgQBSb6j1/zZTl6quv5vvvvyc8PBy32+1TnU2qYYLG7XaTnp5OVlYWRUVF6LpOZGQkDRs29OVBm+zGBIXT6cRmszF+/HjWrl1bpdKVWZjbm45iJCcnq3haHor3seqXDDB+e+UGjiQmJnYDJP3oMc8ideviNPTzNlipmoah63To04clw++k1qwZBMTGYVzCli9nlTsMA01Vuf/RMSxJ/QPNZkM/r5gWz11bNI3IgEDefHw8NjenhH+cPFlIy5YtmTdvHkFBQei6fsqmK4rCmjVr+Oqrr1i5ciXHjh2rUqEBPIHarVu3ZtiwYdx7771ERET4QGGz2di9ezevv/66DywmABs2bAjA0aNHAcwwzqPVJPdLChhzZJq9FfPycj1qYK14Dwvg3LQP/7dCUVUUw6DTuOfYvO53uuRkYg8MPK0A/FeNbKkko19djzx2IcFcAhhuBvz3FcJ2nEAb2gbdW20BPNURXpwwwQcW/6R7VVXJyclhzJgxvoKJ1dVuk1XZ7XY2b97M5s2b+eijj/jPf/5Dr169cLvdqKrK/fffj9Pp9NlzzGHWZ87LywMwiznnnO9tXkgc4cmgoCAURaG4uAQHYImM8sLk3FRV1S+YXFEUDBFiQ0NJeHkyBx1OghS/EK+/adisVlTNilXz/D3fqVisqIEhuNrV4+TwDhASCG4dW0AAzrIKHnlkDC1btqzy1ptgOXbsGL169WL27Nk+L7S/rFI930hVVaxWK4cPH2bAgAFs374di8XCBx98wJo1a7BYLKeEN8TExACeNoEBAQEEeDJNS/4OwFRYrVYsFgt2ux2HCGpo6DkTNV3X2Z2WVkXtNFlT++49KBo1mqL8fKwWK3+nT/vP5hUXNkUEQ9dR3IYny9HvhTh68BBt27atIoSab7/dbueGG25g//79voQ0U/upyQhnyjoulwubzUZFRQVfffUVxcXFjBs3roptx3+Eh4djGAZ2u90EC4D97wCMy9fKxe3G7XKj2gLOjQ16H9iUCePJzsz0dJY1H6zqqUTV5fGnSGvVHq2s9IJTZ/9HPcImnRXAZuPEiRNYbTbCQ8OqAMCMaXnnnXfYtm2br0XNeclf3voue/bsYfTo0ZSVlZ0S9G3+OzAwEJfLZQra5ma5/w7AGOabI4aBGAbKOfdK8qi6cSeySP38E0/jBz9rpIFCZGAgDV99g70CQSJ/O2s606WrqoqqqecUzyMioGlkZGRQLzHR17fJ/M5isVBaWsrUqVMvuKWwmcG4aNEi/vvf/55xHbOOnZcNXjDxviDA+J0YRfX6dM6VJQExkZFoX37OkYwMT5SYX7s6Q9dp2a4d9gcfI7+gAJv172FNmqZh0SxYNK3GqdmsGPZKjJIysGhnFdcURQG7HafDgTUs2GMBNitqeu/3t99+Iycnp0oFhYvxbp8pDNV0UlZjWdrfARjFBxiv4eh8NlQB7BYrzctK2PX6K7irBYErqoroOl3vf4gDnbtBcfH5Ne26wFFcUoy7MB9H0Unc1WdxEXrWcQYENmZ81OWQnYdqPbOCqWgq2J20rtXAax86lU0sW7bsFCvuBctfZwGcafWtFhx+3nm8F6JWq6Zn1RIcjMWbInI+t2y43QRERVP71/lsHHQ93fv3x9B1VO9bIIpCqKbS5NUppN1wLW10nQpF4a+Ajdnu5tHbRjG4PA/FdmoaiqaoRKhWbup1DSuX/Aab56A0rFNzuTUfJRUwNNrWTariAPRpicDOnTur+Ir+FirqLU5kKod/B2CspinbZrNhUZTzNrSpCtgNgyahwax+eQI5l3UjPizUZxJXvKypWbPmZD0+lpxJzxETXwv3X/BczY28rt815/T7wopSsFrOyJLMokPBagAJkTFVgGlqSrqu+xpL/B2AMe00NpuN8vJy0xZ03lWc1AsFDECAzYYFPMlc53nPihg4g4Jpm3GEda+/gqieDml/siZPJasuo+7hUI/eSFExivrXsSZd13Hrp+/1aHc6PP4e9dyEXsQgTLURFlRzI/iKigpKSkr+NsCYbMhms/lXevhbABNoqn+2AA9gDIfjvDMBFMDtchMRE0v8t1/yx4oVqJoFw3tjnpx5hWBFofmk10gLCCRQd2P8lQGznr7FNc/zuD/Fu5ZV0bBqNRNxU8X9u4ZZvNu0wfydgAkyARNg85zPqLRzIQFJqgIVIiSHBJP9wliyi4pQ/ewIJmtq0qQJxsNPkFdYiM1i+Uu0ppriZ/1nYECgL9Tx3EwIHofn6QoJmQLoXz1Mluut5O0LyvICJvDvkGGCTYdYQKAHMFJZ4c+9zw80hoEzKIhOWen8PmkCQ9+eiqK7PamtflpT51H3smbpItr9vvySGvRM88Cc2bPZnboLVVUw/DQaxWuJjggN5fbb76BWrVo1pwhXM96hKJTpTsrtlQQTfspvQkNDiYiIIC8v74wVFi7VqKysrEJhvHv4twAm1OGrIOU5n1FWdtECWVhMLPXnfsfqK66kz+AhVbQmAwi1aNR/4UUOXr2c4EtsmQX4+KfvWO7YC2Fh4Narv6bgcjHj2Aba5KoQF3TGDRaPKkSp4SCn+CRxCfF/CvR+sSxm9xDlb0jTKfPukdm0y7uHfwtgwky0BgV5avbrZaUXRF38+WKFrtMiMoIVE5/lcEonGtWp47Eiqyqq5hGAW7Ztx/wbhmEUnqy625dgRMbHYalnQYuMRNeNqtsvgEVlR0EROyqOQYMGGA7XGVmThoquuNiVdZTWzZM91bGqUbWePXuyePHiiwZMDQa5U4bZw8AEjJdFBV3IXp3vyxjhRasSHOx5142S4otOZlNFqLTZ6FpaxIZnnqKymkFPFAVFhGYPPMSB0AjfZ5dMi3C7cZdX4i6txF1a4TcrPZ8XlaPaAtG6JoPNcvYAMcOAQCvbsg79SaWq2WFuvPFGX9zKxYDGP9/6tIZJb59Lc8+8BYiCOc9X72IAQ6i3VLxRXOxxEVysPOF2Y4uKptXKpSyb/hGKpvlsPKqqgqLQvE1brh/9b89nl1poVBSPJF59ej83xEAvs5+TxmQYAkFBKFYNd4Udzc90b1KDFi1aMGTIkCohD+crqANcffXVPPfccxiG4QvKqj6Kiop8shOgePcw9C+jMN6sAYAI78mVsPCIPymMql10kr0C2F0uGsTGYnlrMtt37EC1/KlqmwawOG9sx//IOMcXQ1EAXadenbpkph/3GvOqBnaLCK+//jrBwcFVgsrO63JUlfLycl5++WXuu+8+jwW+BtAUFhYCvsAp0wYU+pdQGLPR9YQJEwKBCLNWbIS3P49xCf09KlCuqHTWFPY+9RgFFZWoCjW67P+3DhXFkz3gdFCnbl0qysspLS87xT1gGAZNmjTh008/rZLNeM4CqDdOuF69ehiGwfTp07n++uurgMZ8VuaeeXsqKV4Ahf2VLIkrrrgiFAgrKCgAUKK8eTRGaUnNJVkvmDfp6GFhdN6/i+WvvoR4rb7VbQuXdJNVFU252Klg0SwY4sZlOH055w0aNWLnzl2n1JszHYHDhw/ns88+8/3ftAmZUXfVsxvM7xwOB40aNeLNN9/0rf3tt9/SvXt3H2hMwJgUxsx98gIoDG96rEkULhVgFICWLVtGAGG5uZ5Y3ui4OHA5kbIyb53dSyRKeC2hMXG1qP31DNYsXnwKa7rUo7yyAt1VgdNdiX7B04G7NJ8WFcH0rIgBhx2n00lwVDgffvgBR44cOSWUwQTJ3XffzZo1a+jRo4cvbdaoIafLPyLvxhtvZPXq1SQmJv5phg8MZN68eTRt2tTnP/IHjDeRT/HuYdjs2bPPy0phOR/ABAQExABabm6uAEpsrXg4WeAx3AUEeCjMJXr7VaBc12kdHsry55/mWPv2NKhVy6dqX0pwAnRt0QaXKwPNEoyhXlhsikXViLVqTL7xARb9soA12zb4wiD27t3HsGHD+OOPP3yBTib78S8j9vvvv7Nw4UJmz57N+vXryczMpLy8HEVRCA0NpWHDhvTq1YvbbrvNVxLeP+vA5XIRGxvLqlWrSElJ8XUILi4uxu12ewyPeIopAmGtW7cOA8ouNWBM9MYDnDhxwgC02Ph4yM0Fp9PX3u+SsgkR7AGBdD2Zx+/PP0PCpzOwXepzeME36fFxl3Td/IqqIaaxsTEsXriIW2+9lW+++cYXZmDKGqZ6raoqAwYMYMCAAei6Tm5uLiUlJb5ubOaGm0Ax2ZRpADU7zBYXFzN79myGDh1Kfn4+FRUVFBQUkJCQAGACKbhWrVqRQPa5GtLU86QwdbzoFIDYWrUgK8NjKvdP5TxbUJA35uVcVe2gmBiaLv6FNbP/i6JVlWdOVWJOXVcRztqyT0Q8vp+LnA6XE8P0alezZquqypw5c+jfvz+ZmZk+odUMtTQ33swS0DSN2rVr07x5c5o1a+YDi1n2w//3Ztjnnj176Nu3L8nJyYwZM8Ynw4gI2dnZJmCU7OxsA1DCw8PjqhHbSyf0AvVMcqapKjFxsTgzjnsL+Cg+gdTqdOKsrPTEkHpv3tfL0DBwV9qxnGPAswJUut00iYpEXpnAsfR0xO+hVclHNgzKHfaqt66Argq6vRzRjSppG6ccr1/8VKRm0JoUISAggOXLl9O5c2e+/vrrKu1ozHvyD7msKYfb/M78rUmd3nvvPS677DJfJN+2bdvIz8/3ASsjI4P4+HgAsrKyBMBqtSb8lYCpX15eTlFREbHR0UQFB+NIP+aVKcTHm4/E1KLOrbcTqKqofs2eNIsVi6rSf+SdnIiIxirn1lNEE6FY1QiJjCTQ7Ub1ahHmuqbWEFkvgaE9rsJW4UTxBsZrbqFWhcLQxpfTo0NnTxCR1XpKzvKlmjabzZd2cjq/maZpZGdnM2LECHr16sX3339PRUXFKRWmzpT7bf62tLSUWbNm0bVrVx555BFfZ1qTYvmHgB49epSwsDDCw8PJzc0Vrysh8a8Qek3BoV5mZiYiotSpV48AoCwjA7whBzYg3aWzYcxjJDduRtb6P04RUA3DwNqyNd/fMpLLpk+ld2w0pbp+WuQaKAQbOjsCg0l/ejz2wiJS/9jgfQjicwzq5WXYNCtj2vbjwH9S+aOtAUGBROc7+LjRABo3acLOPzZ7m1dc+tK6Ch7PemRkJI1at8AaYDutmcGkDGZq7Jo1a0hKSqJfv35cccUVtG3bljp16hAREVGFtbvdboqLi8nMzGTnzp2sWLGCpUuXkp6eXkUOMn1K1eN8Dx8+DHiyINPS0sjPzyc+Pr7BJQWMNwnf8FKjut6eyEoDb3K3KzsTxWJBMQSXCPWsGotfGMcP5RWe0IQatkYRQbUFEBUdjvsspb0UBJem0shewW93j2Cb0+WxkiKeNnwOB1qjxoRccy178jP4Zf8fqHExYG0KhpAfCjfOfRMpr+QvH5qFQLfB2/c8jaug5Kwyk2moExGOHDnC9OnTmT59OoqiEBsbS3R0NKGhoWiahtPppLS0lJMnT/pUZH/V3GRRZxpmP+sGDRqQlpampKenEx8f3/B8jHfnrCUtXbo0Cojfv38/gNK4WTPQddz5+d42wh5oqMDjCTFoStzZkEiZYWA35Ix8UcFTzClcVZlUL6GqMG3RkMIibP36oL3+OotO7OGX2S+iBIRChR0MQYJsMLjjJfF1nYu3za4YPLDpG4K3ZEC/xrjPIqv5t9bzl03y8vJ8edCn8yP5p9KeDZzgaTIK0KRJEwDlwIEDdO7cub5X9rxk1RsUQFq3bl0biNi7dy+A0rRFMuTnYpSWoAUF+civAIW6wdmyo0VAU869bIABFFR/MIYguo61opJYt5vigpNQ5gC31a+SmEC5429Lu1VQoFkdKlslelJkzrFzSk0lxvz/+ms750JNagKMGXTeokULAMVb+qPu0qVLI66++uric6kTc66AISoqqj6gpKWl6YDWuEVzOHrE0w4nJKRKxQONc131PCl+DWsInu5oFovF4702Pcwi5+0wvEREBlw6Ft244K5v/uC4JNfkXSc/P5+ioiKSk5MBlF27dgHEdOzYsR5QfC62mHMGTEBAQGOAffv2CUBSo8boSxd4y3L87yplrHjfdJN7KT6V/1zQKueBbPERMbxMWaq4q/93DDPaT9d1Dh06RPPmzQHYs2ePDmjR0dGNgd3nspHnY+ltXl5eTnZ2NnHR0dSJi6Vi/z5v6sff7D02N0NV/+xY6wWGqniCr8XQPbVyfVP+nDVer3LqP4WzyIPeWBnfVD1TVTGwoCqKD6z+6r+/b+jvGmZDrbS0NDp27EhYWBhHjx4Vr7W5BTD/UgHGFEaaHjx4EBFRmjZvTpCikHfoIKrV+tc2mzDr8f7J7EHXEbcb7HaMwpNImSf80GW4MVxOrIGhhAYGEmYLJNwWRLgtmIiAIMJtQYTZggi1BhBsDSDYYiPQYsWmWrFqGhZV84YmeHOgxRP17zJ0XIaOQ3djdzupcDupcDkoc9kpcdopdVZS4qyk2FFBibOSUmcldt2N2+XAaXgCwIqKik5JKzEFXX/ZxPiLCymZHWabNGnCtm3bOH78OElJSS0viVptqtS9e/e2AI1SU1MBlFZt23o2KOM4XErA+L+tHsODpwG6y4l46+sqAQGoYeFoMTFo8QmoUdHYLu8NQJ/6rVhz15vEh0QSERBMqC2QYIvt7yP9CBUuJ6XOSoqdlZwoK6RxpMeyOnLECE8wVWYmmZmZ5Obm4nQ6T9tez79T/aWkRGlpaQC0bt2abdu2KTt37iQpKamFqbRdEpb08ccf1wLqbt26FUBp07EjlBShF+RjuRjA+ANEBFwuxGFHXG4UTUMJC8PSoCGWhklYGjf1zAYN0WrXQY2JQbFWBUNCaBQJoVE12zy88oXIOZsczk0nUv6UlxQUQqwBhFgDSAiJpHnUn+2AH3zgQR584EHAE0+bk5PD0aNH2bdvH7t27WLPnj3s37+fzMzMUzQgfxX6QlmZCcwDBw4A0K5dO7766it169atDB48uPHvv/8e5i16eUZN6WyAUQG9QYMGjUQkaPv27QagtmzbDg4d9PRLiow6Py+1P4txuRC7HXG5UGw21Frx2Jo2w9q6LbbWbbE0bY5Wp66nIdfpdHOzPL3pe0HwSQ6Kual/yhJ/pXzuMyyIWVhIUKnaIU1VVYKDg0lKSiIpKYk+ffr4ji8rK+Pw4cPs2LGDDRs2sGnTJvbs2eNLEfFtml/VzXMFj/k7s+R8u3btABQvEYhp2bJlQ2Dn2TQl5SwnsSiK4haRe4BPa9Wq5S7Iz7ccOXmSOgvmkf3c01hi486a2FUFJA4HhjdNRYuJxdIimYDOXbF16oK1eUvUqKiaXo8/qZg/y/o/2nanelBUdXnGf2RmZrJlyxZWrlzJqlWrSE1NrSIL+dfLk3ModSsi7Nmzh6ioKGrXrk2DBg30o0ePasAtiqLMqanP44VoSa0LCgrIy8ujQb161ImMpHz3Tm/U/hku0hvpj9OJUVEBioKlbj0CO3clsNcV2FK6oNWpWzPV8AfH/8HSZWfbuJrCP6oLvpqmUbduXerWrcvgwYPxmjVYtmwZCxYs4Pfff/cl9JuUx98AeDpNKTU1lWHDhlGrVi3S09OloqKC4ODgdsCci5VhzDO39hp5lFZt22IB7Af2e0qV1YRqTfNYYcvLEZcTLaE2wf0GENRvALau3VAjImtgK3jVUuVvKSD0vxlI/pTGn/VYLBaaN29O8+bNeeCBB8jMzGTx4sXMmTOHFStW+BLu/Tuk1DS2bdvGsGHDaNWqFStWrFD27t1Lx44d257FhuCTUc6oIU2dOjUAaOotOa60T0kBMXBlHPfIFv6AMcljURFir8TWsRORL08h7seFRL35HoH9BnjAYvaBNEM6Nc0TMP1PZ7caQWTacEzWY8b01q1bl1GjRrFw4UJSU1N56aWXSE5O9vmXzGOryzFmq+L27dsDKN69bd67d2+Lt9+nct6AMeWbgQMH1gJq7dy500Nh2reH7Gyk8CRYvBmA3ipURmGhp0THDTcS+8W3xH4zl5DbRqDViq8KEq/BzfD6RKqT0Jo+82jZ7jP6UMxgqOpk3qyHUp3H+39X01rVm1udrjyH+Vvz/Oa/q5/vdGvW9Lvqx/sHTPkbAE3wNGvWjOeff57t27czd+5c+vbte0qQlbme14HsE3y9e5vwzjvvRF20Wh0dHR0OBHqDhpX4OnXgRLbHPhIeDrqOUVSEGh5OyB13ETriLixNmvnfvQcgNcgh/qTXP5HrdLk5p8vqqy4AmqZw8w093XFn+u5c84POJ5foQn7nn8Rf/Xj/6zdlF5vNxtChQxk6dCirV6/m7bffZt68eb5S9WaopsPh8FUH9+5tcN26dcOBvDNpSmcFTEBAgA3+LBcRGBQMZUWe2NqKCtB1gm+4ibD7HsTStNmfWo2/6b6Gh2y323n55Zc5cuQInTp14vHHH0dEyMrKYuzYsTRo0IAJEyb43qbt27fz5ptvUrduXSZ4S7Cba6mqysGDB5kwYQKRkZG8/PLLREZGoigKS5Ys4csvvwRgzJgxdO7c2Rd8/dtvv/HFF1+gqiqPPvooKSkpiAglJSWMHz+eoqIiCgsLfedwuVx07NiRl19+2beGoij8+OOPfPvtt2RmZhIYGEinTp246qqr6NSpE9HR0YgIlZWVTJgwgdzcXIqLi30xubquk5SUxPvvvw94PMoTJ06kvLycW2+9leu8faHWrVvHtGnT6Nu3L6NGjTolU9I/PMIMDu/Vqxe9evVixYoVTJo0iZUrV3oVVQeZmZm+LEhvnrWmqqr1gnmnt2EkJ0+ebCMicvXVVwsgKzdtFtmwTo5GB0ruTdeJfe0a8Q23W0TX5WzD7XaLiMi1114rgNhsNklNTRURkfLycgGkf//+IiLidDpFROTIkSMCSM+ePausYRiGiIicPHlSAGnSpImIiLhcLhERWbJkiek8koceekhEROx2u4iIDB061Pfdnj17RERE915/YmKiADJx4kR55ZVXZMqUKTJx4kSZOnWqb32HwyE33XSTADJs2DD58MMP5bXXXpMmTZpImzZtpLCwUHRd911rhw4dBJBx48bJK6+8Iq+//rq89NJL8uqrr/ruw+l0SkJCggCSnJwsxcXFYhiGbN68WQB58803q9zf2Z6z7rcf//nPf6Ru3boCyObNm2X9+vUCGEOHDhURcefk5DTx3/sLAszhw4cbiIhj+PDhAhjfL/hV5OB+KZj0ghjezRT93IBSHTA33HCDREdHS/PmzSUhIUHy8vJE13UJCQmRW265pQpg0tPTxWKxyKBBg2oETGFhoQQFBUnnzp2rPNDly5eLxWKRu+++WwAfMH/66SeJi4uTMWPGiMVikYMHD1YBTJs2bSQiIsL3fxNk/mtPnz5dAHn77bdPe6+GYfjW6NOnj1gsFiksLBQREYfD4fud+Rtd16V+/frSvHlzCQsLkyuvvFJERFJTU8ViscgHH3xwzoCpCTjZ2dkyZMgQSU1NlZ9//lkA49///reISElqamq8qfBciNArAJs3b84F8lu0aIGiKOzdvg1p3JSIFyZ51GpD92g4F2ArcTqdqKrK0qVLEREGDBjg68RRvYy6KeBVF2pNldNfe6guJ7ndbu655x5atWrFQw89hGEYjBo1igkTJtC6dWvcfl1H/I8rKSmhXr161K1bl6ioKLZv317lHEuWLMFisTB8+HCcTiczZszgiSee4LXXXuO9995jy5YtVdJjzXtITk6mXr16REREsHz58iqCr6qqlJaWmiovy5cv5/HHHycqKqrG+ztXmch8DgkJCfz000+0bNnSvD7xBlTlTZs27eQFC73efFtVUZRKEdnfo0ePOiJirFm9WlOefRbF7f5THb4Il3tFRQWJiYmsWLGCdu3aMXToUKxWaw2NRaVGY5cpCAYHB1dpKFXdthEYGMiHH35I7969GTx4MGFhYTz44IO8/PLLNZYMc7vdBAcH89tvvxESEkJ+fj7NmzfHYrH4wNysWTPcbjcHDhzg8ssvx+l0UlZWxv79+/nll1/48ccffXKR/z3MmzeP+Ph4CgoKaNy4sc/gZv7GYrFw8uRJUlJS+Prrr7njjjvIzc294BLzNbkUNE1j1apViIh4Myj3fvLJJ66zNQs9G1kwv1992WWXERgYKKtXryYrK8tTu+UiI8NM6uByuUhOTmbp0qUsWbKEgoICX6Wk6jdrnkvTNNLT07nvvvvIzMxk+/bt2O12X9E//zdWRCgqKqJXr14MGDCABQsWMH36dJ8Ka25SddXW6XQSEBCAzWYjMTGR7Oxstm7d6tvgMWPG0LBhQwYPHswPP/zAbbfdxrRp0+jZs6ePgtZ0v+aaderUoaioiE2bNlUBuMvl8r0It99+O++++y6zZs2q8TrPxx3hrySkp6ezbt06wsLCxGuPWXUu7qJzsvQWFRX9FBkZ+cKgQYO077//nk8//ZQJEyb4JH3/pgvnUllBURQcDk/d25iYGAoKCoiLi6N37968/fbbvPzyy+i6jsvl8mkCJ06cIDY21qdhBQYGkpOTw+7du+nVqxdFRUW0adOG1157rQqAi4qKiImJ8Wk7zz//PHFxcfTv39+3VkxMDDk5OTRo0ABFUSgrKyMkJITIyEh69+7tU52dTid9+/bl66+/9pH3NWvW8OyzzzJ69GhPTpK3AejTTz9N9+7dfcc6HA40TSM2NpZrr722SoHndu3asXDhQryNWImKikJRFOx2O5qm8cgjj7Bt2zZ+/fVXX+mxc61g4d+R1gStxWLhk08+weFwMHz4cM1qterZ2dk/V7Pun7/z0RR+vb2rf9++fXv3Dh06GFFRUdq2bdto0KABLpeLkydPUqtWrfMCjtvtpqSkxFed2iyqo+s6FRUV6LpORESE700rLS31GfTCw8OrvGl5eXk+u0L185aVlfneWFON9H+QRUVFPhtHaGgoiqL4WEt1FqfrehX7hb9qa7fbOXHihI9yVGel5v1WX1NEKC8vp169eiiKQmVlpe9lCgsL81Ezp9Pp+9zsiHc+QCkoKMBmsxEWFsahQ4dISUmhuLhY37dvn9asWbPfFEW52tzri/Wsal47TH8Rkdtuu80FSJ8+fXyaSmZmpqxdu1aOHz9+ioZgajF/xfDXQKprG2c65lJfU00ai8vl+kvv/VzvraioSDZu3Ci7du0SXdfF4XBIz549BZB7773X5TVJ9Pbf60vhjvc2c5XvKyoqpF69ei7T9mCqvXl5ebJy5UpZvny5HDx4sIoaerqbOdNn5/q5OQoKCnzXYhiGT2U1/+1vDzGBlZ2dLbqu+4BXUFAgxcXFp5zPnOY65nA4HFJRUVFFvc/JyalyXRUVFWdc81I9l+qfZWdny7p162Tx4sVy4MAB3/XeeOONpr3K6QX6V5cULCZbEhF17969sSJydPfu3RIZGekC5Morr5R9+/b5Lvb48eOycuVKWbRokWzcuFEyMjKq2Bsu5TA3b9OmTfLxxx9LUVGR7+2eP3++7/tly5bJO++8I1u3bvUdt3DhQlm5cqVvw9PT02Xy5MmSlpZ2yiaYgPr888+lvLzcd445c+bIzJkzfYDYuXOnzJo1S/744w8RESkrK5N58+bJnDlzpKCg4C+luLquS35+vqSmpspvv/0mS5Ys8RkjRUT27t0rvXv3FkBq1arlOnTokIjI/m3btkWa+3tOmtY5ekwNEVFbtGiRX1pael3Lli2Xr127NnbQoEHu5cuXW7p27cpTTz3FiBEjSExMpF69eoCnWkBubi6ZmZkEBwcTFRVFZGQkQUFBF1QA8HQBQfHx8SiKwqFDh+jYsSOGYfhqqgCEhYVRUlJCamoqHTp0wO12U1BQQJ8+fXzyhMPhwOVy1SgfmAJqYGCgzwGpKAphYWHs3bvX91lWVha1a9f2ZSxWVlYiIgQFBVFUVORzE1yqYbfbKSkpobCw0CcMR0VF0bNnT5+2ePz4cWbOnMkbb7xBSUkJzZs3dy1YsMDaqFGjE/n5+YM7dOhQdElklzOxppMnT7YVkYOVlZUyYsQIN57egRIUFCQDBw6Ut956SzZs2OB7G/3Jc15enpw4cUIKCgqkvLz8oni9eVxBQYGsXLlSCgoKfJbNffv2+b4/ceKEHD9+XPbu3es79tixY7Jo0SIfhSktLZXffvvNRy2rUxgRkYMHD1ahlmlpaT7LsWEYUlFRIYsWLfJdh2mhXb9+/UVTF8MwxO12S2VlpRQVFUleXp7k5eVJaWlpld+Vl5fLxo0b5a233pJrrrlGAgMDTfeH++6773Z72VBafn5+8iVnRWcCTVZWVpyIfCcismHDBrnpppuMwMBAlxc8BiDh4eHSs2dPeeyxx2TWrFmyY8cOKSkpOa352uVy+czYf7fA+L9tmDKX+UxqGsXFxbJjxw6ZNWuWPPbYY9KzZ08JDw83AWIA7pCQENett95qbNmyxTzsq/T09OgLBYtyoTKNScLsdvuQgICAp4AedruddevW8dtvv7FmzRrZtm2bXl5ebhoAFTwVj2jVqhWdOnWia9eudOjQgSZNmvhIaHXjmamW+tt7Thfa6B/66K/aV6+P639M9RCLM7XUq24uqL5GTddh+PWzPJMKbBr1agpjMI2ABw8eZOvWrWzcuJHNmzeze/duM0TTB5LQ0FA6dOig9erVS+nbty/du3c3n+0ah8PxemBg4ILqe/iXA8bPQWWWAqGoqKhLRETENUAfoA0QA3Dw4EG2bNnCunXr2Lhxo7Fz506jOojq1atHSkoK3bp1IyUlheTkZJ+to7ql1L+um/J/OAjcBMjpgr+zsrLYs2cPW7Zs4Y8//mDz5s1kZGScAo7WrVurXbt2Vbt160anTp1o3LixuUQ+niyAFRUVFQtDQkI2+zmV5WxJ95ccMNVYlOF/ARs2bIhp06ZNclBQUAcgBWgHNMFbefrgwYNs3ryZ9evXs379ej01NVUcDofivR4VoGXLlqSkpNClSxdSUlJo0aKFWZT4FAp0uof+v2n4g706BSkqKiItLa0K9fBWVjAtrxIYGCjt2rVTu3btqnbv3r06OMqAg8AOYHNlZeW2w4cPp7Vu3fpktRdcPdeyHn8ZYKqFQ6he8JxC6o4dO1anTp06LS0WSwegk5cKNcLbFWzv3r1s2LCB1atXs27dOre3rIiPCkVGRtKpUyd69+5Nz549ad++PREREadsiJn09b+FkpjuE39AFxcXs337dtasWcPq1avZvHmzWSTIRz1atmxJt27dLL1796Zr1640a+aLYrQDR4BUYIvb7d568ODBtOTk5Kzz3ZP/UcDUwK7MzZbToFrNzs6uHxsb28ZisXQCOntBVA+gvLycTZs2sXz5clauXKlv2rRJ7Ha7D0C1atWid+/eDBw4kCuvvJL69etXoTym3PB3g6d6mojfC8OKFSv49ddfWbVqFd7CyuLVLo0uXbooV1xxhdanTx86d+7s6zoCHPeylk1ut3tTRkbG7qSkpPSafD5eam+GVxoXynb+t7xtiohoImI5nXT+5ZdfhuTm5nYQkXtEZIaI7BQRh2ko+/333+X555+Xzp07m6q8bkbsXXPNNfLpp59KVlbW/4iJ3jCMU1wEmZmZ8umnn0r//v3FarWa1EMHXF27dnWPHz9e1q1b5289dohIqoh8JiL3FBYWtp8+fXrw6UQB81mea9n3/9PDCyDV78ZrEkKU9PT0Jg6H41YR+VBEdoiI07S9fPPNN3LjjTfq4eHhLhM8QUFBcvvtt8tvv/32twCnOlAMw5ClS5fK8OHD/W0gekREhOvmm282/vvf//oi7rz3sl1EPnS73bccO3as8Rks7SY41P8nAHKeIDotFcrIyGgmIqNE5FsRSTdtFkuWLJG7775bYmNjfeBp3bq1fPzxx1VsP5cKONWBUlxcLB999JG0bNnSB5K4uDjXfffdJ8uWLfM/5zER+UZE/nX8+PGmp3kOFvMl+gccF0GFqn8/e/bs0MrKyj4i8rr3TRURkZUrV8qoUaMkJCTE5X275cUXX5T8/PyLBk51oOTl5cmECRNMg5keFhbmuueee2T16tX+h20TkcmVlZVXLF68OOQ0APmHevxFIDodBVKKiopSRGSCiGw1d2revHly9dVX64DbYrEYY8eOlby8vPMGTnWg5ObmylNPPSWaphmAu3///vrPP//sf8gWERmfm5vb8Qzyh/rPjv4PCdLVvysqKuoiIm+IyEERkfz8fJkwYYLExMS4goOD9bFjx8rJkyeruCZqAo7pw/EPo3j66aclKChIj42Ndb344ov+vqMDIjKlqKioyxmoyD8U5H+b/FONbQWVl5cPEZHvRaRCROTHH3+UTp06uWvXru2eOHFiFQeePzj8/11SUiITJkyQhIQEd6dOndw//fSTz6cqIt+Xl5cPmT17dlANIPmHivxfYl3+n+Xk5DT2sqyDIiJbt26VwYMHG8nJye433njjlKAvEZHKykqZMmWKtGjRwn3dddcZZkyNd43xOTk5jf8Byf8/2ZZP5pk/f36ww+G4XURWi4gcOnRIRo4cKZ07d3a///77hq7rouu6vPfee0anTp3cd9xxhy/RTUTWuN3u2+fPnx/sR8W0f9jN/yNUp7S09CoR+UlEJCMjQ+6++27p2bOnfvnll+ujRo2SjIwMEyg/lZaWXvUPNfl/m+oofkJyJxGZKSIV+/fvl/3795vyycyioqJOZzr2n/H/Fng0fyqRm5vbUUTmi8h8f5W4Olv7f3X8fxHBL4cuBKUeAAAAAElFTkSuQmCC"},
 };
-function getClubCrest(name,sz=18){
+function getClubCrestInner(name,sz=18){
   const c=CLUB_CRESTS[name];
   // ── Pravi grb klub (stvarna slika, generička podrška) ──
   if(c&&c.custom==='img'){
@@ -2807,6 +2910,14 @@ function getClubCrest(name,sz=18){
     ${interior}
     <text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" font-family="'Barlow Condensed',sans-serif" font-size="${fs}" font-weight="900" fill="${c.fg}" opacity="0.95">${c.abbr}</text>
   </svg>`;
+}
+// Wrapper - čini SVE grbove klikabilnima (osim Dinamovog) da otvore detaljnu
+// stranicu protivnika, a da ne mijenjamo pozive na desetke mjesta u kodu.
+function getClubCrest(name,sz=18){
+  const inner = getClubCrestInner(name,sz);
+  if(!name || name==='GNK Dinamo Zagreb') return inner;
+  const safeName = String(name).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  return `<span class="crest-clickable" onclick="event.stopPropagation();openOpponentDetail('${safeName}')" style="cursor:pointer;display:inline-flex;vertical-align:middle;">${inner}</span>`;
 }
 window.getClubCrest=getClubCrest;
 
@@ -3693,7 +3804,7 @@ async function addMatch(){
   const stadion = stadionSel === 'custom' ? stadionCustom : stadionSel;
   const prisutanLuka  = document.getElementById('f-prisutan-luka')?.checked !== false;
   const prisutanLovro = document.getElementById('f-prisutan-lovro')?.checked !== false;
-  const entry={datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro};
+  const entry={datum,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,vrijemePoc:vrijemePoc||'',stadion,prisutanLuka,prisutanLovro,...((document.getElementById('f-tribina')?.value||'').trim()?{tribina:document.getElementById('f-tribina').value.trim()}:{})};
   if(penaliVal) entry.penali=penaliVal;
   if(produzeciVal) entry.produzeci=true;
   matches.push(entry);
@@ -3705,6 +3816,7 @@ async function addMatch(){
   const vtEl=document.getElementById('f-vrijeme');if(vtEl)vtEl.value='';
   const selEl=document.getElementById('f-stadion-select');if(selEl)selEl.value='Stadion Maksimir';
   const custEl=document.getElementById('f-stadion-custom');if(custEl){custEl.value='';custEl.style.display='none';}
+  const trEl=document.getElementById('f-tribina');if(trEl)trEl.value='';
   const penChk=document.getElementById('f-penali-check');if(penChk){penChk.checked=false;}
   const prodChk=document.getElementById('f-produzeci-check');if(prodChk){prodChk.checked=false;}
   const penWrap=document.getElementById('f-penali-wrap');if(penWrap)penWrap.style.display='none';
@@ -4185,6 +4297,7 @@ function openEditMatch(){
   }
   document.getElementById('em-prisutan-luka').checked  = m.prisutanLuka  !== false;
   document.getElementById('em-prisutan-lovro').checked = m.prisutanLovro !== false;
+  const emTr=document.getElementById('em-tribina');if(emTr)emTr.value=m.tribina||'';
   document.getElementById('edit-match-modal').classList.add('open');
 }
 window.openEditMatch=openEditMatch;
@@ -4213,7 +4326,7 @@ async function saveEditMatch(){
   const stadion = emStadionSel === 'custom' ? emStadionCust : emStadionSel;
   const emPrisutanLuka  = document.getElementById('em-prisutan-luka')?.checked !== false;
   const emPrisutanLovro = document.getElementById('em-prisutan-lovro')?.checked !== false;
-  const updated={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro};
+  const updated={...matches[_editMatchIdx],datum,vrijemePoc,natjecanje:nat,protivnik:prot,rezultat:rez,gledatelji:gle,stadion,prisutanLuka:emPrisutanLuka,prisutanLovro:emPrisutanLovro,tribina:(document.getElementById('em-tribina')?.value||'').trim()};
   if(emPenaliVal) updated.penali=emPenaliVal; else delete updated.penali;
   if(emProdužeciVal) updated.produzeci=true; else delete updated.produzeci;
   matches[_editMatchIdx]=updated;
@@ -6668,7 +6781,7 @@ async function init(){
   await schedLoad();
   schedPopulateAddSelect();predPopulateAllSchedSelects();
   const hash=window.location.hash.replace('#','');
-  if(['statistika','golovi','prediktor','karte','raspored'].includes(hash))goTo(hash);else goTo('statistika');
+  if(['statistika','golovi','prediktor','karte','raspored','kviz'].includes(hash))goTo(hash);else goTo('statistika');
   renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
   loadPredArchive();
 }
@@ -7183,24 +7296,44 @@ function schedRenderForma(){
   const prevBatch = allPlayed.slice(recent.length, recent.length*2);
   let trendHTML = '';
 
-  // Prioritetna provjera: ako su zadnje 2 utakmice poraz, forma je automatski lošija
-  // bez obzira što šira usporedba bodova možda ne pokazuje pad (npr. dobar niz prije toga).
-  const lastTwo = recent.slice(-2);
-  const lastTwoAllLosses = lastTwo.length===2 && lastTwo.every(m=>{
-    const p=m.rezultat.split('-').map(Number);
-    return p[0]<p[1];
-  });
+  function trendSpan(color, arrow, text, title){
+    return `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:11px;color:${color};font-weight:700;" title="${title}">${arrow} ${text}</span>`;
+  }
 
-  if(lastTwoAllLosses){
-    trendHTML = `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:11px;color:#F87171;font-weight:700;" title="Zadnje 2 utakmice su poraz">↓ slabija forma</span>`;
-  } else if(prevBatch.length>=3){ // treba dovoljno podataka za smislenu usporedbu
+  // Rezultat (P/R/I) svake utakmice u 'recent'
+  const recentResults = recent.map(m=>{
+    const p=m.rezultat.split('-').map(Number);
+    return p[0]>p[1]?'W':p[0]<p[1]?'L':'D';
+  });
+  const allNoWin = recentResults.length>=2 && recentResults.every(r=>r!=='W');
+  const allWins  = recentResults.length>=2 && recentResults.every(r=>r==='W');
+
+  const lastTwoResults = recentResults.slice(-2);
+  const lastTwoNoWin = lastTwoResults.length===2 && lastTwoResults.every(r=>r!=='W');
+  const lastTwoWins  = lastTwoResults.length===2 && lastTwoResults.every(r=>r==='W');
+
+  // Prioritet (od najjačeg signala prema najslabijem):
+  // 1) svih zadnjih N utakmica bez pobjede -> katastrofalna forma
+  // 2) svih zadnjih N utakmica pobjeda -> odlična forma
+  // 3) zadnje 2 dodane utakmice bez pobjede -> lošija forma
+  // 4) zadnje 2 dodane utakmice pobjede -> bolja forma
+  // 5) inače - usporedba bodova zadnjih N vs prethodnih N
+  if(allNoWin){
+    trendHTML = trendSpan('#F87171','⚠️','katastrofalna forma',`Zadnjih ${recent.length} utakmica bez pobjede`);
+  } else if(allWins){
+    trendHTML = trendSpan('#4ADE80','🔥','odlična forma',`Zadnjih ${recent.length} utakmica sve pobjede`);
+  } else if(lastTwoNoWin){
+    trendHTML = trendSpan('#F87171','↓','lošija forma','Zadnje 2 utakmice bez pobjede');
+  } else if(lastTwoWins){
+    trendHTML = trendSpan('#4ADE80','↑','bolja forma','Zadnje 2 utakmice pobjede');
+  } else if(prevBatch.length>=1){ // treba barem 1 prethodnu utakmicu za usporedbu (blaži prag za manje uzorke, npr. "Gosti" filter)
     const curPts = formPts(recent);
     const prevPts = formPts(prevBatch);
     const diff = curPts - prevPts;
     const trendColor = diff>0?'#4ADE80':diff<0?'#F87171':'#9CA3AF';
     const trendArrow = diff>0?'↑':diff<0?'↓':'→';
     const trendText = diff>0?'bolja forma':diff<0?'slabija forma':'ista forma';
-    trendHTML = `<span style="display:inline-flex;align-items:center;gap:3px;margin-left:8px;font-size:11px;color:${trendColor};font-weight:700;" title="${curPts} bod. (zadnjih ${recent.length}) vs ${prevPts} bod. (prethodnih ${prevBatch.length})">${trendArrow} ${trendText}</span>`;
+    trendHTML = trendSpan(trendColor, trendArrow, trendText, `${curPts} bod. (zadnjih ${recent.length}) vs ${prevPts} bod. (prethodnih ${prevBatch.length})`);
   }
 
   el.innerHTML = `
@@ -7887,7 +8020,27 @@ async function renderNextMatchBanner(){
   const isMaksimir = isHome && (!next.venue || next.venue.toLowerCase().includes('maksimir') || next.venue==='');
   renderOpponentInfo(next, isHome);
 
-  function renderBanner(weather){
+function getOpponentRecord(rawName){
+  const oppOfficial = officialName(rawName);
+  const fromAttended = (matches||[])
+    .filter(m => m.rezultat && officialName(m.protivnik||'').toLowerCase()===oppOfficial.toLowerCase());
+  const attendedKeys = new Set(fromAttended.map(m=>m.datum));
+  const fromSched = (_schedMatches||[])
+    .filter(m => m.rezultat && officialName(m.opp||'').toLowerCase()===oppOfficial.toLowerCase())
+    .filter(m => !attendedKeys.has(m.datum));
+  const history = [...fromAttended, ...fromSched];
+  let wins=0,draws=0,losses=0;
+  history.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && !isNaN(p[0]) && !isNaN(p[1])){
+      if(p[0]>p[1]) wins++; else if(p[0]===p[1]) draws++; else losses++;
+    }
+  });
+  return {wins,draws,losses,total:history.length};
+}
+window.getOpponentRecord = getOpponentRecord;
+
+function renderBanner(weather){
     const t1=next.home?'<strong>GNK Dinamo Zagreb</strong>':officialName(next.opp);
     const t2=next.home?officialName(next.opp):'<strong>GNK Dinamo Zagreb</strong>';
     const t1crest = next.home ? getClubCrest('GNK Dinamo Zagreb',20) : getClubCrest(officialName(next.opp),20);
@@ -7896,6 +8049,12 @@ async function renderNextMatchBanner(){
     const isDerby = (next.opp||'').toLowerCase().includes('hajduk');
     const compColor= isDerby ? '#EF4444' : getNatjecanjeColor(next.natjecanje);
     const compColorLight= isDerby ? '#FCA5A5' : getNatjecanjeColorLight(next.natjecanje);
+    const oppRecord = getOpponentRecord(next.opp);
+    const oppWinPct = oppRecord.total>=3 ? oppRecord.wins/oppRecord.total : null;
+    const isToughOpponent = oppWinPct!==null && oppWinPct<0.3;
+    const toughBadgeHTML = isToughOpponent
+      ? ` <span style="background:#7C2D12;color:#FDBA74;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:0.5px;margin-left:6px;" title="Rekord protiv njih: ${oppRecord.wins}P-${oppRecord.draws}R-${oppRecord.losses}I">⚠️ NEZGODAN PROTIVNIK</span>`
+      : '';
     const compLogo=getNatjecanjeLogo(next.natjecanje);
     const compBgPhoto=getNatjecanjeBgPhoto(next.natjecanje);
     const bgPhotoHTML = compBgPhoto ? `<div class="nmb-comp-logo" style="background-image:url('${compBgPhoto}');"></div>` : '';
@@ -7942,7 +8101,7 @@ async function renderNextMatchBanner(){
       ${bgPhotoHTML}
       ${logoHTML}
       <div class="nmb-content">
-        <div class="nmb-label" style="color:#fff;">⚡ SLJEDEĆA UTAKMICA${isDerby?' <span style="background:#EF4444;color:#fff;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:1px;margin-left:6px;animation:nmbPulse 1.4s ease-in-out infinite;">🔥 VJEČNI DERBI</span>':''}</div>
+        <div class="nmb-label" style="color:#fff;">⚡ SLJEDEĆA UTAKMICA${isDerby?' <span style="background:#EF4444;color:#fff;padding:2px 8px;border-radius:100px;font-size:10px;letter-spacing:1px;margin-left:6px;animation:nmbPulse 1.4s ease-in-out infinite;">🔥 VJEČNI DERBI</span>':''}${!isDerby?toughBadgeHTML:''}</div>
         <div class="nmb-match" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">${t1crest}${t1}<span>—</span>${t2crest}${t2}</div>
         <div class="nmb-meta">
           ${tagHTML}
@@ -8053,7 +8212,7 @@ function renderOpponentInfo(next, isHome){
   }
 
   // Statistika
-  let wins=0,draws=0,losses=0,scored=0,conceded=0,biggestWin=null,attTotal=0,attCount=0,cleanSheets=0;
+  let wins=0,draws=0,losses=0,scored=0,conceded=0,biggestWin=null,biggestLoss=null,attTotal=0,attCount=0,cleanSheets=0;
   history.forEach(m=>{
     const parts = (m.rezultat||'').split('-').map(Number);
     const dinScored = parts[0], oppScored = parts[1];
@@ -8062,7 +8221,7 @@ function renderOpponentInfo(next, isHome){
       if(oppScored===0) cleanSheets++;
       if(dinScored>oppScored){ wins++; const diff=dinScored-oppScored; if(!biggestWin||diff>biggestWin.diff) biggestWin={diff,match:m,dinScored,oppScored}; }
       else if(dinScored===oppScored) draws++;
-      else losses++;
+      else{ losses++; const diff=oppScored-dinScored; if(!biggestLoss||diff>biggestLoss.diff) biggestLoss={diff,match:m,dinScored,oppScored}; }
     }
     if(m.gledatelji){ attTotal+=m.gledatelji; attCount++; }
   });
@@ -8137,6 +8296,7 @@ function renderOpponentInfo(next, isHome){
     <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">
       Zadnji susret: <strong style="color:${lastColor};">${last.rezultat}</strong> (${fmtDate(last.datum)}${last.natjecanje?' · '+last.natjecanje:''})
       ${biggestWin?` · Najveća pobjeda: <strong style="color:#4ADE80;">${biggestWin.dinScored}:${biggestWin.oppScored}</strong> (${fmtDate(biggestWin.match.datum)})`:''}
+      ${biggestLoss?` · Najgori poraz: <strong style="color:#F87171;">${biggestLoss.dinScored}:${biggestLoss.oppScored}</strong> (${fmtDate(biggestLoss.match.datum)})`:''}
     </div>
     <div style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;">
       ${history.slice(0,8).map(m=>{
@@ -9323,6 +9483,181 @@ window.openAchievements = openAchievements;
 function closeAchievements(){ document.getElementById('achievements-overlay')?.classList.remove('open'); }
 window.closeAchievements = closeAchievements;
 
+// ── Detaljna stranica protivnika (klik na bilo koji grb u appu) ──
+function openOpponentDetail(rawName){
+  const overlay = document.getElementById('oppdetail-overlay');
+  const title = document.getElementById('oppdetail-title');
+  const content = document.getElementById('oppdetail-content');
+  if(!overlay || !content) return;
+
+  const oppOfficial = officialName(rawName);
+  title.innerHTML = `${getClubCrestInner(oppOfficial,22)} <span style="margin-left:6px;">${oppOfficial}</span>`;
+
+  const fromAttended = (matches||[])
+    .filter(m => m.rezultat && officialName(m.protivnik||'').toLowerCase()===oppOfficial.toLowerCase());
+  const attendedKeys = new Set(fromAttended.map(m=>m.datum));
+  const fromSched = (_schedMatches||[])
+    .filter(m => m.rezultat && officialName(m.opp||'').toLowerCase()===oppOfficial.toLowerCase())
+    .filter(m => !attendedKeys.has(m.datum))
+    .map(m => ({datum:m.datum, natjecanje:m.natjecanje, protivnik:m.opp, rezultat:m.rezultat, home:m.home, gledatelji:m.gledatelji}));
+
+  const history = [...fromAttended, ...fromSched].sort((a,b)=>b.datum.localeCompare(a.datum));
+
+  if(!history.length){
+    content.innerHTML = `<div class="prc-empty">Nema zabilježenih susreta s ovim protivnikom.</div>`;
+    overlay.classList.add('open');
+    return;
+  }
+
+  let wins=0,draws=0,losses=0,scored=0,conceded=0,attTotal=0,attCount=0,cleanSheets=0;
+  history.forEach(m=>{
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && !isNaN(p[0]) && !isNaN(p[1])){
+      scored+=p[0]; conceded+=p[1];
+      if(p[1]===0) cleanSheets++;
+      if(p[0]>p[1]) wins++; else if(p[0]===p[1]) draws++; else losses++;
+    }
+    if(m.gledatelji){ attTotal+=m.gledatelji; attCount++; }
+  });
+  const total=history.length;
+  const avgAtt = attCount ? Math.round(attTotal/attCount) : null;
+
+  const oppGoals = (goals||[]).filter(g => officialName(g.matchProtivnik||'').toLowerCase()===oppOfficial.toLowerCase());
+  const scorerCounts = {};
+  oppGoals.filter(g=>g.type==='scored').forEach(g=>{ scorerCounts[g.player]=(scorerCounts[g.player]||0)+1; });
+  const topScorer = Object.entries(scorerCounts).sort((a,b)=>b[1]-a[1])[0];
+  const oppScorerCounts = {};
+  oppGoals.filter(g=>g.type==='conceded').forEach(g=>{ oppScorerCounts[g.player]=(oppScorerCounts[g.player]||0)+1; });
+  const oppTopScorer = Object.entries(oppScorerCounts).sort((a,b)=>b[1]-a[1])[0];
+
+  content.innerHTML = `
+    <div id="oppdetail-capture">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:8px;margin-bottom:14px;">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Susreta</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;">${total}</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">P / R / I</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;">${wins}/${draws}/${losses}</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Golovi</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;">${scored}:${conceded}</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Mreža na 0</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;">${cleanSheets}/${total}</div>
+        </div>
+        ${avgAtt?`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;">Prosj. gle.</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;">${fmtNum(avgAtt)}</div>
+        </div>`:''}
+      </div>
+      ${(topScorer||oppTopScorer)?`<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+        ${topScorer?`<div style="flex:1;min-width:140px;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.25);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:#4ADE80;text-transform:uppercase;">⚽ Najbolji strijelac (Dinamo)</div>
+          <div style="font-size:12.5px;font-weight:700;color:#fff;">${topScorer[0]} <span style="color:#4ADE80;">(${topScorer[1]})</span></div>
+        </div>`:''}
+        ${oppTopScorer?`<div style="flex:1;min-width:140px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:8px 10px;">
+          <div style="font-size:9px;color:#F87171;text-transform:uppercase;">⚽ Najbolji strijelac (${oppOfficial})</div>
+          <div style="font-size:12.5px;font-weight:700;color:#fff;">${oppTopScorer[0]} <span style="color:#F87171;">(${oppTopScorer[1]})</span></div>
+        </div>`:''}
+      </div>`:''}
+      <div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Svi susreti</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${history.map(m=>{
+          const p=(m.rezultat||'').split('-').map(Number);
+          const c = p.length===2 ? (p[0]>p[1]?'#4ADE80':p[0]===p[1]?'#9CA3AF':'#F87171') : '#9CA3AF';
+          const isHM = m.home===undefined?true:m.home;
+          return `<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:11px;">
+            <span style="color:var(--text-muted);">${fmtDate(m.datum)} ${isHM?'🏠':'✈️'}</span>
+            <span style="color:var(--text-muted);flex:1;text-align:center;">${m.natjecanje||''}</span>
+            <span style="font-weight:700;color:${c};">${m.rezultat}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    <button class="btn-sm" style="margin-top:14px;width:100%;background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);padding:8px;" onclick="shareElementAsImage('oppdetail-capture','protivnik-${oppOfficial.replace(/\s+/g,'-')}',this)">📤 Podijeli</button>`;
+  overlay.classList.add('open');
+}
+window.openOpponentDetail = openOpponentDetail;
+function closeOpponentDetail(){ document.getElementById('oppdetail-overlay')?.classList.remove('open'); }
+window.closeOpponentDetail = closeOpponentDetail;
+
+// ── Usporedba sezona kroz vrijeme (nogometna sezona: srpanj-lipanj) ──
+function seasonKeyFor(datumStr){
+  const [y,mo] = datumStr.split('-').map(Number);
+  const startYear = mo>=7 ? y : y-1;
+  return `${startYear}/${String((startYear+1)%100).padStart(2,'0')}`;
+}
+function openSeasonCompare(){
+  const overlay = document.getElementById('seasoncompare-overlay');
+  const content = document.getElementById('seasoncompare-content');
+  if(!overlay || !content) return;
+
+  const attended = (matches||[]).filter(m=>m.datum && m.rezultat);
+  if(!attended.length){
+    content.innerHTML = '<div class="prc-empty">Nema još podataka.</div>';
+    overlay.classList.add('open');
+    return;
+  }
+
+  const bySeason = {};
+  attended.forEach(m=>{
+    const key = seasonKeyFor(m.datum);
+    if(!bySeason[key]) bySeason[key] = {matches:0, wins:0, draws:0, losses:0, scored:0, conceded:0, viewers:0, viewerCount:0};
+    const s = bySeason[key];
+    s.matches++;
+    const p=(m.rezultat||'').split('-').map(Number);
+    if(p.length===2 && !isNaN(p[0]) && !isNaN(p[1])){
+      s.scored+=p[0]; s.conceded+=p[1];
+      if(p[0]>p[1]) s.wins++; else if(p[0]===p[1]) s.draws++; else s.losses++;
+    }
+    if(m.gledatelji){ s.viewers+=m.gledatelji; s.viewerCount++; }
+  });
+
+  const seasons = Object.keys(bySeason).sort();
+  const maxMatches = Math.max(...seasons.map(k=>bySeason[k].matches),1);
+  const maxGoals = Math.max(...seasons.map(k=>bySeason[k].scored),1);
+
+  content.innerHTML = `
+    <div id="seasoncompare-capture" style="display:flex;flex-direction:column;gap:8px;">
+      ${seasons.map(key=>{
+        const s = bySeason[key];
+        const winPct = s.matches ? Math.round(s.wins/s.matches*100) : 0;
+        const avgViewers = s.viewerCount ? Math.round(s.viewers/s.viewerCount) : null;
+        return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#fff;letter-spacing:1px;">${key}</span>
+            <span style="font-size:11px;color:var(--text-muted);">${s.matches} ut. · ${s.wins}P-${s.draws}R-${s.losses}I</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="width:50px;font-size:9px;color:var(--text-muted);">Utakmice</div>
+            <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${s.matches/maxMatches*100}%;background:#60A5FA;border-radius:3px;"></div></div>
+            <div style="width:24px;font-size:10px;color:#fff;font-weight:700;text-align:right;">${s.matches}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <div style="width:50px;font-size:9px;color:var(--text-muted);">Golovi</div>
+            <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${s.scored/maxGoals*100}%;background:#4ADE80;border-radius:3px;"></div></div>
+            <div style="width:24px;font-size:10px;color:#fff;font-weight:700;text-align:right;">${s.scored}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:50px;font-size:9px;color:var(--text-muted);">% pobjeda</div>
+            <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${winPct}%;background:#FACC15;border-radius:3px;"></div></div>
+            <div style="width:30px;font-size:10px;color:#fff;font-weight:700;text-align:right;">${winPct}%</div>
+          </div>
+          ${avgViewers?`<div style="font-size:9.5px;color:var(--text-muted);margin-top:6px;">👁️ Prosj. gledanost: ${fmtNum(avgViewers)}</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+    <button class="btn-sm" style="margin-top:14px;width:100%;background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);padding:8px;" onclick="shareElementAsImage('seasoncompare-capture','usporedba-sezona',this)">📤 Podijeli</button>`;
+  overlay.classList.add('open');
+}
+window.openSeasonCompare = openSeasonCompare;
+function closeSeasonCompare(){ document.getElementById('seasoncompare-overlay')?.classList.remove('open'); }
+window.closeSeasonCompare = closeSeasonCompare;
+
 // ── Heatmap posjećenosti kroz godine (GitHub-contributions stil) ──
 let _heatmapFilter = 'zajedno';
 function setHeatmapFilter(filter, btn){
@@ -9600,6 +9935,322 @@ function openFanCard(){
 window.openFanCard = openFanCard;
 function closeFanCard(){ document.getElementById('fancard-overlay')?.classList.remove('open'); }
 window.closeFanCard = closeFanCard;
+
+// ── Kviz: 3 pitanja na dan domaće utakmice, 5 s po pitanju, Luka protiv Lovre ──
+const QZ_T=5000;
+let _qz={data:{},who:null};
+function qzRng(seed){
+  let h=1779033703^seed.length;
+  for(let i=0;i<seed.length;i++){h=Math.imul(h^seed.charCodeAt(i),3432918353);h=h<<13|h>>>19;}
+  let a=h>>>0;
+  return ()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+}
+function qzMake(datum,seed){
+  const r=qzRng('kviz'+(seed||datum));
+  const pick=a=>a[Math.floor(r()*a.length)];
+  const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const ms=(matches||[]).filter(m=>m.datum&&m.datum<datum&&wrResult(m)&&!REP_COMPS.includes(m.natjecanje));
+  const opp=m=>officialName(m.protivnik);
+  const mk=(t,ans,wrong)=>{
+    const w=[...new Set(wrong.filter(x=>x!==ans))].slice(0,3);
+    if(!w.length) return null;
+    const o=shuf([ans,...w]);
+    return {t,o,a:o.indexOf(ans)};
+  };
+  const sc=(goals||[]).filter(g=>g.type==='scored'&&g.autogol!=='yes'&&g.matchDatum<datum);
+  const gen={
+    rez:()=>{const m=pick(ms); if(!m) return null; const [a,b]=wrResult(m);
+      return mk(`Kako je završila utakmica protiv ${opp(m)} (${fmtDate(m.datum)})? Prvi je rezultat Dinama.`,`${a}-${b}`,shuf([[a+1,b],[a,b+1],[Math.max(a-1,0),b],[b,a],[a+1,b+1]].map(x=>x.join('-'))));},
+    gle:()=>{const m=pick(ms.filter(x=>x.gledatelji)); if(!m) return null; const g=Math.round(m.gledatelji/100)*100;
+      return mk(`Otprilike koliko je gledatelja bilo protiv ${opp(m)} (${fmtDate(m.datum)})?`,fmtNum(g),[0.7,1.25,1.5,0.5].map(k=>fmtNum(Math.round(g*k/100)*100)));},
+    stad:()=>{const l=ms.filter(x=>getStadion(x)); const m=pick(l); if(!m) return null;
+      return mk(`Gdje je igrana utakmica protiv ${opp(m)} (${fmtDate(m.datum)})?`,getStadion(m),shuf([...new Set(l.map(getStadion))]));},
+    strij:()=>{const c={}; sc.forEach(g=>{c[g.player]=(c[g.player]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(e.length<2) return null;
+      return mk('Tko je najbolji strijelac Dinama u zabilježenim utakmicama?',e[0][0],e.slice(1,6).map(x=>x[0]));},
+    min:()=>{const g=pick(sc.filter(x=>x.minute)); if(!g) return null; const k=g.minute;
+      return mk(`U kojoj je minuti ${g.player} zabio protiv ${officialName(g.matchProtivnik)} (${fmtDate(g.matchDatum)})?`,k+'.',[k-7,k+5,k+12,k-15,k+20].filter(x=>x>0&&x<=120).map(x=>x+'.'));}
+  };
+  const out=[];
+  for(const k of shuf(Object.keys(gen))){const q=gen[k](); if(q) out.push(q); if(out.length===3) break;}
+  return out;
+}
+function qzToday(){
+  const d=new Date(), t=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const home=(_schedMatches||[]).filter(x=>x.domace===true);
+  return {today:t, now:home.find(x=>x.datum===t)||null, next:home.filter(x=>x.datum>t).sort((a,b)=>a.datum.localeCompare(b.datum))[0]||null};
+}
+function qzWho(){
+  if(!_currentUser) return null;
+  const k=((_currentUser.displayName||'')+' '+(_currentUser.email||'')).toLowerCase();
+  return k.includes('lovro')?'lovro':k.includes('luka')?'luka':_qz.who;
+}
+function qzChoose(w){ _qz.who=w; renderKviz(); }
+function qzChart(days){
+  let a=0,b=0;
+  const P=days.map(d=>{a+=(_qz.data[d].luka?.s||0); b+=(_qz.data[d].lovro?.s||0); return [a,b];});
+  const W=320,H=150,pd=26,n=P.length,mx=Math.max(3,...P.flat());
+  const X=i=>pd+(n<2?(W-2*pd)/2:i*(W-2*pd)/(n-1)), Y=v=>H-pd-(v/mx)*(H-2*pd);
+  const line=(k,c)=>`<polyline fill="none" stroke="${c}" stroke-width="2.5" points="${P.map((q,i)=>X(i)+','+Y(q[k])).join(' ')}"/>`+P.map((q,i)=>`<circle cx="${X(i)}" cy="${Y(q[k])}" r="3.5" fill="${c}"/>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;">
+    <line x1="${pd}" y1="${H-pd}" x2="${W-pd}" y2="${H-pd}" stroke="rgba(255,255,255,0.15)"/>
+    ${line(0,'#60A5FA')}${line(1,'#2DD4BF')}
+    <text x="${pd}" y="${H-8}" font-size="10" fill="#8899BB">${fmtDate(days[0]).slice(0,5)}</text>
+    <text x="${W-pd}" y="${H-8}" font-size="10" fill="#8899BB" text-anchor="end">${fmtDate(days[n-1]).slice(0,5)}</text>
+    <text x="${pd}" y="12" font-size="10" fill="#60A5FA">Luka ${a}</text><text x="${W-pd}" y="12" font-size="10" fill="#2DD4BF" text-anchor="end">Lovro ${b}</text></svg>`;
+}
+async function renderKviz(){
+  const box=document.getElementById('kviz-content'); if(!box) return;
+  box.innerHTML='<div class="prc-empty">Učitavam...</div>';
+  let err='';
+  try{ const snap=await get(ref(db,'quiz')); _qz.data=snap.exists()?snap.val():{}; }
+  catch(e){ _qz.data={}; err='<div class="qz-p" style="color:#F87171;margin-bottom:8px;">Kviz se ne može učitati. Provjeri Firebase pravila za čvor "quiz".</div>'; }
+  const who=qzWho(), t=qzToday();
+  const days=Object.keys(_qz.data).filter(d=>_qz.data[d].luka||_qz.data[d].lovro).sort();
+  let status;
+  if(!_currentUser) status='<div class="qz-p">Prijavi se (gore desno) da bi igrao.</div>';
+  else if(!who) status='<div class="qz-p" style="margin-bottom:6px;">Tko igra?</div><div style="display:flex;gap:8px;"><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose(\'luka\')">🔵 Luka</button><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose(\'lovro\')">🔷 Lovro</button></div>';
+  else if(t.now){
+    const mine=_qz.data[t.today]?.[who];
+    status=mine?`<div class="qz-p">Danas si odigrao: ${mine.s}/3 (${(mine.ms/1000).toFixed(1)} s). Utakmica: ${wrEsc(officialName(t.now.protivnik||t.now.opp||''))}.</div>`
+      :`<div class="qz-p" style="margin-bottom:8px;">Danas je domaća utakmica protiv ${wrEsc(officialName(t.now.protivnik||t.now.opp||''))}. Kviz je otvoren.</div><button class="btn-sm" style="width:100%;padding:12px;background:rgba(96,165,250,0.2);color:#93C5FD;border:1px solid rgba(96,165,250,0.4);" onclick="qzStart(false)">Igraj kviz</button>`;
+  } else status=`<div class="qz-p">Kviz se otvara na dan domaće utakmice.${t.next?` Sljedeći: ${fmtDate(t.next.datum)} protiv ${wrEsc(officialName(t.next.protivnik||t.next.opp||''))}.`:''}</div>`;
+  if(who) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:8px;" onclick="qzStart(true)">Vježba (ne boduje se)</button>`;
+  let pl=0,pv=0,wl=0,wv=0;
+  const rows=days.slice().reverse().map(d=>{
+    const x=_qz.data[d], L=x.luka, V=x.lovro; pl+=L?.s||0; pv+=V?.s||0;
+    let win=''; if(L&&V){ if(L.s!==V.s) win=L.s>V.s?'l':'v'; else if(L.ms!==V.ms) win=L.ms<V.ms?'l':'v'; }
+    if(win==='l') wl++; if(win==='v') wv++;
+    const c=(o,w)=>o?`<span class="${win===w?'qz-win':''}">${o.s}/3 <span style="color:var(--text-muted);font-size:11px;">${(o.ms/1000).toFixed(1)}s</span></span>`:'—';
+    return `<tr><td>${fmtDate(d)}${x.opp?`<div class="qz-p" style="font-size:11px;">${wrEsc(x.opp)}</div>`:''}</td><td>${c(L,'l')}</td><td>${c(V,'v')}</td></tr>`;
+  }).join('');
+  box.innerHTML=err+`<div class="qz-card" style="margin-bottom:12px;">${status}</div>`
+    +(days.length?`<div class="qz-tot" style="margin-bottom:12px;"><div><div class="qz-p">🔵 Luka</div><b>${pl}</b><div class="qz-p">${wl} ${wrPl(wl,'pobjeda','pobjede','pobjeda')}</div></div><div><div class="qz-p">🔷 Lovro</div><b>${pv}</b><div class="qz-p">${wv} ${wrPl(wv,'pobjeda','pobjede','pobjeda')}</div></div></div>
+      <div class="qz-card" style="margin-bottom:12px;">${qzChart(days)}</div>
+      <div class="qz-card"><table class="qz-tbl"><tr><th>Datum</th><th>Luka</th><th>Lovro</th></tr>${rows}</table><div class="qz-p">Pobjednik: više bodova, a kod jednakog rezultata brži.</div></div>`
+      :'<div class="prc-empty">Još nema odigranih kvizova.</div>');
+}
+async function qzStart(practice){
+  const t=qzToday(), who=qzWho(), box=document.getElementById('kviz-content');
+  if(!who||(!practice&&!t.now)) return;
+  _qz.who=who;
+  let q, datum=t.today;
+  if(practice) q=qzMake('9999-12-31','p'+Date.now());
+  else{
+    q=_qz.data[datum]?.q||qzMake(datum);
+    if(!_qz.data[datum]?.q){
+      const opp=officialName(t.now.protivnik||t.now.opp||'');
+      try{ await set(ref(db,`quiz/${datum}/q`),q); await set(ref(db,`quiz/${datum}/opp`),opp); }catch(e){ console.warn('Kviz: spremanje pitanja nije uspjelo',e); }
+    }
+  }
+  if(!q||q.length<3){ box.innerHTML='<div class="prc-empty">Nema dovoljno podataka za pitanja. Dodaj još utakmica i golova.</div>'; return; }
+  const st={i:0,score:0,ms:0,ans:[]};
+  const show=()=>{
+    if(st.i>=q.length) return qzFinish(st,datum,practice);
+    const cur=q[st.i], t0=performance.now();
+    let done=false;
+    box.innerHTML=`<div class="qz-card"><div class="qz-top"><span>Pitanje ${st.i+1} od ${q.length}</span><b id="qz-sec">5</b></div><div class="qz-timer"><i id="qz-bar"></i></div><div class="qz-q">${wrEsc(cur.t)}</div>${cur.o.map((o,k)=>`<button class="qz-opt" data-k="${k}">${wrEsc(o)}</button>`).join('')}</div>`;
+    const bar=box.querySelector('#qz-bar'), sec=box.querySelector('#qz-sec');
+    const end=k=>{
+      if(done) return; done=true; clearInterval(iv);
+      st.ms+=Math.min(performance.now()-t0,QZ_T); st.ans.push(k); if(k===cur.a) st.score++; st.i++;
+      box.querySelectorAll('.qz-opt').forEach((b,j)=>{b.disabled=true; if(j===cur.a) b.classList.add('ok'); else if(j===k) b.classList.add('bad');});
+      setTimeout(show,800);
+    };
+    const iv=setInterval(()=>{
+      const e=performance.now()-t0;
+      bar.style.width=Math.max(0,100-e/QZ_T*100)+'%'; sec.textContent=Math.max(0,Math.ceil((QZ_T-e)/1000));
+      if(e>=QZ_T) end(-1);
+    },50);
+    box.querySelectorAll('.qz-opt').forEach(b=>{b.onclick=()=>end(+b.dataset.k);});
+  };
+  show();
+}
+async function qzFinish(st,datum,practice){
+  const box=document.getElementById('kviz-content'), who=_qz.who;
+  const res={s:st.score,ms:Math.round(st.ms),a:st.ans,t:Date.now()};
+  let msg='';
+  if(!practice){
+    try{ await set(ref(db,`quiz/${datum}/${who}`),res); }
+    catch(e){ msg='<div class="qz-p" style="color:#F87171;">Rezultat nije spremljen. Provjeri Firebase pravila za čvor "quiz".</div>'; }
+  }
+  box.innerHTML=`<div class="qz-card" style="text-align:center;"><div class="qz-big">${st.score}/3</div><div class="qz-p">${(st.ms/1000).toFixed(1)} s ukupno${practice?' (vježba, ne boduje se)':''}</div>${msg}<button class="btn-sm" style="padding:10px;" onclick="renderKviz()">Natrag na tablicu</button></div>`;
+}
+Object.assign(window,{renderKviz,qzStart,qzChoose});
+
+// ── Dinamo Wrapped: sezonski sažetak u karticama koje se mogu podijeliti ──
+let _wrPerson='luka', _wrSeason=null, _wrIdx=0, _wrSlides=[];
+function wrPl(n,one,few,many){
+  const a=n%10, b=n%100;
+  return a===1&&b!==11 ? one : (a>=2&&a<=4&&(b<12||b>14)) ? few : many;
+}
+function wrEsc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function wrResult(m){
+  const p=String(m.rezultat||'').split('-').map(Number);
+  return p.length===2 && p.every(n=>!isNaN(n)) ? p : null;
+}
+function wrCompute(){
+  const field=_wrPerson==='lovro'?'prisutanLovro':'prisutanLuka';
+  const pres=m=>_wrPerson==='zajedno'?(m.prisutanLuka!==false&&m.prisutanLovro!==false):m[field]!==false;
+  const all=(matches||[]).filter(m=>m.datum && wrResult(m) && !REP_COMPS.includes(m.natjecanje));
+  const seasons=[...new Set(all.filter(pres).map(m=>seasonKeyFor(m.datum)))].sort();
+  if(!seasons.includes(_wrSeason)) _wrSeason=seasons[seasons.length-1]||null;
+  const season=_wrSeason;
+  if(!season) return {seasons,season:null};
+  const inS=all.filter(m=>seasonKeyFor(m.datum)===season);
+  const here=inS.filter(pres).sort((a,b)=>a.datum.localeCompare(b.datum));
+  const absent=_wrPerson==='zajedno'?[]:inS.filter(m=>m[field]===false);
+  const tally=list=>list.reduce((t,m)=>{const p=wrResult(m); if(p[0]>p[1])t.w++; else if(p[0]===p[1])t.d++; else t.l++; return t;},{w:0,d:0,l:0});
+  const keys=new Set(here.map(m=>m.datum+'|'+m.protivnik));
+  const seen=(goals||[]).filter(g=>g.type==='scored' && keys.has(g.matchDatum+'|'+g.matchProtivnik));
+  const sc={};
+  seen.filter(g=>g.autogol!=='yes').forEach(g=>{sc[g.player]=(sc[g.player]||0)+1;});
+  const scorers=Object.entries(sc).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  let best=null;
+  here.forEach(m=>{const p=wrResult(m); if(p[0]>p[1]){const diff=p[0]-p[1]; if(!best||diff>best.diff||(diff===best.diff&&p[0]>best.g)) best={m,p,diff,g:p[0]};}});
+  const crowd=here.filter(m=>m.gledatelji).sort((a,b)=>b.gledatelji-a.gledatelji)[0]||null;
+  const stad={};
+  here.forEach(m=>{const st=getStadion(m); if(st) stad[st]=(stad[st]||0)+1;});
+  const stadList=Object.entries(stad).sort((a,b)=>b[1]-a[1]);
+  const otherStad=here.filter(m=>{const st=getStadion(m); return st && st!=='Stadion Maksimir';}).length;
+  const viewers=here.reduce((t,m)=>t+(m.gledatelji||0),0);
+  return {seasons,season,here,absent,t:tally(here),ta:tally(absent),seen,scorers,best,crowd,stadList,otherStad,viewers};
+}
+function wrBuildSlides(d){
+  const name=_wrPerson==='lovro'?'Lovro':_wrPerson==='zajedno'?'Luka i Lovro':'Luka';
+  const n=d.here.length, t=d.t, out=[];
+  const utk=k=>wrPl(k,'utakmica','utakmice','utakmica');
+
+  // 1) Broj utakmica uživo + omjer
+  const bar=['w','d','l'].map(k=>t[k]?`<i class="wr-seg wr-${k}" style="flex:${t[k]}"></i>`:'').join('');
+  out.push([n, `<div class="wr-h">${utk(n)} uživo</div>
+    <div class="wr-p">${name}, sezona ${d.season}</div>
+    <div class="wr-bar">${bar}</div>
+    <div class="wr-p">${t.w} ${wrPl(t.w,'pobjeda','pobjede','pobjeda')}, ${t.d} ${wrPl(t.d,'remi','remija','remija')}, ${t.l} ${wrPl(t.l,'poraz','poraza','poraza')}</div>`]);
+
+  // 2) Golovi uživo i strijelci
+  if(d.seen.length){
+    const max=d.scorers[0]?d.scorers[0][1]:1;
+    out.push([d.seen.length, `<div class="wr-h">${wrPl(d.seen.length,'gol','gola','golova')} Dinama viđeno uživo</div>
+      ${d.scorers.map(([pl,c])=>`<div class="wr-row"><b>${c}</b><span style="flex:0 0 auto;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${wrEsc(pl)}</span><i style="flex:${c/max};opacity:.9"></i></div>`).join('')}`]);
+  }
+
+  // 3) Najbolja noć (najveća pobjeda) + najveća gledanost
+  if(d.best||d.crowd){
+    const crowdLine=d.crowd?`<div class="wr-p">Najveća gledanost: ${fmtNum(d.crowd.gledatelji)} protiv ${wrEsc(officialName(d.crowd.protivnik))}</div>`:'';
+    if(d.best){
+      const m=d.best.m, opp=officialName(m.protivnik);
+      out.push([`${d.best.p[0]}-${d.best.p[1]}`, `<div class="wr-h" style="display:flex;align-items:center;gap:8px;">${getClubCrest(opp,26)} <span>Dinamo protiv ${wrEsc(opp)}</span></div>
+        <div class="wr-p">Najveća pobjeda uživo, ${fmtDate(m.datum)}${m.natjecanje?', '+wrEsc(m.natjecanje):''}</div>${crowdLine}`,'sm']);
+    } else {
+      out.push([fmtNum(d.crowd.gledatelji), `<div class="wr-h">Najveća gledanost</div><div class="wr-p">Protiv ${wrEsc(officialName(d.crowd.protivnik))}, ${fmtDate(d.crowd.datum)}</div>`,'sm']);
+    }
+  }
+
+  // 4) Talisman (samo ako ima dovoljno utakmica i s njim i bez njega)
+  if(n>=3 && d.absent.length>=3){
+    const a=d.absent.length;
+    const pp=Math.round(t.w/n*100), pa=Math.round(d.ta.w/a*100), diff=pp-pa;
+    const verdict=diff>=10?'Talisman.':diff<=-10?'Dinamo bolje prolazi bez tribine. Samo statistika.':'Nema velike razlike. Dinamo pobjeđuje i bez tribine.';
+    out.push([pp+'%', `<div class="wr-h">${verdict}</div>
+      <div class="wr-p">Pobjeda kad je ${name} na stadionu (${n} ${utk(n)})</div>
+      <div class="wr-p">Bez ${name}: ${pa}% (${a} ${utk(a)})</div>`]);
+  }
+
+  // Prediktor
+  const pr=[...(predictions||[]),...(awayPredictions||[])].filter(x=>x.resolved&&x.luka&&x.lovro&&x.luka.score&&x.lovro.score&&seasonKeyFor(x.datum)===d.season);
+  if(pr.length){
+    const sum=k=>pr.reduce((tt,x)=>tt+(x[k].score.pts||0),0), hit=k=>pr.filter(x=>x[k].score.rezHit).length;
+    const L=sum('luka'), V=sum('lovro'), mx=Math.max(L,V,1);
+    const lead=L===V?'Izjednačeno u Prediktoru':(L>V?'Luka':'Lovro')+' vodi u Prediktoru';
+    out.push([_wrPerson==='zajedno'?Math.max(L,V):(_wrPerson==='lovro'?V:L), `<div class="wr-h">${lead}</div>
+      <div class="wr-row"><b>${L}</b><span>Luka</span><i style="flex:${(L||0.04)/mx}"></i></div>
+      <div class="wr-row"><b>${V}</b><span>Lovro</span><i style="flex:${(V||0.04)/mx}"></i></div>
+      <div class="wr-p">Točnih rezultata: Luka ${hit('luka')}, Lovro ${hit('lovro')} od ${pr.length}</div>`]);
+  }
+
+  // 5) Stadioni
+  if(d.stadList.length){
+    const [top,cnt]=d.stadList[0];
+    out.push([d.stadList.length, `<div class="wr-h">${wrPl(d.stadList.length,'stadion','stadiona','stadiona')}</div>
+      <div class="wr-p">Najčešće: ${wrEsc(top)} (${cnt}x)</div>
+      <div class="wr-p">Izvan Maksimira: ${d.otherStad} ${utk(d.otherStad)}</div>
+      ${d.viewers?`<div class="wr-p">Ukupno gledatelja na tim utakmicama: ${fmtNum(d.viewers)}</div>`:''}`]);
+  }
+
+  // 6) Sažetak za dijeljenje
+  const top=d.scorers[0];
+  out.push([null, `<div>
+      <div class="wr-h" style="font-size:44px;">${name}</div>
+      <div class="wr-p">Dinamo Wrapped, sezona ${d.season}</div>
+    </div>
+    <div class="wr-grid">
+      <div><div class="wr-num">${n}</div><div class="wr-p">${utk(n)}</div></div>
+      <div><div class="wr-num">${d.seen.length}</div><div class="wr-p">${wrPl(d.seen.length,'gol','gola','golova')} uživo</div></div>
+      <div><div class="wr-num">${t.w}</div><div class="wr-p">${wrPl(t.w,'pobjeda','pobjede','pobjeda')}</div></div>
+      <div><div class="wr-num">${d.stadList.length}</div><div class="wr-p">${wrPl(d.stadList.length,'stadion','stadiona','stadiona')}</div></div>
+    </div>
+    <div class="wr-p">${top?`Strijelac uživo: ${wrEsc(top[0])} (${top[1]})`:''}${top&&d.best?'<br>':''}${d.best?`Najveća pobjeda: ${d.best.p[0]}-${d.best.p[1]} protiv ${wrEsc(officialName(d.best.m.protivnik))}`:''}</div>`,'summary']);
+  return out;
+}
+function renderWrapped(){
+  const box=document.getElementById('wrapped-content');
+  if(!box) return;
+  const d=wrCompute();
+  const tabs=`<div style="display:flex;gap:6px;">
+      <button class="sched-filter-btn ${_wrPerson==='luka'?'active':''}" style="flex:1;" onclick="setWrappedPerson('luka')">🔵 Luka</button>
+      <button class="sched-filter-btn ${_wrPerson==='lovro'?'active':''}" style="flex:1;" onclick="setWrappedPerson('lovro')">🔷 Lovro</button>
+      <button class="sched-filter-btn ${_wrPerson==='zajedno'?'active':''}" style="flex:1;" onclick="setWrappedPerson('zajedno')">👥 Zajedno</button>
+    </div>`;
+  if(!d.season){
+    box.innerHTML=tabs+'<div class="prc-empty">Nema još odgledanih utakmica za Wrapped. Dodaj utakmice u Statistici.</div>';
+    return;
+  }
+  const chips=d.seasons.length>1?`<div style="display:flex;gap:6px;overflow-x:auto;margin-top:8px;padding-bottom:2px;">
+      ${d.seasons.slice().reverse().map(k=>`<button class="sched-filter-btn ${k===d.season?'active':''}" onclick="setWrappedSeason('${k}')">${k}</button>`).join('')}
+    </div>`:'';
+  _wrSlides=wrBuildSlides(d);
+  _wrIdx=Math.max(0,Math.min(_wrIdx,_wrSlides.length-1));
+  const [big,body,kind]=_wrSlides[_wrIdx];
+  const tone=_wrIdx%2?'blue':'navy';
+  const inner=kind==='summary'
+    ? body
+    : `<div class="wr-num ${kind==='sm'?'sm':''}">${big}</div><div class="wr-body">${body}</div>`;
+  const last=_wrIdx===_wrSlides.length-1;
+  box.innerHTML=tabs+chips+`<div class="wr-stage">
+      <div class="wr-prog">${_wrSlides.map((_,i)=>`<i class="wr-pg ${i<=_wrIdx?'on':''}"></i>`).join('')}</div>
+      <div class="wr-slide wr-${tone}" id="wrapped-capture" onclick="wrappedTap(event)">${inner}<div class="wr-mark">Dinamo Wrapped ${d.season}</div></div>
+      <div class="wr-nav">
+        <button class="btn-sm" style="background:rgba(255,255,255,0.06);color:#F0F4FF;border:1px solid var(--border);" onclick="wrappedGo(-1)" ${_wrIdx===0?'disabled':''}>‹ Natrag</button>
+        <button class="btn-sm" style="background:rgba(255,255,255,0.06);color:#F0F4FF;border:1px solid var(--border);" onclick="wrappedGo(1)" ${last?'disabled':''}>Dalje ›</button>
+      </div>
+      <button class="btn-sm" style="width:100%;background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);padding:8px;" onclick="shareElementAsImage('wrapped-capture','dinamo-wrapped-${d.season.replace('/','-')}-${_wrPerson}-${_wrIdx+1}',this)">📤 Podijeli ovu karticu</button>
+    </div>`;
+}
+function wrappedGo(dir){ _wrIdx+=dir; renderWrapped(); }
+function wrappedTap(e){
+  const r=e.currentTarget.getBoundingClientRect();
+  wrappedGo((e.clientX-r.left) < r.width/3 ? -1 : 1);
+}
+function setWrappedPerson(p){ _wrPerson=p; _wrIdx=0; renderWrapped(); }
+function setWrappedSeason(k){ _wrSeason=k; _wrIdx=0; renderWrapped(); }
+function openWrapped(){
+  const overlay=document.getElementById('wrapped-overlay');
+  if(!overlay) return;
+  _wrIdx=0;
+  renderWrapped();
+  overlay.classList.add('open');
+  if(!window._wrKeys){
+    window._wrKeys=true;
+    document.addEventListener('keydown',e=>{
+      if(!document.getElementById('wrapped-overlay')?.classList.contains('open')) return;
+      if(e.key==='ArrowRight') wrappedGo(1);
+      else if(e.key==='ArrowLeft') wrappedGo(-1);
+      else if(e.key==='Escape') closeWrapped();
+    });
+  }
+}
+function closeWrapped(){ document.getElementById('wrapped-overlay')?.classList.remove('open'); }
+Object.assign(window,{openWrapped,closeWrapped,wrappedGo,wrappedTap,setWrappedPerson,setWrappedSeason});
 
 // ── Brza pretraga kroz cijelu app (utakmice, protivnici, strijelci) ──
 function openAppSearch(){
