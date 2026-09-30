@@ -29,6 +29,9 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 
 .page{display:none;}
 .page.active{display:block;}
+.page.active.pg-anim{animation:pgFadeIn .2s ease both;}
+@keyframes pgFadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@media(prefers-reduced-motion:reduce){.page.active.pg-anim{animation:none!important;}}
 
 /* HEADER */
 .header{position:relative;padding:36px 40px 26px;background:linear-gradient(135deg,#001236 0%,#0A1A3E 60%,#0D1F4A 100%);border-bottom:1px solid var(--border);overflow:hidden;}
@@ -486,6 +489,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 /* TOAST */
 .toast{position:fixed;bottom:24px;right:24px;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.3s cubic-bezier(0.16,1,0.3,1);border:1px solid transparent;}
 .toast.show{transform:translateY(0);opacity:1;}
+.toast-undo-btn{margin-left:10px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:inherit;border-radius:6px;padding:3px 9px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;}
 
 /* LOADING */
 #fb-loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--text-muted);}
@@ -681,6 +685,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     overflow:hidden;
     text-overflow:ellipsis;
   }
+  .nav-ic{width:17px;height:17px;margin-right:0;vertical-align:0;margin-bottom:1px;}
 
   /* Stats stranica */
   .s-main{ padding:10px!important; }
@@ -1053,10 +1058,21 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .sk-card{height:78px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,0.05) 30%,rgba(255,255,255,0.11) 50%,rgba(255,255,255,0.05) 70%);background-size:200% 100%;animation:skShimmer 1.3s ease-in-out infinite;}
 .sk-card.sm{height:36px;}
 @keyframes skShimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+@media(prefers-reduced-motion:reduce){.sk-card{animation:none;background:rgba(255,255,255,0.07);}}
+
+/* ── Povuci za osvježavanje ── */
+#ptr-indicator{position:fixed;left:0;right:0;top:0;display:flex;justify-content:center;align-items:center;height:54px;transform:translateY(-54px);z-index:60;pointer-events:none;color:#93C5FD;font-size:13px;font-weight:700;gap:8px;}
+#ptr-indicator .ptr-icon{width:18px;height:18px;border:2px solid rgba(147,197,253,0.35);border-top-color:#93C5FD;border-radius:50%;}
+#ptr-indicator.ptr-spin .ptr-icon{animation:ptrSpin .6s linear infinite;}
+@keyframes ptrSpin{to{transform:rotate(360deg);}}
+@media(prefers-reduced-motion:reduce){#ptr-indicator.ptr-spin .ptr-icon{animation:none;}}
+
+.nav-ic{width:15px;height:15px;display:inline-block;vertical-align:-3px;margin-right:5px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+<div id="ptr-indicator"><i class="ptr-icon"></i><span id="ptr-label">Povuci za osvježavanje</span></div>
 
 <div id="fb-loading">⚽ Učitavanje...</div>
 
@@ -1064,14 +1080,15 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <nav class="topnav">
   <span class="topnav-logo" onclick="goTo('statistika')" style="display:flex;align-items:center;gap:8px;"><img src="assets/img002.png" alt="GNK Dinamo Zagreb" width="32" height="39" style="flex-shrink:0;vertical-align:middle;object-fit:contain;">GNK <span>Dinamo Zagreb</span></span>
   <div class="topnav-links">
-    <button class="nav-btn active" id="nav-statistika" onclick="goTo('statistika')">📊 Statistika</button>
-    <button class="nav-btn" id="nav-golovi" onclick="goTo('golovi')">⚽ Golovi</button>
-    <button class="nav-btn" id="nav-prediktor" onclick="goTo('prediktor')">🔮 Prediktor</button>
-    <button class="nav-btn" id="nav-karte" onclick="goTo('karte')">🎫 Karte</button>
-    <button class="nav-btn" id="nav-raspored" onclick="goTo('raspored')">📅 Raspored</button>
-    <button class="nav-btn" id="nav-kviz" onclick="goTo('kviz')">🧠 Kviz</button>
+    <button class="nav-btn active" id="nav-statistika" onclick="goTo('statistika')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M4 16V10M10 16V4M16 16V8"/></svg><span>Statistika</span></button>
+    <button class="nav-btn" id="nav-golovi" onclick="goTo('golovi')"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.5l2.6 1.9-1 3.1H8.4l-1-3.1L10 6.5z"/><path d="M10 3.3V6.5M13.9 8.3l3.1-1M11.6 11.5l1.9 2.9M6.5 11.5l-1.9 2.9M6.1 8.3l-3.1-1" stroke-width="1.2"/></svg><span>Golovi</span></button>
+    <button class="nav-btn" id="nav-prediktor" onclick="goTo('prediktor')"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="8.5" r="6"/><path d="M6 16h8M7.5 16l.5-2M12.5 16l-.5-2"/></svg><span>Prediktor</span></button>
+    <button class="nav-btn" id="nav-karte" onclick="goTo('karte')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M3 7a2 2 0 012-2h10a2 2 0 012 2v1a1.5 1.5 0 000 3v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1a1.5 1.5 0 000-3V7z"/><path d="M12 5v10" stroke-dasharray="1.6 1.6"/></svg><span>Karte</span></button>
+    <button class="nav-btn" id="nav-raspored" onclick="goTo('raspored')"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12" rx="1.5"/><path d="M3 8h14M7 3v3M13 3v3"/></svg><span>Raspored</span></button>
+    <button class="nav-btn" id="nav-kviz" onclick="goTo('kviz')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M10 3a5 5 0 00-3 9c.6.5 1 1.1 1 1.8V14h4v-.2c0-.7.4-1.3 1-1.8a5 5 0 00-3-9z"/><path d="M8.5 17h3M9 14.5h2"/></svg><span>Kviz</span></button>
     <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
       <button onclick="openAppSearch()" title="Pretraga" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:5px 9px;color:var(--text-muted);cursor:pointer;font-size:13px;">🔍</button>
+      <button onclick="openSettings()" title="Postavke" style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:7px;padding:5px 9px;color:var(--text-muted);cursor:pointer;font-size:13px;">⚙️</button>
       <span style="font-size:11px;color:var(--text-muted);font-family:'Barlow',sans-serif;" id="auth-user-label"></span>
       <button id="auth-action-btn" onclick="handleAuthBtn()"
         style="background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);border-radius:7px;padding:5px 12px;color:#60A5FA;font-family:'Barlow',sans-serif;font-size:11px;font-weight:700;cursor:pointer;">
@@ -1292,6 +1309,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
                 <th onclick="sortBy('protivnik')">Protivnik <span class="si" id="sort-protivnik">↕</span></th>
                 <th onclick="sortBy('rezultat')">Rezultat <span class="si" id="sort-rezultat">↕</span></th>
                 <th onclick="sortBy('gledatelji')" style="text-align:right;">Gle. <span class="si" id="sort-gledatelji">↕</span></th>
+                <th>Trib.</th>
               </tr></thead>
               <tbody id="match-tbody"></tbody>
             </table>
@@ -2313,6 +2331,13 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   </div>
 </div>
 
+<div class="top5-overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="top5-box">
+    <div class="top5-header"><div class="top5-title">⚙️ Postavke</div><button class="top5-close" onclick="closeSettings()">✕</button></div>
+    <div class="top5-list" id="settings-content" style="padding:14px;"></div>
+  </div>
+</div>
+
 <div class="top5-overlay" id="liga-overlay" onclick="if(event.target===this)closeLiga()">
   <div class="top5-box">
     <div class="top5-header"><div class="top5-title">🏆 Luka i Lovro</div><button class="top5-close" onclick="closeLiga()">✕</button></div>
@@ -2769,7 +2794,9 @@ let _currentUser = null;
 function goTo(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
+  const pageEl=document.getElementById('page-' + page);
+  pageEl.classList.add('active');
+  pageEl.classList.remove('pg-anim'); void pageEl.offsetWidth; pageEl.classList.add('pg-anim');
   document.getElementById('nav-' + page).classList.add('active');
   window.location.hash = page;
   window.scrollTo(0,0);
@@ -3088,6 +3115,21 @@ function getSeason(datum){
   return `${start}/${String(start+1).slice(-2)}`;
 }
 // Haptic feedback (Android Chrome; iOS Safari nema Vibration API pa se tiho preskoči)
+// ── Toast s mogućnošću poništavanja ──
+let _undoTimer=null;
+function showUndoToast(msg,bg,color,undoFn){
+  const t=document.getElementById('toast'); if(!t) return;
+  clearTimeout(_undoTimer);
+  t.innerHTML=''; t.style.background=bg; t.style.borderColor=color; t.style.color=color;
+  const span=document.createElement('span'); span.textContent=msg; t.appendChild(span);
+  const btn=document.createElement('button'); btn.className='toast-undo-btn'; btn.textContent='Poništi';
+  btn.onclick=async()=>{ clearTimeout(_undoTimer); t.classList.remove('show'); try{ await undoFn(); showToast('↩️ Vraćeno','#0A1A0A','#4ADE80'); }catch(e){ console.warn('undo',e); } };
+  t.appendChild(btn);
+  t.classList.add('show'); haptic([25,60,25]);
+  _undoTimer=setTimeout(()=>t.classList.remove('show'),5000);
+}
+window.showUndoToast=showUndoToast;
+
 function haptic(pattern){
   if(navigator.vibrate){ try{ navigator.vibrate(pattern); }catch(e){} }
 }
@@ -3318,6 +3360,7 @@ function renderTable(){
         <td class="opponent-cell">${isRepMatch?`🇭🇷 ${officialName(m.protivnik)}`:officialName(m.protivnik)}</td>
         <td><span class="result-pill ${res}">${fmtRezultat(m)}</span></td>
         <td class="viewers-num td-right">${fmtNum(m.gledatelji)}</td>
+        <td style="font-size:11px;color:var(--text-muted);white-space:nowrap;">${m.tribina?tribShort(m.tribina):'—'}</td>
       </tr>`;
     }).join('');
   document.getElementById('page-info').textContent=`${total} ut. · Str. ${currentPage}/${pages}`;
@@ -3410,6 +3453,7 @@ function renderPageBtns(id,pages,cur,cb){
 function animateNumber(el, targetNum, formatter){
   if(!el || isNaN(targetNum)) return;
   formatter = formatter || (n=>String(n));
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent=formatter(targetNum); return; }
   const duration = 700;
   const startTime = performance.now();
   function frame(now){
@@ -3538,6 +3582,12 @@ function getStadion(m){
 
 const TRIB_COLORS={'sjever gore':'#F87171','sjever dolje':'#FB923C','zapad gore':'#60A5FA','zapad dolje':'#38BDF8','istok':'#A78BFA','jug':'#4ADE80','vip loža':'#FACC15','sjever':'#FDBA74','zapad':'#7DD3FC'};
 const TRIB_PALETTE=['#F472B6','#2DD4BF','#FCD34D','#C084FC','#34D399','#FB7185','#818CF8'];
+function tribShort(label){
+  const t=String(label).trim(), low=t.toLowerCase();
+  const MAP={'sjever gore':'Sjever g','sjever dolje':'Sjever d','zapad gore':'Zapad g','zapad dolje':'Zapad d','istok':'Istok','jug':'Jug','vip loža':'VIP'};
+  if(MAP[low]) return MAP[low];
+  return t.length>10?t.slice(0,9)+'…':t;
+}
 function tribColor(label,idx){ return TRIB_COLORS[label.toLowerCase()]||TRIB_PALETTE[idx%TRIB_PALETTE.length]; }
 function tribWDL(list){
   const o={n:list.length,w:0,d:0,l:0,gf:0};
@@ -3550,12 +3600,13 @@ function tribWDL(list){
 }
 function tribRow(label,list,color,mx){
   const o=tribWDL(list), pct=Math.round(o.w/o.n*100);
-  const seg=k=>o[k]?`<i class="wr-seg wr-${k}" style="flex:${o[k]}"></i>`:'';
+  const SEGC={w:'#4ADE80',d:'#8B93A8',l:'#F87171'};
+  const seg=k=>o[k]?`<i class="wr-seg" style="flex:${o[k]};background:${SEGC[k]};"></i>`:'';
   return `<div style="margin-bottom:10px;">
     <div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${color};margin-right:6px;"></i>${wrEsc(label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')})</span></span><span class="comp-val">${pct}% pob.</span></div>
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${Math.round(o.n/mx*100)}%;background:${color}"></div></div>
     <div class="wr-bar" style="margin-top:4px;height:6px;">${seg('w')}${seg('d')}${seg('l')}</div>
-    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${o.w}-${o.d}-${o.l} &middot; Ø ${(o.gf/o.n).toFixed(1).replace('.',',')} gola Dinama</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;"><span style="color:#4ADE80;">${o.w}P</span> · <span style="color:#AAA;">${o.d}R</span> · <span style="color:#F87171;">${o.l}I</span> &middot; Ø ${(o.gf/o.n).toFixed(1).replace('.',',')} gola Dinama</div>
   </div>`;
 }
 function renderTribinaStats(){
@@ -3599,7 +3650,7 @@ function renderTribinaStats(){
       const sub=tribRows.sort((a,b)=>b[1].list.length-a[1].list.length)
         .map(([tk,t],j)=>`<div style="margin-left:16px;">${tribRow(t.label,t.list,TRIB_PALETTE[(i+j+1)%TRIB_PALETTE.length],mxT)}</div>`).join('');
       const o=tribWDL(v.list);
-      return `<div style="margin-bottom:2px;"><div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${stColor};margin-right:6px;"></i>${wrEsc(v.label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')}, ${tribRows.length} tribine)</span></span><span class="comp-val">${o.w}-${o.d}-${o.l}</span></div></div>${sub}`;
+      return `<div style="margin-bottom:2px;"><div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${stColor};margin-right:6px;"></i>${wrEsc(v.label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')}, ${tribRows.length} tribine)</span></span><span class="comp-val"><span style="color:#4ADE80;">${o.w}</span>-<span style="color:#AAA;">${o.d}</span>-<span style="color:#F87171;">${o.l}</span></span></div></div>${sub}`;
     }).join('');
   }
   el.innerHTML=html;
@@ -5172,11 +5223,16 @@ window.glGoPage=function(p){glPage=p;renderGoalList();};
 window.renderGoalList=renderGoalList;
 
 async function deleteGoal(idx){
-  if(!confirm(`Obriši gol: ${goals[idx]?.player||'?'} (${goals[idx]?.minuteRaw||goals[idx]?.minute}')?`))return;
+  const g=goals[idx];
+  if(!confirm(`Obriši gol: ${g?.player||'?'} (${g?.minuteRaw||g?.minute}')?`))return;
   goals.splice(idx,1);
-  await safeSet('goals',goals);
+  safeSet('goals',goals);
   renderGoalStats();renderPlayerStats();renderGoalList();
-  showToast('🗑️ Gol obrisan!','#3A0A0A','#F87171');
+  showUndoToast('🗑️ Gol obrisan','#3A0A0A','#F87171',async()=>{
+    goals.splice(Math.min(idx,goals.length),0,g);
+    await safeSet('goals',goals);
+    renderGoalStats();renderPlayerStats();renderGoalList();
+  });
 }
 window.deleteGoal=deleteGoal;
 
@@ -7975,14 +8031,19 @@ window.schedSaveEdit = schedSaveEdit;
 
 async function schedDelete(id){
   if(!_currentUser) return;
-  const m = _schedMatches.find(x=>x.id===id);
-  if(!m) return;
+  const idx=_schedMatches.findIndex(x=>x.id===id);
+  if(idx<0) return;
+  const m=_schedMatches[idx];
   if(!confirm(`Obriši utakmicu ${m.opp} (${m.datum})?`)) return;
   _schedMatches = _schedMatches.filter(x=>x.id!==id);
-  await set(ref(db,'raspored_2627'), _schedMatches);
-  showToast('🗑️ Utakmica obrisana!','#1A0A0A','#F87171');
+  set(ref(db,'raspored_2627'), _schedMatches);
   renderRaspored();
   schedPopulateAddSelect();predPopulateAllSchedSelects();
+  showUndoToast('🗑️ Utakmica obrisana','#1A0A0A','#F87171',async()=>{
+    _schedMatches.splice(Math.min(idx,_schedMatches.length),0,m);
+    await set(ref(db,'raspored_2627'), _schedMatches);
+    renderRaspored(); schedPopulateAddSelect();predPopulateAllSchedSelects();
+  });
 }
 window.schedDelete = schedDelete;
 
@@ -10130,6 +10191,8 @@ async function qzToday(){
 }
 function qzWho(){
   if(!_currentUser) return null;
+  const ov=(typeof whoOverride==='function')?whoOverride():null;
+  if(ov) return ov;
   const k=((_currentUser.displayName||'')+' '+(_currentUser.email||'')).toLowerCase();
   return k.includes('lovro')?'lovro':k.includes('luka')?'luka':_qz.who;
 }
@@ -10227,13 +10290,15 @@ async function qzStart(practice,key){
     const bar=box.querySelector('#qz-bar'), sec=box.querySelector('#qz-sec');
     const end=k=>{
       if(done) return; done=true; clearInterval(iv);
-      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); if(k===cur.a){ st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; } st.i++;
+      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); if(k===cur.a){ st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; haptic(35); } else haptic([25,60,25]);
       box.querySelectorAll('.qz-opt').forEach((b,j)=>{b.disabled=true; if(j===cur.a) b.classList.add('ok'); else if(j===k) b.classList.add('bad');});
       setTimeout(show,800);
     };
+    let lastTick=null;
     const iv=setInterval(()=>{
-      const e=performance.now()-t0;
-      bar.style.width=Math.max(0,100-e/QZ_T*100)+'%'; sec.textContent=Math.max(0,Math.ceil((QZ_T-e)/1000));
+      const e=performance.now()-t0, left=Math.max(0,Math.ceil((QZ_T-e)/1000));
+      bar.style.width=Math.max(0,100-e/QZ_T*100)+'%'; sec.textContent=left;
+      if(left<=3&&left>0&&left!==lastTick){ lastTick=left; haptic(15); }
       if(e>=QZ_T) end(-1);
     },50);
     box.querySelectorAll('.qz-opt').forEach(b=>{b.onclick=()=>end(+b.dataset.k);});
@@ -10313,7 +10378,7 @@ function qzLiveTick(){
       return `<button class="qz-opt ${cl}" data-k="${k}" ${phase==='g'||my?'disabled':''}>${wrEsc(o)}</button>`;
     }).join('');
     let score='';
-    if(phase==='g'){ const a=qzTally(q,d.ans&&d.ans.luka,idx), b=qzTally(q,d.ans&&d.ans.lovro,idx); score=`<div class="qz-p" style="text-align:center;">Luka ${a.p} : ${b.p} Lovro</div>`; }
+    if(phase==='g'){ const a=qzTally(q,d.ans&&d.ans.luka,idx), b=qzTally(q,d.ans&&d.ans.lovro,idx); score=`<div class="qz-p" style="text-align:center;">Luka ${a.p} : ${b.p} Lovro</div>`; if(my) haptic(my.k===cur.a?35:[25,60,25]); }
     const tone=idx%2?'blue':'navy';
     box.innerHTML=`<div class="wr-stage" style="margin-bottom:12px;">
       <div class="wr-prog">${q.map((_,i)=>`<i class="wr-pg ${i<idx||(i===idx&&phase==='g')?'on':''}"></i>`).join('')}</div>
@@ -10328,7 +10393,11 @@ function qzLiveTick(){
   }
   const bar=document.getElementById('ql-bar'), sec=document.getElementById('ql-sec');
   if(bar) bar.style.width=(phase==='q'?Math.max(0,100-within/QZ_T*100):0)+'%';
-  if(sec) sec.textContent=phase==='q'?Math.ceil((QZ_T-within)/1000):'';
+  if(phase==='q'){
+    const left=Math.ceil((QZ_T-within)/1000);
+    if(sec) sec.textContent=left;
+    if(left<=3&&left>0&&left!==_ql.lastTick){ _ql.lastTick=left; haptic(15); }
+  } else { if(sec) sec.textContent=''; _ql.lastTick=null; }
 }
 function qzLiveAnswer(d,idx,k){
   const who=qzWho(); if(!who) return;
@@ -10451,6 +10520,78 @@ function toggleStatMore(e){ e.stopPropagation(); document.getElementById('stat-m
 function closeStatMore(){ document.getElementById('stat-more-menu')?.classList.remove('open'); }
 document.addEventListener('click',e=>{ if(!e.target.closest('#stat-more-btn')&&!e.target.closest('#stat-more-menu')) closeStatMore(); });
 Object.assign(window,{toggleStatMore,closeStatMore});
+
+// ── Povuci za osvježavanje (Statistika, Raspored) ──
+const PTR_PAGES={statistika:()=>{renderTable();},raspored:async()=>{await schedLoad();renderRaspored();}};
+(function initPullToRefresh(){
+  const ind=document.getElementById('ptr-indicator'), icon=ind?.querySelector('.ptr-icon'), label=document.getElementById('ptr-label');
+  if(!ind) return;
+  let startY=null, pulling=false, busy=false;
+  const TH=64;
+  document.addEventListener('touchstart',e=>{
+    if(busy||window.scrollY>0) { startY=null; return; }
+    const page=document.querySelector('.page.active'); const key=page&&page.id.replace('page-','');
+    if(!PTR_PAGES[key]){ startY=null; return; }
+    startY=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(startY==null||busy) return;
+    const dy=e.touches[0].clientY-startY;
+    if(dy<=0){ return; }
+    if(window.scrollY>0){ startY=null; ind.style.transform='translateY(-54px)'; return; }
+    pulling=true;
+    const pull=Math.min(dy*0.5,90);
+    ind.style.transform=`translateY(${pull-54}px)`;
+    label.textContent = pull>=TH ? 'Pusti za osvježavanje' : 'Povuci za osvježavanje';
+    if(pull>10) e.preventDefault();
+  },{passive:false});
+  document.addEventListener('touchend',async()=>{
+    if(!pulling){ startY=null; return; }
+    const page=document.querySelector('.page.active'); const key=page&&page.id.replace('page-','');
+    const dy=parseFloat((ind.style.transform.match(/-?\d+(\.\d+)?/)||[0])[0])+54;
+    pulling=false;
+    if(dy>=TH && key && PTR_PAGES[key]){
+      busy=true; ind.classList.add('ptr-spin'); label.textContent='Osvježavam…'; ind.style.transform='translateY(0)';
+      try{ await PTR_PAGES[key](); haptic(20); }catch(e){ console.warn('pull-to-refresh',e); }
+      setTimeout(()=>{ ind.classList.remove('ptr-spin'); ind.style.transform='translateY(-54px)'; busy=false; },400);
+    } else {
+      ind.style.transform='translateY(-54px)';
+    }
+    startY=null;
+  },{passive:true});
+})();
+
+// ── Postavke: eksplicitan odabir tko je tko (umjesto nagađanja iz e-maila) ──
+const WHO_KEY='dinamo_who_override', AVATAR_KEY='dinamo_avatar';
+function whoOverride(){ try{ return localStorage.getItem(WHO_KEY)||null; }catch(e){ return null; } }
+function setWhoOverride(w){ try{ w?localStorage.setItem(WHO_KEY,w):localStorage.removeItem(WHO_KEY); }catch(e){} }
+function personAvatar(who){
+  try{ const a=JSON.parse(localStorage.getItem(AVATAR_KEY)||'{}'); if(a[who]) return a[who]; }catch(e){}
+  return who==='luka'?'🔵':'🔷';
+}
+function setPersonAvatar(who,emoji){
+  try{ const a=JSON.parse(localStorage.getItem(AVATAR_KEY)||'{}'); a[who]=emoji; localStorage.setItem(AVATAR_KEY,JSON.stringify(a)); }catch(e){}
+}
+const AVATAR_CHOICES=['🔵','🔷','🦁','🔥','⭐','🐺','🦅','👑'];
+function renderSettings(){
+  const box=document.getElementById('settings-content'); if(!box) return;
+  const ov=whoOverride(), guessed=(()=>{ if(!_currentUser) return null; const k=((_currentUser.displayName||'')+' '+(_currentUser.email||'')).toLowerCase(); return k.includes('lovro')?'lovro':k.includes('luka')?'luka':null; })();
+  const who=ov||guessed;
+  const avRow=w=>AVATAR_CHOICES.map(e=>`<button class="btn-sm" style="padding:8px;font-size:16px;${personAvatar(w)===e?'background:rgba(96,165,250,0.25);border-color:#60A5FA;':''}" onclick="setPersonAvatar('${w}','${e}');renderSettings();">${e}</button>`).join('');
+  box.innerHTML=`
+    <div class="qz-p" style="margin-bottom:10px;">Tko si ti? Ovo određuje tvoje rezultate u Kvizu, Prediktoru i Ligi. ${guessed?`Iz prijave izgleda da si <b>${guessed==='luka'?'Luka':'Lovro'}</b>.`:''}</div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="btn-sm" style="flex:1;padding:12px;${who==='luka'?'background:rgba(96,165,250,0.25);border-color:#60A5FA;':''}" onclick="setWhoOverride('luka');renderSettings();qzBadge();">🔵 Luka</button>
+      <button class="btn-sm" style="flex:1;padding:12px;${who==='lovro'?'background:rgba(45,212,191,0.25);border-color:#2DD4BF;':''}" onclick="setWhoOverride('lovro');renderSettings();qzBadge();">🔷 Lovro</button>
+    </div>
+    ${ov?`<button class="btn-sm" style="width:100%;padding:8px;margin-bottom:14px;" onclick="setWhoOverride(null);renderSettings();qzBadge();">Poništi, nagađaj iz prijave</button>`:''}
+    <div class="qz-p" style="margin-bottom:6px;">Tvoj avatar</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">${who?avRow(who):'<div class="qz-p">Prijavi se i odaberi tko si da bi postavio avatar.</div>'}</div>
+  `;
+}
+function openSettings(){ document.getElementById('settings-overlay')?.classList.add('open'); renderSettings(); }
+function closeSettings(){ document.getElementById('settings-overlay')?.classList.remove('open'); }
+Object.assign(window,{openSettings,closeSettings,setWhoOverride,setPersonAvatar,personAvatar});
 
 // ── Liga (Prediktor + Kviz) i Dvorana slavnih ──
 let _lgTab='liga', _lgSeason=null;
