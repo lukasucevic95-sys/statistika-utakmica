@@ -663,12 +663,12 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
   .topnav-logo img{ width:22px!important; height:27px!important; }
   .topnav-links{
     display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:3px;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:2px;
   }
   .nav-btn{
-    padding:6px 3px 5px;
-    font-size:8.5px;
+    padding:6px 2px 5px;
+    font-size:8px;
     letter-spacing:0;
     border-radius:6px;
     display:flex;
@@ -676,8 +676,10 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     align-items:center;
     justify-content:center;
     gap:1px;
-    line-height:1.2;
+    line-height:1.15;
     white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   /* Stats stranica */
@@ -2497,7 +2499,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     </div>
 
     <!-- match list -->
-    <div style="margin-bottom:10px;"><button class="btn-sm" style="width:100%;padding:8px;background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportScheduleICS()">📅 Izvezi nadolazeće utakmice u kalendar (.ics)</button></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:6px;"><button class="btn-sm" title="Izvezi domaće utakmice u kalendar (.ics)" aria-label="Izvezi domaće utakmice u kalendar" style="padding:7px 9px;background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);font-size:15px;line-height:1;" onclick="exportScheduleICS()">📅</button></div>
 <div id="sched-list">
       <div class="skel-match-card"><div class="skel skel-date"></div><div class="skel-lines"><div class="skel skel-line w60"></div><div class="skel skel-line w35"></div></div></div>
       <div class="skel-match-card"><div class="skel skel-date"></div><div class="skel-lines"><div class="skel skel-line w60"></div><div class="skel skel-line w35"></div></div></div>
@@ -3534,26 +3536,73 @@ function getStadion(m){
   return m.stadion || (m.domace===false ? '' : 'Stadion Maksimir');
 }
 
+const TRIB_COLORS={'sjever gore':'#F87171','sjever dolje':'#FB923C','zapad gore':'#60A5FA','zapad dolje':'#38BDF8','istok':'#A78BFA','jug':'#4ADE80','vip loža':'#FACC15','sjever':'#FDBA74','zapad':'#7DD3FC'};
+const TRIB_PALETTE=['#F472B6','#2DD4BF','#FCD34D','#C084FC','#34D399','#FB7185','#818CF8'];
+function tribColor(label,idx){ return TRIB_COLORS[label.toLowerCase()]||TRIB_PALETTE[idx%TRIB_PALETTE.length]; }
+function tribWDL(list){
+  const o={n:list.length,w:0,d:0,l:0,gf:0};
+  list.forEach(m=>{
+    const r=getResult(m.rezultat,m.penali);
+    if(r==='win')o.w++; else if(r==='draw')o.d++; else if(r==='loss')o.l++;
+    const p=String(m.rezultat).split('-').map(Number); if(!isNaN(p[0]))o.gf+=p[0];
+  });
+  return o;
+}
+function tribRow(label,list,color,mx){
+  const o=tribWDL(list), pct=Math.round(o.w/o.n*100);
+  const seg=k=>o[k]?`<i class="wr-seg wr-${k}" style="flex:${o[k]}"></i>`:'';
+  return `<div style="margin-bottom:10px;">
+    <div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${color};margin-right:6px;"></i>${wrEsc(label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')})</span></span><span class="comp-val">${pct}% pob.</span></div>
+    <div class="comp-bar-bg"><div class="comp-bar" style="width:${Math.round(o.n/mx*100)}%;background:${color}"></div></div>
+    <div class="wr-bar" style="margin-top:4px;height:6px;">${seg('w')}${seg('d')}${seg('l')}</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">${o.w}-${o.d}-${o.l} &middot; Ø ${(o.gf/o.n).toFixed(1).replace('.',',')} gola Dinama</div>
+  </div>`;
+}
 function renderTribinaStats(){
   const card=document.getElementById('tribina-card'), el=document.getElementById('tribina-stats');
   if(!card||!el) return;
-  const g={};
-  filterMatches().filter(m=>m.tribina&&m.tribina.trim()&&m.rezultat).forEach(m=>{
-    const label=m.tribina.trim(), kk=label.toLowerCase();
-    const o=g[kk]||(g[kk]={label,n:0,w:0,gf:0});
-    o.n++;
-    if(getResult(m.rezultat,m.penali)==='win') o.w++;
-    const p=String(m.rezultat).split('-').map(Number);
-    if(!isNaN(p[0])) o.gf+=p[0];
+  const withTrib=filterMatches().filter(m=>m.tribina&&m.tribina.trim()&&m.rezultat);
+  const home={}, away={};
+  withTrib.forEach(m=>{
+    const isHome=getStadion(m)==='Stadion Maksimir';
+    if(isHome){
+      const key=m.tribina.trim().toLowerCase();
+      (home[key]=home[key]||{label:m.tribina.trim(),list:[]}).list.push(m);
+    } else {
+      const sKey=getStadion(m)||'Ostalo';
+      const tKey=m.tribina.trim().toLowerCase();
+      const st=away[sKey]=away[sKey]||{label:sKey,list:[],trib:{}};
+      st.list.push(m);
+      (st.trib[tKey]=st.trib[tKey]||{label:m.tribina.trim(),list:[]}).list.push(m);
+    }
   });
-  const rows=Object.values(g).sort((a,b)=>b.n-a.n);
-  card.style.display=rows.length?'':'none';
-  el.innerHTML=rows.map(o=>{
-    const pct=Math.round(o.w/o.n*100);
-    return `<div><div class="comp-meta"><span class="comp-name">${wrEsc(o.label)} <span style="opacity:0.45;font-size:10px">(${o.n})</span></span><span class="comp-val">${pct}%</span></div>
-    <div class="comp-bar-bg"><div class="comp-bar" style="width:${pct}%;background:#4ADE80"></div></div>
-    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">Ø ${(o.gf/o.n).toFixed(1).replace('.',',')} gola Dinama</div></div>`;
-  }).join('')+tribinaMap(g);
+  card.style.display=withTrib.length?'':'none';
+  if(!withTrib.length){ el.innerHTML=''; return; }
+  const tot=tribWDL(withTrib);
+  let html=`<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">
+    <span style="font-size:12px;color:var(--text-muted);">Ukupno s upisanom tribinom</span>
+    <span style="font-size:13px;font-weight:700;">${tot.w}<span style="color:#4ADE80;">P</span> &middot; ${tot.d}<span style="color:var(--text-muted);">R</span> &middot; ${tot.l}<span style="color:#F87171;">I</span></span>
+  </div>`;
+  const homeRows=Object.entries(home).sort((a,b)=>b[1].list.length-a[1].list.length);
+  const mxH=Math.max(1,...homeRows.map(([,v])=>v.list.length));
+  html+=homeRows.map(([k,v],i)=>tribRow(v.label,v.list,tribColor(k,i),mxH)).join('');
+  html+=tribinaMap(Object.fromEntries(Object.entries(home).map(([k,v])=>[k,{n:v.list.length}])));
+  const awayRows=Object.entries(away).sort((a,b)=>b[1].list.length-a[1].list.length);
+  if(awayRows.length){
+    const mxA=Math.max(1,...awayRows.map(([,v])=>v.list.length));
+    html+=`<div style="font-size:11px;color:var(--text-muted);margin:14px 0 8px;padding-top:10px;border-top:1px solid var(--border);">🏟️ Drugi stadioni</div>`;
+    html+=awayRows.map(([k,v],i)=>{
+      const stColor=TRIB_PALETTE[(i+3)%TRIB_PALETTE.length];
+      const tribRows=Object.entries(v.trib);
+      if(tribRows.length<2) return tribRow(v.label,v.list,stColor,mxA);
+      const mxT=Math.max(1,...tribRows.map(([,t])=>t.list.length));
+      const sub=tribRows.sort((a,b)=>b[1].list.length-a[1].list.length)
+        .map(([tk,t],j)=>`<div style="margin-left:16px;">${tribRow(t.label,t.list,TRIB_PALETTE[(i+j+1)%TRIB_PALETTE.length],mxT)}</div>`).join('');
+      const o=tribWDL(v.list);
+      return `<div style="margin-bottom:2px;"><div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${stColor};margin-right:6px;"></i>${wrEsc(v.label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')}, ${tribRows.length} tribine)</span></span><span class="comp-val">${o.w}-${o.d}-${o.l}</span></div></div>${sub}`;
+    }).join('');
+  }
+  el.innerHTML=html;
 }
 function tribinaMap(g){
   const c=k=>g[k]?g[k].n:0;
@@ -3561,8 +3610,8 @@ function tribinaMap(g){
   if(!keys.some(c)) return '';
   const mx=Math.max(1,...keys.map(c));
   const reg=(x,y,w,h,label,key,vert)=>{
-    const n=c(key), cx=x+w/2, cy=y+h/2;
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="rgba(96,165,250,${(0.1+0.8*n/mx).toFixed(2)})" stroke="rgba(255,255,255,0.2)"/><text x="${cx}" y="${cy}" font-size="9" fill="#fff" text-anchor="middle" dominant-baseline="middle"${vert?` transform="rotate(-90 ${cx} ${cy})"`:''}>${label}${n?' '+n:''}</text>`;
+    const n=c(key), cx=x+w/2, cy=y+h/2, col=TRIB_COLORS[key]||'#60A5FA';
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${col}" fill-opacity="${(0.12+0.75*n/mx).toFixed(2)}" stroke="rgba(255,255,255,0.2)"/><text x="${cx}" y="${cy}" font-size="9" fill="#fff" text-anchor="middle" dominant-baseline="middle"${vert?` transform="rotate(-90 ${cx} ${cy})"`:''}>${label}${n?' '+n:''}</text>`;
   };
   const extra=['sjever','zapad'].filter(k=>c(k)).map(k=>k.charAt(0).toUpperCase()+k.slice(1)+' '+c(k)).join(', ');
   return `<svg viewBox="0 0 240 262" style="width:100%;max-width:260px;display:block;margin:12px auto 0;">
@@ -3573,6 +3622,7 @@ function tribinaMap(g){
   </svg>${extra?`<div style="font-size:10px;color:var(--text-muted);text-align:center;">Bez razine: ${extra}</div>`:''}`;
 }
 window.renderTribinaStats = renderTribinaStats;
+
 function renderStadionStats(){
   const el = document.getElementById('stadion-stats');
   if(!el) return;
@@ -10320,17 +10370,17 @@ Object.assign(window,{renderKviz,qzStart,qzChoose,qzActivate,qzClose,qzBadge,qzL
 // ── Izvoz cijelog rasporeda u kalendar ──
 function exportScheduleICS(){
   const today=new Date().toISOString().slice(0,10);
-  const list=(_schedMatches||[]).filter(m=>m.datum&&m.datum>=today&&!m.rezultat);
-  if(!list.length){ showToast('Nema nadolazećih utakmica','#1A0A0A','#F87171'); return; }
+  const list=(_schedMatches||[]).filter(m=>m.datum&&m.datum>=today&&!m.rezultat&&m.home===true);
+  if(!list.length){ showToast('Nema nadolazećih domaćih utakmica','#1A0A0A','#F87171'); return; }
   const z=n=>String(n).padStart(2,'0');
   const esc=t=>String(t).replace(/([,;\\])/g,'\\$1');
   const utc=dt=>dt.toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
   const ev=list.map(m=>{
-    const opp=officialName(m.opp||''), title=m.home?`Dinamo Zagreb vs ${opp}`:`${opp} vs Dinamo Zagreb`;
+    const opp=officialName(m.opp||''), title=`Dinamo Zagreb vs ${opp}`;
     const [y,mo,d]=m.datum.split('-').map(Number); let dt;
     if(m.time&&/^\d{1,2}:\d{2}$/.test(m.time)){ const [hh,mm]=m.time.split(':').map(Number), st=new Date(y,mo-1,d,hh,mm); dt=[`DTSTART:${utc(st)}`,`DTEND:${utc(new Date(st.getTime()+2*3600000))}`]; }
     else { const nx=new Date(y,mo-1,d+1); dt=[`DTSTART;VALUE=DATE:${m.datum.replace(/-/g,'')}`,`DTEND;VALUE=DATE:${nx.getFullYear()}${z(nx.getMonth()+1)}${z(nx.getDate())}`]; }
-    return ['BEGIN:VEVENT',`UID:${m.datum}-${(m.opp||'').replace(/\s+/g,'')}@dinamo-fan-app`,`DTSTAMP:${utc(new Date())}`,...dt,`SUMMARY:${esc(title)}`,`LOCATION:${esc(m.home?'Stadion Maksimir, Zagreb':opp)}`,`DESCRIPTION:${esc(m.natjecanje||'')}`,'END:VEVENT'].join('\r\n');
+    return ['BEGIN:VEVENT',`UID:${m.datum}-${(m.opp||'').replace(/\s+/g,'')}@dinamo-fan-app`,`DTSTAMP:${utc(new Date())}`,...dt,`SUMMARY:${esc(title)}`,`LOCATION:${esc('Stadion Maksimir, Zagreb')}`,`DESCRIPTION:${esc(m.natjecanje||'')}`,'END:VEVENT'].join('\r\n');
   });
   const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Dinamo Fan App//HR','CALSCALE:GREGORIAN',...ev,'END:VCALENDAR'].join('\r\n');
   const url=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));
