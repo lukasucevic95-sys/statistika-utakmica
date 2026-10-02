@@ -1053,6 +1053,13 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .stat-more-menu button span{display:flex;flex-direction:column;}
 .stat-more-menu button i{font-style:normal;font-size:11px;color:var(--text-muted);}
 
+
+/* ── Konfeti ── */
+#confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
+.confetti-piece{position:absolute;top:-16px;width:8px;height:14px;opacity:0.9;animation:confettiFall linear forwards;}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(var(--rot));opacity:0.3;}}
+@media(prefers-reduced-motion:reduce){.confetti-piece{display:none;}}
+
 /* ── Skeleton učitavanje ── */
 .sk-wrap{display:flex;flex-direction:column;gap:10px;padding:2px 0;}
 .sk-card{height:78px;border-radius:12px;background:linear-gradient(100deg,rgba(255,255,255,0.05) 30%,rgba(255,255,255,0.11) 50%,rgba(255,255,255,0.05) 70%);background-size:200% 100%;animation:skShimmer 1.3s ease-in-out infinite;}
@@ -1068,6 +1075,25 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 @media(prefers-reduced-motion:reduce){#ptr-indicator.ptr-spin .ptr-icon{animation:none;}}
 
 .nav-ic{width:15px;height:15px;display:inline-block;vertical-align:-3px;margin-right:5px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.row-ic{width:14px;height:14px;display:inline-block;vertical-align:-2.5px;margin-right:1px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+
+.header.hdr-shrink{padding-top:14px!important;padding-bottom:10px!important;transition:padding .18s ease;}
+.header{transition:padding .18s ease;}
+.header.hdr-shrink h1{font-size:24px!important;transition:font-size .18s ease;}
+.header h1{transition:font-size .18s ease;}
+.header.hdr-shrink #trophy-ticker-wrap,.header.hdr-shrink #trophy-bbb{opacity:0;transition:opacity .15s ease;pointer-events:none;}
+#trophy-ticker-wrap,#trophy-bbb{transition:opacity .15s ease;}
+.header.hdr-shrink p{display:none;}
+@media(prefers-reduced-motion:reduce){.header,.header.hdr-shrink,.header h1,.header.hdr-shrink h1,#trophy-ticker-wrap,.header.hdr-shrink #trophy-ticker-wrap{transition:none;}}
+
+/* ── Mikro-animacija na dodir ── */
+.btn-sm,.nav-btn,.qz-opt,.sched-filter-btn,.wr-nav .btn-sm,.top5-close,.stat-more-menu button{transition:transform .12s ease;}
+.btn-sm:active,.nav-btn:active,.qz-opt:not(:disabled):active,.sched-filter-btn:active,.top5-close:active,.stat-more-menu button:active{transform:scale(0.96);}
+@media(prefers-reduced-motion:reduce){
+  .btn-sm,.nav-btn,.qz-opt,.sched-filter-btn,.wr-nav .btn-sm,.top5-close,.stat-more-menu button{transition:none;}
+  .btn-sm:active,.nav-btn:active,.qz-opt:active,.sched-filter-btn:active,.top5-close:active,.stat-more-menu button:active{transform:none;}
+}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1211,7 +1237,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
       </div>
     </div>
     <div class="header-inner" style="position:relative;z-index:1;">
-      <h1>GNK Dinamo <span>Zagreb</span></h1>
+      <h1>GNK Dinamo <span>Zagreb</span> <span id="streak-badge" style="display:none;align-items:center;gap:3px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;letter-spacing:0;vertical-align:middle;color:#FB923C;"></span></h1>
       <p>Hrvatska &nbsp;·&nbsp; Statistika svih utakmica</p>
     </div>
   </div>
@@ -1237,6 +1263,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     <span class="leg-sub" onclick="filterRepSub('Reprezentacija',this,'main')">Prijateljska</span>
   </div>
 
+  <div class="side-card" id="otd-card" style="display:none;margin-bottom:14px;">
+    <div class="side-card-header">📆 Na današnji dan</div>
+    <div class="comp-list" id="otd-list"></div>
+  </div>
+
   <div class="s-main">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
       <span style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--text-muted);text-transform:uppercase;">Statistika za:</span>
@@ -1247,14 +1278,14 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
     </div>
     <div class="stats-bar-actions" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
       <div style="display:flex;gap:6px;flex-wrap:wrap;position:relative;">
-        <button class="btn-sm" style="background:rgba(244,114,182,0.15);color:#F9A8D4;border:1px solid rgba(244,114,182,0.3);" onclick="openWrapped()">🎁 Wrapped</button>
+        <button class="btn-sm" style="background:rgba(244,114,182,0.15);color:#F9A8D4;border:1px solid rgba(244,114,182,0.3);" onclick="openWrapped()"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="4" y="9" width="12" height="7" rx="1"/><path d="M4 9h12M10 9v7"/><path d="M10 9c-.8-2.6-2.6-3.6-4-3-1 .5-.8 2 .5 2.4 1 .3 2.2.6 3.5.6zM10 9c.8-2.6 2.6-3.6 4-3 1 .5.8 2-.5 2.4-1 .3-2.2.6-3.5.6z"/></svg><span>Wrapped</span></button>
         <button class="btn-sm" id="stat-more-btn" style="background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border);" onclick="toggleStatMore(event)">⋯ Više</button>
         <div class="stat-more-menu" id="stat-more-menu">
-          <button onclick="closeStatMore();openAchievements()">🏅 <span>Postignuća<i>Značke i etape</i></span></button>
-          <button onclick="closeStatMore();openHeatmap()">🗺️ <span>Heatmap<i>Karta stadiona</i></span></button>
-          <button onclick="closeStatMore();openFanCard()">🪪 <span>Iskaznica<i>Cijela karijera</i></span></button>
-          <button onclick="closeStatMore();openSeasonCompare()">📈 <span>Sezone<i>Usporedba po godinama</i></span></button>
-          <button onclick="closeStatMore();openLiga()">🏆 <span>Liga<i>Prediktor, Kviz, rekordi</i></span></button>
+          <button onclick="closeStatMore();openAchievements()"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="7.8" r="4.3"/><path d="M7.6 11.3L6 17l4-2.1 4 2.1-1.6-5.7"/></svg><span>Postignuća<i>Značke i etape</i></span></button>
+          <button onclick="closeStatMore();openHeatmap()"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M7 4.3L3 5.8v10.9L7 15l6 1.7 4-1.5V3.3L13 5 7 3.3z"/><path d="M7 4v11.3M13 5v11.3"/></svg><span>Heatmap<i>Karta stadiona</i></span></button>
+          <button onclick="closeStatMore();openFanCard()"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="2.3" y="5" width="15.4" height="10" rx="1.5"/><circle cx="7" cy="9.6" r="1.6"/><path d="M4.8 13.2c.3-1.3 1.1-2 2.2-2s1.9.7 2.2 2M11.3 8.3h4.2M11.3 10.8h4.2"/></svg><span>Iskaznica<i>Cijela karijera</i></span></button>
+          <button onclick="closeStatMore();openSeasonCompare()"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M3 14l4.5-5 3 3L17 5"/><path d="M13 5h4v4"/></svg><span>Sezone<i>Usporedba po godinama</i></span></button>
+          <button onclick="closeStatMore();openLiga()"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M6 4h8v3.2a4 4 0 01-8 0V4z"/><path d="M6 5H4.3a1.8 1.8 0 001.9 2.6M14 5h1.7a1.8 1.8 0 01-1.9 2.6"/><path d="M10 11.2v2.3M7.3 16.2h5.4M7.8 16.2c0-1.5.6-2.1 2.2-2.1s2.2.6 2.2 2.1"/></svg><span>Liga<i>Prediktor, Kviz, rekordi</i></span></button>
         </div>
       </div>
       </div>
@@ -1421,11 +1452,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
             <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
               <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text);">
                 <input type="checkbox" id="f-prisutan-luka" checked style="accent-color:#60A5FA;width:14px;height:14px;cursor:pointer;">
-                <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
+                <span id="f-prisutan-luka-label" style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
               </label>
               <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;color:var(--text);">
                 <input type="checkbox" id="f-prisutan-lovro" checked style="accent-color:#2DD4BF;width:14px;height:14px;cursor:pointer;">
-                <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
+                <span id="f-prisutan-lovro-label" style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
               </label>
             </div>
           </div>
@@ -1781,11 +1812,11 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
         <div style="display:flex;gap:14px;align-items:center;margin-top:5px;">
           <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
             <input type="checkbox" id="em-prisutan-luka" style="accent-color:#60A5FA;width:14px;height:14px;cursor:pointer;">
-            <span style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
+            <span id="em-prisutan-luka-label" style="color:#60A5FA;font-weight:600;">🔵 Luka</span>
           </label>
           <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;">
             <input type="checkbox" id="em-prisutan-lovro" style="accent-color:#2DD4BF;width:14px;height:14px;cursor:pointer;">
-            <span style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
+            <span id="em-prisutan-lovro-label" style="color:#7DD3FC;font-weight:600;">🔷 Lovro</span>
           </label>
         </div>
       </div>
@@ -2294,7 +2325,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="caldaymodal-overlay" onclick="if(event.target===this)closeCalDayModal()">
   <div class="top5-box">
     <div class="top5-header">
-      <div class="top5-title">📅 Utakmice tog dana</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12" rx="1.5"/><path d="M3 8h14M7 3v3M13 3v3"/></svg>Utakmice tog dana</div>
       <button class="top5-close" onclick="closeCalDayModal()">✕</button>
     </div>
     <div class="top5-list" id="caldaymodal-list" style="padding:14px;"></div>
@@ -2316,7 +2347,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="seasoncompare-overlay" onclick="if(event.target===this)closeSeasonCompare()">
   <div class="top5-box" id="seasoncompare-box">
     <div class="top5-header">
-      <div class="top5-title">📈 Usporedba sezona</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M3 14l4.5-5 3 3L17 5"/><path d="M13 5h4v4"/></svg>Usporedba sezona</div>
       <button class="top5-close" onclick="closeSeasonCompare()">✕</button>
     </div>
     <div class="top5-list" id="seasoncompare-content" style="padding:14px;"></div>
@@ -2333,15 +2364,22 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
 <div class="top5-overlay" id="settings-overlay" onclick="if(event.target===this)closeSettings()">
   <div class="top5-box">
-    <div class="top5-header"><div class="top5-title">⚙️ Postavke</div><button class="top5-close" onclick="closeSettings()">✕</button></div>
+    <div class="top5-header"><div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="10" r="2.6"/><path d="M10 3v2.1M10 14.9V17M17 10h-2.1M5.1 10H3M15 5l-1.5 1.5M6.5 13.5L5 15M15 15l-1.5-1.5M6.5 6.5L5 5"/></svg>Postavke</div><button class="top5-close" onclick="closeSettings()">✕</button></div>
     <div class="top5-list" id="settings-content" style="padding:14px;"></div>
   </div>
 </div>
 
 <div class="top5-overlay" id="liga-overlay" onclick="if(event.target===this)closeLiga()">
   <div class="top5-box">
-    <div class="top5-header"><div class="top5-title">🏆 Luka i Lovro</div><button class="top5-close" onclick="closeLiga()">✕</button></div>
+    <div class="top5-header"><div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M6 4h8v3.2a4 4 0 01-8 0V4z"/><path d="M6 5H4.3a1.8 1.8 0 001.9 2.6M14 5h1.7a1.8 1.8 0 01-1.9 2.6"/><path d="M10 11.2v2.3M7.3 16.2h5.4M7.8 16.2c0-1.5.6-2.1 2.2-2.1s2.2.6 2.2 2.1"/></svg>Luka i Lovro</div><button class="top5-close" onclick="closeLiga()">✕</button></div>
     <div class="top5-list" id="liga-content" style="padding:14px;"></div>
+  </div>
+</div>
+
+<div class="top5-overlay" id="trib-matches-overlay" onclick="if(event.target===this)closeTribinaMatches()">
+  <div class="top5-box">
+    <div class="top5-header"><div class="top5-title" id="trib-matches-title">🎫 Tribina</div><button class="top5-close" onclick="closeTribinaMatches()">✕</button></div>
+    <div class="top5-list" id="trib-matches-content" style="padding:14px;"></div>
   </div>
 </div>
 
@@ -2349,7 +2387,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="wrapped-overlay" onclick="if(event.target===this)closeWrapped()">
   <div class="top5-box" id="wrapped-box">
     <div class="top5-header">
-      <div class="top5-title">🎁 Dinamo Wrapped</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="4" y="9" width="12" height="7" rx="1"/><path d="M4 9h12M10 9v7"/><path d="M10 9c-.8-2.6-2.6-3.6-4-3-1 .5-.8 2 .5 2.4 1 .3 2.2.6 3.5.6zM10 9c.8-2.6 2.6-3.6 4-3 1 .5.8 2-.5 2.4-1 .3-2.2.6-3.5.6z"/></svg>Dinamo Wrapped</div>
       <button class="top5-close" onclick="closeWrapped()">✕</button>
     </div>
     <div class="top5-list" id="wrapped-content" style="padding:14px;"></div>
@@ -2371,7 +2409,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="achievements-overlay" onclick="if(event.target===this)closeAchievements()">
   <div class="top5-box">
     <div class="top5-header">
-      <div class="top5-title">🏆 Postignuća</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="7.8" r="4.3"/><path d="M7.6 11.3L6 17l4-2.1 4 2.1-1.6-5.7"/></svg>Postignuća</div>
       <button class="top5-close" onclick="closeAchievements()">✕</button>
     </div>
     <div style="display:flex;gap:6px;padding:12px 14px 0;">
@@ -2386,7 +2424,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="heatmap-overlay" onclick="if(event.target===this)closeHeatmap()">
   <div class="top5-box" id="heatmap-box">
     <div class="top5-header">
-      <div class="top5-title">🗺️ Heatmap posjećenosti</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M7 4.3L3 5.8v10.9L7 15l6 1.7 4-1.5V3.3L13 5 7 3.3z"/><path d="M7 4v11.3M13 5v11.3"/></svg>Heatmap posjećenosti</div>
       <button class="top5-close" onclick="closeHeatmap()">✕</button>
     </div>
     <div class="top5-list" id="heatmap-content" style="padding:14px;"></div>
@@ -2397,7 +2435,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 <div class="top5-overlay" id="fancard-overlay" onclick="if(event.target===this)closeFanCard()">
   <div class="top5-box">
     <div class="top5-header">
-      <div class="top5-title">🎫 Navijačka iskaznica</div>
+      <div class="top5-title"><svg class="nav-ic" viewBox="0 0 20 20"><rect x="2.3" y="5" width="15.4" height="10" rx="1.5"/><circle cx="7" cy="9.6" r="1.6"/><path d="M4.8 13.2c.3-1.3 1.1-2 2.2-2s1.9.7 2.2 2M11.3 8.3h4.2M11.3 10.8h4.2"/></svg>Navijačka iskaznica</div>
       <button class="top5-close" onclick="closeFanCard()">✕</button>
     </div>
     <div style="display:flex;gap:6px;padding:12px 14px 0;">
@@ -2796,6 +2834,8 @@ function goTo(page) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const pageEl=document.getElementById('page-' + page);
   pageEl.classList.add('active');
+  const hdr=pageEl.querySelector('.header.header-stat'); if(hdr) hdr.classList.remove('hdr-shrink');
+  if(typeof applyAvatars==='function') applyAvatars();
   pageEl.classList.remove('pg-anim'); void pageEl.offsetWidth; pageEl.classList.add('pg-anim');
   document.getElementById('nav-' + page).classList.add('active');
   window.location.hash = page;
@@ -3368,6 +3408,8 @@ function renderTable(){
   updateStats(filtered);
   renderStadionStats();
   renderTribinaStats();
+  renderStreakBadge();
+  renderOnThisDayStat();
   populateStadionFilter();
   setTimeout(()=>checkScrollOverflow('matches'),30);
 }
@@ -3478,7 +3520,7 @@ function updateStats(filtered){
   const best=filtered.reduce((b,m)=>m.gledatelji>(b?.gledatelji||0)?m:b,null);
   let scored=0,conceded=0;
   filtered.forEach(m=>{const p=m.rezultat.split('-').map(Number);if(p.length===2){scored+=p[0];conceded+=p[1];}});
-  const personLabel=activeStatPerson==='luka'?'🔵 Luka':activeStatPerson==='lovro'?'🔷 Lovro':activeStatPerson==='all'?'👥 Luka & Lovro':'📋 Sve';
+  const personLabel=activeStatPerson==='luka'?(personAvatar('luka')+' Luka'):activeStatPerson==='lovro'?(personAvatar('lovro')+' Lovro'):activeStatPerson==='all'?(personAvatar('luka')+personAvatar('lovro')+' Luka & Lovro'):'📋 Sve';
   const repSubLabel=currentRepSub==='rep'?'Hrvatska':currentRepSub;
   const compLabel=currentFilter==='all'?'svih natjecanja':currentFilter==='dinamo'?'Dinamo — sva natjecanja':currentFilter==='rep'?repSubLabel:currentFilter;
   const label=activeStatPerson==='sve'?compLabel:`${personLabel} · ${compLabel}`;
@@ -3598,11 +3640,14 @@ function tribWDL(list){
   });
   return o;
 }
-function tribRow(label,list,color,mx){
+let _tribMatchLists={};
+function tribStore(key,label,list){ _tribMatchLists[key]={label,list}; return key; }
+function tribRow(label,list,color,mx,key){
   const o=tribWDL(list), pct=Math.round(o.w/o.n*100);
   const SEGC={w:'#4ADE80',d:'#8B93A8',l:'#F87171'};
   const seg=k=>o[k]?`<i class="wr-seg" style="flex:${o[k]};background:${SEGC[k]};"></i>`:'';
-  return `<div style="margin-bottom:10px;">
+  const click=key?` onclick="openTribinaMatches('${key}')" style="cursor:pointer;"`:'';
+  return `<div${click} style="margin-bottom:10px;${key?'cursor:pointer;':''}">
     <div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${color};margin-right:6px;"></i>${wrEsc(label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')})</span></span><span class="comp-val">${pct}% pob.</span></div>
     <div class="comp-bar-bg"><div class="comp-bar" style="width:${Math.round(o.n/mx*100)}%;background:${color}"></div></div>
     <div class="wr-bar" style="margin-top:4px;height:6px;">${seg('w')}${seg('d')}${seg('l')}</div>
@@ -3612,6 +3657,7 @@ function tribRow(label,list,color,mx){
 function renderTribinaStats(){
   const card=document.getElementById('tribina-card'), el=document.getElementById('tribina-stats');
   if(!card||!el) return;
+  _tribMatchLists={};
   const withTrib=filterMatches().filter(m=>m.tribina&&m.tribina.trim()&&m.rezultat);
   const home={}, away={};
   withTrib.forEach(m=>{
@@ -3636,8 +3682,8 @@ function renderTribinaStats(){
   </div>`;
   const homeRows=Object.entries(home).sort((a,b)=>b[1].list.length-a[1].list.length);
   const mxH=Math.max(1,...homeRows.map(([,v])=>v.list.length));
-  html+=homeRows.map(([k,v],i)=>tribRow(v.label,v.list,tribColor(k,i),mxH)).join('');
-  html+=tribinaMap(Object.fromEntries(Object.entries(home).map(([k,v])=>[k,{n:v.list.length}])));
+  html+=homeRows.map(([k,v],i)=>tribRow(v.label,v.list,tribColor(k,i),mxH,tribStore('h:'+k,v.label,v.list))).join('');
+  html+=tribinaMap(Object.fromEntries(Object.entries(home).map(([k,v])=>[k,{n:v.list.length,wdl:tribWDL(v.list)}])));
   const awayRows=Object.entries(away).sort((a,b)=>b[1].list.length-a[1].list.length);
   if(awayRows.length){
     const mxA=Math.max(1,...awayRows.map(([,v])=>v.list.length));
@@ -3645,12 +3691,12 @@ function renderTribinaStats(){
     html+=awayRows.map(([k,v],i)=>{
       const stColor=TRIB_PALETTE[(i+3)%TRIB_PALETTE.length];
       const tribRows=Object.entries(v.trib);
-      if(tribRows.length<2) return tribRow(v.label,v.list,stColor,mxA);
+      if(tribRows.length<2) return tribRow(v.label,v.list,stColor,mxA,tribStore('a:'+k,v.label,v.list));
       const mxT=Math.max(1,...tribRows.map(([,t])=>t.list.length));
       const sub=tribRows.sort((a,b)=>b[1].list.length-a[1].list.length)
-        .map(([tk,t],j)=>`<div style="margin-left:16px;">${tribRow(t.label,t.list,TRIB_PALETTE[(i+j+1)%TRIB_PALETTE.length],mxT)}</div>`).join('');
-      const o=tribWDL(v.list);
-      return `<div style="margin-bottom:2px;"><div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${stColor};margin-right:6px;"></i>${wrEsc(v.label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')}, ${tribRows.length} tribine)</span></span><span class="comp-val"><span style="color:#4ADE80;">${o.w}</span>-<span style="color:#AAA;">${o.d}</span>-<span style="color:#F87171;">${o.l}</span></span></div></div>${sub}`;
+        .map(([tk,t],j)=>`<div style="margin-left:16px;">${tribRow(t.label,t.list,TRIB_PALETTE[(i+j+1)%TRIB_PALETTE.length],mxT,tribStore('a:'+k+':'+tk,v.label+' — '+t.label,t.list))}</div>`).join('');
+      const o=tribWDL(v.list), stKey=tribStore('a:'+k+':all',v.label,v.list);
+      return `<div style="margin-bottom:2px;cursor:pointer;" onclick="openTribinaMatches('${stKey}')"><div class="comp-meta"><span class="comp-name"><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${stColor};margin-right:6px;"></i>${wrEsc(v.label)} <span style="opacity:0.45;font-size:10px">(${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')}, ${tribRows.length} tribine)</span></span><span class="comp-val"><span style="color:#4ADE80;">${o.w}</span>-<span style="color:#AAA;">${o.d}</span>-<span style="color:#F87171;">${o.l}</span></span></div></div>${sub}`;
     }).join('');
   }
   el.innerHTML=html;
@@ -3662,7 +3708,10 @@ function tribinaMap(g){
   const mx=Math.max(1,...keys.map(c));
   const reg=(x,y,w,h,label,key,vert)=>{
     const n=c(key), cx=x+w/2, cy=y+h/2, col=TRIB_COLORS[key]||'#60A5FA';
-    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${col}" fill-opacity="${(0.12+0.75*n/mx).toFixed(2)}" stroke="rgba(255,255,255,0.2)"/><text x="${cx}" y="${cy}" font-size="9" fill="#fff" text-anchor="middle" dominant-baseline="middle"${vert?` transform="rotate(-90 ${cx} ${cy})"`:''}>${label}${n?' '+n:''}</text>`;
+    const o=g[key]&&g[key].wdl;
+    const title=o?`${label}: ${o.n} ${wrPl(o.n,'utakmica','utakmice','utakmica')} — ${o.w}P ${o.d}R ${o.l}I`:`${label}: nema utakmica`;
+    const click=n?` onclick="openTribinaMatches('h:${key}')" style="cursor:pointer;"`:'';
+    return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="${col}" fill-opacity="${(0.12+0.75*n/mx).toFixed(2)}" stroke="rgba(255,255,255,0.2)"${click}><title>${title}</title></rect><text x="${cx}" y="${cy}" font-size="9" fill="#fff" text-anchor="middle" dominant-baseline="middle" pointer-events="none"${vert?` transform="rotate(-90 ${cx} ${cy})"`:''}>${label}${n?' '+n:''}</text>`;
   };
   const extra=['sjever','zapad'].filter(k=>c(k)).map(k=>k.charAt(0).toUpperCase()+k.slice(1)+' '+c(k)).join(', ');
   return `<svg viewBox="0 0 240 262" style="width:100%;max-width:260px;display:block;margin:12px auto 0;">
@@ -3672,8 +3721,58 @@ function tribinaMap(g){
     ${reg(174,84,58,122,'Istok','istok',true)}${reg(60,214,120,40,'Jug','jug')}${reg(8,214,44,34,'VIP','vip loža')}
   </svg>${extra?`<div style="font-size:10px;color:var(--text-muted);text-align:center;">Bez razine: ${extra}</div>`:''}`;
 }
+function openTribinaMatches(key){
+  const d=_tribMatchLists[key]; if(!d) return;
+  const box=document.getElementById('trib-matches-content'); if(!box) return;
+  const list=d.list.slice().sort((a,b)=>b.datum.localeCompare(a.datum));
+  document.getElementById('trib-matches-title').textContent=`🎫 ${d.label}`;
+  box.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px;">${list.map(m=>{
+    const res=getResult(m.rezultat,m.penali);
+    return `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--border);">
+      <div><div style="font-weight:600;font-size:13px;">${getClubCrest(officialName(m.protivnik),16)} ${wrEsc(officialName(m.protivnik))}</div><div style="font-size:11px;color:var(--text-muted);">${fmtDate(m.datum)}${m.natjecanje?' · '+wrEsc(m.natjecanje):''}</div></div>
+      <span class="result-pill ${res}">${fmtRezultat(m)}</span>
+    </div>`;
+  }).join('')}</div>`;
+  document.getElementById('trib-matches-overlay').classList.add('open');
+}
+function closeTribinaMatches(){ document.getElementById('trib-matches-overlay')?.classList.remove('open'); }
 window.renderTribinaStats = renderTribinaStats;
+window.openTribinaMatches = openTribinaMatches;
+window.closeTribinaMatches = closeTribinaMatches;
 
+
+function renderStreakBadge(){
+  const el=document.getElementById('streak-badge'); if(!el) return;
+  const list=(matches||[]).filter(m=>m.datum&&m.rezultat&&!REP_COMPS.includes(m.natjecanje)).sort((a,b)=>a.datum.localeCompare(b.datum));
+  let streak=0;
+  for(let i=list.length-1;i>=0;i--){
+    if(getResult(list[i].rezultat,list[i].penali)==='win') streak++; else break;
+  }
+  if(streak>=3){ el.style.display='inline-flex'; el.innerHTML=`🔥 ${streak}`; el.title=`${streak} pobjeda zaredom`; }
+  else { el.style.display='none'; }
+}
+window.renderStreakBadge=renderStreakBadge;
+function renderOnThisDayStat(){
+  const card=document.getElementById('otd-card'), el=document.getElementById('otd-list');
+  if(!card||!el) return;
+  const now=new Date(), mmdd=String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  const list=(matches||[]).filter(m=>m.datum && m.datum.length>=10 && m.datum.slice(5,10)===mmdd && m.rezultat)
+    .sort((a,b)=>b.datum.localeCompare(a.datum));
+  card.style.display=list.length?'':'none';
+  if(!list.length) return;
+  el.innerHTML=list.map(m=>{
+    const res=getResult(m.rezultat,m.penali), year=m.datum.slice(0,4), idx=matches.indexOf(m);
+    return `<div onclick="showMatchModal(${idx})" style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--border);cursor:pointer;">
+      <b style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:#93C5FD;min-width:38px;">${year}.</b>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:13px;display:flex;align-items:center;gap:5px;">${getClubCrest(officialName(m.protivnik),14)} ${wrEsc(officialName(m.protivnik))}</div>
+        <div style="font-size:10.5px;color:var(--text-muted);">${wrEsc(m.natjecanje||'')}</div>
+      </div>
+      <span class="result-pill ${res}">${fmtRezultat(m)}</span>
+    </div>`;
+  }).join('');
+}
+window.renderOnThisDayStat=renderOnThisDayStat;
 function renderStadionStats(){
   const el = document.getElementById('stadion-stats');
   if(!el) return;
@@ -5575,8 +5674,8 @@ function renderRadarChart(){
       </svg>
     </div>
     <div style="display:flex;justify-content:center;gap:16px;margin-top:4px;font-size:11px;">
-      <span style="color:#60A5FA;font-weight:700;">🔵 Luka</span>
-      <span style="color:#2DD4BF;font-weight:700;">🔷 Lovro</span>
+      <span style="color:#60A5FA;font-weight:700;">${personAvatar('luka')} Luka</span>
+      <span style="color:#2DD4BF;font-weight:700;">${personAvatar('lovro')} Lovro</span>
     </div>
     <div style="margin-top:12px;display:flex;flex-direction:column;gap:5px;">
       ${metrics.map(m=>`<div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--text-muted);padding:0 6px;">
@@ -5682,7 +5781,7 @@ function renderRoundsChart(){
     <div id="pred-chart-tooltip" class="prc-tooltip" style="display:none;"></div>
     <div style="display:flex;justify-content:space-between;margin-top:10px;padding:0 4px;font-size:11px;color:var(--text-muted);">
       <span>Ukupno odigrano: <strong style="color:#fff;">${allPoints.length}</strong></span>
-      <span>🔵 Luka: <strong style="color:#60A5FA;">${lCum}</strong> · 🔷 Lovro: <strong style="color:#2DD4BF;">${loCum}</strong></span>
+      <span>${personAvatar('luka')} Luka: <strong style="color:#60A5FA;">${lCum}</strong> · ${personAvatar('lovro')} Lovro: <strong style="color:#2DD4BF;">${loCum}</strong></span>
     </div>`;
 
   if(_predChartMode==='cumulative') renderCumulativeChart(points);
@@ -5721,10 +5820,10 @@ function showPredChartTooltip(idx, evt){
     <div style="font-weight:700;font-size:12px;color:#fff;margin-bottom:4px;">${p.isAway?'✈️':'🏟️'} ${p.opp}</div>
     <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${fmtDate(p.datum)}${p.nat?' · '+p.nat:''}</div>
     <div style="display:flex;justify-content:space-between;gap:14px;font-size:11px;">
-      <span style="color:#60A5FA;">🔵 Luka: <strong>+${p.lukaMatch}</strong> <span style="color:var(--text-muted);">(${p.luka})</span></span>
+      <span style="color:#60A5FA;">${personAvatar('luka')} Luka: <strong>+${p.lukaMatch}</strong> <span style="color:var(--text-muted);">(${p.luka})</span></span>
     </div>
     <div style="display:flex;justify-content:space-between;gap:14px;font-size:11px;margin-top:2px;">
-      <span style="color:#2DD4BF;">🔷 Lovro: <strong>+${p.lovroMatch}</strong> <span style="color:var(--text-muted);">(${p.lovro})</span></span>
+      <span style="color:#2DD4BF;">${personAvatar('lovro')} Lovro: <strong>+${p.lovroMatch}</strong> <span style="color:var(--text-muted);">(${p.lovro})</span></span>
     </div>`;
   tip.style.display='block';
   // Pozicioniraj relativno na kontejner koristeći stvarni bounding rect elementa
@@ -5966,7 +6065,7 @@ function renderPreds(){
       const lE=allHit(l)?'🎯':l.rezHit?'✅':l.glePts>0?'👁️':'❌';
       const loE=allHit(lo)?'🎯':lo.rezHit?'✅':lo.glePts>0?'👁️':'❌';
       lBox=`<div class="guess-box ${lCls}">
-        <div class="guess-who pl-luka">🔵 Luka <span style="font-weight:400;color:var(--text-muted)">(${l.pts} bod.)</span></div>
+        <div class="guess-who pl-luka">${personAvatar('luka')} Luka <span style="font-weight:400;color:var(--text-muted)">(${l.pts} bod.)</span></div>
         <div class="guess-rez">${p.luka.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.luka.gle)} <span style="opacity:0.6">(±${fmtNum(l.gleDiff)})</span></div>
@@ -5991,7 +6090,7 @@ function renderPreds(){
         </div>
       </div>`;
       loBox=`<div class="guess-box ${loCls}">
-        <div class="guess-who pl-lovro">🔷 Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod.)</span></div>
+        <div class="guess-who pl-lovro">${personAvatar('lovro')} Lovro <span style="font-weight:400;color:var(--text-muted)">(${lo.pts} bod.)</span></div>
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)} <span style="opacity:0.6">(±${fmtNum(lo.gleDiff)})</span></div>
@@ -6017,7 +6116,7 @@ function renderPreds(){
       </div>`;
     }else{
       lBox=`<div class="guess-box pending">
-        <div class="guess-who pl-luka">🔵 Luka</div>
+        <div class="guess-who pl-luka">${personAvatar('luka')} Luka</div>
         <div class="guess-rez">${p.luka.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.luka.gle)}</div>
@@ -6027,7 +6126,7 @@ function renderPreds(){
         </div>
       </div>`;
       loBox=`<div class="guess-box pending">
-        <div class="guess-who pl-lovro">🔷 Lovro</div>
+        <div class="guess-who pl-lovro">${personAvatar('lovro')} Lovro</div>
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
           <div class="guess-detail">👁️ ${fmtNum(p.lovro.gle)}</div>
@@ -8295,13 +8394,13 @@ function renderBanner(weather){
           ${next.time?`<span>🕐 ${next.time}</span>`:''}
         </div>
         <div class="nmb-countdown" id="nmb-countdown-units"></div>
-        <button id="nmb-reminder-btn" class="btn-sm" style="margin-top:8px;background:rgba(255,255,255,0.08);color:var(--text-muted);border:1px solid var(--border);" onclick="toggleMatchReminder(${matchDate.getTime()}, '${(next.opp||'').replace(/'/g,"\\'")}')">🔔 Podsjeti me 1h prije</button>
+        
         ${nmbQuizHTML}
         ${weatherHTML}
         ${transitHTML}
       </div>
     </div>`;
-    checkExistingReminder(matchDate.getTime(), next.opp||'');
+    // podsjetnik gumb uklonjen iz bannera, checkExistingReminder se više ne poziva
     if(_countdownTimer) clearInterval(_countdownTimer);
     function tick(){
       const diff=matchDate-new Date();
@@ -9871,8 +9970,8 @@ function renderHeatmapBody(){
 
   const filterBar = `<div id="heatmap-filter-bar" style="display:flex;gap:6px;margin-bottom:12px;">
     <button class="sched-filter-btn${_heatmapFilter==='zajedno'?' active':''}" onclick="setHeatmapFilter('zajedno',this)">Zajedno</button>
-    <button class="sched-filter-btn${_heatmapFilter==='luka'?' active':''}" onclick="setHeatmapFilter('luka',this)">🔵 Luka</button>
-    <button class="sched-filter-btn${_heatmapFilter==='lovro'?' active':''}" onclick="setHeatmapFilter('lovro',this)">🔷 Lovro</button>
+    <button class="sched-filter-btn${_heatmapFilter==='luka'?' active':''}" onclick="setHeatmapFilter('luka',this)">${personAvatar('luka')} Luka</button>
+    <button class="sched-filter-btn${_heatmapFilter==='lovro'?' active':''}" onclick="setHeatmapFilter('lovro',this)">${personAvatar('lovro')} Lovro</button>
   </div>`;
 
   const attField = _heatmapFilter==='luka' ? 'prisutanLuka' : _heatmapFilter==='lovro' ? 'prisutanLovro' : null;
@@ -10124,6 +10223,26 @@ window.openFanCard = openFanCard;
 function closeFanCard(){ document.getElementById('fancard-overlay')?.classList.remove('open'); }
 window.closeFanCard = closeFanCard;
 
+// ── Konfeti slavlje (savršen kviz / pobjeda u kvizu uživo) ──
+function fireConfetti(){
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let wrap=document.getElementById('confetti-wrap');
+  if(!wrap){ wrap=document.createElement('div'); wrap.id='confetti-wrap'; document.body.appendChild(wrap); }
+  const colors=['#4ADE80','#60A5FA','#FACC15','#F87171','#F9A8D4','#2DD4BF'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('i');
+    p.className='confetti-piece';
+    const x=Math.random()*100, dur=1.1+Math.random()*0.9, delay=Math.random()*0.25, rot=(Math.random()*360-180)+'deg';
+    p.style.left=x+'vw'; p.style.background=colors[i%colors.length];
+    p.style.animationDuration=dur+'s'; p.style.animationDelay=delay+'s'; p.style.setProperty('--rot',rot);
+    p.style.borderRadius=Math.random()<0.5?'50%':'2px';
+    wrap.appendChild(p);
+    setTimeout(()=>p.remove(),(dur+delay)*1000+200);
+  }
+  haptic([20,40,20,40,20]);
+}
+window.fireConfetti=fireConfetti;
+
 // ── Kviz: 3 pitanja na dan domaće utakmice, 5 s po pitanju, Luka protiv Lovre ──
 const QZ_T=10000, QZ_FAST=3000;
 const qzPts=o=>o?(o.p!=null?o.p:(o.s||0)):0;
@@ -10220,7 +10339,7 @@ async function renderKviz(){
   const days=Object.keys(_qz.data).filter(d=>_qz.data[d].luka||_qz.data[d].lovro).sort();
   let status;
   if(!_currentUser) status='<div class="qz-p">Prijavi se (gore desno) da bi igrao.</div>';
-  else if(!who) status='<div class="qz-p" style="margin-bottom:6px;">Tko igra?</div><div style="display:flex;gap:8px;"><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose(\'luka\')">🔵 Luka</button><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose(\'lovro\')">🔷 Lovro</button></div>';
+  else if(!who) status=`<div class="qz-p" style="margin-bottom:6px;">Tko igra?</div><div style="display:flex;gap:8px;"><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose('luka')">${personAvatar('luka')} Luka</button><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose('lovro')">${personAvatar('lovro')} Lovro</button></div>`;
   else if(t.now){
     const mine=_qz.data[t.today]?.[who];
     status=mine?`<div class="qz-p">Danas si odigrao: ${qzPts(mine)} b, ${mine.s}/${mine.n||3} točno (${(mine.ms/1000).toFixed(1)} s). Utakmica: ${wrEsc(officialName(t.now.opp||t.now.protivnik||''))}.</div>`
@@ -10228,8 +10347,8 @@ async function renderKviz(){
   } else status=`<div class="qz-p">Kviz se otvara na dan domaće utakmice.${t.next?` Sljedeći: ${fmtDate(t.next.datum)} protiv ${wrEsc(officialName(t.next.opp||t.next.protivnik||''))}.`:''}</div>`;
   if(who) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:8px;" onclick="qzStart(true)">Vježba (ne boduje se)</button>`;
   const lbl=k=>fmtDate(k.slice(0,10))+(k.length>10?' '+k.slice(11,13)+':'+k.slice(13,15):'');
-  if(_currentUser) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:10px;background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.35);" onclick="qzActivate()">⚡ Aktiviraj kviz sada</button>`;
-  if(_currentUser&&who) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:10px;background:rgba(248,113,113,0.15);color:#F87171;border:1px solid rgba(248,113,113,0.35);" onclick="qzLiveCreate()">⚔️ Kviz uživo 1 na 1</button>`;
+  if(_currentUser) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:10px;background:rgba(250,204,21,0.15);color:#FACC15;border:1px solid rgba(250,204,21,0.35);" onclick="qzActivate()"><svg class="nav-ic" viewBox="0 0 20 20" fill="currentColor" stroke="none"><path d="M11 2.3L4.3 11.8h4.5l-.9 6 7-9.9h-4.6l.7-5.6z"/></svg>Aktiviraj kviz sada</button>`;
+  if(_currentUser&&who) status+=`<button class="btn-sm" style="margin-top:8px;width:100%;padding:10px;background:rgba(248,113,113,0.15);color:#F87171;border:1px solid rgba(248,113,113,0.35);" onclick="qzLiveCreate()"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M3 17l5.3-5.3M17 3l-5.3 5.3M3 3l4.3 4.3M17 17l-4.3-4.3"/><circle cx="10" cy="10" r="1.2" fill="currentColor" stroke="none"/></svg>Kviz uživo 1 na 1</button>`;
   const open=who?Object.keys(_qz.data).filter(k=>_qz.data[k].manual&&_qz.data[k].q&&!_qz.data[k][who]).sort().reverse():[];
   if(open.length) status+=open.map(k=>{
     const played=_qz.data[k].luka||_qz.data[k].lovro;
@@ -10244,7 +10363,7 @@ async function renderKviz(){
     return `<tr><td>${lbl(d)}${x.opp?`<div class="qz-p" style="font-size:11px;">${wrEsc(x.opp)}</div>`:''}</td><td>${c(L,'l')}</td><td>${c(V,'v')}</td></tr>`;
   }).join('');
   box.innerHTML=err+`<div id="kviz-live"></div><div class="qz-card" style="margin-bottom:12px;">${status}</div>`
-    +(days.length?`<div class="qz-tot" style="margin-bottom:12px;"><div><div class="qz-p">🔵 Luka</div><b>${pl}</b><div class="qz-p">${wl} ${wrPl(wl,'pobjeda','pobjede','pobjeda')}</div></div><div><div class="qz-p">🔷 Lovro</div><b>${pv}</b><div class="qz-p">${wv} ${wrPl(wv,'pobjeda','pobjede','pobjeda')}</div></div></div>
+    +(days.length?`<div class="qz-tot" style="margin-bottom:12px;"><div><div class="qz-p">${personAvatar('luka')} Luka</div><b>${pl}</b><div class="qz-p">${wl} ${wrPl(wl,'pobjeda','pobjede','pobjeda')}</div></div><div><div class="qz-p">${personAvatar('lovro')} Lovro</div><b>${pv}</b><div class="qz-p">${wv} ${wrPl(wv,'pobjeda','pobjede','pobjeda')}</div></div></div>
       <div class="qz-card" style="margin-bottom:12px;">${qzChart(days)}</div>
       <div class="qz-card"><table class="qz-tbl"><tr><th>Datum</th><th>Luka</th><th>Lovro</th></tr>${rows}</table><div class="qz-p">Pobjednik: više bodova, a kod jednakog rezultata brži.</div></div>`
       :'<div class="prc-empty">Još nema odigranih kvizova.</div>');
@@ -10314,6 +10433,7 @@ async function qzFinish(st,datum,practice){
     catch(e){ msg='<div class="qz-p" style="color:#F87171;">Rezultat nije spremljen. Provjeri Firebase pravila za čvor "quiz".</div>'; }
   }
   box.innerHTML=`<div class="qz-card" style="text-align:center;"><div class="qz-big">${st.pts} b</div><div class="qz-p">${st.score}/${st.n} točno, brzih odgovora: ${st.fast}</div><div class="qz-p">${(st.ms/1000).toFixed(1)} s ukupno${practice?' (vježba, ne boduje se)':''}</div>${msg}<button class="btn-sm" style="padding:10px;" onclick="renderKviz()">Natrag na tablicu</button></div>`;
+  if(st.score===st.n) fireConfetti();
   qzBadge();
 }
 // ── Kviz uživo 1 na 1 ──
@@ -10416,6 +10536,7 @@ async function qzLiveEnd(d){
     try{ await set(ref(db,`quiz/${d.key}/${who}`),{s:a.s,n,p:a.p,ms:Math.round(a.ms),a:q.map((_,i)=>mineAns[i]?mineAns[i].k:-1),t:Date.now(),live:true}); }catch(e){}
   }
   const verdict=a.p===b.p&&Math.round(a.ms)===Math.round(b.ms)?'Neriješeno.':(a.p>b.p||(a.p===b.p&&a.ms<b.ms))?'Pobijedio si!':`Pobijedio je ${nm(other)}.`;
+  if(played && verdict==='Pobijedio si!') fireConfetti();
   box.innerHTML=`<div class="qz-card" style="text-align:center;margin-bottom:12px;"><div class="qz-p">Kviz uživo je gotov</div><div class="qz-big">${nm(who)} ${a.p} : ${b.p} ${nm(other)}</div><div class="qz-p">${a.s}/${n} točno prema ${b.s}/${n}</div><div class="qz-p">${played?verdict:'Nisi sudjelovao/la.'}</div><button class="btn-sm" style="padding:10px;" onclick="qzLiveHide()">Zatvori</button></div>`;
 }
 async function qzBadge(){
@@ -10521,6 +10642,21 @@ function closeStatMore(){ document.getElementById('stat-more-menu')?.classList.r
 document.addEventListener('click',e=>{ if(!e.target.closest('#stat-more-btn')&&!e.target.closest('#stat-more-menu')) closeStatMore(); });
 Object.assign(window,{toggleStatMore,closeStatMore});
 
+// ── Sažimajuće zaglavlje na skrol (Statistika) ──
+(function initHeaderShrink(){
+  let ticking=false;
+  function onScroll(){
+    if(ticking) return; ticking=true;
+    requestAnimationFrame(()=>{
+      ticking=false;
+      const page=document.querySelector('.page.active'); if(!page||page.id!=='page-statistika') return;
+      const hdr=page.querySelector('.header.header-stat'); if(!hdr) return;
+      hdr.classList.toggle('hdr-shrink', window.scrollY>36);
+    });
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});
+})();
+
 // ── Povuci za osvježavanje (Statistika, Raspored) ──
 const PTR_PAGES={statistika:()=>{renderTable();},raspored:async()=>{await schedLoad();renderRaspored();}};
 (function initPullToRefresh(){
@@ -10571,7 +10707,21 @@ function personAvatar(who){
 }
 function setPersonAvatar(who,emoji){
   try{ const a=JSON.parse(localStorage.getItem(AVATAR_KEY)||'{}'); a[who]=emoji; localStorage.setItem(AVATAR_KEY,JSON.stringify(a)); }catch(e){}
+  applyAvatars();
 }
+function applyAvatars(){
+  const la=personAvatar('luka'), lv=personAvatar('lovro');
+  const set=(id,em,label)=>{ const el=document.getElementById(id); if(el) el.textContent=em+' '+label; };
+  set('f-prisutan-luka-label',la,'Luka'); set('f-prisutan-lovro-label',lv,'Lovro');
+  set('em-prisutan-luka-label',la,'Luka'); set('em-prisutan-lovro-label',lv,'Lovro');
+  set('scpt-luka',la,'Luka'); set('scpt-lovro',lv,'Lovro');
+  set('ach-tab-luka',la,'Luka'); set('ach-tab-lovro',lv,'Lovro');
+  set('fc-tab-luka',la,'Luka'); set('fc-tab-lovro',lv,'Lovro');
+  document.querySelectorAll('.predictor-name.pl-luka').forEach(el=>{el.textContent=la+' Luka predviđa';});
+  document.querySelectorAll('.predictor-name.pl-lovro').forEach(el=>{el.textContent=lv+' Lovro predviđa';});
+}
+window.applyAvatars=applyAvatars;
+
 const AVATAR_CHOICES=['🔵','🔷','🦁','🔥','⭐','🐺','🦅','👑'];
 function renderSettings(){
   const box=document.getElementById('settings-content'); if(!box) return;
@@ -10581,8 +10731,8 @@ function renderSettings(){
   box.innerHTML=`
     <div class="qz-p" style="margin-bottom:10px;">Tko si ti? Ovo određuje tvoje rezultate u Kvizu, Prediktoru i Ligi. ${guessed?`Iz prijave izgleda da si <b>${guessed==='luka'?'Luka':'Lovro'}</b>.`:''}</div>
     <div style="display:flex;gap:8px;margin-bottom:14px;">
-      <button class="btn-sm" style="flex:1;padding:12px;${who==='luka'?'background:rgba(96,165,250,0.25);border-color:#60A5FA;':''}" onclick="setWhoOverride('luka');renderSettings();qzBadge();">🔵 Luka</button>
-      <button class="btn-sm" style="flex:1;padding:12px;${who==='lovro'?'background:rgba(45,212,191,0.25);border-color:#2DD4BF;':''}" onclick="setWhoOverride('lovro');renderSettings();qzBadge();">🔷 Lovro</button>
+      <button class="btn-sm" style="flex:1;padding:12px;${who==='luka'?'background:rgba(96,165,250,0.25);border-color:#60A5FA;':''}" onclick="setWhoOverride('luka');renderSettings();qzBadge();">${personAvatar('luka')} Luka</button>
+      <button class="btn-sm" style="flex:1;padding:12px;${who==='lovro'?'background:rgba(45,212,191,0.25);border-color:#2DD4BF;':''}" onclick="setWhoOverride('lovro');renderSettings();qzBadge();">${personAvatar('lovro')} Lovro</button>
     </div>
     ${ov?`<button class="btn-sm" style="width:100%;padding:8px;margin-bottom:14px;" onclick="setWhoOverride(null);renderSettings();qzBadge();">Poništi, nagađaj iz prijave</button>`:''}
     <div class="qz-p" style="margin-bottom:6px;">Tvoj avatar</div>
@@ -10659,52 +10809,52 @@ function lgSlava(ev){
     const keysOf=f=>new Set(inS.filter(m=>m[f]!==false).map(m=>m.datum+'|'+m.protivnik));
 
     // Natjecanje Luka i Lovro
-    if(pl+pv+ql+qv) rows.push(row('🏆','Prvak lige',leader(pl+ql,pv+qv)));
-    if(pl+pv) rows.push(row('🎯','Prvak Prediktora',leader(pl,pv)));
+    if(pl+pv+ql+qv) rows.push(row(ROW_ICO.trophy,'Prvak lige',leader(pl+ql,pv+qv)));
+    if(pl+pv) rows.push(row(ROW_ICO.target,'Prvak Prediktora',leader(pl,pv)));
     const prs=[...(predictions||[]),...(awayPredictions||[])].filter(x=>x.resolved&&x.luka&&x.lovro&&x.luka.score&&x.lovro.score&&seasonKeyFor(x.datum)===se);
     const hl=prs.filter(x=>x.luka.score.rezHit).length, hv=prs.filter(x=>x.lovro.score.rezHit).length;
-    if(hl+hv) rows.push(row('🎯','Najviše točnih rezultata',leader(hl,hv)));
-    if(ql+qv) rows.push(row('🧠','Prvak Kviza',leader(ql,qv)));
+    if(hl+hv) rows.push(row(ROW_ICO.target,'Najviše točnih rezultata',leader(hl,hv)));
+    if(ql+qv) rows.push(row(ROW_ICO.brain,'Prvak Kviza',leader(ql,qv)));
     const spd=ev.sp&&ev.sp[se.replace('/','-')];
-    if(spd&&spd.actual&&spd.luka&&spd.lovro){ const x1=spScore(spd.luka,spd.actual), x2=spScore(spd.lovro,spd.actual); rows.push(row('🔮','Prvak predikcije sezone',leader(x1.t,x2.t))); }
+    if(spd&&spd.actual&&spd.luka&&spd.lovro){ const x1=spScore(spd.luka,spd.actual), x2=spScore(spd.lovro,spd.actual); rows.push(row(ROW_ICO.crystal,'Prvak predikcije sezone',leader(x1.t,x2.t))); }
     const qe=sel.filter(e=>e.src==='q');
     const perf=k=>qe.filter(e=>e[k]&&e[k].s===(e[k].n||3));
     const pfL=perf('L'), pfV=perf('V');
-    if(pfL.length+pfV.length) rows.push(row('⚡','Savršenih kvizova',leader(pfL.length,pfV.length)));
+    if(pfL.length+pfV.length) rows.push(row(ROW_ICO.bolt,'Savršenih kvizova',leader(pfL.length,pfV.length)));
     const fast=[...pfL.map(e=>({n:'Luka',ms:e.L.ms})),...pfV.map(e=>({n:'Lovro',ms:e.V.ms}))].sort((a,b)=>a.ms-b.ms)[0];
-    if(fast) rows.push(row('⏱️','Najbrži savršen kviz',`${fast.n} (${fs(fast.ms)})`));
+    if(fast) rows.push(row(ROW_ICO.clock,'Najbrži savršen kviz',`${fast.n} (${fs(fast.ms)})`));
 
     // Utakmice uživo
     const al=inS.filter(m=>m.prisutanLuka!==false).length, av=inS.filter(m=>m.prisutanLovro!==false).length;
-    if(al+av) rows.push(row('🎫','Najviše utakmica uživo',al===av?`Luka i Lovro (${al} od ${inS.length})`:`${al>av?'Luka':'Lovro'} (${Math.max(al,av)} od ${inS.length})`));
+    if(al+av) rows.push(row(ROW_ICO.ticket,'Najviše utakmica uživo',al===av?`Luka i Lovro (${al} od ${inS.length})`:`${al>av?'Luka':'Lovro'} (${Math.max(al,av)} od ${inS.length})`));
     const both=inS.filter(m=>m.prisutanLuka!==false&&m.prisutanLovro!==false).length;
-    if(both) rows.push(row('🤝','Utakmica zajedno',`${both} od ${inS.length}`));
+    if(both) rows.push(row(ROW_ICO.handshake,'Utakmica zajedno',`${both} od ${inS.length}`));
     const kl=keysOf('prisutanLuka'), kv=keysOf('prisutanLovro');
     const seen=ks=>(goals||[]).filter(g=>g.type==='scored'&&ks.has(g.matchDatum+'|'+g.matchProtivnik)).length;
     const gl=seen(kl), gv=seen(kv);
-    if(gl+gv) rows.push(row('🥅','Golova viđeno uživo',leader(gl,gv)));
-    const tm=lgTalisman(inS); if(tm) rows.push(row('🍀','Talisman sezone',`${tm.n} (+${tm.diff} postotnih bodova)`));
+    if(gl+gv) rows.push(row(ROW_ICO.goal,'Golova viđeno uživo',leader(gl,gv)));
+    const tm=lgTalisman(inS); if(tm) rows.push(row(ROW_ICO.clover,'Talisman sezone',`${tm.n} (+${tm.diff} postotnih bodova)`));
 
     // Sezona Dinama
     const all=new Set([...kl,...kv]);
     const sc={};
     (goals||[]).filter(g=>g.type==='scored'&&g.autogol!=='yes'&&all.has(g.matchDatum+'|'+g.matchProtivnik)).forEach(g=>{sc[g.player]=(sc[g.player]||0)+1;});
     const top=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0];
-    if(top) rows.push(row('⚽','Strijelac sezone uživo',`${wrEsc(top[0])} (${top[1]})`));
+    if(top) rows.push(row(ROW_ICO.ball,'Strijelac sezone uživo',`${wrEsc(top[0])} (${top[1]})`));
     let bw=null;
     inS.filter(m=>m.prisutanLuka!==false||m.prisutanLovro!==false).forEach(m=>{const q=wrResult(m); if(q[0]>q[1]){const d=q[0]-q[1]; if(!bw||d>bw.d||(d===bw.d&&q[0]>bw.q[0])) bw={m,q,d};}});
-    if(bw) rows.push(row('💥','Najveća pobjeda uživo',`${bw.q[0]}-${bw.q[1]} protiv ${wrEsc(officialName(bw.m.protivnik))}`));
+    if(bw) rows.push(row(ROW_ICO.burst,'Najveća pobjeda uživo',`${bw.q[0]}-${bw.q[1]} protiv ${wrEsc(officialName(bw.m.protivnik))}`));
     const cr=inS.filter(m=>m.gledatelji).sort((a,b)=>b.gledatelji-a.gledatelji)[0];
-    if(cr) rows.push(row('👥','Najveća gledanost',`${fmtNum(cr.gledatelji)} (${wrEsc(officialName(cr.protivnik))})`));
+    if(cr) rows.push(row(ROW_ICO.people,'Najveća gledanost',`${fmtNum(cr.gledatelji)} (${wrEsc(officialName(cr.protivnik))})`));
     let ws=0,wsm=0,ub=0,ubm=0;
     inS.slice().sort((a,b)=>a.datum.localeCompare(b.datum)).forEach(m=>{const q=wrResult(m); if(q[0]>q[1]){ws++;wsm=Math.max(wsm,ws);}else ws=0; if(q[0]>=q[1]){ub++;ubm=Math.max(ubm,ub);}else ub=0;});
     const ut=k=>wrPl(k,'utakmica','utakmice','utakmica');
-    if(wsm>=2) rows.push(row('🔥','Najduži niz pobjeda',`${wsm} ${ut(wsm)}`));
-    if(ubm>=3&&ubm>wsm) rows.push(row('🛡️','Najduži niz bez poraza',`${ubm} ${ut(ubm)}`));
+    if(wsm>=2) rows.push(row(ROW_ICO.fire,'Najduži niz pobjeda',`${wsm} ${ut(wsm)}`));
+    if(ubm>=3&&ubm>wsm) rows.push(row(ROW_ICO.shield,'Najduži niz bez poraza',`${ubm} ${ut(ubm)}`));
     const tc={};
     inS.filter(m=>m.tribina&&m.tribina.trim()).forEach(m=>{const k=m.tribina.trim(), kk=k.toLowerCase(); (tc[kk]=tc[kk]||{l:k,n:0}).n++;});
     const tt=Object.values(tc).sort((a,b)=>b.n-a.n)[0];
-    if(tt) rows.push(row('📍','Najčešća tribina',`${wrEsc(tt.l)} (${tt.n})`));
+    if(tt) rows.push(row(ROW_ICO.pin,'Najčešća tribina',`${wrEsc(tt.l)} (${tt.n})`));
 
     if(!rows.length) return '';
     return `<div class="qz-card" style="margin-top:10px;"><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;">Sezona ${se}${se===cur?' <span style="font-size:12px;color:var(--text-muted);font-family:Barlow,sans-serif;">(u tijeku)</span>':''}</div>${rows.join('')}</div>`;
@@ -10712,6 +10862,25 @@ function lgSlava(ev){
   return html||'<div class="prc-empty">Još nema podataka.</div>';
 }
 // ── Rekordi svih vremena ──
+const ROW_ICO={
+  trophy:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M6 4h8v3.2a4 4 0 01-8 0V4z"/><path d="M6 5H4.3a1.8 1.8 0 001.9 2.6M14 5h1.7a1.8 1.8 0 01-1.9 2.6"/><path d="M10 11.2v2.3M7.3 16.2h5.4M7.8 16.2c0-1.5.6-2.1 2.2-2.1s2.2.6 2.2 2.1"/></svg>',
+  target:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.2"/><circle cx="10" cy="10" r="3.2"/><circle cx="10" cy="10" r="0.9" fill="currentColor" stroke="none"/></svg>',
+  brain:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M10 3a5 5 0 00-3 9c.6.5 1 1.1 1 1.8V14h4v-.2c0-.7.4-1.3 1-1.8a5 5 0 00-3-9z"/><path d="M8.5 17h3M9 14.5h2"/></svg>',
+  bolt:'<svg class="row-ic" viewBox="0 0 20 20" fill="currentColor" stroke="none"><path d="M11 2.3L4.3 11.8h4.5l-.9 6 7-9.9h-4.6l.7-5.6z"/></svg>',
+  clock:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="10" cy="11" r="6.3"/><path d="M10 7.5V11l3 2M8 2.3h4"/></svg>',
+  handshake:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="7.2" cy="9" r="3.4"/><circle cx="12.8" cy="9" r="3.4"/></svg>',
+  goal:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M3 4.5h14M3 4.5v10M17 4.5v10M3 14.5h14"/><path d="M3 8h14M3 11.5h14M6.5 4.5v10M13.5 4.5v10"/></svg>',
+  burst:'<svg class="row-ic" viewBox="0 0 20 20" fill="currentColor" stroke="none"><path d="M10 2l1.7 5.3L17 9l-5.3 1.7L10 16l-1.7-5.3L3 9l5.3-1.7z"/></svg>',
+  people:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="7" cy="6.8" r="2.2"/><path d="M3 16c0-2.7 1.8-4.3 4-4.3s4 1.6 4 4.3"/><circle cx="14" cy="7.5" r="1.9"/><path d="M11.3 16c.3-2.2 1.7-3.4 3.3-3.4s3 1.2 3.3 3.4"/></svg>',
+  clover:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="7.3" cy="7.3" r="2.6"/><circle cx="12.7" cy="7.3" r="2.6"/><circle cx="7.3" cy="12.7" r="2.6"/><circle cx="12.7" cy="12.7" r="2.6"/><path d="M10 10v6.5"/></svg>',
+  ball:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.2"/><path d="M10 6.5l2.6 1.9-1 3.1H8.4l-1-3.1L10 6.5z"/><path d="M10 3.3V6.5M13.9 8.3l3.1-1M11.6 11.5l1.9 2.9M6.5 11.5l-1.9 2.9M6.1 8.3l-3.1-1" stroke-width="1.2"/></svg>',
+  fire:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M10 2.5c2 2.5 1 4-.3 5.3C8.5 9 8 10.3 8 11.5a2 2 0 004 0c0-1-1-1.6-1-1.6 2.7 1 4 3 4 5.1a5 5 0 01-10 0c0-3.5 2-5 3-6.3C9.3 7 9.5 4.8 10 2.5z"/></svg>',
+  shield:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M10 2.5l6 2.3v5c0 4.3-2.6 7.2-6 7.7-3.4-.5-6-3.4-6-7.7v-5z"/><path d="M7.3 10l1.9 1.9L13 8"/></svg>',
+  pin:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M10 17s5.5-5.3 5.5-9A5.5 5.5 0 004.5 8c0 3.7 5.5 9 5.5 9z"/><circle cx="10" cy="8" r="2"/></svg>',
+  crystal:'<svg class="row-ic" viewBox="0 0 20 20"><circle cx="10" cy="8.3" r="5.3"/><path d="M6.3 15.3h7.4M7.6 15.3l.4-1.8M12.4 15.3l-.4-1.8"/></svg>',
+  down:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M3 6l4.5 5 3-3L17 15"/><path d="M13 15h4v-4"/></svg>',
+  ticket:'<svg class="row-ic" viewBox="0 0 20 20"><path d="M3 7a2 2 0 012-2h10a2 2 0 012 2v1a1.5 1.5 0 000 3v1a2 2 0 01-2 2H5a2 2 0 01-2-2v-1a1.5 1.5 0 000-3V7z"/><path d="M12 5v10" stroke-dasharray="1.6 1.6"/></svg>',
+};
 function lgRekordi(ev){
   const dm=(matches||[]).filter(m=>m.datum&&wrResult(m)&&!REP_COMPS.includes(m.natjecanje)).sort((a,b)=>a.datum.localeCompare(b.datum));
   if(!dm.length&&!ev.length) return '<div class="prc-empty">Još nema podataka.</div>';
@@ -10720,14 +10889,14 @@ function lgRekordi(ev){
   const res=m=>{const q=wrResult(m);return `${q[0]}-${q[1]} protiv ${opp(m)} (${fmtDate(m.datum)})`;};
   const ut=k=>wrPl(k,'utakmica','utakmice','utakmica'), fs=ms=>(ms/1000).toFixed(1).replace('.',',')+' s';
   const g=[];
-  const bw=dm.filter(m=>dd(m)>0).sort((a,b)=>dd(b)-dd(a)||wrResult(b)[0]-wrResult(a)[0])[0]; if(bw) g.push(row('💥','Najveća pobjeda',res(bw)));
-  const bl=dm.filter(m=>dd(m)<0).sort((a,b)=>dd(a)-dd(b))[0]; if(bl) g.push(row('📉','Najveći poraz',res(bl)));
-  const gg=dm.slice().sort((a,b)=>{const p=wrResult(a),q=wrResult(b);return (q[0]+q[1])-(p[0]+p[1]);})[0]; if(gg) g.push(row('🥅','Najgolovitija utakmica',res(gg)));
-  const cr=dm.filter(m=>m.gledatelji).sort((a,b)=>b.gledatelji-a.gledatelji)[0]; if(cr) g.push(row('👥','Najveća gledanost',`${fmtNum(cr.gledatelji)} (${opp(cr)}, ${fmtDate(cr.datum)})`));
+  const bw=dm.filter(m=>dd(m)>0).sort((a,b)=>dd(b)-dd(a)||wrResult(b)[0]-wrResult(a)[0])[0]; if(bw) g.push(row(ROW_ICO.burst,'Najveća pobjeda',res(bw)));
+  const bl=dm.filter(m=>dd(m)<0).sort((a,b)=>dd(a)-dd(b))[0]; if(bl) g.push(row(ROW_ICO.down,'Najveći poraz',res(bl)));
+  const gg=dm.slice().sort((a,b)=>{const p=wrResult(a),q=wrResult(b);return (q[0]+q[1])-(p[0]+p[1]);})[0]; if(gg) g.push(row(ROW_ICO.goal,'Najgolovitija utakmica',res(gg)));
+  const cr=dm.filter(m=>m.gledatelji).sort((a,b)=>b.gledatelji-a.gledatelji)[0]; if(cr) g.push(row(ROW_ICO.people,'Najveća gledanost',`${fmtNum(cr.gledatelji)} (${opp(cr)}, ${fmtDate(cr.datum)})`));
   let ws=0,wsm=0,ub=0,ubm=0;
   dm.forEach(m=>{const d=dd(m); if(d>0){ws++;wsm=Math.max(wsm,ws);}else ws=0; if(d>=0){ub++;ubm=Math.max(ubm,ub);}else ub=0;});
-  if(wsm>=2) g.push(row('🔥','Najduži niz pobjeda',`${wsm} ${ut(wsm)}`));
-  if(ubm>=3) g.push(row('🛡️','Najduži niz bez poraza',`${ubm} ${ut(ubm)}`));
+  if(wsm>=2) g.push(row(ROW_ICO.fire,'Najduži niz pobjeda',`${wsm} ${ut(wsm)}`));
+  if(ubm>=3) g.push(row(ROW_ICO.shield,'Najduži niz bez poraza',`${ubm} ${ut(ubm)}`));
   // osobni rekordi
   const bySe=k=>{const o={}; ev.forEach(e=>{o[e.season]=(o[e.season]||0)+e[k];}); const b=Object.entries(o).sort((a,b)=>b[1]-a[1])[0]; return b&&b[1]?{v:b[1],t:`${b[1]} (${b[0]})`}:null;};
   const bq=k=>{const K=k==='l'?'L':'V', l=ev.filter(e=>e.src==='q'&&e[K]).sort((a,b)=>b[k]-a[k])[0]; return l&&l[k]?{v:l[k],t:`${l[k]} b (${fmtDate(l.d).slice(0,5)})`}:null;};
@@ -10763,7 +10932,7 @@ function lgSezona(ev){
   const scorers=[...new Set((goals||[]).filter(x=>x.type==='scored'&&x.autogol!=='yes').map(x=>x.player))];
   const inp=(id,ph,val,type)=>`<input class="form-input" id="${id}" type="${type}" placeholder="${ph}" value="${val==null?'':wrEsc(val)}" ${type==='text'?'list="sp-scorers"':''} style="margin-top:6px;">`;
   const form=(pre,v,btn)=>`<datalist id="sp-scorers">${scorers.map(x=>`<option value="${wrEsc(x)}">`).join('')}</datalist>${inp(pre+'-pts','Bodovi Dinama u sezoni',v.pts,'number')}${inp(pre+'-pos','Konačno mjesto na tablici',v.pos,'number')}${inp(pre+'-sc','Najbolji strijelac Dinama',v.scorer,'text')}<button class="btn-sm" style="margin-top:8px;width:100%;padding:10px;" onclick="${btn}">Spremi</button>`;
-  const names={luka:'🔵 Luka',lovro:'🔷 Lovro'};
+  const names={luka:personAvatar('luka')+' Luka',lovro:personAvatar('lovro')+' Lovro'};
   const blocks=['luka','lovro'].map(pn=>{
     const pr=data[pn], sc=act&&pr?spScore(pr,act):null;
     let body;
@@ -10795,7 +10964,7 @@ function setSpSeason(k){ _lgSp=k; renderLiga(); }
 function spWho(w){ _qz.who=w; renderLiga(); }
 async function renderLiga(){
   const box=document.getElementById('liga-content'); if(!box) return;
-  const tabs=`<div style="display:flex;gap:4px;"><button class="sched-filter-btn ${_lgTab==='liga'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('liga')">🏆 Liga</button><button class="sched-filter-btn ${_lgTab==='slava'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('slava')">🏛️ Dvorana</button><button class="sched-filter-btn ${_lgTab==='rek'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('rek')">📚 Rekordi</button><button class="sched-filter-btn ${_lgTab==='sez'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('sez')">🔮 Sezona</button></div>`;
+  const tabs=`<div style="display:flex;gap:4px;"><button class="sched-filter-btn ${_lgTab==='liga'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('liga')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M6 4h8v3.2a4 4 0 01-8 0V4z"/><path d="M6 5H4.3a1.8 1.8 0 001.9 2.6M14 5h1.7a1.8 1.8 0 01-1.9 2.6"/><path d="M10 11.2v2.3M7.3 16.2h5.4M7.8 16.2c0-1.5.6-2.1 2.2-2.1s2.2.6 2.2 2.1"/></svg>Liga</button><button class="sched-filter-btn ${_lgTab==='slava'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('slava')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M3 17h14M4 17V8l6-4 6 4v9"/><path d="M8 17v-4h4v4"/></svg>Dvorana</button><button class="sched-filter-btn ${_lgTab==='rek'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('rek')"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M4 4.3h4.6a2 2 0 012 2V16a2 2 0 00-2-1.5H4V4.3z"/><path d="M16 4.3h-4.6a2 2 0 00-2 2V16a2 2 0 012-1.5H16V4.3z"/></svg>Rekordi</button><button class="sched-filter-btn ${_lgTab==='sez'?'active':''}" style="flex:1;padding:6px 4px;font-size:12px;" onclick="setLigaTab('sez')"><svg class="nav-ic" viewBox="0 0 20 20"><circle cx="10" cy="8.3" r="5.3"/><path d="M6.3 15.3h7.4M7.6 15.3l.4-1.8M12.4 15.3l-.4-1.8"/></svg>Sezona</button></div>`;
   box.innerHTML=tabs+'<div class="sk-wrap"><div class="sk-card sm"></div><div class="sk-card"></div><div class="sk-card"></div></div>';
   const ev=await lgData();
   box.innerHTML=tabs+(_lgTab==='liga'?lgLiga(ev):_lgTab==='slava'?lgSlava(ev):_lgTab==='rek'?lgRekordi(ev):lgSezona(ev));
@@ -10942,8 +11111,8 @@ function renderWrapped(){
   if(!box) return;
   const d=wrCompute();
   const tabs=`<div style="display:flex;gap:6px;">
-      <button class="sched-filter-btn ${_wrPerson==='luka'?'active':''}" style="flex:1;" onclick="setWrappedPerson('luka')">🔵 Luka</button>
-      <button class="sched-filter-btn ${_wrPerson==='lovro'?'active':''}" style="flex:1;" onclick="setWrappedPerson('lovro')">🔷 Lovro</button>
+      <button class="sched-filter-btn ${_wrPerson==='luka'?'active':''}" style="flex:1;" onclick="setWrappedPerson('luka')">${personAvatar('luka')} Luka</button>
+      <button class="sched-filter-btn ${_wrPerson==='lovro'?'active':''}" style="flex:1;" onclick="setWrappedPerson('lovro')">${personAvatar('lovro')} Lovro</button>
       <button class="sched-filter-btn ${_wrPerson==='zajedno'?'active':''}" style="flex:1;" onclick="setWrappedPerson('zajedno')">👥 Zajedno</button>
     </div>`;
   if(!d.season){
