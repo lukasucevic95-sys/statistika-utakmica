@@ -2912,6 +2912,7 @@ function goTo(page) {
   pageEl.classList.remove('pg-anim'); void pageEl.offsetWidth; pageEl.classList.add('pg-anim');
   document.getElementById('nav-' + page).classList.add('active');
   window.location.hash = page;
+  try{ localStorage.setItem('dinamo_last_tab', page); }catch(e){}
   window.scrollTo(0,0);
   if(page==='golovi') { setTimeout(()=>{renderGoalStats();renderPlayerStats();renderGoalList();populateMatchSelect();},50); }
   if(page==='karte') { setTimeout(()=>loadKarte(),50); }
@@ -7199,7 +7200,11 @@ async function init(){
   await schedLoad();
   schedPopulateAddSelect();predPopulateAllSchedSelects();
   const hash=window.location.hash.replace('#','');
-  if(['statistika','golovi','prediktor','karte','raspored','kviz'].includes(hash))goTo(hash);else goTo('statistika');
+  let lastTab=null; try{ lastTab=localStorage.getItem('dinamo_last_tab'); }catch(e){}
+  const validTabs=['statistika','golovi','prediktor','karte','raspored','kviz'];
+  if(validTabs.includes(hash))goTo(hash);
+  else if(validTabs.includes(lastTab))goTo(lastTab);
+  else goTo('statistika');
   renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
   loadPredArchive();
 }
@@ -10455,11 +10460,18 @@ function qzMake(datum,seed){
     zaj:()=>{const n=ms.filter(x=>x.prisutanLuka!==false&&x.prisutanLovro!==false).length; if(n<3) return null;
       return mk('Na koliko ste utakmica bili zajedno na stadionu?',String(n),[n-4,n+3,n+6,n-8].filter(x=>x>=0).map(String));}
   };
-  const out=[], keys=shuf(Object.keys(gen));
-  for(let i=0;i<40&&out.length<5;i++){
+  const avoid=(seed||'').startsWith('p')&&window._qzLastPractice ? window._qzLastPractice : [];
+  const out=[], outLoose=[], keys=shuf(Object.keys(gen));
+  for(let i=0;i<60&&out.length<5;i++){
     const q=gen[keys[i%keys.length]]();
-    if(q&&!out.some(o=>o.t===q.t)) out.push(q);
+    if(!q) continue;
+    if(out.some(o=>o.t===q.t)) continue;
+    if(avoid.includes(q.t)){ if(!outLoose.some(o=>o.t===q.t)) outLoose.push(q); continue; }
+    out.push(q);
   }
+  // ako nema dovoljno svježih pitanja (premalo podataka za potpunu raznolikost), popuni s ponovljenima
+  while(out.length<5 && outLoose.length){ out.push(outLoose.shift()); }
+  if((seed||'').startsWith('p')) window._qzLastPractice=out.map(q=>q.t);
   return out;
 }
 async function qzToday(){
