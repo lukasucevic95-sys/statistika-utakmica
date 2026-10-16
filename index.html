@@ -7202,8 +7202,8 @@ async function init(){
   const hash=window.location.hash.replace('#','');
   let lastTab=null; try{ lastTab=localStorage.getItem('dinamo_last_tab'); }catch(e){}
   const validTabs=['statistika','golovi','prediktor','karte','raspored','kviz'];
-  if(validTabs.includes(hash))goTo(hash);
-  else if(validTabs.includes(lastTab))goTo(lastTab);
+  if(validTabs.includes(lastTab))goTo(lastTab);
+  else if(validTabs.includes(hash))goTo(hash);
   else goTo('statistika');
   renderTable();renderCompStats();renderPreds();renderAwayPreds();populateMatchSelect();
   loadPredArchive();
@@ -11069,18 +11069,24 @@ function lgLiga(ev){
   const seasons=[...new Set(ev.map(e=>e.season))].sort();
   if(_lgSeason!=='all'&&!seasons.includes(_lgSeason)) _lgSeason=seasons[seasons.length-1];
   const sel=_lgSeason==='all'?ev:ev.filter(e=>e.season===_lgSeason);
-  const sum=(src,k)=>sel.filter(e=>e.src===src).reduce((t,e)=>t+e[k],0);
-  const pl=sum('p','l'), pv=sum('p','v'), ql=sum('q','l'), qv=sum('q','v'), tl=pl+ql, tv=pv+qv;
   const chips=`<div style="display:flex;gap:6px;overflow-x:auto;margin-top:8px;">${seasons.slice().reverse().map(k=>`<button class="sched-filter-btn ${k===_lgSeason?'active':''}" onclick="setLigaSeason('${k}')">${k}</button>`).join('')}<button class="sched-filter-btn ${_lgSeason==='all'?'active':''}" onclick="setLigaSeason('all')">Ukupno</button></div>`;
   const w=(a,b,me)=>a>b&&me==='l'||b>a&&me==='v'?'qz-win':'';
-  let a=0,b=0; const P=sel.map(e=>{a+=e.l;b+=e.v;return [a,b];});
   const fd=d=>fmtDate(d).slice(0,5);
-  return chips+`<div class="qz-card" style="margin-top:10px;">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;">${tl===tv?'Izjednačeno':(tl>tv?'Luka':'Lovro')+' vodi'}</div>
-    <table class="qz-tbl"><tr><th></th><th>Luka</th><th>Lovro</th></tr>
-      <tr><td>Prediktor</td><td>${pl}</td><td>${pv}</td></tr><tr><td>Kviz</td><td>${ql}</td><td>${qv}</td></tr>
-      <tr><td><b>Ukupno</b></td><td class="${w(tl,tv,'l')}"><b>${tl}</b></td><td class="${w(tl,tv,'v')}"><b>${tv}</b></td></tr></table>
-    ${lgLine(P,fd(sel[0].d),fd(sel[sel.length-1].d))}</div>`;
+  const block=(src,label)=>{
+    const rows=sel.filter(e=>e.src===src);
+    if(!rows.length) return '';
+    const l=rows.reduce((t,e)=>t+e.l,0), v=rows.reduce((t,e)=>t+e.v,0);
+    let a=0,b=0; const P=rows.map(e=>{a+=e.l;b+=e.v;return [a,b];});
+    return `<div class="qz-card" style="margin-top:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff;">${label}</div>
+        <div style="font-size:12px;color:var(--text-muted);">${l===v?'Izjednačeno':(l>v?'Luka':'Lovro')+' vodi'}</div>
+      </div>
+      <table class="qz-tbl"><tr><th></th><th>Luka</th><th>Lovro</th></tr>
+        <tr><td><b>Bodovi</b></td><td class="${w(l,v,'l')}"><b>${l}</b></td><td class="${w(l,v,'v')}"><b>${v}</b></td></tr></table>
+      ${lgLine(P,fd(rows[0].d),fd(rows[rows.length-1].d))}</div>`;
+  };
+  return chips+'<div class="qz-p" style="margin-top:8px;">Prediktor i Kviz se za sad vode odvojeno, bodovi se ne zbrajaju.</div>'+block('p','🎯 Prediktor')+block('q','🧠 Kviz');
 }
 function lgTalisman(inS){
   const rate=l=>l.length?l.filter(m=>{const p=wrResult(m);return p[0]>p[1];}).length/l.length*100:0;
@@ -11107,7 +11113,6 @@ function lgSlava(ev){
     const keysOf=f=>new Set(inS.filter(m=>m[f]!==false).map(m=>m.datum+'|'+m.protivnik));
 
     // Natjecanje Luka i Lovro
-    if(pl+pv+ql+qv) rows.push(row(ROW_ICO.trophy,'Prvak lige',leader(pl+ql,pv+qv)));
     if(pl+pv) rows.push(row(ROW_ICO.target,'Prvak Prediktora',leader(pl,pv)));
     const prs=[...(predictions||[]),...(awayPredictions||[])].filter(x=>x.resolved&&x.luka&&x.lovro&&x.luka.score&&x.lovro.score&&seasonKeyFor(x.datum)===se);
     const hl=prs.filter(x=>x.luka.score.rezHit).length, hv=prs.filter(x=>x.lovro.score.rezHit).length;
@@ -11207,7 +11212,7 @@ function lgRekordi(ev){
     const diff=A&&B&&A.v!==B.v, aw=diff&&(low?A.v<B.v:A.v>B.v), bw2=diff&&!aw;
     return `<tr><td>${ic} ${lab}</td><td class="${aw?'qz-win':''}">${A?A.t:'—'}</td><td class="${bw2?'qz-win':''}">${B?B.t:'—'}</td></tr>`;
   };
-  const per=rec('🏆','Najviše bodova lige u sezoni',bySe('l'),bySe('v'))+rec('🧠','Najbolji kviz',bq('l'),bq('v'))+rec('⏱️','Najbrži savršen kviz',fp('l'),fp('v'),true)
+  const per=rec('🧠','Najbolji kviz',bq('l'),bq('v'))+rec('⏱️','Najbrži savršen kviz',fp('l'),fp('v'),true)
     +rec('🎯','Najbolja predikcija (bodovi)',bp('l'),bp('v'))+rec('🎫','Najviše utakmica u sezoni',att('prisutanLuka'),att('prisutanLovro'))+rec('📈','Najduži niz utakmica uživo',stk('prisutanLuka'),stk('prisutanLovro'));
   const card=(h,b)=>`<div class="qz-card" style="margin-top:10px;"><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;">${h}</div>${b}</div>`;
   return (g.length?card('Dinamo',g.join('')):'')+(per?card('Luka i Lovro',`<table class="qz-tbl"><tr><th></th><th>Luka</th><th>Lovro</th></tr>${per}</table>`):'')||'<div class="prc-empty">Još nema podataka.</div>';
