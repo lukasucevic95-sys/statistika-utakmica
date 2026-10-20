@@ -2053,7 +2053,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
           </div>
           <div class="form-group"><label class="form-label">Protivnik</label><input class="form-input-pred" type="text" id="p-protivnik" placeholder="Npr. Hajduk"></div>
           <div class="predictors-wrap">
-            <div class="predictor-box">
+            <div class="predictor-box" id="pbox-l">
               <div class="predictor-name pl-luka">🔵 Luka predviđa</div>
               <div class="pred-grid" style="margin-bottom:8px;">
                 <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="l-rez" placeholder="2-1"></div>
@@ -2066,7 +2066,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
                 <div class="form-group"><label class="form-label">Kas. pol. (min)</label><input class="form-input-pred" type="number" id="l-kas2" placeholder="3" min="0" max="30"></div>
               </div>
             </div>
-            <div class="predictor-box">
+            <div class="predictor-box" id="pbox-lo">
               <div class="predictor-name pl-lovro">🔷 Lovro predviđa</div>
               <div class="pred-grid" style="margin-bottom:8px;">
                 <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="lo-rez" placeholder="2-1"></div>
@@ -2151,7 +2151,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
             </div>
             <div class="form-group"><label class="form-label">Domaćin (protivnik)</label><input class="form-input-pred" type="text" id="pa-protivnik" placeholder="Npr. Hajduk"></div>
             <div class="predictors-wrap">
-              <div class="predictor-box">
+              <div class="predictor-box" id="pbox-la">
                 <div class="predictor-name pl-luka">🔵 Luka predviđa</div>
                 <div class="pred-grid-2" style="margin-bottom:6px;">
                   <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="la-rez" placeholder="1-0"></div>
@@ -2160,7 +2160,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
                   <div class="form-group"><label class="form-label">Min. 1. gola</label><input class="form-input-pred" type="text" id="la-fg" placeholder="23"></div>
                 </div>
               </div>
-              <div class="predictor-box">
+              <div class="predictor-box" id="pbox-loa">
                 <div class="predictor-name pl-lovro">🔷 Lovro predviđa</div>
                 <div class="pred-grid-2" style="margin-bottom:6px;">
                   <div class="form-group"><label class="form-label">Rezultat</label><input class="form-input-pred" type="text" id="loa-rez" placeholder="1-0"></div>
@@ -5564,27 +5564,64 @@ function scoreCalc(lRez,lGle,lKas1,lKas2,lFg,lHt, loRez,loGle,loKas1,loKas2,loFg
   };
 }
 
+function emptyGuess(){ return {rez:'',gle:null,kas1:0,kas2:0,fg:'',ht:''}; }
+function readGuess(pre){
+  const rez=document.getElementById(pre+'-rez').value.trim();
+  if(!rez) return null;
+  const gle=parseInt(document.getElementById(pre+'-gle').value);
+  if(!/^\d+-\d+$/.test(rez)) throw new Error('Rezultat mora biti u formatu npr. 2-1');
+  if(isNaN(gle)) throw new Error('Upiši i broj gledatelja.');
+  const kas1El=document.getElementById(pre+'-kas1'), kas2El=document.getElementById(pre+'-kas2');
+  return {rez,gle,
+    kas1:kas1El?(parseInt(kas1El.value)||0):0,
+    kas2:kas2El?(parseInt(kas2El.value)||0):0,
+    fg:document.getElementById(pre+'-fg').value.trim(),
+    ht:document.getElementById(pre+'-ht')?.value.trim()||''};
+}
+let _predFillTarget=null;
+const PBOX_ID={home:{luka:'pbox-l',lovro:'pbox-lo'},away:{luka:'pbox-la',lovro:'pbox-loa'}};
+function fillMyPrediction(arr,idx,who){
+  _predFillTarget={arr,idx,who};
+  const isAway=arr==='away';
+  const p=(isAway?awayPredictions:predictions)[idx];
+  const dEl=document.getElementById(isAway?'pa-datum':'p-datum'), pEl=document.getElementById(isAway?'pa-protivnik':'p-protivnik'), nEl=document.getElementById(isAway?'pa-natjecanje':'p-natjecanje');
+  if(dEl)dEl.value=p.datum; if(pEl)pEl.value=p.protivnik; if(nEl)nEl.value=p.natjecanje;
+  [dEl,pEl,nEl].forEach(el=>{if(el)el.disabled=true;});
+  const other=who==='luka'?'lovro':'luka';
+  const otherBox=document.getElementById(PBOX_ID[isAway?'away':'home'][other]);
+  const myBox=document.getElementById(PBOX_ID[isAway?'away':'home'][who]);
+  if(otherBox) otherBox.style.display='none';
+  if(myBox){ myBox.style.display=''; myBox.scrollIntoView({behavior:'smooth',block:'center'}); }
+  showToast(`Upiši ${who==='luka'?'Lukinu':'Lovrinu'} predikciju`,'#1A1A4A','#A78BFA');
+}
+window.fillMyPrediction=fillMyPrediction;
+function resetPredFillUI(isAway){
+  const ids=PBOX_ID[isAway?'away':'home'];
+  ['luka','lovro'].forEach(w=>{const el=document.getElementById(ids[w]); if(el)el.style.display='';});
+  const dEl=document.getElementById(isAway?'pa-datum':'p-datum'), pEl=document.getElementById(isAway?'pa-protivnik':'p-protivnik'), nEl=document.getElementById(isAway?'pa-natjecanje':'p-natjecanje');
+  [dEl,pEl,nEl].forEach(el=>{if(el)el.disabled=false;});
+}
 async function addPrediction(){
+  if(_predFillTarget&&_predFillTarget.arr==='home'){
+    const {idx,who}=_predFillTarget; let g;
+    try{ g=readGuess(who==='luka'?'l':'lo'); }catch(e){ alert(e.message); return; }
+    if(!g){ alert('Upiši rezultat.'); return; }
+    predictions[idx][who]=g;
+    await set(ref(db,'predictions'),predictions);
+    ['l-rez','l-ht','l-gle','l-kas1','l-kas2','l-fg','lo-rez','lo-ht','lo-gle','lo-kas1','lo-kas2','lo-fg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    _predFillTarget=null; resetPredFillUI(false);
+    renderPreds(); showToast('🔮 Predikcija dodana!','#1A1A4A','#A78BFA');
+    return;
+  }
   const datum=document.getElementById('p-datum').value;
   const prot=document.getElementById('p-protivnik').value.trim();
   const nat=document.getElementById('p-natjecanje').value;
-  const lRez=document.getElementById('l-rez').value.trim();
-  const lGle=parseInt(document.getElementById('l-gle').value);
-  const lKas1=parseInt(document.getElementById('l-kas1').value)||0;
-  const lKas2=parseInt(document.getElementById('l-kas2').value)||0;
-  const loRez=document.getElementById('lo-rez').value.trim();
-  const loGle=parseInt(document.getElementById('lo-gle').value);
-  const loKas1=parseInt(document.getElementById('lo-kas1').value)||0;
-  const loKas2=parseInt(document.getElementById('lo-kas2').value)||0;
-  const lFg=document.getElementById('l-fg').value.trim();
-  const loFg=document.getElementById('lo-fg').value.trim();
-  if(!datum||!prot||!lRez||isNaN(lGle)||!loRez||isNaN(loGle)){alert('Molimo ispunite sva obavezna polja!');return;}
-  if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 2-1');return;}
-  const lHt=document.getElementById('l-ht')?.value.trim()||'';
-  const loHt=document.getElementById('lo-ht')?.value.trim()||'';
+  if(!datum||!prot){alert('Upiši datum i protivnika.');return;}
+  let lG,loG;
+  try{ lG=readGuess('l'); loG=readGuess('lo'); }catch(e){ alert(e.message); return; }
+  if(!lG&&!loG){alert('Upiši barem jednu predikciju (Luka ili Lovro).');return;}
   predictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,
-    luka:{rez:lRez,gle:lGle,kas1:lKas1,kas2:lKas2,fg:lFg,ht:lHt},
-    lovro:{rez:loRez,gle:loGle,kas1:loKas1,kas2:loKas2,fg:loFg,ht:loHt},
+    luka:lG||emptyGuess(), lovro:loG||emptyGuess(),
     actual:null,resolved:false});
   await set(ref(db,'predictions'),predictions);
   ['p-protivnik','l-rez','l-ht','l-gle','l-kas1','l-kas2','l-fg','lo-rez','lo-ht','lo-gle','lo-kas1','lo-kas2','lo-fg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -5596,8 +5633,9 @@ async function addPrediction(){
 window.addPrediction=addPrediction;
 
 function openConfirm(idx){
-  confirmIdx=idx;
   const p=predictions[idx];
+  if(!p.luka.rez||!p.lovro.rez){ alert('Oboje prvo moraju upisati svoju predikciju prije unosa konačnog rezultata.'); return; }
+  confirmIdx=idx;
   document.getElementById('cm-sub').textContent=`Dinamo vs ${p.protivnik} · ${fmtDate(p.datum)}`;
   document.getElementById('cm-rez').value='';
   const cmHt=document.getElementById('cm-ht');if(cmHt)cmHt.value='';
@@ -6257,7 +6295,11 @@ function renderPreds(){
         </div>
       </div>`;
     }else{
-      lBox=`<div class="guess-box pending">
+      lBox=!p.luka.rez?`<div class="guess-box pending">
+        <div class="guess-who pl-luka">${personAvatar('luka')} Luka</div>
+        <div class="guess-rez" style="font-size:13px;color:var(--text-muted);font-family:'Barlow',sans-serif;">Još nije predviđeno</div>
+        ${qzWho()==='luka'?`<button class="btn-sm" style="margin-top:6px;padding:6px 10px;font-size:11px;" onclick="fillMyPrediction('${isAway?'away':'home'}',${idx},'luka')">+ Dodaj svoj unos</button>`:''}
+      </div>`:`<div class="guess-box pending">
         <div class="guess-who pl-luka">${personAvatar('luka')} Luka</div>
         <div class="guess-rez">${p.luka.rez}</div>
         <div class="guess-details">
@@ -6267,7 +6309,11 @@ function renderPreds(){
           ${p.luka.fg?`<div class="guess-detail">⚽ 1.gol: ${p.luka.fg}'</div>`:''}
         </div>
       </div>`;
-      loBox=`<div class="guess-box pending">
+      loBox=!p.lovro.rez?`<div class="guess-box pending">
+        <div class="guess-who pl-lovro">${personAvatar('lovro')} Lovro</div>
+        <div class="guess-rez" style="font-size:13px;color:var(--text-muted);font-family:'Barlow',sans-serif;">Još nije predviđeno</div>
+        ${qzWho()==='lovro'?`<button class="btn-sm" style="margin-top:6px;padding:6px 10px;font-size:11px;" onclick="fillMyPrediction('${isAway?'away':'home'}',${idx},'lovro')">+ Dodaj svoj unos</button>`:''}
+      </div>`:`<div class="guess-box pending">
         <div class="guess-who pl-lovro">${personAvatar('lovro')} Lovro</div>
         <div class="guess-rez">${p.lovro.rez}</div>
         <div class="guess-details">
@@ -6384,23 +6430,28 @@ function awayScoreCalc(lRez,lGle,lFg,lHt, loRez,loGle,loFg,loHt, aRez,aGle,aFg,a
 }
 
 async function addAwayPrediction(){
+  if(_predFillTarget&&_predFillTarget.arr==='away'){
+    const {idx,who}=_predFillTarget; let g;
+    try{ g=readGuess(who==='luka'?'la':'loa'); }catch(e){ alert(e.message); return; }
+    if(!g){ alert('Upiši rezultat.'); return; }
+    awayPredictions[idx][who]=g;
+    await saveAwayPreds();
+    ['la-rez','la-ht','la-gle','la-fg','loa-rez','loa-ht','loa-gle','loa-fg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    _predFillTarget=null; resetPredFillUI(true);
+    renderAwayPreds(); showToast('✈️ Predikcija dodana!','#2A0A0A','#F87171');
+    return;
+  }
   const datum=document.getElementById('pa-datum').value;
   const prot=document.getElementById('pa-protivnik').value.trim();
   const nat=document.getElementById('pa-natjecanje').value;
-  const lRez=document.getElementById('la-rez').value.trim();
-  const lGle=parseInt(document.getElementById('la-gle').value);
-  const lFg=document.getElementById('la-fg').value.trim();
-  const loRez=document.getElementById('loa-rez').value.trim();
-  const loGle=parseInt(document.getElementById('loa-gle').value);
-  const loFg=document.getElementById('loa-fg').value.trim();
-  if(!datum||!prot||!lRez||isNaN(lGle)||!loRez||isNaN(loGle)){alert('Molimo ispunite sva obavezna polja!');return;}
-  if(!/^\d+-\d+$/.test(lRez)||!/^\d+-\d+$/.test(loRez)){alert('Rezultat mora biti u formatu npr. 1-0');return;}
-  const laHt=document.getElementById('la-ht')?.value.trim()||'';
-  const loaHt=document.getElementById('loa-ht')?.value.trim()||'';
+  if(!datum||!prot){alert('Upiši datum i protivnika.');return;}
+  let lG,loG;
+  try{ lG=readGuess('la'); loG=readGuess('loa'); }catch(e){ alert(e.message); return; }
+  if(!lG&&!loG){alert('Upiši barem jednu predikciju (Luka ili Lovro).');return;}
   awayPredictions.unshift({id:Date.now(),datum,protivnik:prot,natjecanje:nat,isAway:true,
-    luka:{rez:lRez,gle:lGle,fg:lFg,ht:laHt},lovro:{rez:loRez,gle:loGle,fg:loFg,ht:loaHt},actual:null,resolved:false});
+    luka:lG||emptyGuess(), lovro:loG||emptyGuess(), actual:null,resolved:false});
   await saveAwayPreds();
-  ['pa-protivnik','la-rez','la-gle','la-fg','loa-rez','loa-gle','loa-fg'].forEach(id=>document.getElementById(id).value='');
+  ['pa-protivnik','la-rez','la-ht','la-gle','la-fg','loa-rez','loa-ht','loa-gle','loa-fg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const paSchedSel=document.getElementById('pa-sched-pick');if(paSchedSel)paSchedSel.value='';
   predAwayPopulateSchedSelect();
   renderAwayPreds();
@@ -6409,8 +6460,9 @@ async function addAwayPrediction(){
 window.addAwayPrediction=addAwayPrediction;
 
 function openAwayConfirm(idx){
-  awayConfirmIdx=idx;
   const p=awayPredictions[idx];
+  if(!p.luka.rez||!p.lovro.rez){ alert('Oboje prvo moraju upisati svoju predikciju prije unosa konačnog rezultata.'); return; }
+  awayConfirmIdx=idx;
   document.getElementById('acm-sub').textContent=`@ ${p.protivnik} · ${fmtDate(p.datum)}`;
   document.getElementById('acm-rez').value='';
   const acmHt=document.getElementById('acm-ht');if(acmHt)acmHt.value='';
