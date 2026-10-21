@@ -1293,7 +1293,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
       </div>
     </div>
     <div class="header-inner" style="position:relative;z-index:1;">
-      <h1>GNK Dinamo <span>Zagreb</span> <span id="streak-badge" style="display:none;align-items:center;gap:3px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:700;letter-spacing:0;vertical-align:middle;color:#FB923C;"></span></h1>
+      <h1>GNK Dinamo <span>Zagreb</span></h1>
       <p>Hrvatska &nbsp;·&nbsp; Statistika svih utakmica</p>
     </div>
   </div>
@@ -1968,9 +1968,12 @@ tr[data-idx]{-webkit-touch-callout:none;}
 
       <!-- Točnost predikcija po protivniku -->
       <div class="form-card" id="pred-by-opponent-card">
-        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
           <span>🎯 Točnost po protivniku</span>
-          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          <span style="display:flex;align-items:center;gap:8px;">
+            <button onclick="event.stopPropagation();renderPredByOpponent();" title="Osvježi" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:2px;">🔄</button>
+            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          </span>
         </div>
         <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
       </div>
@@ -3546,7 +3549,6 @@ function renderTable(){
   updateStats(filtered);
   renderStadionStats();
   renderTribinaStats();
-  renderStreakBadge();
   renderOnThisDayStat();
   applyMatchDayMode();
   renderStatMarquee();
@@ -3881,17 +3883,6 @@ window.openTribinaMatches = openTribinaMatches;
 window.closeTribinaMatches = closeTribinaMatches;
 
 
-function renderStreakBadge(){
-  const el=document.getElementById('streak-badge'); if(!el) return;
-  const list=(matches||[]).filter(m=>m.datum&&m.rezultat&&!REP_COMPS.includes(m.natjecanje)).sort((a,b)=>a.datum.localeCompare(b.datum));
-  let streak=0;
-  for(let i=list.length-1;i>=0;i--){
-    if(getResult(list[i].rezultat,list[i].penali)==='win') streak++; else break;
-  }
-  if(streak>=3){ el.style.display='inline-flex'; el.innerHTML=`🔥 ${streak}`; el.title=`${streak} pobjeda zaredom`; }
-  else { el.style.display='none'; }
-}
-window.renderStreakBadge=renderStreakBadge;
 function renderOnThisDayStat(){
   const card=document.getElementById('otd-card'), el=document.getElementById('otd-list');
   if(!card||!el) return;
@@ -5753,22 +5744,24 @@ function renderPredByOpponent(){
   const byOpp = {};
   all.forEach(p=>{
     const n = officialName(p.protivnik);
-    if(!byOpp[n]) byOpp[n] = {luka:{pts:0,total:0}, lovro:{pts:0,total:0}};
+    const key = n.trim().toLowerCase().replace(/\s+/g,' ');
+    if(!byOpp[key]) byOpp[key] = {name:n, luka:{pts:0,total:0}, lovro:{pts:0,total:0}};
     ['luka','lovro'].forEach(who=>{
-      byOpp[n][who].total++;
-      byOpp[n][who].pts += (p[who]?.score?.pts || 0);
+      byOpp[key][who].total++;
+      byOpp[key][who].pts += (p[who]?.score?.pts || 0);
     });
   });
 
   // Samo protivnici s barem 2 predikcije (smisleni uzorak)
-  const entries = Object.entries(byOpp).filter(([n,d])=>d.luka.total>=2);
+  const entries = Object.entries(byOpp).filter(([k,d])=>d.luka.total>=2);
   if(!entries.length){
     el.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:10px;">Treba barem 2 predikcije protiv istog protivnika za prikaz.</div>';
     return;
   }
   entries.sort((a,b)=>b[1].luka.total-a[1].luka.total);
 
-  el.innerHTML = entries.map(([opp,d])=>{
+  el.innerHTML = entries.map(([key,d])=>{
+    const opp=d.name;
     const lAvg = d.luka.total ? (d.luka.pts/d.luka.total).toFixed(1) : '0.0';
     const loAvg = d.lovro.total ? (d.lovro.pts/d.lovro.total).toFixed(1) : '0.0';
     return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
