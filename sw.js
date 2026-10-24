@@ -1,55 +1,63 @@
-// Service Worker za Dinamo Zagreb fan app
-// Cilj: keširati "app shell" (index.html sa svim ugrađenim slikama/CSS/JS)
-// tako da se aplikacija otvori i radi i bez interneta (ili na sporoj/filtriranoj
-// mreži). Firebase podaci (live rezultati, predikcije) i dalje trebaju mrežu za
-// osvježavanje, ali sama aplikacija se prikaže odmah iz cache-a.
+/* Service worker — Dinamo fan aplikacija: rad bez mreže (app shell + runtime cache) */
+const VER='dinamo-v3';
+const SHELL='shell-'+VER, RUNTIME='run-'+VER, IMGS='img-'+VER;
+const PRECACHE=['./','index.html','manifest.json','assets/img002.png','assets/favicon.png','assets/apple-touch-icon.png','icon-192.png','icon-512.png'];
+// Što smijemo spremati s drugih domena (Firebase podaci i API-ji se NE diraju)
+const CROSS_OK=[/^https:\/\/fonts\.googleapis\.com\//,/^https:\/\/fonts\.gstatic\.com\//,/^https:\/\/www\.gstatic\.com\/firebasejs\//,/^https:\/\/cdnjs\.cloudflare\.com\//];
 
-const CACHE_NAME = 'dinamo-app-shell-v1';
-const APP_SHELL = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
-  );
-  self.skipWaiting();
+self.addEventListener('install',e=>{
+  e.waitUntil((async()=>{
+    const c=await caches.open(SHELL);
+    await Promise.all(PRECACHE.map(u=>c.add(u).catch(()=>{})));
+    self.skipWaiting();
+  })());
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((names) =>
-      Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener('activate',e=>{
+  e.waitUntil((async()=>{
+    const keep=[SHELL,RUNTIME,IMGS];
+    for(const k of await caches.keys()) if(!keep.includes(k)) await caches.delete(k);
+    await self.clients.claim();
+  })());
 });
-
-// Strategija: "network first, fallback to cache" za index.html (uvijek pokušaj
-// dohvatiti najnoviju verziju ako ima interneta; ako nema, posluži zadnju
-// spremljenu verziju iz cache-a). Za ostale statične resurse: cache first.
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
-  if (req.method !== 'GET') return;
-
-  const url = new URL(req.url);
-  const isAppShell = url.origin === self.location.origin;
-
-  if (isAppShell) {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const resClone = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, resClone));
-          return res;
-        })
-        .catch(() => caches.match(req).then((cached) => cached || caches.match('./index.html')))
-    );
+async function trim(name,max){
+  const c=await caches.open(name), ks=await c.keys();
+  for(let i=0;i<ks.length-max;i++) await c.delete(ks[i]);
+}
+function withTimeout(p,ms){ return new Promise((res,rej)=>{ const t=setTimeout(()=>rej(new Error('timeout')),ms); p.then(v=>{clearTimeout(t);res(v);},er=>{clearTimeout(t);rej(er);}); }); }
+self.addEventListener('fetch',e=>{
+  const req=e.request;
+  if(req.method!=='GET') return;
+  const url=new URL(req.url);
+  const same=url.origin===self.location.origin;
+  // Navigacija: najprije mreža (svježa verzija), a bez mreže spremljena stranica
+  if(req.mode==='navigate'){
+    e.respondWith((async()=>{
+      try{
+        const r=await withTimeout(fetch(req),4000);
+        if(r&&r.ok){ const c=await caches.open(SHELL); c.put('index.html',r.clone()); }
+        return r;
+      }catch(err){
+        const c=await caches.open(SHELL);
+        return (await c.match('index.html',{ignoreSearch:true}))||(await c.match('./',{ignoreSearch:true}))||Response.error();
+      }
+    })());
+    return;
   }
-  // Vanjski resursi (Firebase, Sofascore, html2canvas...) - pusti browseru
-  // da ih normalno rukuje (ne keširamo third-party/live podatke).
+  // Slike s bilo koje domene (grbovi klubova): cache-first
+  if(req.destination==='image'){
+    e.respondWith((async()=>{
+      const c=await caches.open(IMGS), hit=await c.match(req);
+      if(hit) return hit;
+      try{ const r=await fetch(req); if(r&&(r.ok||r.type==='opaque')){ c.put(req,r.clone()); trim(IMGS,60); } return r; }
+      catch(err){ return hit||Response.error(); }
+    })());
+    return;
+  }
+  if(!same&&!CROSS_OK.some(re=>re.test(req.url))) return;   // Firebase, API-ji: prolaze mimo cachea
+  // Ostalo: stale-while-revalidate
+  e.respondWith((async()=>{
+    const c=await caches.open(same?SHELL:RUNTIME), hit=await c.match(req);
+    const net=fetch(req).then(r=>{ if(r&&r.ok) c.put(req,r.clone()); return r; }).catch(()=>null);
+    return hit||(await net)||Response.error();
+  })());
 });

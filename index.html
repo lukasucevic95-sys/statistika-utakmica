@@ -1060,6 +1060,22 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .qz-tbl th,.qz-tbl td{padding:7px 6px;text-align:center;border-bottom:1px solid var(--border);}
 .qz-tbl td:first-child,.qz-tbl th:first-child{text-align:left;}
 .qz-win{color:#4ADE80;font-weight:700;}
+.qz-rv{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;text-align:left;}
+.qz-rv:last-child{border-bottom:none;}
+.qz-rv-q{color:#fff;font-weight:600;margin-bottom:3px;}
+.qz-rv.ok .qz-rv-a{color:#4ADE80;}
+.qz-rv.bad .qz-rv-a{color:#F87171;}
+.qz-rv-c{color:#4ADE80;font-size:12px;}
+.qz-rv-o{color:var(--text-muted);font-size:11px;}
+.qz-link{cursor:pointer;}
+.qz-link::after{content:' ›';color:var(--text-muted);}
+#offline-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:10000;background:#7C2D12;color:#FED7AA;font-size:12px;text-align:center;padding:5px 8px;padding-top:calc(5px + env(safe-area-inset-top,0px));}
+#offline-banner.show{display:block;}
+.ph-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.ph-tbl th,.ph-tbl td{padding:7px 4px;text-align:center;border-bottom:1px solid var(--border);}
+.ph-tbl td:first-child,.ph-tbl th:first-child{text-align:left;}
+.ph-tbl th{color:var(--text-muted);font-weight:600;font-size:11px;}
+.ph-sub{font-size:10px;color:var(--text-muted);}
 .qz-tot{display:flex;gap:10px;}
 .qz-tot>div{flex:1;background:var(--surface2);border-radius:12px;padding:12px;text-align:center;}
 .qz-tot b{display:block;font-family:'Bebas Neue',sans-serif;font-size:38px;font-weight:400;color:#fff;line-height:1;}
@@ -1156,6 +1172,8 @@ tr[data-idx]{-webkit-touch-callout:none;}
 <div id="stat-sticky-bar"></div>
 <div id="ptr-indicator"><i class="ptr-icon"></i><span id="ptr-label">Povuci za osvježavanje</span></div>
 
+<div id="no-data" style="display:none;position:fixed;inset:0;z-index:9998;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;"><img src="assets/img002.png" alt="" width="48" style="opacity:.5;"><div style="color:#fff;font-size:16px;font-weight:700;">Nema podataka</div><div style="color:var(--text-muted);font-size:13px;">Spoji se na mrežu i pokušaj ponovno.</div><button class="btn-sm" style="padding:10px 22px;" onclick="location.reload()">Pokušaj ponovno</button></div>
+<div id="offline-banner">Nema mreže — prikazani su spremljeni podaci.</div>
 <div id="fb-loading"><img src="assets/img002.png" alt="GNK Dinamo Zagreb"><span>UČITAVANJE</span></div>
 
 <!-- NAV -->
@@ -1597,7 +1615,6 @@ tr[data-idx]{-webkit-touch-callout:none;}
       <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">Zatvori</button>
     </div>
   </div>
-</div>
 
 <!-- ======== PAGE: GOLOVI ======== -->
 <div class="page" id="page-golovi">
@@ -1896,7 +1913,6 @@ tr[data-idx]{-webkit-touch-callout:none;}
       <button class="modal-btn-cancel" onclick="closeEditMatch()">Odustani</button>
     </div>
   </div>
-</div>
 
 <!-- ======== PAGE: PREDIKTOR ======== -->
 <div class="page" id="page-prediktor">
@@ -1975,6 +1991,29 @@ tr[data-idx]{-webkit-touch-callout:none;}
           </span>
         </div>
         <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
+      </div>
+
+      <!-- Luka vs Lovro: pogodak pobjednika i točnog rezultata -->
+      <div class="form-card" id="pred-h2h-card">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
+          <span>⚔️ Luka vs Lovro: pobjednik i točan rezultat</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div class="js-collapsed" id="pred-h2h" style="padding:14px;"></div>
+      </div>
+
+      <!-- Kretanje točnosti kroz sezonu -->
+      <div class="pred-chart-card" id="pred-trend-card">
+        <div class="pred-chart-header">
+          <span class="section-title" style="color:#fff">📉 Kretanje točnosti kroz sezonu</span>
+          <div class="pred-chart-legend">
+            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
+            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
+          </div>
+        </div>
+        <div class="sched-filters" id="pred-trend-btns" style="margin:8px 0;"></div>
+        <div id="pred-trend-info" style="font-size:12px;color:#fff;min-height:18px;margin-bottom:4px;"></div>
+        <div id="pred-trend" style="position:relative;"></div>
       </div>
 
       <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
@@ -2723,8 +2762,6 @@ tr[data-idx]{-webkit-touch-callout:none;}
     </div><!-- /sched-view-compare -->
 
   </div><!-- /sched-wrap -->
-
-  </div><!-- /sched-wrap -->
 </div><!-- /page-raspored -->
 
 <!-- EDIT TABLICA ROW MODAL -->
@@ -2884,7 +2921,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
 </script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, set, get, onValue, remove, query, orderByKey, limitToLast } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -5696,6 +5733,8 @@ function renderTotalLB(){
   el('lb-total-lovro-away',  t.lovroAway);
   renderPredStreaks();
   renderPredByOpponent();
+  renderPredH2H();
+  renderPredTrend();
 }
 window.renderTotalLB=renderTotalLB;
 
@@ -5749,6 +5788,7 @@ function renderPredByOpponent(){
       byOpp[key][who].total++;
       byOpp[key][who].pts += (p[who]?.score?.pts || 0);
     });
+    (byOpp[key].list=byOpp[key].list||[]).push(p);
   });
 
   // Samo protivnici s barem 2 predikcije (smisleni uzorak)
@@ -5765,13 +5805,102 @@ function renderPredByOpponent(){
     const loAvg = d.lovro.total ? (d.lovro.pts/d.lovro.total).toFixed(1) : '0.0';
     return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
       ${getClubCrest(opp,20)}
-      <div style="flex:1;font-size:12px;color:#fff;font-weight:600;">${opp} <span style="color:var(--text-muted);font-weight:400;">(${d.luka.total}x)</span></div>
+      <div style="flex:1;font-size:12px;color:#fff;font-weight:600;">${opp} <span style="color:var(--text-muted);font-weight:400;">(${d.luka.total}x)</span>${(()=>{ const h=predH2HStats(d.list||[]); return h.n?`<div class="ph-sub" style="font-weight:400;">pobjednik: L ${h.luka.w}/${h.n} · Lo ${h.lovro.w}/${h.n} · točan: L ${h.luka.e} · Lo ${h.lovro.e}</div>`:''; })()}</div>
       <div style="font-size:11px;color:#60A5FA;font-weight:700;width:56px;text-align:right;" title="Luka: ${d.luka.pts} bod. ukupno u ${d.luka.total} predikcija">🔵 ${lAvg}/ut.</div>
       <div style="font-size:11px;color:#2DD4BF;font-weight:700;width:56px;text-align:right;" title="Lovro: ${d.lovro.pts} bod. ukupno u ${d.lovro.total} predikcija">🔷 ${loAvg}/ut.</div>
     </div>`;
   }).join('');
 }
 window.renderPredByOpponent = renderPredByOpponent;
+
+/* ===== LUKA VS LOVRO — POBJEDNIK / TOČAN REZULTAT PO NATJECANJU ===== */
+function predH2HStats(list){
+  const sgn=r=>{ const m=String(r||'').match(/^\s*(\d+)\s*-\s*(\d+)\s*$/); return m?Math.sign(+m[1]-+m[2]):null; };
+  const o={n:0,luka:{w:0,e:0},lovro:{w:0,e:0}};
+  list.forEach(p=>{
+    const a=p.actual&&p.actual.rez, sa=sgn(a); if(sa===null) return;
+    o.n++;
+    ['luka','lovro'].forEach(w=>{
+      const pr=p[w]&&p[w].rez;
+      if(sgn(pr)===sa) o[w].w++;
+      if(pr&&a&&String(pr).replace(/\s/g,'')===String(a).replace(/\s/g,'')) o[w].e++;
+    });
+  });
+  return o;
+}
+function renderPredH2H(){
+  const el=document.getElementById('pred-h2h'); if(!el) return;
+  const all=[...predictions.map(p=>({...p,_a:false})),...awayPredictions.map(p=>({...p,_a:true}))].filter(p=>p.resolved&&p.actual&&p.actual.rez);
+  if(!all.length){ el.innerHTML='<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:10px;">Još nema odigranih predviđanja.</div>'; return; }
+  const compOf=p=>p.natjecanje||((matches.find(m=>m.datum===p.datum)||{}).natjecanje)||'Ostalo';
+  const groups={'Ukupno':all,'Domaće':all.filter(p=>!p._a),'Gostovanja':all.filter(p=>p._a)};
+  const byC={}; all.forEach(p=>{ const c=compOf(p); (byC[c]=byC[c]||[]).push(p); });
+  Object.entries(byC).sort((a,b)=>b[1].length-a[1].length).forEach(([c,l])=>{ groups[c]=l; });
+  const cell=(x,n,other)=>{
+    const win=x.w>other.w||(x.w===other.w&&x.e>other.e);
+    const pc=n?Math.round(x.w/n*100):0;
+    return `<td class="${win?'qz-win':''}">${x.w}/${n} <span class="ph-sub">(${pc}%)</span><div class="ph-sub">točan: ${x.e}</div></td>`;
+  };
+  const rows=Object.entries(groups).filter(([k,l])=>l.length>0&&(['Ukupno','Domaće','Gostovanja'].includes(k)?(k==='Ukupno'||l.length<all.length):true)).map(([k,l])=>{
+    const st=predH2HStats(l); if(!st.n) return '';
+    const tie=st.luka.w===st.lovro.w&&st.luka.e===st.lovro.e;
+    const lw=st.luka.w>st.lovro.w||(st.luka.w===st.lovro.w&&st.luka.e>st.lovro.e);
+    return `<tr style="${k==='Ukupno'?'font-weight:700;':''}"><td>${wrEsc(k)} <span class="ph-sub">(${st.n}x)</span></td>${tie?`<td>${st.luka.w}/${st.n}<div class="ph-sub">točan: ${st.luka.e}</div></td><td>${st.lovro.w}/${st.n}<div class="ph-sub">točan: ${st.lovro.e}</div></td>`:cell(st.luka,st.n,st.lovro)+cell(st.lovro,st.n,st.luka)}</tr>`;
+  }).join('');
+  const T=predH2HStats(all);
+  const who=(a,b)=>a>b?'Luka':a<b?'Lovro':'Izjednačeno';
+  el.innerHTML=`<div style="font-size:12px;color:#fff;margin-bottom:8px;">Pobjednik (1/X/2) češće pogađa: <b>${who(T.luka.w,T.lovro.w)}</b> (${T.luka.w} : ${T.lovro.w})<br>Točan rezultat češće pogađa: <b>${who(T.luka.e,T.lovro.e)}</b> (${T.luka.e} : ${T.lovro.e})</div>
+    <table class="ph-tbl"><tr><th></th><th>🔵 Luka</th><th>🔷 Lovro</th></tr>${rows}</table>
+    <div class="ph-sub" style="margin-top:6px;">Prikazano: pogođen pobjednik / odigrano, u zagradi postotak, ispod broj točnih rezultata.</div>`;
+}
+window.renderPredH2H=renderPredH2H;
+
+/* ===== KRETANJE TOČNOSTI KROZ SEZONU (kumulativno nakon svake utakmice) ===== */
+let _predTrendMetric='win';
+function predTrendSet(m){ _predTrendMetric=m; renderPredTrend(); }
+window.predTrendSet=predTrendSet;
+function renderPredTrend(){
+  const el=document.getElementById('pred-trend'), btn=document.getElementById('pred-trend-btns'), info=document.getElementById('pred-trend-info');
+  if(!el||!btn||!info) return;
+  const M=[['win','Pobjednik %'],['exact','Točan rezultat %'],['pts','Prosj. bodova']];
+  btn.innerHTML=M.map(([k,l])=>`<button class="sched-filter-btn${_predTrendMetric===k?' active':''}" onclick="predTrendSet('${k}')">${l}</button>`).join('');
+  const sgn=r=>{ const m=String(r||'').match(/^\s*(\d+)\s*-\s*(\d+)\s*$/); return m?Math.sign(+m[1]-+m[2]):null; };
+  const all=[...predictions,...awayPredictions].filter(x=>x.resolved&&x.actual&&sgn(x.actual.rez)!==null)
+    .sort((a,b)=>String(a.datum).localeCompare(String(b.datum))||((a.id||0)-(b.id||0)));
+  if(all.length<2){ el.innerHTML='<div class="prc-empty">Treba barem 2 odigrana predviđanja.</div>'; info.textContent=''; return; }
+  const cum={luka:{w:0,e:0,p:0},lovro:{w:0,e:0,p:0}}, ser={luka:[],lovro:[]};
+  all.forEach((x,i)=>{
+    const sa=sgn(x.actual.rez), n=i+1;
+    ['luka','lovro'].forEach(w=>{
+      const pr=x[w]&&x[w].rez;
+      if(sgn(pr)===sa) cum[w].w++;
+      if(pr&&String(pr).replace(/\s/g,'')===String(x.actual.rez).replace(/\s/g,'')) cum[w].e++;
+      cum[w].p+=(x[w]&&x[w].score&&x[w].score.pts)||0;
+      ser[w].push(_predTrendMetric==='win'?cum[w].w/n*100:_predTrendMetric==='exact'?cum[w].e/n*100:cum[w].p/n);
+    });
+  });
+  const pct=_predTrendMetric!=='pts', fmt=v=>pct?Math.round(v)+'%':v.toFixed(2);
+  const W=340,H=190,pl=34,pr=12,pt=12,pb=24, n=all.length;
+  const mx=pct?100:Math.max(1,Math.ceil(Math.max(...ser.luka,...ser.lovro)*1.15));
+  const X=i=>pl+(W-pl-pr)*i/(n-1), Y=v=>pt+(H-pt-pb)*(1-v/mx);
+  const grid=[0,1,2,3,4].map(g=>{ const v=mx*g/4, y=Y(v); return `<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,0.08)"/><text x="${pl-4}" y="${y+3}" font-size="9" fill="#9CA3AF" text-anchor="end">${pct?Math.round(v):v.toFixed(1)}</text>`; }).join('');
+  const line=(w,c)=>`<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" points="${ser[w].map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/><circle cx="${X(n-1)}" cy="${Y(ser[w][n-1])}" r="3.5" fill="${c}"/>`;
+  window._ptD={all,ser,fmt,W,pl,pr,n};
+  const base=`Nakon ${n} utakmica: Luka <b style="color:#60A5FA;">${fmt(ser.luka[n-1])}</b> · Lovro <b style="color:#2DD4BF;">${fmt(ser.lovro[n-1])}</b>`;
+  window._ptBase=base; info.innerHTML=base;
+  el.innerHTML=`<svg id="pred-trend-svg" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;touch-action:pan-y;" onpointermove="predTrendHover(event)" onpointerdown="predTrendHover(event)" onpointerleave="predTrendLeave()">${grid}${line('luka','#60A5FA')}${line('lovro','#2DD4BF')}<line id="pt-guide" x1="0" x2="0" y1="${pt}" y2="${H-pb}" stroke="rgba(255,255,255,0.35)" style="display:none;"/><text x="${pl}" y="${H-6}" font-size="9" fill="#9CA3AF">${fmtDate(all[0].datum)}</text><text x="${W-pr}" y="${H-6}" font-size="9" fill="#9CA3AF" text-anchor="end">${fmtDate(all[n-1].datum)}</text></svg>`;
+}
+function predTrendHover(ev){
+  const d=window._ptD, svg=document.getElementById('pred-trend-svg'); if(!d||!svg) return;
+  const r=svg.getBoundingClientRect(); const x=(ev.clientX-r.left)/r.width*d.W;
+  const i=Math.max(0,Math.min(d.n-1,Math.round((x-d.pl)/(d.W-d.pl-d.pr)*(d.n-1))));
+  const g=document.getElementById('pt-guide'); const gx=d.pl+(d.W-d.pl-d.pr)*i/(d.n-1);
+  if(g){ g.setAttribute('x1',gx); g.setAttribute('x2',gx); g.style.display=''; }
+  const m=d.all[i], inf=document.getElementById('pred-trend-info');
+  if(inf) inf.innerHTML=`${i+1}. ${wrEsc(officialName(m.protivnik||''))} (${fmtDate(m.datum)}): Luka <b style="color:#60A5FA;">${d.fmt(d.ser.luka[i])}</b> · Lovro <b style="color:#2DD4BF;">${d.fmt(d.ser.lovro[i])}</b>`;
+}
+function predTrendLeave(){ const g=document.getElementById('pt-guide'); if(g) g.style.display='none'; const inf=document.getElementById('pred-trend-info'); if(inf&&window._ptBase) inf.innerHTML=window._ptBase; }
+window.predTrendHover=predTrendHover; window.predTrendLeave=predTrendLeave; window.renderPredTrend=renderPredTrend;
 
 /* ===== RADAR GRAF — LUKA VS LOVRO ===== */
 function renderRadarChart(){
@@ -7145,12 +7274,38 @@ window.pushRasporedToFirebase = async function() {
 };
 
 /* ===== INIT ===== */
+let _noData=false;
+function showNoData(){ const e=document.getElementById('no-data'); if(e) e.style.display='flex'; const f=document.getElementById('fb-loading'); if(f) f.style.display='none'; }
+function hideNoData(){ _noData=false; const e=document.getElementById('no-data'); if(e) e.style.display='none'; }
+const FBC_KEY='dinamo_fb_cache_v1';
+function fbCacheSave(){
+  try{
+    if(!Array.isArray(matches)||!matches.length||matches===INITIAL_MATCHES) return;
+    localStorage.setItem(FBC_KEY,JSON.stringify({t:Date.now(),matches,goals,predictions,awayPredictions}));
+  }catch(e){}
+}
+function fbCacheLoad(){
+  try{
+    const c=JSON.parse(localStorage.getItem(FBC_KEY)||'null');
+    if(c&&Array.isArray(c.matches)&&c.matches.length) return c;
+  }catch(e){}
+  return null;
+}
+function fbUseCache(c){
+  matches=c.matches; goals=Array.isArray(c.goals)?c.goals:[]; predictions=Array.isArray(c.predictions)?c.predictions:[]; awayPredictions=Array.isArray(c.awayPredictions)?c.awayPredictions:[];
+}
+setInterval(fbCacheSave,30000);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') fbCacheSave(); });
+(function(){
+  const b=()=>{ const el=document.getElementById('offline-banner'); if(el) el.classList.toggle('show',!navigator.onLine); };
+  window.addEventListener('online',b); window.addEventListener('offline',b); document.addEventListener('DOMContentLoaded',b); b();
+})();
 async function init(){
   // Safety timeout — prikaži stranicu nakon 8s čak i ako Firebase ne odgovori
   const _safetyTimer = setTimeout(()=>{
     const fl=document.getElementById('fb-loading');
     if(fl) fl.style.display='none';
-    if(!matches.length) matches=INITIAL_MATCHES;
+    if(!matches.length){ const c=fbCacheLoad(); if(c) fbUseCache(c); else{ matches=[]; showNoData(); } }
     renderSeasonBar(); renderActive(); renderCompStats();
     renderPreds(); renderAwayPreds(); populateMatchSelect();
     console.warn('Firebase timeout — stranica prikazana bez podataka');
@@ -7198,6 +7353,7 @@ async function init(){
     const awayPredSnap=await get(ref(db,'predictions_away'));
     if(awayPredSnap.exists()&&Array.isArray(awayPredSnap.val())){awayPredictions=awayPredSnap.val();}else{awayPredictions=[];}
 
+    hideNoData(); fbCacheSave();
     onValue(ref(db,'matches'),(snap)=>{if(snap.exists()&&Array.isArray(snap.val())){matches=snap.val();renderSeasonBar();renderActive();renderCompStats();populateMatchSelect();schedPopulateAddSelect();predPopulateAllSchedSelects();if(typeof schedRenderForma==='function')schedRenderForma();if(document.getElementById('sched-list'))schedRenderList();}});
     onValue(ref(db,'goals'),(snap)=>{
       if(snap.exists()){
@@ -7235,11 +7391,14 @@ async function init(){
     });
   }catch(e){
     console.error('Firebase greška:',e);
-    matches=INITIAL_MATCHES;goals=[];predictions=[];
+    const _c=fbCacheLoad();
+    if(_c){ fbUseCache(_c); window.addEventListener('online',()=>location.reload(),{once:true}); }
+    else{ matches=[];goals=[];predictions=[];awayPredictions=[]; _noData=true; window.addEventListener('online',()=>location.reload(),{once:true}); }
   }finally{
     clearTimeout(_safetyTimer);
     document.getElementById('fb-loading').style.display='none';
   }
+  if(_noData) showNoData();
   renderSeasonBar();
   await schedLoad();
   schedPopulateAddSelect();predPopulateAllSchedSelects();
@@ -7680,20 +7839,22 @@ function schedRenderForma(){
     const key = m.datum+'|'+officialName(m.opp||'').toLowerCase();
     schedInfoByKey[key] = {home:m.home, comp:m.competition||natToComp(m.natjecanje)};
   });
+  // Forma i niz pobjeda su samo za Dinamo — reprezentativne utakmice se ne računaju
+  const isDinamoForma = m => m.comp!=='repka' && !REP_COMPS.includes(m.nat||'');
   // Utakmice na kojima smo bili (baza 'matches')
   const attended = (matches||[])
     .filter(m => m.rezultat && m.datum)
     .map(m => {
       const key = m.datum+'|'+officialName(m.protivnik||'').toLowerCase();
       const info = schedInfoByKey[key];
-      return {datum:m.datum, protivnik:m.protivnik, rezultat:m.rezultat, comp:info?info.comp:natToComp(m.natjecanje), home:info?info.home:undefined};
-    });
+      return {datum:m.datum, protivnik:m.protivnik, rezultat:m.rezultat, comp:info?info.comp:natToComp(m.natjecanje), home:info?info.home:undefined, nat:m.natjecanje};
+    }).filter(isDinamoForma);
   const attendedKeys = new Set(attended.map(m => m.datum+'|'+officialName(m.protivnik||'').toLowerCase()));
   // Utakmice kojima je rezultat ručno dodan izravno u rasporedu (npr. nismo bili na njima)
   const fromSchedule = (_schedMatches||[])
     .filter(m => m.rezultat && m.datum)
     .filter(m => !attendedKeys.has(m.datum+'|'+officialName(m.opp||'').toLowerCase()))
-    .map(m => ({datum:m.datum, protivnik:m.opp, rezultat:m.rezultat, comp:m.competition||natToComp(m.natjecanje), home:m.home}));
+    .map(m => ({datum:m.datum, protivnik:m.opp, rezultat:m.rezultat, comp:m.competition||natToComp(m.natjecanje), home:m.home, nat:m.natjecanje})).filter(isDinamoForma);
   // Filtriraj po odabranom natjecanju / doma-gosti
   const filterFn = _formaFilter==='sve' ? (()=>true)
     : _formaFilter==='doma' ? (m=>m.home===true)
@@ -10463,59 +10624,114 @@ function qzRng(seed){
   return ()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
 }
 function qzMake(datum,seed){
-  const r=qzRng('kviz'+(seed||datum));
-  const pick=a=>a[Math.floor(r()*a.length)];
+  const selfKey=seed||datum, isPrac=(seed||'').startsWith('p');
+  const r=qzRng('kviz'+selfKey);
   const shuf=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
   const ms=(matches||[]).filter(m=>m.datum&&m.datum<datum&&wrResult(m)&&!REP_COMPS.includes(m.natjecanje));
   const opp=m=>officialName(m.protivnik);
-  const mk=(t,ans,wrong)=>{
+  // ── povijest zadnjih 6 kvizova (dnevni, ručni, uživo — svi su spremljeni u Firebase 'quiz') ──
+  const H={t:new Set(),k:new Set(),y:new Set()};
+  const addH=(q,last)=>{ if(!q) return; if(q.t) H.t.add(q.t); if(q.k) H.k.add(q.k); if(last&&q.y) H.y.add(q.y); };
+  try{
+    const dk=Object.keys(_qz.data||{}).filter(k=>k!==selfKey&&_qz.data[k]&&Array.isArray(_qz.data[k].q)).sort().slice(-6);
+    dk.forEach((k,i)=>_qz.data[k].q.forEach(q=>addH(q,i===dk.length-1)));
+    if(isPrac){ const pr=window._qzPrac||[]; pr.forEach((qs,i)=>qs.forEach(q=>addH(q,i===pr.length-1))); }
+  }catch(e){ console.warn('qz povijest',e); }
+  let blkK=new Set(), blkT=new Set(), inK=new Set(), inKOn=true;
+  const free=k=>!blkK.has(k)&&!(inKOn&&inK.has(k));
+  const pf=(l,kf)=>{ const f=l.filter(x=>free(kf(x))); return f.length?f[Math.floor(r()*f.length)]:null; };
+  const vp=(pre,vs)=>{ const f=vs.filter(v=>free(pre+v)); return f.length?f[Math.floor(r()*f.length)]:null; };
+  const nm=(n,d)=>d.map(x=>n+x).filter(x=>x>=0&&x!==n).map(String);
+  const mkey=m=>'m:'+m.datum;
+  const mk=(t,ans,wrong,k)=>{
     const w=[...new Set(wrong.filter(x=>x!==ans))].slice(0,3);
     if(!w.length) return null;
     const o=shuf([ans,...w]);
-    return {t,o,a:o.indexOf(ans)};
+    return {t,o,a:o.indexOf(ans),k};
   };
+  const scoreWrong=(a,b)=>shuf([[a+1,b],[a,b+1],[Math.max(a-1,0),b],[b,a],[a+1,b+1],[a,Math.max(b-1,0)]].map(x=>x.join('-')));
   const sc=(goals||[]).filter(g=>g.type==='scored'&&g.autogol!=='yes'&&g.matchDatum<datum);
+  const allP=[...new Set(sc.map(g=>g.player).filter(Boolean))];
+  const DAYS=['nedjelja','ponedjeljak','utorak','srijeda','četvrtak','petak','subota'];
+  const byM={}; sc.forEach(g=>{ (byM[g.matchDatum]=byM[g.matchDatum]||new Set()).add(g.player); });
   const gen={
-    rez:()=>{const m=pick(ms); if(!m) return null; const [a,b]=wrResult(m);
-      return mk(`Kako je završila utakmica protiv ${opp(m)} (${fmtDate(m.datum)})? Prvi je rezultat Dinama.`,`${a}-${b}`,shuf([[a+1,b],[a,b+1],[Math.max(a-1,0),b],[b,a],[a+1,b+1]].map(x=>x.join('-'))));},
-    gle:()=>{const m=pick(ms.filter(x=>x.gledatelji)); if(!m) return null; const g=Math.round(m.gledatelji/100)*100;
-      return mk(`Otprilike koliko je gledatelja bilo protiv ${opp(m)} (${fmtDate(m.datum)})?`,fmtNum(g),[0.7,1.25,1.5,0.5].map(k=>fmtNum(Math.round(g*k/100)*100)));},
-    stad:()=>{const l=ms.filter(x=>getStadion(x)); const m=pick(l); if(!m) return null;
-      return mk(`Gdje je igrana utakmica protiv ${opp(m)} (${fmtDate(m.datum)})?`,getStadion(m),shuf([...new Set(l.map(getStadion))]));},
-    strij:()=>{const c={}; sc.forEach(g=>{c[g.player]=(c[g.player]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(e.length<2) return null;
-      return mk('Tko je najbolji strijelac Dinama u zabilježenim utakmicama?',e[0][0],e.slice(1,6).map(x=>x[0]));},
-    min:()=>{const g=pick(sc.filter(x=>x.minute)); if(!g) return null; const k=g.minute;
-      return mk(`U kojoj je minuti ${g.player} zabio protiv ${officialName(g.matchProtivnik)} (${fmtDate(g.matchDatum)})?`,k+'.',[k-7,k+5,k+12,k-15,k+20].filter(x=>x>0&&x<=120).map(x=>x+'.'));},
-    trib:()=>{const l=ms.filter(x=>x.tribina&&x.tribina.trim()); const all=[...new Set(l.map(x=>x.tribina.trim()))]; if(all.length<2) return null; const m=pick(l);
-      return mk(`Na kojoj ste tribini bili protiv ${opp(m)} (${fmtDate(m.datum)})?`,m.tribina.trim(),shuf(all));},
-    pred:()=>{const l=[...(predictions||[]),...(awayPredictions||[])].filter(x=>x.datum&&x.datum<datum); const q1=pick(l); if(!q1) return null;
-      const who=r()<0.5?'luka':'lovro'; const sc=String((q1[who]||{}).rez||'').split(/\s*-\s*/).map(Number); if(sc.length!==2||sc.some(isNaN)) return null; const [a,b]=sc;
-      return mk(`Što je ${who==='luka'?'Luka':'Lovro'} predvidio za utakmicu protiv ${officialName(q1.protivnik||'')} (${fmtDate(q1.datum)})?`,`${a}-${b}`,shuf([[a+1,b],[a,b+1],[Math.max(a-1,0),b],[b,a],[a+1,b+1]].map(x=>x.join('-'))));},
-    tf:()=>{const m=pick(ms); if(!m) return null; const [a,b]=wrResult(m); const truth=r()<0.5; const [x,y]=truth?[a,b]:(r()<0.5?[a+1,b]:[a,b+1]);
-      return {t:`Istina ili laž: protiv ${opp(m)} (${fmtDate(m.datum)}) Dinamo je igrao ${x}-${y}.`,o:['Istina','Laž'],a:truth?0:1};},
-    najv:()=>{const dd=x=>{const p=wrResult(x);return p[0]-p[1];}; const w=ms.filter(x=>dd(x)>0).sort((x,y)=>dd(y)-dd(x)||wrResult(y)[0]-wrResult(x)[0]); if(w.length<4) return null;
-      if(dd(w[1])===dd(w[0])&&wrResult(w[1])[0]===wrResult(w[0])[0]) return null;
+    rez:()=>{const m=pf(ms,mkey); if(!m) return null; const [a,b]=wrResult(m);
+      return mk(`Kako je završila utakmica protiv ${opp(m)} (${fmtDate(m.datum)})? Prvi je rezultat Dinama.`,`${a}-${b}`,scoreWrong(a,b),mkey(m));},
+    gle:()=>{const m=pf(ms.filter(x=>x.gledatelji),mkey); if(!m) return null; const g=Math.round(m.gledatelji/100)*100;
+      return mk(`Otprilike koliko je gledatelja bilo protiv ${opp(m)} (${fmtDate(m.datum)})?`,fmtNum(g),[0.7,1.25,1.5,0.5].map(k=>fmtNum(Math.round(g*k/100)*100)),mkey(m));},
+    min:()=>{const g=pf(sc.filter(x=>Number(x.minute)>0),x=>'m:'+x.matchDatum); if(!g) return null; const k=Number(g.minute);
+      return mk(`U kojoj je minuti ${g.player} zabio protiv ${officialName(g.matchProtivnik)} (${fmtDate(g.matchDatum)})?`,k+'.',[k-7,k+5,k+12,k-15,k+20].filter(x=>x>0&&x<=120).map(x=>x+'.'),'m:'+g.matchDatum);},
+    trib:()=>{const l=ms.filter(x=>x.tribina&&x.tribina.trim()); const all=[...new Set(l.map(x=>x.tribina.trim()))]; if(all.length<2) return null; const m=pf(l,mkey); if(!m) return null;
+      return mk(`Na kojoj ste tribini bili protiv ${opp(m)} (${fmtDate(m.datum)})?`,m.tribina.trim(),shuf(all),mkey(m));},
+    pred:()=>{const l=[...(predictions||[]),...(awayPredictions||[])].filter(x=>x.datum&&x.datum<datum); const q1=pf(l,x=>'m:'+x.datum); if(!q1) return null;
+      const who=r()<0.5?'luka':'lovro'; const p=String((q1[who]||{}).rez||'').split(/\s*-\s*/).map(Number); if(p.length!==2||p.some(isNaN)) return null; const [a,b]=p;
+      return mk(`Što je ${who==='luka'?'Luka':'Lovro'} predvidio za utakmicu protiv ${officialName(q1.protivnik||'')} (${fmtDate(q1.datum)})?`,`${a}-${b}`,scoreWrong(a,b),'m:'+q1.datum);},
+    tf:()=>{const m=pf(ms,mkey); if(!m) return null; const [a,b]=wrResult(m); const truth=r()<0.5; const [x,y]=truth?[a,b]:(r()<0.5?[a+1,b]:[a,b+1]);
+      return {t:`Istina ili laž: protiv ${opp(m)} (${fmtDate(m.datum)}) Dinamo je igrao ${x}-${y}.`,o:['Istina','Laž'],a:truth?0:1,k:mkey(m)};},
+    najv:()=>{const v=vp('s:najv:',['pob','por']); if(!v) return null; const i=v==='pob'?0:1;
+      const dd=x=>{const p=wrResult(x);return v==='pob'?p[0]-p[1]:p[1]-p[0];};
+      const w=ms.filter(x=>dd(x)>0).sort((x,y)=>dd(y)-dd(x)||wrResult(y)[i]-wrResult(x)[i]); if(w.length<4) return null;
+      if(dd(w[1])===dd(w[0])&&wrResult(w[1])[i]===wrResult(w[0])[i]) return null;
       const f=x=>{const p=wrResult(x);return `${p[0]}-${p[1]} protiv ${opp(x)}`;};
-      return mk('Koja je najveća pobjeda Dinama u zabilježenim utakmicama?',f(w[0]),shuf(w.slice(1)).slice(0,3).map(f));},
-    prot:()=>{const c={}; ms.forEach(x=>{const k=opp(x); c[k]=(c[k]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(e.length<3||e[0][1]===e[1][1]) return null;
-      return mk('Koji je protivnik najčešće igrao protiv Dinama u zabilježenim utakmicama?',e[0][0],shuf(e.slice(1)).slice(0,3).map(x=>x[0]));},
-    cnt:()=>{if(ms.length<5) return null; const w=ms.filter(x=>{const p=wrResult(x);return p[0]>p[1];}).length;
-      return mk('Koliko je pobjeda Dinamo imao u zabilježenim utakmicama do sada?',String(w),[w-3,w+2,w+5,w-6].filter(x=>x>=0).map(String));},
-    zaj:()=>{const n=ms.filter(x=>x.prisutanLuka!==false&&x.prisutanLovro!==false).length; if(n<3) return null;
-      return mk('Na koliko ste utakmica bili zajedno na stadionu?',String(n),[n-4,n+3,n+6,n-8].filter(x=>x>=0).map(String));}
+      return mk(v==='pob'?'Koja je najveća pobjeda Dinama u zabilježenim utakmicama?':'Koji je najteži poraz Dinama u zabilježenim utakmicama?',f(w[0]),shuf(w.slice(1)).slice(0,3).map(f),'s:najv:'+v);},
+    prot:()=>{if(!free('s:prot')) return null; const c={}; ms.forEach(x=>{const k=opp(x); c[k]=(c[k]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(e.length<3||e[0][1]===e[1][1]) return null;
+      return mk('Koji je protivnik najčešće igrao protiv Dinama u zabilježenim utakmicama?',e[0][0],shuf(e.slice(1)).slice(0,3).map(x=>x[0]),'s:prot');},
+    cnt:()=>{if(ms.length<5) return null; const v=vp('s:cnt:',['pob','rem','por']); if(!v) return null;
+      const n=ms.filter(x=>{const p=wrResult(x); return v==='pob'?p[0]>p[1]:v==='rem'?p[0]===p[1]:p[0]<p[1];}).length;
+      const T={pob:'Koliko je pobjeda',rem:'Koliko je neriješenih rezultata',por:'Koliko je poraza'};
+      return mk(`${T[v]} Dinamo imao u zabilježenim utakmicama do sada?`,String(n),nm(n,[-3,2,5,-6,4,-2]),'s:cnt:'+v);},
+    zaj:()=>{if(!free('s:zaj')) return null; const n=ms.filter(x=>x.prisutanLuka!==false&&x.prisutanLovro!==false).length; if(n<3) return null;
+      return mk('Na koliko ste utakmica bili zajedno na stadionu?',String(n),nm(n,[-4,3,6,-8,2]),'s:zaj');},
+    strij:()=>{if(!free('s:strij')) return null; const c={}; sc.forEach(g=>{c[g.player]=(c[g.player]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(e.length<2||e[0][1]===e[1][1]) return null;
+      return mk('Tko je najbolji strijelac Dinama u zabilježenim utakmicama?',e[0][0],shuf(e.slice(1,6)).map(x=>x[0]),'s:strij');},
+    strsez:()=>{const ss=[...new Set(sc.map(g=>seasonKeyFor(g.matchDatum)))].filter(s=>free('s:strsez:'+s)); if(!ss.length) return null; const s=ss[Math.floor(r()*ss.length)];
+      const c={}; sc.filter(g=>seasonKeyFor(g.matchDatum)===s).forEach(g=>{c[g.player]=(c[g.player]||0)+1;}); const e=Object.entries(c).sort((x,y)=>y[1]-x[1]); if(!e.length||(e[1]&&e[0][1]===e[1][1])) return null;
+      return mk(`Tko je bio najbolji strijelac Dinama u sezoni ${s} (zabilježeni golovi)?`,e[0][0],shuf([...e.slice(1).map(x=>x[0]),...allP]),'s:strsez:'+s);},
+    nat:()=>{const comps=[...new Set(ms.map(x=>x.natjecanje).filter(Boolean))]; if(comps.length<3) return null;
+      const non=ms.filter(x=>x.natjecanje&&x.natjecanje!=='HNL'); const pool=(non.length&&r()<0.6)?non:ms.filter(x=>x.natjecanje);
+      const m=pf(pool,mkey); if(!m) return null;
+      return mk(`U kojem natjecanju je Dinamo igrao protiv ${opp(m)} (${fmtDate(m.datum)})?`,m.natjecanje,shuf(comps),mkey(m));},
+    razl:()=>{const m=pf(ms.filter(x=>!x.penali),mkey); if(!m) return null; const [a,b]=wrResult(m); const d=a-b;
+      const lab=n=>n===0?'Neriješeno':(n>0?'Pobjeda':'Poraz')+' s '+Math.abs(n)+' '+(Math.abs(n)===1?'golom':Math.abs(n)<5?'gola':'golova')+' razlike';
+      const cand=[d+1,d-1,d+2,d-2,-d,0].filter(x=>x!==d&&Math.abs(x)<=8);
+      return mk(`Kakav je bio ishod utakmice protiv ${opp(m)} (${fmtDate(m.datum)})?`,lab(d),shuf(cand).map(lab),mkey(m));},
+    zab:()=>{const m=pf(ms.filter(x=>byM[x.datum]&&byM[x.datum].size),mkey); if(!m) return null; const s=[...byM[m.datum]];
+      const ans=s[Math.floor(r()*s.length)]; const wr=allP.filter(p=>!byM[m.datum].has(p)); if(!wr.length) return null;
+      return mk(`Tko je od ovih igrača zabio za Dinamo u utakmici protiv ${opp(m)} (${fmtDate(m.datum)})?`,ans,shuf(wr),mkey(m));},
+    dan:()=>{const m=pf(ms,mkey); if(!m) return null; const wd=new Date(m.datum+'T12:00:00').getDay(); if(isNaN(wd)) return null;
+      return mk(`Na koji je dan u tjednu igrana utakmica protiv ${opp(m)} (${fmtDate(m.datum)})?`,DAYS[wd],shuf(DAYS.filter((_,i)=>i!==wd)),mkey(m));},
+    golp:()=>{const c={}; sc.forEach(g=>{c[g.player]=(c[g.player]||0)+1;}); const e=Object.entries(c).filter(x=>x[1]>=2); const p=pf(e,x=>'p:'+x[0]); if(!p) return null;
+      return mk(`Koliko je golova ${p[0]} zabio za Dinamo u zabilježenim utakmicama?`,String(p[1]),nm(p[1],[-2,-1,1,2,3,4]),'p:'+p[0]);},
+    ukg:()=>{const m=pf(ms,mkey); if(!m) return null; const [a,b]=wrResult(m); const n=a+b;
+      return mk(`Koliko je ukupno golova (oba tima zajedno) palo u utakmici protiv ${opp(m)} (${fmtDate(m.datum)})?`,String(n),nm(n,[-2,-1,1,2,3]),mkey(m));},
+    gmax:()=>{if(!free('s:gmax')) return null; const w=ms.filter(x=>x.gledatelji).sort((x,y)=>y.gledatelji-x.gledatelji); if(w.length<4||w[0].gledatelji===w[1].gledatelji) return null;
+      const f=x=>`${opp(x)} (${fmtDate(x.datum)})`;
+      return mk('Na kojoj je utakmici zabilježeno najviše gledatelja?',f(w[0]),shuf(w.slice(1,12)).slice(0,3).map(f),'s:gmax');},
+    sez:()=>{const c={}; ms.forEach(x=>{const s=seasonKeyFor(x.datum); c[s]=(c[s]||0)+1;}); const e=Object.entries(c).filter(x=>x[1]>=2&&free('s:sez:'+x[0])); if(!e.length) return null;
+      const [s,n]=e[Math.floor(r()*e.length)];
+      return mk(`Koliko je utakmica Dinamo odigrao u sezoni ${s} (zabilježeno u aplikaciji)?`,String(n),nm(n,[-3,-2,-1,1,2,3,5]),'s:sez:'+s);}
   };
-  const avoid=(seed||'').startsWith('p')&&window._qzLastPractice ? window._qzLastPractice : [];
-  const out=[], outLoose=[], keys=shuf(Object.keys(gen));
-  for(let i=0;i<60&&out.length<5;i++){
-    const q=gen[keys[i%keys.length]]();
-    if(!q) continue;
-    if(out.some(o=>o.t===q.t)) continue;
-    if(avoid.includes(q.t)){ if(!outLoose.some(o=>o.t===q.t)) outLoose.push(q); continue; }
-    out.push(q);
+  // ── odabir: najprije strogo (bez ičega iz zadnjih 6 kvizova), pa postupno blaže ako nema dovoljno podataka ──
+  const types=Object.keys(gen), out=[], usedY=new Set();
+  const passes=[
+    {k:true, t:true, y:true, once:true, inK:true},
+    {k:true, t:true, y:false,once:true, inK:true},
+    {k:false,t:true, y:false,once:true, inK:true},
+    {k:false,t:false,y:false,once:false,inK:false}
+  ];
+  for(const P of passes){
+    if(out.length>=5) break;
+    blkK=P.k?H.k:new Set(); blkT=P.t?H.t:new Set(); inKOn=P.inK;
+    for(const y of shuf(types)){
+      if(out.length>=5) break;
+      if(P.y&&H.y.has(y)) continue;
+      if(P.once&&usedY.has(y)) continue;
+      const q=gen[y]();
+      if(!q||blkT.has(q.t)||out.some(o=>o.t===q.t)) continue;
+      q.y=y; out.push(q); usedY.add(y); if(q.k) inK.add(q.k);
+    }
   }
-  // ako nema dovoljno svježih pitanja (premalo podataka za potpunu raznolikost), popuni s ponovljenima
-  while(out.length<5 && outLoose.length){ out.push(outLoose.shift()); }
-  if((seed||'').startsWith('p')) window._qzLastPractice=out.map(q=>q.t);
+  if(isPrac) window._qzPrac=[...(window._qzPrac||[]),out.map(q=>({t:q.t,k:q.k,y:q.y}))].slice(-6);
   return out;
 }
 async function qzToday(){
@@ -10545,14 +10761,73 @@ function qzChart(days){
     <text x="${W-pd}" y="${H-8}" font-size="10" fill="#8899BB" text-anchor="end">${fmtDate(days[n-1].slice(0,10)).slice(0,5)}</text>
     <text x="${pd}" y="12" font-size="10" fill="#60A5FA">Luka ${a}</text><text x="${W-pd}" y="12" font-size="10" fill="#2DD4BF" text-anchor="end">Lovro ${b}</text></svg>`;
 }
+function qzStatsHtml(days,todayKey){
+  const one=w=>{
+    let cur=0,best=0,n=0,sS=0,sN=0,sP=0,sMs=0,bestP=-1,fast=null,perf=0;
+    days.forEach(d=>{
+      const x=_qz.data[d][w];
+      if(!x){ if(!(d>=todayKey)) cur=0; return; }
+      n++; cur++; if(cur>best) best=cur;
+      const pt=qzPts(x); sP+=pt; if(pt>bestP) bestP=pt;
+      sS+=x.s||0; sN+=x.n||3; sMs+=x.ms||0; if(x.s&&x.n&&x.s===x.n) perf++;
+      const q=_qz.data[d].q;
+      if(Array.isArray(x.d)&&Array.isArray(x.a)&&Array.isArray(q)) x.d.forEach((t,i)=>{ if(t>0&&x.a[i]===(q[i]||{}).a&&(fast===null||t<fast)) fast=t; });
+    });
+    return {cur,best,n,avg:n?sP/n:0,acc:sN?sS/sN*100:0,perf,bestP,fast,avgT:sN?sMs/sN:0};
+  };
+  const L=one('luka'), V=one('lovro');
+  if(!L.n&&!V.n) return '';
+  const row=(lbl,a,b,fa,fb,low)=>{
+    let wa='',wb=''; if(a!==null&&b!==null&&a!==b){ const aw=low?a<b:a>b; wa=aw?'qz-win':''; wb=aw?'':'qz-win'; }
+    return `<tr><td>${lbl}</td><td class="${wa}">${fa}</td><td class="${wb}">${fb}</td></tr>`;
+  };
+  const f1=x=>x.toFixed(1), sec=x=>(x/1000).toFixed(2)+' s';
+  return `<div class="qz-card" style="margin-bottom:12px;"><div class="qz-p" style="font-weight:700;">Statistika kroz sve kvizove</div><table class="qz-tbl"><tr><th></th><th>Luka</th><th>Lovro</th></tr>`
+    +row('Odigrano kvizova',L.n,V.n,L.n,V.n)
+    +row('Serija (sada / najdulja)',L.best,V.best,`${L.cur} / ${L.best}`,`${V.cur} / ${V.best}`)
+    +row('Prosjek bodova',L.avg,V.avg,f1(L.avg),f1(V.avg))
+    +row('Točnost',L.acc,V.acc,Math.round(L.acc)+'%',Math.round(V.acc)+'%')
+    +row('Savršeni kvizovi',L.perf,V.perf,L.perf,V.perf)
+    +row('Najbolji kviz',L.bestP,V.bestP,L.n?L.bestP+' b':'—',V.n?V.bestP+' b':'—')
+    +row('Najbrži točan odgovor',L.fast,V.fast,L.fast!==null?sec(L.fast):'—',V.fast!==null?sec(V.fast):'—',true)
+    +row('Prosj. vrijeme po pitanju',L.n?L.avgT:null,V.n?V.avgT:null,L.n?sec(L.avgT):'—',V.n?sec(V.avgT):'—',true)
+    +`</table><div class="qz-p" style="font-size:11px;">Serija = uzastopni kvizovi koje je igrač odigrao. Najbrži odgovor se računa od kvizova odigranih nakon ove nadogradnje.</div></div>`;
+}
+const QZ_LIMIT=50;
+async function qzFetch(all){
+  const r=ref(db,'quiz');
+  const snap=await get(all?r:query(r,orderByKey(),limitToLast(QZ_LIMIT)));
+  return snap.exists()?snap.val():{};
+}
+function qzLoadAll(){ _qz.all=true; renderKviz(); }
+window.qzLoadAll=qzLoadAll;
+function qzIsLive(x){ return !!(x&&(x.live||(x.luka&&x.luka.live)||(x.lovro&&x.lovro.live))); }
+function qzLiveCardHtml(ld){
+  if(!ld.length) return '';
+  const lbl=k=>fmtDate(k.slice(0,10))+(k.length>10?' '+k.slice(11,13)+':'+k.slice(14,16):'');
+  let wl=0,wv=0,wd=0,pl=0,pv=0;
+  const rows=ld.slice().reverse().map((d,i)=>{
+    const x=_qz.data[d], L=x.luka, V=x.lovro; pl+=qzPts(L); pv+=qzPts(V);
+    let win=''; if(L&&V){ if(qzPts(L)!==qzPts(V)) win=qzPts(L)>qzPts(V)?'l':'v'; else if(L.ms!==V.ms) win=L.ms<V.ms?'l':'v'; if(win==='l') wl++; else if(win==='v') wv++; else wd++; }
+    if(i>=10) return '';
+    const c=(o,w)=>o?`<span class="${win===w?'qz-win':''}">${qzPts(o)} b <span style="color:var(--text-muted);font-size:11px;">${o.s}/${o.n||3}</span></span>`:'—';
+    return `<tr><td class="qz-link" onclick="qzShowRev('${d}')">${lbl(d)}</td><td>${c(L,'l')}</td><td>${c(V,'v')}</td></tr>`;
+  }).join('');
+  return `<div class="qz-card" style="margin-top:12px;"><div class="qz-p" style="font-weight:700;">⚡ Kviz uživo 1 na 1: ukupno</div>
+    <div class="qz-tot"><div><div class="qz-p">${personAvatar('luka')} Luka</div><b>${wl}</b><div class="qz-p">${wrPl(wl,'pobjeda','pobjede','pobjeda')} · ${pl} b</div></div><div><div class="qz-p">${personAvatar('lovro')} Lovro</div><b>${wv}</b><div class="qz-p">${wrPl(wv,'pobjeda','pobjede','pobjeda')} · ${pv} b</div></div></div>
+    <div class="qz-p" style="font-size:11px;">Odigrano: ${ld.length}, neriješeno: ${wd}. Ne ulazi u tablicu dnevnog kviza.</div>
+    <table class="qz-tbl"><tr><th>Datum</th><th>Luka</th><th>Lovro</th></tr>${rows}</table>${ld.length>10?'<div class="qz-p" style="font-size:11px;">Prikazano zadnjih 10.</div>':''}</div>`;
+}
 async function renderKviz(){
   const box=document.getElementById('kviz-content'); if(!box) return;
   box.innerHTML='<div class="sk-wrap"><div class="sk-card sm"></div><div class="sk-card"></div><div class="sk-card"></div></div>';
   let err='';
-  try{ const snap=await get(ref(db,'quiz')); _qz.data=snap.exists()?snap.val():{}; }
+  try{ _qz.data=await qzFetch(!!_qz.all); }
   catch(e){ _qz.data={}; err='<div class="qz-p" style="color:#F87171;margin-bottom:8px;">Kviz se ne može učitati. Provjeri Firebase pravila za čvor "quiz".</div>'; }
   const who=qzWho(), t=await qzToday();
-  const days=Object.keys(_qz.data).filter(d=>_qz.data[d].luka||_qz.data[d].lovro).sort();
+  const _allDays=Object.keys(_qz.data).filter(d=>_qz.data[d].luka||_qz.data[d].lovro).sort();
+  const days=_allDays.filter(d=>!qzIsLive(_qz.data[d])), liveDays=_allDays.filter(d=>qzIsLive(_qz.data[d]));
+  const _limited=!_qz.all&&Object.keys(_qz.data).length>=QZ_LIMIT;
   let status;
   if(!_currentUser) status='<div class="qz-p">Prijavi se (gore desno) da bi igrao.</div>';
   else if(!who) status=`<div class="qz-p" style="margin-bottom:6px;">Tko igra?</div><div style="display:flex;gap:8px;"><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose('luka')">${personAvatar('luka')} Luka</button><button class="btn-sm" style="flex:1;padding:10px;" onclick="qzChoose('lovro')">${personAvatar('lovro')} Lovro</button></div>`;
@@ -10570,19 +10845,21 @@ async function renderKviz(){
     const played=_qz.data[k].luka||_qz.data[k].lovro;
     return `<div style="display:flex;gap:6px;align-items:center;margin-top:8px;"><div class="qz-p" style="flex:1;">Ručni kviz, ${lbl(k)}</div><button class="btn-sm" style="padding:8px 14px;" onclick="qzStart(false,'${k}')">Igraj</button>${played?'':`<button class="btn-sm" style="padding:8px 10px;" onclick="qzClose('${k}')">✕</button>`}</div>`;
   }).join('');
-  let pl=0,pv=0,wl=0,wv=0;
+  let pl=0,pv=0,wl=0,wv=0,wd=0;
   const rows=days.slice().reverse().map(d=>{
     const x=_qz.data[d], L=x.luka, V=x.lovro; pl+=qzPts(L); pv+=qzPts(V);
     let win=''; if(L&&V){ if(qzPts(L)!==qzPts(V)) win=qzPts(L)>qzPts(V)?'l':'v'; else if(L.ms!==V.ms) win=L.ms<V.ms?'l':'v'; }
-    if(win==='l') wl++; if(win==='v') wv++;
+    if(win==='l') wl++; else if(win==='v') wv++; else if(L&&V) wd++;
     const c=(o,w)=>o?`<span class="${win===w?'qz-win':''}">${qzPts(o)} b <span style="color:var(--text-muted);font-size:11px;">${o.s}/${o.n||3}, ${(o.ms/1000).toFixed(1)}s</span></span>`:'—';
-    return `<tr><td>${lbl(d)}${x.opp?`<div class="qz-p" style="font-size:11px;">${wrEsc(x.opp)}</div>`:''}</td><td>${c(L,'l')}</td><td>${c(V,'v')}</td></tr>`;
+    return `<tr><td class="qz-link" onclick="qzShowRev('${d}')">${lbl(d)}${x.opp?`<div class="qz-p" style="font-size:11px;">${wrEsc(x.opp)}</div>`:''}</td><td>${c(L,'l')}</td><td>${c(V,'v')}</td></tr>`;
   }).join('');
   box.innerHTML=err+`<div id="kviz-live"></div><div class="qz-card" style="margin-bottom:12px;">${status}</div>`
     +(days.length?`<div class="qz-tot" style="margin-bottom:12px;"><div><div class="qz-p">${personAvatar('luka')} Luka</div><b>${pl}</b><div class="qz-p">${wl} ${wrPl(wl,'pobjeda','pobjede','pobjeda')}</div></div><div><div class="qz-p">${personAvatar('lovro')} Lovro</div><b>${pv}</b><div class="qz-p">${wv} ${wrPl(wv,'pobjeda','pobjede','pobjeda')}</div></div></div>
-      <div class="qz-card" style="margin-bottom:12px;">${qzChart(days)}</div>
-      <div class="qz-card"><table class="qz-tbl"><tr><th>Datum</th><th>Luka</th><th>Lovro</th></tr>${rows}</table><div class="qz-p">Pobjednik: više bodova, a kod jednakog rezultata brži.</div></div>`
-      :'<div class="prc-empty">Još nema odigranih kvizova.</div>');
+      <div class="qz-card" style="margin-bottom:12px;">${qzChart(days)}</div>${qzStatsHtml(days,t.today)}
+      <div class="qz-card"><table class="qz-tbl"><tr><th>Datum</th><th>Luka</th><th>Lovro</th></tr>${rows}</table><div class="qz-p">Pobjednik: više bodova, a kod jednakog rezultata brži. Neriješeno: ${wd}. Dodirni datum za pregled odgovora.</div></div>`
+      :'<div class="prc-empty">Još nema odigranih kvizova.</div>')
+    +qzLiveCardHtml(liveDays)
+    +(_limited?`<div class="qz-p" style="text-align:center;margin-top:10px;">Prikazano je zadnjih ${QZ_LIMIT} kvizova. <a href="#" onclick="qzLoadAll();return false;" style="color:#93C5FD;">Učitaj cijelu povijest</a></div>`:'');
   _ql.key=null; qzLiveSync();
   qzBadge();
 }
@@ -10616,16 +10893,16 @@ async function qzStart(practice,key){
     }
   }
   if(!q||q.length<3){ box.innerHTML='<div class="prc-empty">Nema dovoljno podataka za pitanja. Dodaj još utakmica i golova.</div>'; return; }
-  const st={i:0,n:q.length,score:0,pts:0,fast:0,ms:0,ans:[]};
+  const st={i:0,n:q.length,score:0,pts:0,fast:0,ms:0,ans:[],dts:[]};
   const show=()=>{
-    if(st.i>=q.length) return qzFinish(st,datum,practice);
+    if(st.i>=q.length) return qzFinish(st,datum,practice,q);
     const cur=q[st.i], t0=performance.now();
     let done=false;
     box.innerHTML=`<div class="qz-card"><div class="qz-top"><span>Pitanje ${st.i+1} od ${q.length}</span><b id="qz-sec">${QZ_T/1000}</b></div><div class="qz-timer"><i id="qz-bar"></i></div><div class="qz-q">${wrEsc(cur.t)}</div>${cur.o.map((o,k)=>`<button class="qz-opt" data-k="${k}">${wrEsc(o)}</button>`).join('')}</div>`;
     const bar=box.querySelector('#qz-bar'), sec=box.querySelector('#qz-sec');
     const end=k=>{
       if(done) return; done=true; clearInterval(iv);
-      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); if(k===cur.a){ st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; haptic(35); } else haptic([25,60,25]);
+      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); st.dts.push(Math.round(dt)); if(k===cur.a){ st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; haptic(35); } else haptic([25,60,25]);
       box.querySelectorAll('.qz-opt').forEach((b,j)=>{b.disabled=true; if(j===cur.a) b.classList.add('ok'); else if(j===k) b.classList.add('bad');});
       setTimeout(show,800);
     };
@@ -10640,15 +10917,36 @@ async function qzStart(practice,key){
   };
   show();
 }
-async function qzFinish(st,datum,practice){
+function qzRev(q,A,B,nA,nB){
+  if(!Array.isArray(q)||!A) return '';
+  const pick=(ans,i,o)=>{ const k=ans&&ans[i]; return (k===undefined||k===null||k<0)?'bez odgovora':(o[k]===undefined?'bez odgovora':o[k]); };
+  return '<div>'+q.map((x,i)=>{
+    const ok=A[i]===x.a;
+    const oth=B?`<div class="qz-rv-o">${nB}: ${B[i]===x.a?'✓':'✗'} ${wrEsc(pick(B,i,x.o))}</div>`:'';
+    return `<div class="qz-rv ${ok?'ok':'bad'}"><div class="qz-rv-q">${i+1}. ${wrEsc(x.t)}</div><div class="qz-rv-a">${ok?'✓':'✗'} ${nA}: ${wrEsc(pick(A,i,x.o))}</div>${ok?'':`<div class="qz-rv-c">Točno: ${wrEsc(x.o[x.a])}</div>`}${oth}</div>`;
+  }).join('')+'</div>';
+}
+function qzShowRev(key){
+  const box=document.getElementById('kviz-content'), who=qzWho(); if(!box||!who) return;
+  const d=_qz.data[key]||{}, other=who==='luka'?'lovro':'luka', nm=x=>x==='luka'?'Luka':'Lovro';
+  const lbl=fmtDate(key.slice(0,10))+(key.length>10?' '+key.slice(11,13)+':'+key.slice(13,15):'');
+  let body;
+  if(!d[who]) body='<div class="qz-p">Odigraj taj kviz da vidiš pregled odgovora.</div>';
+  else if(!Array.isArray(d.q)||!Array.isArray(d[who].a)) body='<div class="qz-p">Za ovaj kviz nema spremljenih odgovora.</div>';
+  else body=qzRev(d.q,d[who].a,d[other]&&Array.isArray(d[other].a)?d[other].a:null,nm(who),nm(other));
+  box.innerHTML=`<div class="qz-card"><div class="qz-top"><span>Pregled kviza, ${lbl}</span></div>${d.opp?`<div class="qz-p">${wrEsc(d.opp)}</div>`:''}${body}<button class="btn-sm" style="padding:10px;" onclick="renderKviz()">Natrag na tablicu</button></div>`;
+}
+window.qzShowRev=qzShowRev;
+async function qzFinish(st,datum,practice,q){
   const box=document.getElementById('kviz-content'), who=_qz.who;
-  const res={s:st.score,n:st.n,p:st.pts,ms:Math.round(st.ms),a:st.ans,t:Date.now()};
+  const res={s:st.score,n:st.n,p:st.pts,ms:Math.round(st.ms),a:st.ans,d:st.dts||[],t:Date.now()};
   let msg='';
   if(!practice){
     try{ await set(ref(db,`quiz/${datum}/${who}`),res); }
     catch(e){ msg='<div class="qz-p" style="color:#F87171;">Rezultat nije spremljen. Provjeri Firebase pravila za čvor "quiz".</div>'; }
   }
-  box.innerHTML=`<div class="qz-card" style="text-align:center;"><div class="qz-big">${st.pts} b</div><div class="qz-p">${st.score}/${st.n} točno, brzih odgovora: ${st.fast}</div><div class="qz-p">${(st.ms/1000).toFixed(1)} s ukupno${practice?' (vježba, ne boduje se)':''}</div>${msg}<button class="btn-sm" style="padding:10px;" onclick="renderKviz()">Natrag na tablicu</button></div>`;
+  box.innerHTML=`<div class="qz-card" style="text-align:center;"><div class="qz-big">${st.pts} b</div><div class="qz-p">${st.score}/${st.n} točno, brzih odgovora: ${st.fast}</div><div class="qz-p">${(st.ms/1000).toFixed(1)} s ukupno${practice?' (vježba, ne boduje se)':''}</div>${msg}<button class="btn-sm" style="padding:10px;" onclick="renderKviz()">Natrag na tablicu</button></div>`
+    +(q?`<div class="qz-card" style="margin-top:12px;"><div class="qz-p" style="font-weight:700;">Pregled odgovora</div>${qzRev(q,st.ans,null,'Ti')}</div>`:'');
   if(st.score===st.n) fireConfetti();
   qzBadge();
 }
@@ -10749,11 +11047,12 @@ async function qzLiveEnd(d){
   const played=Object.keys(mineAns).length>0;
   const a=qzTally(q,mineAns,n-1), b=qzTally(q,d.ans&&d.ans[other],n-1);
   if(played){
-    try{ await set(ref(db,`quiz/${d.key}/${who}`),{s:a.s,n,p:a.p,ms:Math.round(a.ms),a:q.map((_,i)=>mineAns[i]?mineAns[i].k:-1),t:Date.now(),live:true}); }catch(e){}
+    try{ await set(ref(db,`quiz/${d.key}/${who}`),{s:a.s,n,p:a.p,ms:Math.round(a.ms),a:q.map((_,i)=>mineAns[i]?mineAns[i].k:-1),d:q.map((_,i)=>mineAns[i]?Math.round(Math.min(mineAns[i].ms||0,QZ_T)):0),t:Date.now(),live:true}); }catch(e){}
   }
   const verdict=a.p===b.p&&Math.round(a.ms)===Math.round(b.ms)?'Neriješeno.':(a.p>b.p||(a.p===b.p&&a.ms<b.ms))?'Pobijedio si!':`Pobijedio je ${nm(other)}.`;
   if(played && verdict==='Pobijedio si!') fireConfetti();
-  box.innerHTML=`<div class="qz-card" style="text-align:center;margin-bottom:12px;"><div class="qz-p">Kviz uživo je gotov</div><div class="qz-big">${nm(who)} ${a.p} : ${b.p} ${nm(other)}</div><div class="qz-p">${a.s}/${n} točno prema ${b.s}/${n}</div><div class="qz-p">${played?verdict:'Nisi sudjelovao/la.'}</div><button class="btn-sm" style="padding:10px;" onclick="qzLiveHide()">Zatvori</button></div>`;
+  box.innerHTML=`<div class="qz-card" style="text-align:center;margin-bottom:12px;"><div class="qz-p">Kviz uživo je gotov</div><div class="qz-big">${nm(who)} ${a.p} : ${b.p} ${nm(other)}</div><div class="qz-p">${a.s}/${n} točno prema ${b.s}/${n}</div><div class="qz-p">${played?verdict:'Nisi sudjelovao/la.'}</div><button class="btn-sm" style="padding:10px;" onclick="qzLiveHide()">Zatvori</button></div>`
+    +(played?`<div class="qz-card" style="margin-bottom:12px;"><div class="qz-p" style="font-weight:700;">Pregled odgovora</div>${qzRev(q,q.map((_,i)=>mineAns[i]?mineAns[i].k:-1),d.ans&&d.ans[other]?q.map((_,i)=>d.ans[other][i]?d.ans[other][i].k:-1):null,nm(who),nm(other))}</div>`:'');
 }
 async function qzBadge(){
   const btn=document.getElementById('nav-kviz'); if(!btn) return;
@@ -10761,7 +11060,7 @@ async function qzBadge(){
   const who=qzWho();
   if(who){
     try{
-      const snap=await get(ref(db,'quiz')), d=snap.exists()?snap.val():{};
+      const d=await qzFetch(false);
       need=Object.keys(d).some(k=>d[k]&&d[k].manual&&d[k].q&&!d[k][who]);
       const ld=_ql.d; if(!need&&ld&&ld.status==='lobby'&&ld.host!==who&&!(ld.ready&&ld.ready[who])&&Date.now()-(ld.created||0)<900000) need=true;
       if(!need){ const t=await qzToday(); need=!!(t.now&&!(d[t.today]&&d[t.today][who])); }
