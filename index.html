@@ -1244,6 +1244,26 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 .qz-opt.ok{animation:qzPop .35s ease;}
 .qz-opt.bad{animation:qzShake .35s ease;}
 @media(prefers-reduced-motion:reduce){.qz-opt.ok,.qz-opt.bad,.seg-ind,.app-dlg-box,.sel-sheet-box,.modal{animation:none!important;transition:none!important;}}
+/* Sparkline: dodir otvara detaljni graf */
+.stat-card{display:flex;flex-direction:column;}
+.spark{position:relative;cursor:pointer;margin-top:auto!important;padding-top:8px;height:auto;}
+.spark svg{height:26px;}
+.spark::after{content:'⤢';position:absolute;right:0;top:-2px;font-size:11px;color:var(--text-muted);opacity:.75;}
+.spark:active{opacity:.6;}
+.sp-chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px;}
+.sp-chip{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;padding:8px 10px;}
+.sp-chip b{display:block;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;font-weight:400;}
+.sp-chip span{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;}
+.sp-chip i{font-style:normal;font-size:10px;color:var(--text-muted);display:block;margin-top:1px;}
+/* Changelog */
+.cl-sec{margin-bottom:18px;}
+.cl-head{display:flex;align-items:baseline;justify-content:space-between;margin:2px 0 6px;}
+.cl-v{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:#fff;}
+.cl-d{font-size:11px;color:var(--text-muted);}
+.cl-new{background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.4);border-radius:100px;padding:1px 8px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;font-family:'Barlow',sans-serif;letter-spacing:0;}
+.cl-item{display:flex;gap:10px;padding:8px 0;font-size:13px;line-height:1.45;color:var(--text);border-bottom:1px solid var(--border);}
+.cl-item:last-child{border-bottom:none;}
+.cl-ic{flex-shrink:0;width:22px;text-align:center;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1257,6 +1277,8 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 <div id="no-data" style="display:none;position:fixed;inset:0;z-index:9998;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;"><img src="assets/img002.png" alt="" width="48" style="opacity:.5;"><div style="color:#fff;font-size:16px;font-weight:700;">Nema podataka</div><div style="color:var(--text-muted);font-size:13px;">Spoji se na mrežu i pokušaj ponovno.</div><button class="btn-sm" style="padding:10px 22px;" onclick="location.reload()">Pokušaj ponovno</button></div>
 <div id="app-dlg" class="app-dlg"><div class="app-dlg-box"><div class="app-dlg-ic"></div><div class="app-dlg-msg"></div><div class="app-dlg-btns"><button class="app-dlg-cancel">Odustani</button><button class="app-dlg-ok">U redu</button></div></div></div>
 <div id="sel-sheet" class="sel-sheet"><div class="sel-sheet-box"><div class="sel-sheet-handle"></div><input id="sel-sheet-q" class="sel-sheet-q" type="search" placeholder="Traži…" autocomplete="off"><div id="sel-sheet-list" class="sel-sheet-list"></div></div></div>
+<div id="spark-overlay" class="top5-overlay" onclick="if(event.target===this)sparkClose()"><div class="top5-box" style="max-width:640px;"><div class="top5-header"><span class="top5-title" id="spark-title"></span><button class="top5-close" onclick="sparkClose()">✕</button></div><div style="overflow-y:auto;padding:14px 18px 18px;"><div id="spark-tabs" style="margin-bottom:12px;"></div><div id="spark-chart" style="position:relative;"></div><div id="spark-chips" class="sp-chips"></div></div></div></div>
+<div id="changelog-overlay" class="top5-overlay" onclick="if(event.target===this)closeChangelog()"><div class="top5-box" style="max-width:520px;"><div class="top5-header"><span class="top5-title">🆕 Što je novo</span><button class="top5-close" onclick="closeChangelog()">✕</button></div><div id="changelog-body" style="overflow-y:auto;padding:14px 18px;"></div><div style="padding:12px 18px 16px;border-top:1px solid var(--border);"><button class="btn-sm" style="width:100%;padding:12px;background:linear-gradient(135deg,#0057B8,#2E7CE0);border:none;color:#fff;font-weight:700;" onclick="closeChangelog()">Super, dalje</button></div></div></div>
 <div id="offline-banner">Nema mreže — prikazani su spremljeni podaci.</div>
 <div id="fb-loading"><img src="assets/img002.png" alt="GNK Dinamo Zagreb"><span>UČITAVANJE</span></div>
 
@@ -3043,7 +3065,7 @@ function goTo(page) {
   window.scrollTo(0,0);
   if(page==='golovi') { setTimeout(()=>{renderGoalStats();renderPlayerStats();renderGoalList();populateMatchSelect();},50); }
   if(page==='karte') { setTimeout(()=>loadKarte(),50); }
-  if(page==='raspored') { setTimeout(()=>renderRaspored(),50); }
+  if(page==='raspored') { oppFlushPending(); setTimeout(()=>renderRaspored(),50); }
   if(page==='statistika') { setTimeout(()=>filterMatches(),50); }
   if(page==='kviz') { setTimeout(()=>renderKviz(),50); }
 }
@@ -4509,7 +4531,7 @@ function appConfirm(m){ return appDialog(m,true); }
 window.appAlert=appAlert; window.appConfirm=appConfirm; window.alert=appAlert;
 
 function segApply(){
-  document.querySelectorAll('.sched-filters,#pred-chart-toggle,#pred-trend-tabs').forEach(c=>{
+  document.querySelectorAll('.sched-filters,#pred-chart-toggle,#pred-trend-tabs,#spark-tabs').forEach(c=>{
     if(!c.classList.contains('seg')) c.classList.add('seg');
     let ind=c.querySelector(':scope>.seg-ind');
     const act=c.querySelector(':scope>button.active');
@@ -4579,26 +4601,173 @@ function sparkSvg(vals,color){
   const area=d+` L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0].toFixed(1)},${H} Z`;
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}"><path d="${area}" fill="${color}" opacity=".15"/><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 }
-function sparkApply(filtered){
+function sparkCtx(filtered){
   const f=[...(filtered||[])].filter(m=>m&&m.datum).sort((a,b)=>String(a.datum).localeCompare(String(b.datum)));
   const res=f.map(m=>{ const p=String(m.rezultat||'').split('-').map(Number); return p.length===2&&p.every(n=>!isNaN(n))?p:[0,0]; });
   const views=f.map(m=>Number(m.gledatelji)||0);
-  let wins=0,sum=0,mx=0;
-  const S={
-    'stat-total':f.map((m,i)=>{ if(res[i][0]>res[i][1]) wins++; return wins/(i+1)*100; }),
-    'stat-viewers':views,
-    'stat-avg':views.map(v=>{ sum+=v; return 0; }).map((_,i)=>views.slice(0,i+1).reduce((a,b)=>a+b,0)/(i+1)),
-    'stat-best':views.map(v=>(mx=Math.max(mx,v))),
-    'stat-scored':res.map(p=>p[0]),
-    'stat-conceded':res.map(p=>p[1])
-  };
-  const C={'stat-total':'#60A5FA','stat-viewers':'#60A5FA','stat-avg':'#A78BFA','stat-best':'#FBBF24','stat-scored':'#4ADE80','stat-conceded':'#F87171'};
-  Object.keys(S).forEach(id=>{
+  const out=f.map(m=>{ try{ return getResult(String(m.rezultat||'0-0'),m.penali); }catch(e){ return 'draw'; } });
+  return {f,res,views,out};
+}
+const _runAvg=a=>{ let s=0; return a.map((v,i)=>(s+=v)/(i+1)); };
+const _runSum=a=>{ let s=0; return a.map(v=>(s+=v)); };
+const _runMax=a=>{ let m=0; return a.map(v=>(m=Math.max(m,v))); };
+const _n0=v=>fmtNum(Math.round(v)), _d2=v=>v.toFixed(2);
+const SPARK_CFG={
+  'stat-total':{title:'Ukupno utakmica',c:'#60A5FA',tabs:[
+    {l:'% pobjeda',t:'line',max:100,f:x=>{ let w=0; return x.out.map((o,i)=>{ if(o==='win') w++; return w/(i+1)*100; }); },fmt:v=>Math.round(v)+'%'},
+    {l:'Bodovi',t:'bar',max:3,f:x=>x.out.map(o=>o==='win'?3:o==='draw'?1:0),fmt:v=>v+' b'}]},
+  'stat-viewers':{title:'Ukupno gledatelja',c:'#60A5FA',tabs:[
+    {l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.views),fmt:_n0}]},
+  'stat-avg':{title:'Prosjek gledatelja',c:'#A78BFA',tabs:[
+    {l:'Prosjek do tada',t:'line',f:x=>_runAvg(x.views),fmt:_n0},{l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0}]},
+  'stat-best':{title:'Rekord gledanosti',c:'#FBBF24',tabs:[
+    {l:'Rekord do tada',t:'line',f:x=>_runMax(x.views),fmt:_n0},{l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0}]},
+  'stat-scored':{title:'Zabijeni golovi',c:'#4ADE80',tabs:[
+    {l:'Po utakmici',t:'bar',f:x=>x.res.map(p=>p[0]),fmt:v=>String(v)},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.res.map(p=>p[0])),fmt:v=>String(v)},{l:'Prosjek',t:'line',f:x=>_runAvg(x.res.map(p=>p[0])),fmt:_d2}]},
+  'stat-conceded':{title:'Primljeni golovi',c:'#F87171',tabs:[
+    {l:'Po utakmici',t:'bar',f:x=>x.res.map(p=>p[1]),fmt:v=>String(v)},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.res.map(p=>p[1])),fmt:v=>String(v)},{l:'Prosjek',t:'line',f:x=>_runAvg(x.res.map(p=>p[1])),fmt:_d2}]}
+};
+function sparkApply(filtered){
+  const ctx=sparkCtx(filtered); window._sparkCtx=ctx;
+  Object.keys(SPARK_CFG).forEach(id=>{
     const el=document.getElementById(id); const card=el&&el.closest('.stat-card'); if(!card) return;
-    let sp=card.querySelector(':scope>.spark'); if(!sp){ sp=document.createElement('div'); sp.className='spark'; card.appendChild(sp); }
-    sp.innerHTML=sparkSvg(S[id],C[id]);
+    let sp=card.querySelector(':scope>.spark'); if(!sp){ sp=document.createElement('div'); sp.className='spark'; sp.title='Dodirni za detalje'; card.appendChild(sp); }
+    sp.onclick=e=>{ e.stopPropagation(); sparkOpen(id); };
+    const cfg=SPARK_CFG[id]; sp.innerHTML=sparkSvg(cfg.tabs[0].f(ctx),cfg.c);
   });
 }
+function sparkClose(){ const o=document.getElementById('spark-overlay'); if(o) o.classList.remove('open'); }
+window.sparkClose=sparkClose;
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') sparkClose(); });
+function sparkMl(m){ return `${wrEsc(officialName(m.protivnik||''))} (${fmtDate(m.datum)})`; }
+function sparkChips(id,x){
+  const ex=(vals,fmt,what)=>{ if(!vals.length) return []; let mi=0,ma=0; vals.forEach((v,i)=>{ if(v<vals[mi]) mi=i; if(v>vals[ma]) ma=i; });
+    const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    return [[`Najviše ${what}`,fmt(vals[ma]),sparkMl(x.f[ma])],[`Najmanje ${what}`,fmt(vals[mi]),sparkMl(x.f[mi])],[`Prosjek ${what}`,fmt(avg),'po utakmici']]; };
+  if(id==='stat-total'){ const w=x.out.filter(o=>o==='win').length,d=x.out.filter(o=>o==='draw').length,l=x.out.filter(o=>o==='loss').length; return [['Pobjede',w,''],['Remiji',d,''],['Porazi',l,''],['Bodovi',w*3+d,`${(x.f.length?(w*3+d)/x.f.length:0).toFixed(2)} po utakmici`]]; }
+  if(id==='stat-viewers'||id==='stat-avg'||id==='stat-best') return ex(x.views,_n0,'gledatelja');
+  const k=id==='stat-scored'?0:1, v=x.res.map(p=>p[k]), c=ex(v,n=>n.toFixed?(Number.isInteger(n)?String(n):n.toFixed(2)):n,'golova');
+  c.push([k===0?'Bez zabijenog gola':'Čista mreža',v.filter(n=>n===0).length,'utakmica']); return c;
+}
+function sparkOpen(id){
+  const cfg=SPARK_CFG[id], x=window._sparkCtx, o=document.getElementById('spark-overlay'); if(!cfg||!x||!o) return;
+  document.getElementById('spark-title').textContent=cfg.title;
+  const tabs=document.getElementById('spark-tabs'), ch=document.getElementById('spark-chart'), chips=document.getElementById('spark-chips');
+  if(x.f.length<2){ tabs.innerHTML=''; ch.innerHTML='<div class="prc-empty">Treba barem 2 utakmice.</div>'; chips.innerHTML=''; o.classList.add('open'); return; }
+  const draw=i=>{ tabs.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i)); ch.innerHTML=sparkChart(x,cfg.tabs[i],cfg.c); const sc=document.getElementById('sp-scroll'); if(sc) sc.scrollLeft=sc.scrollWidth; };
+  tabs.innerHTML=cfg.tabs.map((t,i)=>`<button class="prc-toggle-btn${i===0?' active':''}" data-i="${i}">${t.l}</button>`).join('');
+  tabs.onclick=e=>{ const b=e.target.closest('button'); if(b) draw(+b.dataset.i); };
+  chips.innerHTML=sparkChips(id,x).map(c=>`<div class="sp-chip"><span>${c[0]}</span><b>${c[1]}</b>${c[2]?`<i>${c[2]}</i>`:''}</div>`).join('');
+  o.classList.add('open'); draw(0); requestAnimationFrame(segApply);
+}
+window.sparkOpen=sparkOpen;
+function sparkChart(x,tab,color){
+  const vals=tab.f(x), n=x.f.length, bar=tab.t==='bar';
+  const W=Math.max(320,n*(bar?26:34)), H=210, padL=42, padR=14, padT=18, padB=30, innerW=W-padL-padR, innerH=H-padT-padB;
+  const hi=Math.max(...vals,0), maxV=tab.max||Math.max(1,hi*1.12);
+  const xFor=i=>padL+(n===1?innerW/2:i/(n-1)*innerW), yFor=v=>padT+innerH-(v/maxV*innerH);
+  const lab=v=>maxV>=1000?_n0(v):(maxV<=10?String(Math.round(v*10)/10):String(Math.round(v)));
+  const grid=[0,0.25,0.5,0.75,1].map(g=>{ const v=maxV*g,y=yFor(v); return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${lab(v)}</text>`; }).join('');
+  const base=(padT+innerH).toFixed(1), band=n>1?innerW/(n-1):innerW;
+  let shape='';
+  if(bar){
+    const bw=Math.max(4,Math.min(18,band*0.62)), mi=vals.indexOf(hi);
+    shape=vals.map((v,i)=>{ const h=Math.max(v>0?2:0,base-yFor(v)); return `<rect x="${(xFor(i)-bw/2).toFixed(1)}" y="${(padT+innerH-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${color}" opacity="${i===mi?1:0.7}"/>`; }).join('');
+  }else{
+    const pts=vals.map(v=>({v})), lp=smoothPath(pts,xFor,yFor,'v');
+    shape=`<defs><linearGradient id="spG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${lp} L${xFor(n-1).toFixed(1)},${base} L${xFor(0).toFixed(1)},${base} Z" fill="url(#spG)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`+vals.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3" fill="${color}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
+  }
+  const guides=vals.map((v,i)=>`<line class="sp-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${base}" stroke="#fff" opacity="0" pointer-events="none"/>`).join('');
+  const hits=vals.map((v,i)=>`<rect x="${(xFor(i)-band/2).toFixed(1)}" y="${padT}" width="${band.toFixed(1)}" height="${innerH}" fill="transparent" onpointerenter="sparkShow(${i})" onpointermove="sparkShow(${i})" onpointerdown="sparkShow(${i})" onpointerleave="sparkHide(event)"/>`).join('');
+  const step=n>40?5:n>20?2:1;
+  const xl=vals.map((v,i)=>(i%step!==0&&i!==n-1)?'':`<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${i+1}</text>`).join('');
+  window._spD={x,vals,tab,xFor,n};
+  return `<div style="position:relative;"><div id="sp-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide()"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">UTAKMICA →</text>${xl}</svg></div><div id="sp-tip" class="prc-tooltip" style="display:none;"></div></div>`;
+}
+function sparkShow(i){
+  const d=window._spD, sc=document.getElementById('sp-scroll'), tip=document.getElementById('sp-tip'); if(!d||!sc||!tip) return;
+  document.querySelectorAll('#spark-chart .sp-guide').forEach(g=>g.setAttribute('opacity',+g.dataset.idx===i?'0.45':'0'));
+  document.querySelectorAll('#spark-chart .sp-dot').forEach(c=>c.setAttribute('r',+c.dataset.idx===i?'5.5':'3'));
+  const m=d.x.f[i];
+  tip.innerHTML=`<div style="font-size:11px;font-weight:700;color:#fff;">${i+1}. ${wrEsc(officialName(m.protivnik||''))}</div><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">${fmtDate(m.datum)} · rezultat ${wrEsc(m.rezultat||'—')}${m.gledatelji?` · ${fmtNum(m.gledatelji)} gled.`:''}</div><div style="font-size:12px;color:#fff;">${d.tab.l}: <b>${d.tab.fmt(d.vals[i])}</b></div>`;
+  tip.style.display='block'; tip.style.top='0px';
+  const box=tip.parentElement, tw=tip.offsetWidth;
+  tip.style.left=Math.max(0,Math.min(d.xFor(i)-sc.scrollLeft-tw/2,box.clientWidth-tw))+'px';
+}
+function sparkHide(ev){
+  if(ev&&ev.pointerType&&ev.pointerType!=='mouse') return;
+  document.querySelectorAll('#spark-chart .sp-guide').forEach(g=>g.setAttribute('opacity','0'));
+  document.querySelectorAll('#spark-chart .sp-dot').forEach(c=>c.setAttribute('r','3'));
+  const t=document.getElementById('sp-tip'); if(t) t.style.display='none';
+}
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest||!e.target.closest('#spark-chart svg')) sparkHide(); });
+window.sparkShow=sparkShow; window.sparkHide=sparkHide;
+
+
+/* ===== VERZIJA I CHANGELOG ===== */
+// Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
+const APP_VERSION='2.0.0';
+const CHANGELOG=[
+  {v:'2.0.0',d:'2026-10-24',items:[
+    ['🧠','Kviz: pitanja se ne ponavljaju zadnjih 6 kvizova, ima 20 vrsta pitanja, a pitanja o stadionu su maknuta'],
+    ['🧐','Kviz: nakon kviza vidiš pregled odgovora, a dodirom na datum u tablici i pregled starih kvizova'],
+    ['📈','Kviz: statistika (serija, točnost, najbrži odgovor), kružni brojač i 🔥 za niz točnih odgovora'],
+    ['⚡','Kviz uživo ima svoj ukupni rezultat, odvojen od dnevnog kviza'],
+    ['⚔️','Prediktor: Luka vs Lovro po natjecanju i protivniku (pobjednik i točan rezultat)'],
+    ['📉','Prediktor: novi graf Kretanje točnosti kroz sezonu, a oba grafa imaju moderni slider'],
+    ['📊','Statistika: dodirni mali graf ispod kartice za detaljni graf po utakmicama'],
+    ['🔥','Forma: niz pobjeda više ne računa utakmice reprezentacije'],
+    ['🔎','Raspored: kartica „O protivniku” je otvorena kad prvi put vidiš tu utakmicu, a poslije zatvorena'],
+    ['📶','Rad bez mreže: aplikacija se otvara i bez signala, uz spremljene podatke'],
+    ['🛡️','Zaštita baze: spremanje se zaustavlja ako bi popis utakmica ili golova naglo nestao'],
+    ['🎨','Novi izgled: klizni tabovi, vlastiti prozori umjesto sistemskih, prekidači, izbornik odozdo i modali koji se povlače'],
+    ['💾','Aplikacija pamti koje su kartice otvorene, a koje zatvorene']
+  ]}
+];
+const CL_KEY='dinamo_seen_version';
+function clUnseen(seen){
+  if(!seen) return CHANGELOG.slice(0,1);
+  const i=CHANGELOG.findIndex(e=>e.v===seen);
+  return i===-1?CHANGELOG.slice(0,1):CHANGELOG.slice(0,i);
+}
+function openChangelog(all){
+  const o=document.getElementById('changelog-overlay'), b=document.getElementById('changelog-body'); if(!o||!b) return;
+  let seen=null; try{ seen=localStorage.getItem(CL_KEY); }catch(e){}
+  const fresh=new Set(clUnseen(seen).map(e=>e.v));
+  const list=all?CHANGELOG:clUnseen(seen);
+  b.innerHTML=list.map(e=>`<div class="cl-sec"><div class="cl-head"><span class="cl-v">v${e.v}${(!all||fresh.has(e.v))&&seen!==APP_VERSION?'<span class="cl-new">NOVO</span>':''}</span><span class="cl-d">${fmtDate(e.d)}</span></div>${e.items.map(it=>`<div class="cl-item"><span class="cl-ic">${it[0]}</span><span>${it[1]}</span></div>`).join('')}</div>`).join('');
+  o.classList.add('open'); b.scrollTop=0;
+}
+function closeChangelog(){
+  const o=document.getElementById('changelog-overlay'); if(o) o.classList.remove('open');
+  try{ localStorage.setItem(CL_KEY,APP_VERSION); }catch(e){}
+}
+function clCheck(){
+  let seen=null; try{ seen=localStorage.getItem(CL_KEY); }catch(e){}
+  if(seen===APP_VERSION) return;
+  if(!clUnseen(seen).length){ try{ localStorage.setItem(CL_KEY,APP_VERSION); }catch(e){} return; }
+  openChangelog(false);
+}
+window.openChangelog=openChangelog; window.closeChangelog=closeChangelog;
+window.addEventListener('load',()=>{ let tries=0; const t=setInterval(()=>{ const l=document.getElementById('fb-loading'); if(!l||l.style.display==='none'||++tries>25){ clearInterval(t); try{ clCheck(); }catch(e){ console.warn('changelog',e); } } },700); });
+
+/* ===== "O protivniku": otvoreno kad se utakmica prvi put prikaže, poslije zatvoreno ===== */
+const _oppSession=new Set(), _oppPending=new Set(), OPP_KEY='dinamo_opp_seen_v1';
+function oppMarkSeen(key){
+  let seen={}; try{ seen=JSON.parse(localStorage.getItem(OPP_KEY)||'{}')||{}; }catch(e){}
+  seen[key]=1; const ks=Object.keys(seen); if(ks.length>80) ks.slice(0,ks.length-80).forEach(k=>delete seen[k]);
+  try{ localStorage.setItem(OPP_KEY,JSON.stringify(seen)); }catch(e){}
+  _oppSession.add(key); _oppPending.delete(key);
+}
+function oppShouldOpen(key){
+  if(_oppSession.has(key)) return true;
+  let seen={}; try{ seen=JSON.parse(localStorage.getItem(OPP_KEY)||'{}')||{}; }catch(e){}
+  if(seen[key]) return false;
+  const pg=document.getElementById('page-raspored');
+  if(pg&&pg.classList.contains('active')) oppMarkSeen(key); else _oppPending.add(key);
+  return true;
+}
+function oppFlushPending(){ [..._oppPending].forEach(oppMarkSeen); }
 
 const CS_KEY='dinamo_collapse_v1';
 function csLoad(){ try{ return JSON.parse(localStorage.getItem(CS_KEY)||'{}')||{}; }catch(e){ return {}; } }
@@ -4617,7 +4786,7 @@ function csSave(h,open){
 function csApply(){
   const st=csLoad(); if(!Object.keys(st).length) return;
   document.querySelectorAll('[onclick*="toggleCollapse"]').forEach(h=>{
-    if(h.dataset.cs) return; h.dataset.cs='1';
+    if(h.dataset.cs||h.dataset.nocs) return; h.dataset.cs='1';
     const b=h.nextElementSibling; if(!b) return;
     const v=st[csKey(h)]; if(v===undefined) return;
     b.classList.toggle('js-collapsed',!v);
@@ -4635,7 +4804,8 @@ function toggleCollapse(headerEl){
   const isOpen = !body.classList.contains('js-collapsed');
   body.classList.toggle('js-collapsed', isOpen);
   if(chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-  csSave(headerEl,!isOpen);
+  if(!headerEl.dataset.nocs) csSave(headerEl,!isOpen);
+  const ok=headerEl.dataset.oppkey; if(ok){ if(isOpen) _oppSession.delete(ok); else _oppSession.add(ok); }
 }
 window.toggleCollapse = toggleCollapse;
 
@@ -9197,12 +9367,14 @@ function renderOpponentInfo(next, isHome){
 
   const crest = getClubCrest(oppOfficial,24);
 
+  const _oppKey=String(next.datum+'|'+oppOfficial).replace(/"/g,'');
+  const _oppOpen=oppShouldOpen(_oppKey);
   el.innerHTML = `<div class="sched-forma-card" id="opponent-info-card" style="margin-top:14px;padding:0;">
-    <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+    <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" data-nocs="1" data-oppkey="${_oppKey}" onclick="toggleCollapse(this)">
       <span>🔎 O PROTIVNIKU ${crest} ${oppOfficial.toUpperCase()}</span>
-      <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+      <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;${_oppOpen?'transform:rotate(180deg);':''}">▾</span>
     </div>
-    <div class="js-collapsed" style="display:flex;flex-direction:column;padding:14px;">
+    <div class="${_oppOpen?'':'js-collapsed'}" style="display:flex;flex-direction:column;padding:14px;">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:14px;">
       <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;">
         <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Susreta</div>
@@ -11689,6 +11861,7 @@ function renderSettings(){
     ${ov?`<button class="btn-sm" style="width:100%;padding:8px;margin-bottom:14px;" onclick="setWhoOverride(null);renderSettings();qzBadge();">Poništi, nagađaj iz prijave</button>`:''}
     <div class="qz-p" style="margin-bottom:6px;">Tvoj avatar</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">${who?avRow(who):'<div class="qz-p">Prijavi se i odaberi tko si da bi postavio avatar.</div>'}</div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;"><span class="qz-p">Verzija <b style="color:#fff;">${APP_VERSION}</b> · ${fmtDate(CHANGELOG[0].d)}</span><button class="btn-sm" onclick="closeSettings();openChangelog(true)">🆕 Što je novo</button></div>
   `;
 }
 function openSettings(){ document.getElementById('settings-overlay')?.classList.add('open'); renderSettings(); }
