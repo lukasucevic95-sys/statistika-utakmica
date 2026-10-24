@@ -1274,6 +1274,18 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 @keyframes sparkHint{0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0);}50%{box-shadow:0 0 0 3px rgba(96,165,250,0.3);}}
 .sp-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-bottom:8px;}
 .sp-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+/* Stranice ne smiju biti šire od ekrana (grid kolona se više ne širi zbog sadržaja) */
+.s-main,.p-main{grid-template-columns:minmax(0,1fr);}
+@media(min-width:1001px){.s-main{grid-template-columns:minmax(0,1fr) 330px;}.p-main{grid-template-columns:420px minmax(0,1fr);}}
+.s-main>*,.p-main>*,.g-main>*{min-width:0;max-width:100%;}
+@media(max-width:1000px){.stats-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;}}
+.stat-card{min-width:0;}
+.section-header,.header-right,.table-section,.table-wrap,.season-bar{max-width:100%;min-width:0;}
+.header-right>*{min-width:0;}
+.page.active{overflow-x:clip;}
+@media(max-width:1000px){.s-main,.g-main{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important;}}
+/* Statistika: sadržaj je sada unutar .s-main (razmak od rubova), bez bočne kolone */
+#page-statistika .s-main{display:block;grid-template-columns:none!important;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1485,7 +1497,6 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
           <button onclick="closeStatMore();openLiga()"><svg class="nav-ic" viewBox="0 0 20 20"><path d="M6 4h8v3.2a4 4 0 01-8 0V4z"/><path d="M6 5H4.3a1.8 1.8 0 001.9 2.6M14 5h1.7a1.8 1.8 0 01-1.9 2.6"/><path d="M10 11.2v2.3M7.3 16.2h5.4M7.8 16.2c0-1.5.6-2.1 2.2-2.1s2.2.6 2.2 2.1"/></svg><span>Liga<i>Prediktor, Kviz, rekordi</i></span></button>
         </div>
       </div>
-      </div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn-sm" style="background:rgba(96,165,250,0.15);color:#93C5FD;border:1px solid rgba(96,165,250,0.3);" onclick="exportAppData()">💾 Backup</button>
         <button class="btn-sm" style="background:rgba(74,222,128,0.15);color:#4ADE80;border:1px solid rgba(74,222,128,0.3);" onclick="shareElementAsImage('stats-bar-share','statistika',this)">📤 Podijeli</button>
@@ -1688,6 +1699,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         </div>
       </div>
   </div>
+</div><!-- /page-statistika -->
 
   <div class="modal-overlay" id="modal" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal">
@@ -2121,24 +2133,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         </div>
       </div>
 
-      <div class="score-legend" style="padding:0;">
-        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
-          <span>📖 BODOVANJE</span>
-          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
-        </div>
-        <div class="js-collapsed" style="display:flex;padding:10px 14px 14px;flex-direction:column;gap:5px;">
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan rezultat (konačni)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>5/3/1 boda — gledatelji (±100 / ±500 / bliži)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — točna minuta početka (samo točno!)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#F9A8D4"></div>1 bod — točna minuta poluvremena (samo točno!)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola (samo točno!)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#C4B5FD"></div>2 boda — točan poluvremeni rezultat</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
-        <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji + oba kašnjenja</div>
-        </div>
-      </div>
+      
 
       <div class="form-card">
         <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
@@ -2220,22 +2215,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         </div>
 
         <!-- Away score legend -->
-        <div class="score-legend" style="margin-bottom:14px;padding:0;">
-          <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
-            <span style="color:#F87171;">📖 BODOVANJE — GOSTOVANJE</span>
-            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
-          </div>
-          <div class="js-collapsed" style="display:flex;padding:10px 14px 14px;flex-direction:column;gap:5px;">
-          <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan konačni rezultat</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>5/3/1 boda — gledatelji (±100 / ±500 / bliži)</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#C4B5FD"></div>2 boda — točan poluvremeni rezultat</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
-          <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji</div>
-          </div>
-        </div>
+        
 
         <!-- Away form -->
         <div class="form-card">
@@ -2335,6 +2315,42 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         </div>
         <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
       </div>
+
+      <!-- BODOVANJE (prati tab Domaće / Gostovanje) -->
+      <div id="pred-legend-home"><div class="score-legend" style="padding:0;">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+          <span>📖 BODOVANJE</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div class="js-collapsed" style="display:flex;padding:10px 14px 14px;flex-direction:column;gap:5px;">
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan rezultat (konačni)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>5/3/1 boda — gledatelji (±100 / ±500 / bliži)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>1 bod — točna minuta početka (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#F9A8D4"></div>1 bod — točna minuta poluvremena (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola (samo točno!)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#C4B5FD"></div>2 boda — točan poluvremeni rezultat</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
+        <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji + oba kašnjenja</div>
+        </div>
+      </div></div>
+      <div id="pred-legend-away" style="display:none;"><div class="score-legend" style="margin-bottom:14px;padding:0;">
+          <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="toggleCollapse(this)">
+            <span style="color:#F87171;">📖 BODOVANJE — GOSTOVANJE</span>
+            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          </div>
+          <div class="js-collapsed" style="display:flex;padding:10px 14px 14px;flex-direction:column;gap:5px;">
+          <div class="score-legend-item"><div class="sl-dot" style="background:#FACC15"></div>5 boda — točan konačni rezultat</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#4ADE80"></div>1 bod — točan broj golova Dinama</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#F87171"></div>1 bod — točan broj golova protivnika</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#60A5FA"></div>5/3/1 boda — gledatelji (±100 / ±500 / bliži)</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#C4B5FD"></div>2 boda — točan poluvremeni rezultat</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#FCD34D"></div>3 boda — točna minuta 1. gola</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#FB923C"></div>2 boda — točna razlika u rezultatu (npr. 3-1 = 2-0)</div>
+          <div class="score-legend-item"><div class="sl-dot" style="background:#34D399"></div>+10 bonus — točan rezultat + gledatelji</div>
+          </div>
+        </div></div>
     </div>
 
     <div class="preds-section">
@@ -4788,8 +4804,15 @@ window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.1.0';
+const APP_VERSION='2.1.2';
 const CHANGELOG=[
+  {v:'2.1.2',d:'2026-10-24',items:[
+    ['📐','Statistika: kartice, Sve utakmice i tablica sada imaju isti razmak od rubova kao ostale stranice (uzrok je bio višak oznake u kodu)']
+  ]},
+  {v:'2.1.1',d:'2026-10-24',items:[
+    ['📖','Prediktor: Bodovanje je sada ispod Točnosti po protivniku i prati tab Domaće / Gostovanje'],
+    ['📐','Statistika: popravljen razmak od lijevog ruba i širina stranice na užim ekranima (Sve utakmice)']
+  ]},
   {v:'2.1.0',d:'2026-10-24',items:[
     ['🔮','Prediktor: Nova predikcija s tabovima Domaće i Gostovanje sada je odmah ispod Ukupno'],
     ['📍','Prediktor: Točnost po protivniku premještena je ispod grafa Kretanje točnosti'],
@@ -7065,6 +7088,8 @@ function renderPreds(){
 window.switchPredType=function(type,el){
   document.getElementById('pred-home-section').style.display=type==='home'?'':'none';
   document.getElementById('pred-away-section').style.display=type==='away'?'':'none';
+  const lh=document.getElementById('pred-legend-home'), la=document.getElementById('pred-legend-away');
+  if(lh) lh.style.display=type==='home'?'':'none'; if(la) la.style.display=type==='away'?'':'none';
   document.querySelectorAll('.pred-type-tab').forEach(t=>{t.classList.remove('active-home','active-away');});
   el.classList.add(type==='home'?'active-home':'active-away');
 };
