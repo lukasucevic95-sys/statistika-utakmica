@@ -1264,6 +1264,16 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 .cl-item{display:flex;gap:10px;padding:8px 0;font-size:13px;line-height:1.45;color:var(--text);border-bottom:1px solid var(--border);}
 .cl-item:last-child{border-bottom:none;}
 .cl-ic{flex-shrink:0;width:22px;text-align:center;}
+/* Prediktor: svi naslovi kartica i tabova isti font */
+#page-prediktor .card-header,#page-prediktor .pred-chart-header .section-title,#page-prediktor .preds-header .section-title,#page-prediktor .sched-forma-title,#page-prediktor .pred-type-tab,#page-prediktor #pred-total-leaderboard>div:first-child{font-family:'Bebas Neue',sans-serif!important;font-size:15px!important;letter-spacing:2px!important;font-weight:400!important;line-height:1.25;}
+#page-prediktor .card-header,#page-prediktor .pred-chart-header .section-title,#page-prediktor .preds-header .section-title{color:#fff;}
+#page-prediktor .pred-type-tab{padding:10px 9px;}
+/* Sparkline: jasno vidljiva oznaka da se graf otvara */
+.spark{background:rgba(255,255,255,0.04);border:1px solid rgba(147,197,253,0.28);border-radius:10px;padding:16px 8px 5px;animation:sparkHint 1.8s ease 2;}
+.spark::after{content:'Detalji ›';top:3px;right:6px;font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#93C5FD;opacity:1;}
+@keyframes sparkHint{0%,100%{box-shadow:0 0 0 0 rgba(96,165,250,0);}50%{box-shadow:0 0 0 3px rgba(96,165,250,0.3);}}
+.sp-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+.sp-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -2087,57 +2097,6 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         <div id="pred-streaks"></div>
       </div>
 
-      <!-- Točnost predikcija po protivniku -->
-      <div class="form-card" id="pred-by-opponent-card">
-        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
-          <span>🎯 Točnost po protivniku</span>
-          <span style="display:flex;align-items:center;gap:8px;">
-            <button onclick="event.stopPropagation();renderPredByOpponent();" title="Osvježi" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:2px;">🔄</button>
-            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
-          </span>
-        </div>
-        <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
-      </div>
-
-      <!-- Luka vs Lovro: pogodak pobjednika i točnog rezultata -->
-      <div class="form-card" id="pred-h2h-card">
-        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
-          <span>⚔️ Luka vs Lovro: pobjednik i točan rezultat</span>
-          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
-        </div>
-        <div class="js-collapsed" id="pred-h2h" style="padding:14px;"></div>
-      </div>
-
-      <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
-      <div class="pred-chart-card" id="pred-rounds-chart-card">
-        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this)">
-          <span class="section-title" style="color:#fff">📈 Bodovi po utakmici</span>
-          <div style="display:flex;align-items:center;gap:12px;">
-          <div class="pred-chart-legend">
-            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
-            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
-          </div>
-          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
-          </div>
-        </div>
-        <div id="pred-rounds-chart" style="position:relative;padding-top:12px;"></div>
-      </div>
-
-      <!-- Kretanje točnosti kroz sezonu -->
-      <div class="pred-chart-card" id="pred-trend-card">
-        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this);predTrendScrollEnd()">
-          <span class="section-title" style="color:#fff">📉 Kretanje točnosti kroz sezonu</span>
-          <div style="display:flex;align-items:center;gap:12px;">
-          <div class="pred-chart-legend">
-            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
-            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
-          </div>
-          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
-          </div>
-        </div>
-        <div id="pred-trend" style="position:relative;padding-top:12px;"></div>
-      </div>
-
       <div class="pred-type-tabs">
         <div class="pred-type-tab active-home" id="pred-tab-home" onclick="switchPredType('home',this)">🏟️ DOMAĆE</div>
         <div class="pred-type-tab" id="pred-tab-away" onclick="switchPredType('away',this)">✈️ GOSTOVANJE</div>
@@ -2325,6 +2284,57 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
           </div>
         </div>
       </div><!-- end pred-away-section -->
+
+      <!-- Luka vs Lovro: pogodak pobjednika i točnog rezultata -->
+      <div class="form-card" id="pred-h2h-card">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
+          <span>⚔️ Luka vs Lovro: pobjednik i točan rezultat</span>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+        </div>
+        <div class="js-collapsed" id="pred-h2h" style="padding:14px;"></div>
+      </div>
+
+      <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
+      <div class="pred-chart-card" id="pred-rounds-chart-card">
+        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this)">
+          <span class="section-title" style="color:#fff">📈 Bodovi po utakmici</span>
+          <div style="display:flex;align-items:center;gap:12px;">
+          <div class="pred-chart-legend">
+            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
+            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
+          </div>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
+          </div>
+        </div>
+        <div id="pred-rounds-chart" style="position:relative;padding-top:12px;"></div>
+      </div>
+
+      <!-- Kretanje točnosti kroz sezonu -->
+      <div class="pred-chart-card" id="pred-trend-card">
+        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this);predTrendScrollEnd()">
+          <span class="section-title" style="color:#fff">📉 Kretanje točnosti kroz sezonu</span>
+          <div style="display:flex;align-items:center;gap:12px;">
+          <div class="pred-chart-legend">
+            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
+            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
+          </div>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
+          </div>
+        </div>
+        <div id="pred-trend" style="position:relative;padding-top:12px;"></div>
+      </div>
+
+      <!-- Točnost predikcija po protivniku -->
+      <div class="form-card" id="pred-by-opponent-card">
+        <div class="card-header" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;" onclick="toggleCollapse(this)">
+          <span>🎯 Točnost po protivniku</span>
+          <span style="display:flex;align-items:center;gap:8px;">
+            <button onclick="event.stopPropagation();renderPredByOpponent();" title="Osvježi" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:2px;">🔄</button>
+            <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;">▾</span>
+          </span>
+        </div>
+        <div class="js-collapsed" id="pred-by-opponent" style="padding:14px;"></div>
+      </div>
     </div>
 
     <div class="preds-section">
@@ -4593,13 +4603,22 @@ document.addEventListener('mousedown',e=>{
 })();
 
 /* Sparkline na karticama statistike */
-function sparkSvg(vals,color){
+function sparkSvg(vals,color,kind){
   vals=(vals||[]).filter(v=>Number.isFinite(v)); if(vals.length<2) return '';
-  const W=100,H=26,pad=2, mn=Math.min(...vals), mx=Math.max(...vals), rg=(mx-mn)||1;
+  const W=100,H=26,pad=2, mn=kind==='bars'?0:Math.min(...vals), mx=Math.max(...vals), rg=(mx-mn)||1;
+  if(kind==='bars'){
+    const bw=(W-2*pad)/vals.length;
+    return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}">`+vals.map((v,i)=>{ const h=Math.max(1,(H-2*pad)*(v-mn)/rg); return `<rect x="${(pad+i*bw+bw*0.15).toFixed(2)}" y="${(H-pad-h).toFixed(2)}" width="${(bw*0.7).toFixed(2)}" height="${h.toFixed(2)}" rx="1" fill="${color}" opacity=".85"/>`; }).join('')+'</svg>';
+  }
   const pts=vals.map((v,i)=>[pad+(W-2*pad)*i/(vals.length-1), H-pad-(H-2*pad)*(v-mn)/rg]);
   const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
   const area=d+` L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0].toFixed(1)},${H} Z`;
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}"><path d="${area}" fill="${color}" opacity=".15"/><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+function sparkMulti(series){
+  const n=(series[0]&&series[0].v.length)||0; if(n<2) return '';
+  const W=100,H=26,pad=2, mx=Math.max(1,...series.flatMap(s=>s.v));
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}">`+series.map(s=>`<polyline fill="none" stroke="${s.c}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round" points="${s.v.map((v,i)=>(pad+(W-2*pad)*i/(n-1)).toFixed(1)+','+(H-pad-(H-2*pad)*v/mx).toFixed(1)).join(' ')}"/>`).join('')+'</svg>';
 }
 function sparkCtx(filtered){
   const f=[...(filtered||[])].filter(m=>m&&m.datum).sort((a,b)=>String(a.datum).localeCompare(String(b.datum)));
@@ -4611,21 +4630,31 @@ function sparkCtx(filtered){
 const _runAvg=a=>{ let s=0; return a.map((v,i)=>(s+=v)/(i+1)); };
 const _runSum=a=>{ let s=0; return a.map(v=>(s+=v)); };
 const _runMax=a=>{ let m=0; return a.map(v=>(m=Math.max(m,v))); };
-const _n0=v=>fmtNum(Math.round(v)), _d2=v=>v.toFixed(2);
+const _n0=v=>fmtNum(Math.round(v)), _d2=v=>v.toFixed(2), _sg=v=>(v>0?'+':'')+v;
+function sparkTimes(x){ const c={}; x.f.forEach(m=>{ const t=m.vrijemePoc&&normalizeTime(m.vrijemePoc); if(t) c[t]=(c[t]||0)+1; }); const e=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,10).sort((a,b)=>a[0].localeCompare(b[0])); return {labels:e.map(a=>a[0]),vals:e.map(a=>a[1])}; }
+function sparkSlots(x){ const names=[['Prijepodne (10-14h)','Prijepodne'],['Popodne (14-18h)','Popodne'],['Večer (18-21h)','Večer'],['Noć (21h+)','Noć']]; const c={}; x.f.forEach(m=>{ const sl=getTimeSlot(m.vrijemePoc); if(sl) c[sl]=(c[sl]||0)+1; }); return {labels:names.map(a=>a[1]),vals:names.map(a=>c[a[0]]||0)}; }
+function sparkDays(x){ const nm=['Ned','Pon','Uto','Sri','Čet','Pet','Sub'], ord=[1,2,3,4,5,6,0]; const c=[0,0,0,0,0,0,0]; x.f.forEach(m=>{ const d=new Date(m.datum+'T12:00:00').getDay(); if(!isNaN(d)) c[d]++; }); return {labels:ord.map(i=>nm[i]),vals:ord.map(i=>c[i])}; }
 const SPARK_CFG={
   'stat-total':{title:'Ukupno utakmica',c:'#60A5FA',tabs:[
     {l:'% pobjeda',t:'line',max:100,f:x=>{ let w=0; return x.out.map((o,i)=>{ if(o==='win') w++; return w/(i+1)*100; }); },fmt:v=>Math.round(v)+'%'},
     {l:'Bodovi',t:'bar',max:3,f:x=>x.out.map(o=>o==='win'?3:o==='draw'?1:0),fmt:v=>v+' b'}]},
+  'stat-wdl':{title:'P / R / P',c:'#4ADE80',spark:'multi',tabs:[
+    {l:'Kroz vrijeme',t:'multi',fmt:String,series:x=>{ let w=0,d=0,l=0; const W=[],D=[],L=[]; x.out.forEach(o=>{ if(o==='win') w++; else if(o==='draw') d++; else l++; W.push(w); D.push(d); L.push(l); }); return [{n:'Pobjede',c:'#4ADE80',v:W},{n:'Remiji',c:'#9CA3AF',v:D},{n:'Porazi',c:'#F87171',v:L}]; }},
+    {l:'Gol-razlika (zbroj)',t:'line',div:true,f:x=>_runSum(x.res.map(p=>p[0]-p[1])),fmt:_sg},
+    {l:'Razlika po utakmici',t:'bar',div:true,f:x=>x.res.map(p=>p[0]-p[1]),fmt:_sg}]},
   'stat-viewers':{title:'Ukupno gledatelja',c:'#60A5FA',tabs:[
     {l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.views),fmt:_n0}]},
   'stat-avg':{title:'Prosjek gledatelja',c:'#A78BFA',tabs:[
     {l:'Prosjek do tada',t:'line',f:x=>_runAvg(x.views),fmt:_n0},{l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0}]},
-  'stat-best':{title:'Rekord gledanosti',c:'#FBBF24',tabs:[
-    {l:'Rekord do tada',t:'line',f:x=>_runMax(x.views),fmt:_n0},{l:'Po utakmici',t:'bar',f:x=>x.views,fmt:_n0}]},
+  'stat-best':{title:'Rekord gledanosti',c:'#FBBF24',spark:'bars',tabs:[
+    {l:'Sve utakmice',t:'bar',avgLine:true,markMax:true,markLast:true,f:x=>x.views,fmt:_n0},
+    {l:'Rekord do tada',t:'line',f:x=>_runMax(x.views),fmt:_n0}]},
   'stat-scored':{title:'Zabijeni golovi',c:'#4ADE80',tabs:[
     {l:'Po utakmici',t:'bar',f:x=>x.res.map(p=>p[0]),fmt:v=>String(v)},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.res.map(p=>p[0])),fmt:v=>String(v)},{l:'Prosjek',t:'line',f:x=>_runAvg(x.res.map(p=>p[0])),fmt:_d2}]},
   'stat-conceded':{title:'Primljeni golovi',c:'#F87171',tabs:[
-    {l:'Po utakmici',t:'bar',f:x=>x.res.map(p=>p[1]),fmt:v=>String(v)},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.res.map(p=>p[1])),fmt:v=>String(v)},{l:'Prosjek',t:'line',f:x=>_runAvg(x.res.map(p=>p[1])),fmt:_d2}]}
+    {l:'Po utakmici',t:'bar',f:x=>x.res.map(p=>p[1]),fmt:v=>String(v)},{l:'Zbroj do tada',t:'line',f:x=>_runSum(x.res.map(p=>p[1])),fmt:v=>String(v)},{l:'Prosjek',t:'line',f:x=>_runAvg(x.res.map(p=>p[1])),fmt:_d2}]},
+  'stat-doba':{title:'Najčešći termin',c:'#A78BFA',spark:'bars',tabs:[
+    {l:'Termini',t:'cat',cats:sparkTimes,fmt:String},{l:'Dio dana',t:'cat',cats:sparkSlots,fmt:String},{l:'Dan u tjednu',t:'cat',cats:sparkDays,fmt:String}]}
 };
 function sparkApply(filtered){
   const ctx=sparkCtx(filtered); window._sparkCtx=ctx;
@@ -4633,20 +4662,41 @@ function sparkApply(filtered){
     const el=document.getElementById(id); const card=el&&el.closest('.stat-card'); if(!card) return;
     let sp=card.querySelector(':scope>.spark'); if(!sp){ sp=document.createElement('div'); sp.className='spark'; sp.title='Dodirni za detalje'; card.appendChild(sp); }
     sp.onclick=e=>{ e.stopPropagation(); sparkOpen(id); };
-    const cfg=SPARK_CFG[id]; sp.innerHTML=sparkSvg(cfg.tabs[0].f(ctx),cfg.c);
+    const cfg=SPARK_CFG[id], t0=cfg.tabs[0]; let html='';
+    try{
+      if(cfg.spark==='multi') html=sparkMulti(t0.series(ctx));
+      else if(cfg.spark==='bars') html=sparkSvg(t0.t==='cat'?t0.cats(ctx).vals:t0.f(ctx),cfg.c,'bars');
+      else html=sparkSvg(t0.f(ctx),cfg.c);
+    }catch(e){ html=''; }
+    sp.innerHTML=html; sp.style.display=html?'':'none';
   });
 }
 function sparkClose(){ const o=document.getElementById('spark-overlay'); if(o) o.classList.remove('open'); }
 window.sparkClose=sparkClose;
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') sparkClose(); });
 function sparkMl(m){ return `${wrEsc(officialName(m.protivnik||''))} (${fmtDate(m.datum)})`; }
+function sparkRun(arr,pred){ let b=0,c=0; arr.forEach(o=>{ if(pred(o)){ c++; if(c>b) b=c; } else c=0; }); return b; }
 function sparkChips(id,x){
   const ex=(vals,fmt,what)=>{ if(!vals.length) return []; let mi=0,ma=0; vals.forEach((v,i)=>{ if(v<vals[mi]) mi=i; if(v>vals[ma]) ma=i; });
     const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
     return [[`Najviše ${what}`,fmt(vals[ma]),sparkMl(x.f[ma])],[`Najmanje ${what}`,fmt(vals[mi]),sparkMl(x.f[mi])],[`Prosjek ${what}`,fmt(avg),'po utakmici']]; };
-  if(id==='stat-total'){ const w=x.out.filter(o=>o==='win').length,d=x.out.filter(o=>o==='draw').length,l=x.out.filter(o=>o==='loss').length; return [['Pobjede',w,''],['Remiji',d,''],['Porazi',l,''],['Bodovi',w*3+d,`${(x.f.length?(w*3+d)/x.f.length:0).toFixed(2)} po utakmici`]]; }
-  if(id==='stat-viewers'||id==='stat-avg'||id==='stat-best') return ex(x.views,_n0,'gledatelja');
-  const k=id==='stat-scored'?0:1, v=x.res.map(p=>p[k]), c=ex(v,n=>n.toFixed?(Number.isInteger(n)?String(n):n.toFixed(2)):n,'golova');
+  const rec=()=>{ const w=x.out.filter(o=>o==='win').length,d=x.out.filter(o=>o==='draw').length,l=x.out.filter(o=>o==='loss').length; return [w,d,l]; };
+  if(id==='stat-total'){ const [w,d,l]=rec(); return [['Pobjede',w,''],['Remiji',d,''],['Porazi',l,''],['Bodovi',w*3+d,`${(x.f.length?(w*3+d)/x.f.length:0).toFixed(2)} po utakmici`]]; }
+  if(id==='stat-wdl'){ const [w,d,l]=rec(); const gd=x.res.reduce((a,p)=>a+p[0]-p[1],0);
+    return [['Pobjede',w,''],['Remiji',d,''],['Porazi',l,''],['Najduži niz pobjeda',sparkRun(x.out,o=>o==='win'),'utakmica'],['Najduži niz bez poraza',sparkRun(x.out,o=>o!=='loss'),'utakmica'],['Gol-razlika',_sg(gd),'ukupno']]; }
+  if(id==='stat-best'){
+    const v=x.views, n=v.length; if(!n) return [];
+    let ma=0; v.forEach((q,i)=>{ if(q>v[ma]) ma=i; });
+    const avg=v.reduce((a,b)=>a+b,0)/n, last=v[n-1], diff=avg?Math.round((last-avg)/avg*100):0, rank=1+v.filter(q=>q>last).length;
+    return [['Rekord',_n0(v[ma]),sparkMl(x.f[ma])],['Zadnja utakmica',_n0(last),`${diff>=0?'+':''}${diff}% u odnosu na prosjek`],['Rang zadnje',`${rank}. od ${n}`,'po gledanosti'],['Prosjek',_n0(avg),'po utakmici']];
+  }
+  if(id==='stat-viewers'||id==='stat-avg') return ex(x.views,_n0,'gledatelja');
+  if(id==='stat-doba'){
+    const t=sparkTimes(x), all=x.f.filter(m=>m.vrijemePoc&&normalizeTime(m.vrijemePoc)).length; if(!t.vals.length) return [];
+    let ma=0; t.vals.forEach((q,i)=>{ if(q>t.vals[ma]) ma=i; });
+    return [['Najčešći termin',t.labels[ma],`${t.vals[ma]} utakmica`],['Najraniji termin',t.labels[0],'među češćima'],['Najkasniji termin',t.labels[t.labels.length-1],'među češćima'],['Utakmica s vremenom',all,`od ${x.f.length}`]];
+  }
+  const k=id==='stat-scored'?0:1, v=x.res.map(p=>p[k]), c=ex(v,n=>Number.isInteger(n)?String(n):n.toFixed(2),'golova');
   c.push([k===0?'Bez zabijenog gola':'Čista mreža',v.filter(n=>n===0).length,'utakmica']); return c;
 }
 function sparkOpen(id){
@@ -4654,42 +4704,74 @@ function sparkOpen(id){
   document.getElementById('spark-title').textContent=cfg.title;
   const tabs=document.getElementById('spark-tabs'), ch=document.getElementById('spark-chart'), chips=document.getElementById('spark-chips');
   if(x.f.length<2){ tabs.innerHTML=''; ch.innerHTML='<div class="prc-empty">Treba barem 2 utakmice.</div>'; chips.innerHTML=''; o.classList.add('open'); return; }
-  const draw=i=>{ tabs.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i)); ch.innerHTML=sparkChart(x,cfg.tabs[i],cfg.c); const sc=document.getElementById('sp-scroll'); if(sc) sc.scrollLeft=sc.scrollWidth; };
+  const draw=i=>{ tabs.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i)); ch.innerHTML=sparkChart(x,cfg.tabs[i],cfg.c); const sc=document.getElementById('sp-scroll'); if(sc) sc.scrollLeft=cfg.tabs[i].t==='cat'?0:sc.scrollWidth; };
   tabs.innerHTML=cfg.tabs.map((t,i)=>`<button class="prc-toggle-btn${i===0?' active':''}" data-i="${i}">${t.l}</button>`).join('');
   tabs.onclick=e=>{ const b=e.target.closest('button'); if(b) draw(+b.dataset.i); };
-  chips.innerHTML=sparkChips(id,x).map(c=>`<div class="sp-chip"><span>${c[0]}</span><b>${c[1]}</b>${c[2]?`<i>${c[2]}</i>`:''}</div>`).join('');
+  chips.innerHTML=sparkChips(id,x).map(c=>`<div class="sp-chip"><span>${c[0]}</span><b>${c[1]}</b>${c[2]!==''&&c[2]!=null?`<i>${c[2]}</i>`:''}</div>`).join('');
   o.classList.add('open'); draw(0); requestAnimationFrame(segApply);
 }
 window.sparkOpen=sparkOpen;
 function sparkChart(x,tab,color){
-  const vals=tab.f(x), n=x.f.length, bar=tab.t==='bar';
-  const W=Math.max(320,n*(bar?26:34)), H=210, padL=42, padR=14, padT=18, padB=30, innerW=W-padL-padR, innerH=H-padT-padB;
-  const hi=Math.max(...vals,0), maxV=tab.max||Math.max(1,hi*1.12);
-  const xFor=i=>padL+(n===1?innerW/2:i/(n-1)*innerW), yFor=v=>padT+innerH-(v/maxV*innerH);
-  const lab=v=>maxV>=1000?_n0(v):(maxV<=10?String(Math.round(v*10)/10):String(Math.round(v)));
-  const grid=[0,0.25,0.5,0.75,1].map(g=>{ const v=maxV*g,y=yFor(v); return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${lab(v)}</text>`; }).join('');
-  const base=(padT+innerH).toFixed(1), band=n>1?innerW/(n-1):innerW;
-  let shape='';
+  let vals,series=null,cats=null;
+  if(tab.t==='multi'){ series=tab.series(x); vals=series[0].v; }
+  else if(tab.t==='cat'){ cats=tab.cats(x); vals=cats.vals; }
+  else vals=tab.f(x);
+  const n=vals.length; if(!n) return '<div class="prc-empty">Nema podataka za ovaj prikaz.</div>';
+  const isCat=tab.t==='cat', bar=tab.t==='bar'||isCat;
+  const W=Math.max(320,n*(isCat?48:bar?26:34)), H=210, padL=42, padR=14, padT=18, padB=30, innerW=W-padL-padR, innerH=H-padT-padB;
+  const allV=series?series.flatMap(q=>q.v):vals;
+  const hi=Math.max(...allV,0), lo0=Math.min(...allV,0);
+  const maxV=tab.max||Math.max(1,hi*1.12), lo=(tab.div&&lo0<0)?lo0*1.12:0, rng=(maxV-lo)||1;
+  const xFor=isCat?(i=>padL+innerW*(i+0.5)/n):(i=>padL+(n===1?innerW/2:i/(n-1)*innerW));
+  const yFor=v=>padT+innerH-((v-lo)/rng*innerH), y0=yFor(0);
+  const band=isCat?innerW/n:(n>1?innerW/(n-1):innerW);
+  const lab=v=>Math.abs(maxV)>=1000?_n0(v):(maxV<=10?String(Math.round(v*10)/10):String(Math.round(v)));
+  const grid=[0,0.25,0.5,0.75,1].map(g=>{ const v=lo+rng*g,y=yFor(v); return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${lab(v)}</text>`; }).join('');
+  const total=vals.reduce((a,b)=>a+b,0)||1, avg=vals.reduce((a,b)=>a+b,0)/n;
+  let shape='', legend='';
   if(bar){
-    const bw=Math.max(4,Math.min(18,band*0.62)), mi=vals.indexOf(hi);
-    shape=vals.map((v,i)=>{ const h=Math.max(v>0?2:0,base-yFor(v)); return `<rect x="${(xFor(i)-bw/2).toFixed(1)}" y="${(padT+innerH-h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${color}" opacity="${i===mi?1:0.7}"/>`; }).join('');
+    const bw=Math.max(4,Math.min(isCat?28:18,band*0.62)), mi=vals.indexOf(Math.max(...vals));
+    shape=vals.map((v,i)=>{
+      const y=yFor(v), top=Math.min(y,y0), h=Math.max(v!==0?2:1,Math.abs(y-y0));
+      let fill=color,op=0.7,st='';
+      if(tab.div){ fill=v>0?'#4ADE80':v<0?'#F87171':'#9CA3AF'; op=0.85; }
+      else if(tab.markMax){ fill=color; op=0.5; }
+      else if(i===mi) op=1;
+      if(tab.markLast&&i===n-1){ fill='#60A5FA'; op=1; st=' stroke="#fff" stroke-width="1.5"'; }
+      if(tab.markMax&&i===mi){ fill='#FBBF24'; op=1; st=(tab.markLast&&i===n-1)?' stroke="#60A5FA" stroke-width="2"':' stroke="#fff" stroke-width="1"'; }
+      return `<rect x="${(xFor(i)-bw/2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="3" fill="${fill}" opacity="${op}"${st}/>`;
+    }).join('');
+    if(tab.div) shape+=`<line x1="${padL}" x2="${W-padR}" y1="${y0.toFixed(1)}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.3)"/>`;
+    if(tab.avgLine){ const ya=yFor(avg); shape+=`<line x1="${padL}" x2="${W-padR}" y1="${ya.toFixed(1)}" y2="${ya.toFixed(1)}" stroke="#fff" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/><text x="${W-padR}" y="${(ya-4).toFixed(1)}" text-anchor="end" font-size="9" fill="#fff">prosjek ${tab.fmt(avg)}</text>`; }
+    if(tab.markMax) legend=`<div class="sp-legend"><span><i style="background:#FBBF24"></i>rekord</span><span><i style="background:#60A5FA"></i>zadnja utakmica</span><span><i style="background:${color};opacity:.5"></i>ostale</span><span>┄ prosjek</span></div>`;
+  }else if(series){
+    shape=series.map(q=>`<polyline fill="none" stroke="${q.c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${q.v.map((v,i)=>xFor(i).toFixed(1)+','+yFor(v).toFixed(1)).join(' ')}"/>`+q.v.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="2.6" fill="${q.c}" pointer-events="none"/>`).join('')).join('');
+    legend=`<div class="sp-legend">${series.map(q=>`<span><i style="background:${q.c}"></i>${q.n}</span>`).join('')}</div>`;
   }else{
-    const pts=vals.map(v=>({v})), lp=smoothPath(pts,xFor,yFor,'v');
-    shape=`<defs><linearGradient id="spG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${lp} L${xFor(n-1).toFixed(1)},${base} L${xFor(0).toFixed(1)},${base} Z" fill="url(#spG)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`+vals.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3" fill="${color}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
+    const lp=smoothPath(vals.map(v=>({v})),xFor,yFor,'v');
+    shape=`<defs><linearGradient id="spG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${lp} L${xFor(n-1).toFixed(1)},${y0.toFixed(1)} L${xFor(0).toFixed(1)},${y0.toFixed(1)} Z" fill="url(#spG)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`+(tab.div?`<line x1="${padL}" x2="${W-padR}" y1="${y0.toFixed(1)}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.3)"/>`:'')+vals.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3" fill="${color}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
   }
+  const base=(padT+innerH).toFixed(1);
   const guides=vals.map((v,i)=>`<line class="sp-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${base}" stroke="#fff" opacity="0" pointer-events="none"/>`).join('');
   const hits=vals.map((v,i)=>`<rect x="${(xFor(i)-band/2).toFixed(1)}" y="${padT}" width="${band.toFixed(1)}" height="${innerH}" fill="transparent" onpointerenter="sparkShow(${i})" onpointermove="sparkShow(${i})" onpointerdown="sparkShow(${i})" onpointerleave="sparkHide(event)"/>`).join('');
-  const step=n>40?5:n>20?2:1;
-  const xl=vals.map((v,i)=>(i%step!==0&&i!==n-1)?'':`<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${i+1}</text>`).join('');
-  window._spD={x,vals,tab,xFor,n};
-  return `<div style="position:relative;"><div id="sp-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide()"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">UTAKMICA →</text>${xl}</svg></div><div id="sp-tip" class="prc-tooltip" style="display:none;"></div></div>`;
+  const step=isCat?1:(n>40?5:n>20?2:1);
+  const xl=vals.map((v,i)=>(i%step!==0&&i!==n-1)?'':`<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${isCat?wrEsc(cats.labels[i]):i+1}</text>`).join('');
+  const tip=i=>{
+    if(isCat) return `<div style="font-size:11px;font-weight:700;color:#fff;">${wrEsc(cats.labels[i])}</div><div style="font-size:12px;color:#fff;"><b>${vals[i]}</b> utakmica <span style="color:var(--text-muted);">(${Math.round(vals[i]/total*100)}%)</span></div>`;
+    const m=x.f[i];
+    const head=`<div style="font-size:11px;font-weight:700;color:#fff;">${i+1}. ${wrEsc(officialName(m.protivnik||''))}</div><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">${fmtDate(m.datum)} · rezultat ${wrEsc(m.rezultat||'—')}${m.gledatelji?` · ${fmtNum(m.gledatelji)} gled.`:''}</div>`;
+    if(series) return head+series.map(q=>`<div style="font-size:11px;color:${q.c};">${q.n}: <b>${tab.fmt(q.v[i])}</b></div>`).join('');
+    const df=tab.avgLine&&avg?Math.round((vals[i]-avg)/avg*100):null;
+    return head+`<div style="font-size:12px;color:#fff;">${tab.l}: <b>${tab.fmt(vals[i])}</b>${df!==null?` <span style="color:var(--text-muted);">(${df>=0?'+':''}${df}% vs prosjek)</span>`:''}</div>`;
+  };
+  window._spD={x,vals,tab,xFor,n,tip};
+  return `${legend}<div style="position:relative;"><div id="sp-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide()"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">${isCat?'':'UTAKMICA →'}</text>${xl}</svg></div><div id="sp-tip" class="prc-tooltip" style="display:none;"></div></div>`;
 }
 function sparkShow(i){
   const d=window._spD, sc=document.getElementById('sp-scroll'), tip=document.getElementById('sp-tip'); if(!d||!sc||!tip) return;
   document.querySelectorAll('#spark-chart .sp-guide').forEach(g=>g.setAttribute('opacity',+g.dataset.idx===i?'0.45':'0'));
   document.querySelectorAll('#spark-chart .sp-dot').forEach(c=>c.setAttribute('r',+c.dataset.idx===i?'5.5':'3'));
-  const m=d.x.f[i];
-  tip.innerHTML=`<div style="font-size:11px;font-weight:700;color:#fff;">${i+1}. ${wrEsc(officialName(m.protivnik||''))}</div><div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">${fmtDate(m.datum)} · rezultat ${wrEsc(m.rezultat||'—')}${m.gledatelji?` · ${fmtNum(m.gledatelji)} gled.`:''}</div><div style="font-size:12px;color:#fff;">${d.tab.l}: <b>${d.tab.fmt(d.vals[i])}</b></div>`;
+  tip.innerHTML=d.tip(i);
   tip.style.display='block'; tip.style.top='0px';
   const box=tip.parentElement, tw=tip.offsetWidth;
   tip.style.left=Math.max(0,Math.min(d.xFor(i)-sc.scrollLeft-tw/2,box.clientWidth-tw))+'px';
@@ -4706,8 +4788,16 @@ window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.0.0';
+const APP_VERSION='2.1.0';
 const CHANGELOG=[
+  {v:'2.1.0',d:'2026-10-24',items:[
+    ['🔮','Prediktor: Nova predikcija s tabovima Domaće i Gostovanje sada je odmah ispod Ukupno'],
+    ['📍','Prediktor: Točnost po protivniku premještena je ispod grafa Kretanje točnosti'],
+    ['🔠','Prediktor: naslovi svih kartica i tabova imaju isti font i veličinu'],
+    ['📊','Statistika: grafovi i detalji sada postoje i za P / R / P i Najčešći termin'],
+    ['👆','Statistika: svaki mali graf ima jasnu oznaku „Detalji ›” da se vidi da se otvara'],
+    ['🏟️','Statistika: Rekord gledatelja prikazuje sve utakmice, uz rekord, zadnju utakmicu i prosjek za usporedbu']
+  ]},
   {v:'2.0.0',d:'2026-10-24',items:[
     ['🧠','Kviz: pitanja se ne ponavljaju zadnjih 6 kvizova, ima 20 vrsta pitanja, a pitanja o stadionu su maknuta'],
     ['🧐','Kviz: nakon kviza vidiš pregled odgovora, a dodirom na datum u tablici i pregled starih kvizova'],
