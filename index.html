@@ -1076,6 +1076,18 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .ph-tbl td:first-child,.ph-tbl th:first-child{text-align:left;}
 .ph-tbl th{color:var(--text-muted);font-weight:600;font-size:11px;}
 .ph-sub{font-size:10px;color:var(--text-muted);}
+.prc-slider-row{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:12px;}
+.prc-slider-lbl{font-size:11px;color:var(--text-muted);white-space:nowrap;}
+.prc-slider-lbl strong{color:#fff;font-size:13px;}
+.prc-range{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:26px;background:transparent;cursor:pointer;margin:0;--pct:0%;}
+.prc-range:focus{outline:none;}
+.prc-range::-webkit-slider-runnable-track{height:6px;border-radius:999px;background:linear-gradient(90deg,#60A5FA var(--pct),rgba(255,255,255,0.14) var(--pct));}
+.prc-range::-moz-range-track{height:6px;border-radius:999px;background:rgba(255,255,255,0.14);}
+.prc-range::-moz-range-progress{height:6px;border-radius:999px;background:#60A5FA;}
+.prc-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid #60A5FA;margin-top:-8px;box-shadow:0 2px 10px rgba(96,165,250,0.55);transition:transform .15s ease,box-shadow .15s ease;}
+.prc-range::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#fff;border:4px solid #60A5FA;box-shadow:0 2px 10px rgba(96,165,250,0.55);}
+.prc-range:active::-webkit-slider-thumb{transform:scale(1.18);box-shadow:0 0 0 6px rgba(96,165,250,0.22);}
+.prc-range:active::-moz-range-thumb{box-shadow:0 0 0 6px rgba(96,165,250,0.22);}
 .qz-tot{display:flex;gap:10px;}
 .qz-tot>div{flex:1;background:var(--surface2);border-radius:12px;padding:12px;text-align:center;}
 .qz-tot b{display:block;font-family:'Bebas Neue',sans-serif;font-size:38px;font-weight:400;color:#fff;line-height:1;}
@@ -1162,6 +1174,76 @@ tr[data-idx]{-webkit-touch-callout:none;}
   .btn-sm:active,.nav-btn:active,.qz-opt:active,.sched-filter-btn:active,.top5-close:active,.stat-more-menu button:active{transform:none;}
 }
 
+
+/* ===== MODERNIZACIJA UI ===== */
+/* Segmentirana kontrola s kliznim indikatorom */
+.seg{position:relative;display:flex;width:fit-content;max-width:100%;gap:2px;padding:3px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap!important;}
+.seg::-webkit-scrollbar{display:none;}
+.seg>button{position:relative;z-index:1;background:transparent!important;border-color:transparent!important;color:var(--text-muted);box-shadow:none;}
+.seg>button.active,.seg>button:hover{color:#fff;}
+.seg-ind{position:absolute;z-index:0;border-radius:100px;background:rgba(0,87,184,0.55);border:1px solid rgba(77,159,255,0.55);box-shadow:0 2px 10px rgba(0,87,184,0.35);transition:left .25s cubic-bezier(.4,0,.2,1),width .25s cubic-bezier(.4,0,.2,1),top .25s,height .25s,opacity .2s;pointer-events:none;}
+/* Gumbi, dodir */
+button,.nav-btn,.btn-sm,.sched-filter-btn,.prc-toggle-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.btn-sm{border-radius:8px;}
+@media(pointer:coarse){.btn-sm{padding:8px 14px;min-height:36px;font-size:12px;}.prc-toggle-btn{padding:8px 15px;}}
+/* Izbornici, datumi, prekidači */
+select:not([multiple]){-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;background-size:12px;padding-right:30px!important;cursor:pointer;}
+input,select,textarea{color-scheme:dark;}
+input[type=date]::-webkit-calendar-picker-indicator,input[type=time]::-webkit-calendar-picker-indicator{filter:invert(0.75);cursor:pointer;opacity:.8;}
+input[type=checkbox]{-webkit-appearance:none;appearance:none;width:38px!important;height:22px!important;border-radius:999px;background:rgba(255,255,255,0.16);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;vertical-align:middle;margin:0;border:none;outline:none;}
+input[type=checkbox]::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.4);transition:transform .2s cubic-bezier(.4,0,.2,1);}
+input[type=checkbox]:checked{background:var(--sw,#4D9FFF);}
+input[type=checkbox]:checked::after{transform:translateX(16px);}
+input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
+/* Vlastiti dijalog umjesto alert/confirm */
+.app-dlg{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;}
+.app-dlg.open{display:flex;animation:dlgFade .18s ease-out;}
+.app-dlg-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 20px 16px;width:360px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:dlgPop .22s cubic-bezier(.16,1,.3,1);}
+.app-dlg-ic{font-size:30px;text-align:center;margin-bottom:8px;}
+.app-dlg-msg{color:#fff;font-size:14px;line-height:1.5;text-align:center;white-space:pre-line;word-break:break-word;}
+.app-dlg-btns{display:flex;gap:8px;margin-top:18px;}
+.app-dlg-btns button{flex:1;border:none;border-radius:10px;padding:11px;font-family:'Barlow',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:transform .12s;}
+.app-dlg-btns button:active{transform:scale(0.97);}
+.app-dlg-cancel{background:rgba(255,255,255,0.08);color:var(--text);}
+.app-dlg-ok{background:linear-gradient(135deg,#0057B8,#2E7CE0);color:#fff;}
+.app-dlg-ok.danger{background:linear-gradient(135deg,#B91C1C,#EF4444);}
+@keyframes dlgFade{from{opacity:0;}to{opacity:1;}}
+@keyframes dlgPop{from{opacity:0;transform:translateY(12px) scale(.96);}to{opacity:1;transform:none;}}
+/* Izbornik odozdo (mobitel, dugi popisi) */
+.sel-sheet{position:fixed;inset:0;z-index:10040;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;}
+.sel-sheet.open{display:flex;animation:dlgFade .18s ease-out;}
+.sel-sheet-box{background:var(--surface);border:1px solid var(--border);border-radius:22px 22px 0 0;width:100%;max-width:520px;max-height:78vh;display:flex;flex-direction:column;padding:8px 14px calc(14px + env(safe-area-inset-bottom,0px));animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
+.sel-sheet-handle{width:42px;height:4px;border-radius:4px;background:rgba(255,255,255,0.22);margin:4px auto 10px;}
+.sel-sheet-q{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none;width:100%;box-sizing:border-box;}
+.sel-sheet-list{overflow-y:auto;overscroll-behavior:contain;}
+.sel-opt{padding:12px 10px;border-radius:10px;font-size:14px;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;gap:10px;}
+.sel-opt:active{background:rgba(255,255,255,0.08);}
+.sel-opt.sel{background:rgba(0,87,184,0.35);color:#fff;font-weight:700;}
+.sel-opt.sel::after{content:'✓';}
+/* Modali kao sheet na mobitelu */
+@keyframes sheetIn{from{transform:translateY(100%);}to{transform:none;}}
+@media(max-width:600px){
+  .modal-overlay{align-items:flex-end;}
+  .modal{width:100%;max-width:100%;border-radius:22px 22px 0 0;padding:28px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:92vh;position:relative;animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
+  .modal::before{content:'';position:absolute;top:9px;left:50%;width:42px;height:4px;margin-left:-21px;border-radius:4px;background:rgba(255,255,255,0.22);}
+}
+/* Sparkline na karticama statistike */
+.spark{height:26px;margin-top:8px;opacity:.9;}
+.spark svg{display:block;}
+/* Kviz: kružni brojač, serija i animacije odgovora */
+.qz-ring{position:relative;width:64px;height:64px;margin:0 auto;}
+.qz-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.qz-ring circle{fill:none;stroke-width:3.5;}
+.qz-ring-bg{stroke:rgba(255,255,255,0.1);}
+.qz-ring-fg{stroke:#60A5FA;stroke-linecap:round;stroke-dasharray:119.4;stroke-dashoffset:0;transition:stroke .3s;}
+.qz-ring.warn .qz-ring-fg{stroke:#F87171;}
+.qz-ring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;font-family:'Bebas Neue',sans-serif;}
+.qz-chip{background:rgba(251,146,60,0.16);color:#FB923C;border:1px solid rgba(251,146,60,0.4);border-radius:100px;padding:2px 10px;font-size:12px;font-weight:700;}
+@keyframes qzPop{0%{transform:scale(1);}40%{transform:scale(1.04);}100%{transform:scale(1);}}
+@keyframes qzShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-6px);}40%{transform:translateX(6px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}}
+.qz-opt.ok{animation:qzPop .35s ease;}
+.qz-opt.bad{animation:qzShake .35s ease;}
+@media(prefers-reduced-motion:reduce){.qz-opt.ok,.qz-opt.bad,.seg-ind,.app-dlg-box,.sel-sheet-box,.modal{animation:none!important;transition:none!important;}}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1173,6 +1255,8 @@ tr[data-idx]{-webkit-touch-callout:none;}
 <div id="ptr-indicator"><i class="ptr-icon"></i><span id="ptr-label">Povuci za osvježavanje</span></div>
 
 <div id="no-data" style="display:none;position:fixed;inset:0;z-index:9998;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;"><img src="assets/img002.png" alt="" width="48" style="opacity:.5;"><div style="color:#fff;font-size:16px;font-weight:700;">Nema podataka</div><div style="color:var(--text-muted);font-size:13px;">Spoji se na mrežu i pokušaj ponovno.</div><button class="btn-sm" style="padding:10px 22px;" onclick="location.reload()">Pokušaj ponovno</button></div>
+<div id="app-dlg" class="app-dlg"><div class="app-dlg-box"><div class="app-dlg-ic"></div><div class="app-dlg-msg"></div><div class="app-dlg-btns"><button class="app-dlg-cancel">Odustani</button><button class="app-dlg-ok">U redu</button></div></div></div>
+<div id="sel-sheet" class="sel-sheet"><div class="sel-sheet-box"><div class="sel-sheet-handle"></div><input id="sel-sheet-q" class="sel-sheet-q" type="search" placeholder="Traži…" autocomplete="off"><div id="sel-sheet-list" class="sel-sheet-list"></div></div></div>
 <div id="offline-banner">Nema mreže — prikazani su spremljeni podaci.</div>
 <div id="fb-loading"><img src="assets/img002.png" alt="GNK Dinamo Zagreb"><span>UČITAVANJE</span></div>
 
@@ -2002,30 +2086,34 @@ tr[data-idx]{-webkit-touch-callout:none;}
         <div class="js-collapsed" id="pred-h2h" style="padding:14px;"></div>
       </div>
 
-      <!-- Kretanje točnosti kroz sezonu -->
-      <div class="pred-chart-card" id="pred-trend-card">
-        <div class="pred-chart-header">
-          <span class="section-title" style="color:#fff">📉 Kretanje točnosti kroz sezonu</span>
-          <div class="pred-chart-legend">
-            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
-            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
-          </div>
-        </div>
-        <div class="sched-filters" id="pred-trend-btns" style="margin:8px 0;"></div>
-        <div id="pred-trend-info" style="font-size:12px;color:#fff;min-height:18px;margin-bottom:4px;"></div>
-        <div id="pred-trend" style="position:relative;"></div>
-      </div>
-
       <!-- GRAF BODOVA PO KOLIMA (+ radar usporedba, oboje kroz isti toggle) -->
       <div class="pred-chart-card" id="pred-rounds-chart-card">
-        <div class="pred-chart-header">
+        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this)">
           <span class="section-title" style="color:#fff">📈 Bodovi po utakmici</span>
+          <div style="display:flex;align-items:center;gap:12px;">
           <div class="pred-chart-legend">
             <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
             <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
           </div>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
+          </div>
         </div>
-        <div id="pred-rounds-chart" style="position:relative;"></div>
+        <div id="pred-rounds-chart" style="position:relative;padding-top:12px;"></div>
+      </div>
+
+      <!-- Kretanje točnosti kroz sezonu -->
+      <div class="pred-chart-card" id="pred-trend-card">
+        <div class="pred-chart-header" style="cursor:pointer;margin-bottom:0;" onclick="toggleCollapse(this);predTrendScrollEnd()">
+          <span class="section-title" style="color:#fff">📉 Kretanje točnosti kroz sezonu</span>
+          <div style="display:flex;align-items:center;gap:12px;">
+          <div class="pred-chart-legend">
+            <span class="pcl-item"><span class="pcl-dot" style="background:#60A5FA;"></span>Luka</span>
+            <span class="pcl-item"><span class="pcl-dot" style="background:#2DD4BF;"></span>Lovro</span>
+          </div>
+          <span class="collapse-chevron" style="transition:transform 0.2s;font-size:12px;transform:rotate(180deg);color:var(--text-muted);">▾</span>
+          </div>
+        </div>
+        <div id="pred-trend" style="position:relative;padding-top:12px;"></div>
       </div>
 
       <div class="pred-type-tabs">
@@ -3689,6 +3777,7 @@ function animateNumber(el, targetNum, formatter){
 window.animateNumber = animateNumber;
 
 function updateStats(filtered){
+  try{ sparkApply(filtered); }catch(e){ console.warn('sparkline',e); }
   const total=filtered.length;
   const wins=filtered.filter(m=>getResult(m.rezultat,m.penali)==='win').length;
   const draws=filtered.filter(m=>getResult(m.rezultat,m.penali)==='draw').length;
@@ -4394,12 +4483,159 @@ async function shareElementAsImage(elementId, filename, btnEl){
 }
 window.shareElementAsImage = shareElementAsImage;
 
+
+/* ===== MODERNIZACIJA UI: dijalozi, segmentirane kontrole, izbornik odozdo, sparkline ===== */
+let _dlgQ=Promise.resolve();
+function appDialog(msg,confirmMode){
+  const run=()=>new Promise(res=>{
+    const d=document.getElementById('app-dlg');
+    if(!d){ res(true); return; }
+    msg=String(msg==null?'':msg);
+    let icon=confirmMode?'❓':'ℹ️'; const m=msg.match(/^(✅|❌|⚠️)\s*/); if(m){ icon=m[1]; msg=msg.slice(m[0].length); }
+    const danger=confirmMode&&/^(Obriši|Resetirati)/.test(msg); if(danger) icon='🗑️';
+    const okLbl=!confirmMode?'U redu':/^Obriši/.test(msg)?'Obriši':/^Resetirati/.test(msg)?'Resetiraj':/^Arhivirati/.test(msg)?'Arhiviraj':/^Odključati/.test(msg)?'Odključaj':/^Zatvoriti/.test(msg)?'Zatvori':'U redu';
+    d.querySelector('.app-dlg-ic').textContent=icon; d.querySelector('.app-dlg-msg').textContent=msg;
+    const ok=d.querySelector('.app-dlg-ok'), cn=d.querySelector('.app-dlg-cancel');
+    ok.textContent=okLbl; ok.classList.toggle('danger',!!danger); cn.style.display=confirmMode?'':'none';
+    const key=e=>{ if(e.key==='Escape') done(false); else if(e.key==='Enter') done(true); };
+    const done=v=>{ d.classList.remove('open'); document.removeEventListener('keydown',key); ok.onclick=cn.onclick=d.onclick=null; res(v); };
+    ok.onclick=()=>done(true); cn.onclick=()=>done(false); d.onclick=e=>{ if(e.target===d) done(!confirmMode); };
+    document.addEventListener('keydown',key); d.classList.add('open'); setTimeout(()=>ok.focus(),30);
+  });
+  _dlgQ=_dlgQ.then(run,run); return _dlgQ;
+}
+function appAlert(m){ appDialog(m,false); }
+function appConfirm(m){ return appDialog(m,true); }
+window.appAlert=appAlert; window.appConfirm=appConfirm; window.alert=appAlert;
+
+function segApply(){
+  document.querySelectorAll('.sched-filters,#pred-chart-toggle,#pred-trend-tabs').forEach(c=>{
+    if(!c.classList.contains('seg')) c.classList.add('seg');
+    let ind=c.querySelector(':scope>.seg-ind');
+    const act=c.querySelector(':scope>button.active');
+    if(!ind){ ind=document.createElement('span'); ind.className='seg-ind'; ind.style.transition='none'; c.insertBefore(ind,c.firstChild); requestAnimationFrame(()=>requestAnimationFrame(()=>{ ind.style.transition=''; })); }
+    if(!act||!act.offsetWidth){ ind.style.opacity='0'; return; }
+    ind.style.opacity='1'; ind.style.left=act.offsetLeft+'px'; ind.style.top=act.offsetTop+'px'; ind.style.width=act.offsetWidth+'px'; ind.style.height=act.offsetHeight+'px';
+  });
+}
+(function(){
+  let raf=0; const run=()=>{ if(raf) return; raf=requestAnimationFrame(()=>{ raf=0; try{ segApply(); }catch(e){} }); };
+  const start=()=>{
+    document.querySelectorAll('input[type=checkbox]').forEach(c=>{ if(c.style.accentColor) c.style.setProperty('--sw',c.style.accentColor); });
+    segApply();
+    new MutationObserver(run).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    window.addEventListener('resize',run);
+  };
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+})();
+
+/* Izbornik odozdo za dugačke popise (samo uređaji na dodir) */
+function selSheetOpen(sel){
+  const sh=document.getElementById('sel-sheet'), list=document.getElementById('sel-sheet-list'), q=document.getElementById('sel-sheet-q'); if(!sh||!list||!q) return false;
+  const opts=[...sel.options].filter(o=>!o.disabled);
+  const draw=f=>{
+    const t=(f||'').toLowerCase();
+    list.innerHTML=opts.filter(o=>!t||o.textContent.toLowerCase().includes(t)).map(o=>`<div class="sel-opt${o.value===sel.value?' sel':''}" data-v="${String(o.value).replace(/"/g,'&quot;')}">${wrEsc(o.textContent)}</div>`).join('')||'<div class="prc-empty">Nema rezultata</div>';
+  };
+  const close=()=>{ sh.classList.remove('open'); sh.onclick=null; list.onclick=null; q.oninput=null; };
+  draw(''); q.value='';
+  list.onclick=e=>{ const o=e.target.closest('.sel-opt'); if(!o) return; sel.value=o.dataset.v; sel.dispatchEvent(new Event('input',{bubbles:true})); sel.dispatchEvent(new Event('change',{bubbles:true})); close(); };
+  sh.onclick=e=>{ if(e.target===sh) close(); };
+  q.oninput=()=>draw(q.value);
+  sh.classList.add('open');
+  const cur=list.querySelector('.sel'); if(cur&&cur.scrollIntoView) cur.scrollIntoView({block:'center'});
+  return true;
+}
+document.addEventListener('mousedown',e=>{
+  try{
+    const sel=e.target.closest&&e.target.closest('select'); if(!sel||sel.multiple||sel.disabled) return;
+    if(!window.matchMedia('(pointer:coarse)').matches||sel.options.length<10) return;
+    if(selSheetOpen(sel)){ e.preventDefault(); sel.blur(); }
+  }catch(err){ console.warn('selSheet',err); }
+},true);
+
+/* Modali: povlačenje prema dolje za zatvaranje (samo s ručkice na vrhu) */
+(function(){
+  let m=null,y0=0,dy=0;
+  document.addEventListener('touchstart',e=>{
+    const mod=e.target.closest&&e.target.closest('.modal-overlay.open .modal'); if(!mod||window.innerWidth>600){ m=null; return; }
+    const r=mod.getBoundingClientRect(); if(e.touches[0].clientY-r.top>36){ m=null; return; }
+    m=mod; y0=e.touches[0].clientY; dy=0; mod.style.transition='none';
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{ if(!m) return; dy=Math.max(0,e.touches[0].clientY-y0); m.style.transform=`translateY(${dy}px)`; },{passive:true});
+  document.addEventListener('touchend',()=>{
+    if(!m) return; const mod=m; m=null; mod.style.transition='transform .2s ease';
+    if(dy>110){ mod.style.transform='translateY(100%)'; setTimeout(()=>{ const ov=mod.closest('.modal-overlay'); if(ov) ov.classList.remove('open'); mod.style.transform=''; mod.style.transition=''; },180); }
+    else{ mod.style.transform=''; setTimeout(()=>{ mod.style.transition=''; },220); }
+  });
+})();
+
+/* Sparkline na karticama statistike */
+function sparkSvg(vals,color){
+  vals=(vals||[]).filter(v=>Number.isFinite(v)); if(vals.length<2) return '';
+  const W=100,H=26,pad=2, mn=Math.min(...vals), mx=Math.max(...vals), rg=(mx-mn)||1;
+  const pts=vals.map((v,i)=>[pad+(W-2*pad)*i/(vals.length-1), H-pad-(H-2*pad)*(v-mn)/rg]);
+  const d=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area=d+` L${pts[pts.length-1][0].toFixed(1)},${H} L${pts[0][0].toFixed(1)},${H} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" width="100%" height="${H}"><path d="${area}" fill="${color}" opacity=".15"/><path d="${d}" fill="none" stroke="${color}" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+function sparkApply(filtered){
+  const f=[...(filtered||[])].filter(m=>m&&m.datum).sort((a,b)=>String(a.datum).localeCompare(String(b.datum)));
+  const res=f.map(m=>{ const p=String(m.rezultat||'').split('-').map(Number); return p.length===2&&p.every(n=>!isNaN(n))?p:[0,0]; });
+  const views=f.map(m=>Number(m.gledatelji)||0);
+  let wins=0,sum=0,mx=0;
+  const S={
+    'stat-total':f.map((m,i)=>{ if(res[i][0]>res[i][1]) wins++; return wins/(i+1)*100; }),
+    'stat-viewers':views,
+    'stat-avg':views.map(v=>{ sum+=v; return 0; }).map((_,i)=>views.slice(0,i+1).reduce((a,b)=>a+b,0)/(i+1)),
+    'stat-best':views.map(v=>(mx=Math.max(mx,v))),
+    'stat-scored':res.map(p=>p[0]),
+    'stat-conceded':res.map(p=>p[1])
+  };
+  const C={'stat-total':'#60A5FA','stat-viewers':'#60A5FA','stat-avg':'#A78BFA','stat-best':'#FBBF24','stat-scored':'#4ADE80','stat-conceded':'#F87171'};
+  Object.keys(S).forEach(id=>{
+    const el=document.getElementById(id); const card=el&&el.closest('.stat-card'); if(!card) return;
+    let sp=card.querySelector(':scope>.spark'); if(!sp){ sp=document.createElement('div'); sp.className='spark'; card.appendChild(sp); }
+    sp.innerHTML=sparkSvg(S[id],C[id]);
+  });
+}
+
+const CS_KEY='dinamo_collapse_v1';
+function csLoad(){ try{ return JSON.parse(localStorage.getItem(CS_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function csKey(h){
+  const b=h.nextElementSibling, pg=h.closest&&h.closest('[id^="page-"]');
+  const base=h.id||(b&&b.id)||(h.parentElement&&h.parentElement.id)||('t:'+(h.textContent||'').replace(/\s+/g,' ').trim().slice(0,50));
+  return (pg?pg.id:'')+'|'+base;
+}
+function csSave(h,open){
+  try{
+    const st=csLoad(); st[csKey(h)]=open?1:0;
+    const ks=Object.keys(st); if(ks.length>150) ks.slice(0,ks.length-150).forEach(k=>delete st[k]);
+    localStorage.setItem(CS_KEY,JSON.stringify(st));
+  }catch(e){}
+}
+function csApply(){
+  const st=csLoad(); if(!Object.keys(st).length) return;
+  document.querySelectorAll('[onclick*="toggleCollapse"]').forEach(h=>{
+    if(h.dataset.cs) return; h.dataset.cs='1';
+    const b=h.nextElementSibling; if(!b) return;
+    const v=st[csKey(h)]; if(v===undefined) return;
+    b.classList.toggle('js-collapsed',!v);
+    const c=h.querySelector('.collapse-chevron'); if(c) c.style.transform=v?'rotate(180deg)':'rotate(0deg)';
+  });
+}
+(function(){
+  let t=null; const run=()=>{ clearTimeout(t); t=setTimeout(csApply,120); };
+  const start=()=>{ csApply(); new MutationObserver(run).observe(document.body,{childList:true,subtree:true}); };
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+})();
 function toggleCollapse(headerEl){
   const body = headerEl.nextElementSibling;
   const chevron = headerEl.querySelector('.collapse-chevron');
   const isOpen = !body.classList.contains('js-collapsed');
   body.classList.toggle('js-collapsed', isOpen);
   if(chevron) chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+  csSave(headerEl,!isOpen);
 }
 window.toggleCollapse = toggleCollapse;
 
@@ -5492,7 +5728,7 @@ window.renderGoalList=renderGoalList;
 
 async function deleteGoal(idx){
   const g=goals[idx];
-  if(!confirm(`Obriši gol: ${g?.player||'?'} (${g?.minuteRaw||g?.minute}')?`))return;
+  if(!await appConfirm(`Obriši gol: ${g?.player||'?'} (${g?.minuteRaw||g?.minute}')?`))return;
   goals.splice(idx,1);
   safeSet('goals',goals);
   renderGoalStats();renderPlayerStats();renderGoalList();
@@ -5697,7 +5933,7 @@ async function confirmResult(){
 window.confirmResult=confirmResult;
 
 async function deletePred(idx){
-  if(!confirm('Obriši ovu predikciju?'))return;
+  if(!await appConfirm('Obriši ovu predikciju?'))return;
   predictions.splice(idx,1);
   await set(ref(db,'predictions'),predictions);
   renderPreds();
@@ -5855,52 +6091,110 @@ function renderPredH2H(){
 }
 window.renderPredH2H=renderPredH2H;
 
-/* ===== KRETANJE TOČNOSTI KROZ SEZONU (kumulativno nakon svake utakmice) ===== */
-let _predTrendMetric='win';
+/* ===== KRETANJE TOČNOSTI KROZ SEZONU (kumulativno nakon svake utakmice; isti izgled i veličina kao "Bodovi po utakmici") ===== */
+let _predTrendMetric='pts', _predTrendWindow=10;
 function predTrendSet(m){ _predTrendMetric=m; renderPredTrend(); }
 window.predTrendSet=predTrendSet;
-function renderPredTrend(){
-  const el=document.getElementById('pred-trend'), btn=document.getElementById('pred-trend-btns'), info=document.getElementById('pred-trend-info');
-  if(!el||!btn||!info) return;
-  const M=[['win','Pobjednik %'],['exact','Točan rezultat %'],['pts','Prosj. bodova']];
-  btn.innerHTML=M.map(([k,l])=>`<button class="sched-filter-btn${_predTrendMetric===k?' active':''}" onclick="predTrendSet('${k}')">${l}</button>`).join('');
+window.setPredTrendWindow=function(v){ _predTrendWindow=parseInt(v,10); renderPredTrend(true); };
+function renderPredTrend(onlyChart){
+  const el=document.getElementById('pred-trend'); if(!el) return;
+  const M=[['pts','🎯 Prosj. bodova'],['win','✅ Pobjednik %'],['exact','🔢 Točan rezultat %']];
+  const toggle=`<div id="pred-trend-tabs" style="margin-bottom:12px;">${M.map(([k,l])=>`<button class="prc-toggle-btn${_predTrendMetric===k?' active':''}" onclick="predTrendSet('${k}')">${l}</button>`).join('')}</div>`;
   const sgn=r=>{ const m=String(r||'').match(/^\s*(\d+)\s*-\s*(\d+)\s*$/); return m?Math.sign(+m[1]-+m[2]):null; };
-  const all=[...predictions,...awayPredictions].filter(x=>x.resolved&&x.actual&&sgn(x.actual.rez)!==null)
+  const all=[...predictions,...awayPredictions].filter(x=>x.resolved&&x.actual&&sgn(x.actual.rez)!==null&&x.luka&&x.lovro)
     .sort((a,b)=>String(a.datum).localeCompare(String(b.datum))||((a.id||0)-(b.id||0)));
-  if(all.length<2){ el.innerHTML='<div class="prc-empty">Treba barem 2 odigrana predviđanja.</div>'; info.textContent=''; return; }
-  const cum={luka:{w:0,e:0,p:0},lovro:{w:0,e:0,p:0}}, ser={luka:[],lovro:[]};
-  all.forEach((x,i)=>{
-    const sa=sgn(x.actual.rez), n=i+1;
+  if(all.length<2){ el.innerHTML=toggle+'<div class="prc-empty">Treba barem 2 odigrana predviđanja.</div>'; return; }
+  const cum={luka:{w:0,e:0,p:0},lovro:{w:0,e:0,p:0}}, mt=_predTrendMetric;
+  const allPts=all.map((x,i)=>{
+    const sa=sgn(x.actual.rez), n=i+1, o={idx:n,m:x};
     ['luka','lovro'].forEach(w=>{
-      const pr=x[w]&&x[w].rez;
+      const pr=x[w].rez, pt=(x[w].score&&x[w].score.pts)||0;
       if(sgn(pr)===sa) cum[w].w++;
       if(pr&&String(pr).replace(/\s/g,'')===String(x.actual.rez).replace(/\s/g,'')) cum[w].e++;
-      cum[w].p+=(x[w]&&x[w].score&&x[w].score.pts)||0;
-      ser[w].push(_predTrendMetric==='win'?cum[w].w/n*100:_predTrendMetric==='exact'?cum[w].e/n*100:cum[w].p/n);
+      cum[w].p+=pt;
+      o[w]=mt==='win'?cum[w].w/n*100:mt==='exact'?cum[w].e/n*100:cum[w].p/n;
+      o[w+'Pts']=pt;
     });
+    return o;
   });
-  const pct=_predTrendMetric!=='pts', fmt=v=>pct?Math.round(v)+'%':v.toFixed(2);
-  const W=340,H=190,pl=34,pr=12,pt=12,pb=24, n=all.length;
-  const mx=pct?100:Math.max(1,Math.ceil(Math.max(...ser.luka,...ser.lovro)*1.15));
-  const X=i=>pl+(W-pl-pr)*i/(n-1), Y=v=>pt+(H-pt-pb)*(1-v/mx);
-  const grid=[0,1,2,3,4].map(g=>{ const v=mx*g/4, y=Y(v); return `<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,0.08)"/><text x="${pl-4}" y="${y+3}" font-size="9" fill="#9CA3AF" text-anchor="end">${pct?Math.round(v):v.toFixed(1)}</text>`; }).join('');
-  const line=(w,c)=>`<polyline fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round" points="${ser[w].map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ')}"/><circle cx="${X(n-1)}" cy="${Y(ser[w][n-1])}" r="3.5" fill="${c}"/>`;
-  window._ptD={all,ser,fmt,W,pl,pr,n};
-  const base=`Nakon ${n} utakmica: Luka <b style="color:#60A5FA;">${fmt(ser.luka[n-1])}</b> · Lovro <b style="color:#2DD4BF;">${fmt(ser.lovro[n-1])}</b>`;
-  window._ptBase=base; info.innerHTML=base;
-  el.innerHTML=`<svg id="pred-trend-svg" viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;touch-action:pan-y;" onpointermove="predTrendHover(event)" onpointerdown="predTrendHover(event)" onpointerleave="predTrendLeave()">${grid}${line('luka','#60A5FA')}${line('lovro','#2DD4BF')}<line id="pt-guide" x1="0" x2="0" y1="${pt}" y2="${H-pb}" stroke="rgba(255,255,255,0.35)" style="display:none;"/><text x="${pl}" y="${H-6}" font-size="9" fill="#9CA3AF">${fmtDate(all[0].datum)}</text><text x="${W-pr}" y="${H-6}" font-size="9" fill="#9CA3AF" text-anchor="end">${fmtDate(all[n-1].datum)}</text></svg>`;
+  // Zoom: zadnjih N utakmica (kumulativ je izračunat kroz SVE utakmice)
+  const maxWindow=Math.max(5,Math.ceil(allPts.length/5)*5);
+  if(_predTrendWindow>maxWindow) _predTrendWindow=maxWindow;
+  const win=Math.min(_predTrendWindow,maxWindow);
+  const points=allPts.length<=5?allPts:allPts.slice(-win);
+  const pct=mt!=='pts', fmt=v=>pct?Math.round(v)+'%':v.toFixed(2);
+  const W=Math.max(320,points.length*46), H=210, padL=34, padR=14, padT=18, padB=30;
+  const innerW=W-padL-padR, innerH=H-padT-padB;
+  const hi=Math.max(...points.map(p=>Math.max(p.luka,p.lovro)));
+  const maxVal=pct?100:Math.max(1,Math.ceil(hi*1.15*2)/2);
+  const xFor=i=>padL+(i/(points.length-1))*innerW, yFor=v=>padT+innerH-(v/maxVal*innerH);
+  const lp=smoothPath(points,xFor,yFor,'luka'), vp=smoothPath(points,xFor,yFor,'lovro');
+  const base=(padT+innerH).toFixed(1), x0=xFor(0).toFixed(1), x1=xFor(points.length-1).toFixed(1);
+  const grid=[0,0.25,0.5,0.75,1].map(f=>{ const v=maxVal*f, y=yFor(v);
+    return `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W-padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/><text x="${padL-6}" y="${(y+3).toFixed(1)}" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.4)">${pct?Math.round(v):(Math.round(v*10)/10)}</text>`; }).join('');
+  const bandW=innerW/(points.length-1);
+  const hits=points.map((p,i)=>`<rect x="${(xFor(i)-bandW/2).toFixed(1)}" y="${padT}" width="${bandW.toFixed(1)}" height="${innerH}" fill="transparent" onpointerenter="predTrendShow(${i})" onpointermove="predTrendShow(${i})" onpointerdown="predTrendShow(${i})" onpointerleave="predTrendHide(event)"/>`).join('');
+  const guides=points.map((p,i)=>`<line class="pt-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${base}" stroke="#fff" stroke-width="1" opacity="0" pointer-events="none"/>`).join('');
+  const dots=(k,c)=>points.map((p,i)=>`<circle class="pt-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(p[k]).toFixed(1)}" r="3.5" fill="${c}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
+  const step=points.length>14?2:1;
+  const xl=points.map((p,i)=>(i%step!==0&&i!==points.length-1)?'':`<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${p.idx}</text>`).join('');
+  window._ptD={points,fmt,xFor};
+  const chart=`<div style="position:relative;">
+    <div id="pt-scroll" style="overflow-x:auto;max-width:100%;" onscroll="predTrendHide()">
+      <svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">
+        <defs>
+          <linearGradient id="ptGradL" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#60A5FA" stop-opacity="0.35"/><stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/></linearGradient>
+          <linearGradient id="ptGradV" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2DD4BF" stop-opacity="0.35"/><stop offset="100%" stop-color="#2DD4BF" stop-opacity="0"/></linearGradient>
+        </defs>
+        ${grid}
+        <path d="${lp} L${x1},${base} L${x0},${base} Z" fill="url(#ptGradL)"/>
+        <path d="${vp} L${x1},${base} L${x0},${base} Z" fill="url(#ptGradV)"/>
+        <path d="${lp}" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="${vp}" fill="none" stroke="#2DD4BF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+        ${guides}${dots('luka','#60A5FA')}${dots('lovro','#2DD4BF')}${hits}
+        <text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">UTAKMICA →</text>
+        ${xl}
+      </svg>
+    </div>
+    <div id="pt-tip" class="prc-tooltip" style="display:none;"></div>
+  </div>`;
+  if(onlyChart===true && document.getElementById('pt-chart')){
+    document.getElementById('pt-chart').innerHTML=chart;
+    const lb=document.getElementById('pt-window-label'); if(lb) lb.textContent=win;
+  }else{
+    const last=allPts[allPts.length-1];
+    const slider=allPts.length>5?prcSlider('pt-window-label',allPts.length,win,5,maxWindow,'setPredTrendWindow'):'';
+    el.innerHTML=toggle+slider+`<div id="pt-chart">${chart}</div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;padding:0 4px;font-size:11px;color:var(--text-muted);">
+      <span>Ukupno odigrano: <strong style="color:#fff;">${allPts.length}</strong></span>
+      <span>${personAvatar('luka')} Luka: <strong style="color:#60A5FA;">${fmt(last.luka)}</strong> · ${personAvatar('lovro')} Lovro: <strong style="color:#2DD4BF;">${fmt(last.lovro)}</strong></span>
+    </div>`;
+  }
+  const sc=document.getElementById('pt-scroll'); if(sc) sc.scrollLeft=sc.scrollWidth;
 }
-function predTrendHover(ev){
-  const d=window._ptD, svg=document.getElementById('pred-trend-svg'); if(!d||!svg) return;
-  const r=svg.getBoundingClientRect(); const x=(ev.clientX-r.left)/r.width*d.W;
-  const i=Math.max(0,Math.min(d.n-1,Math.round((x-d.pl)/(d.W-d.pl-d.pr)*(d.n-1))));
-  const g=document.getElementById('pt-guide'); const gx=d.pl+(d.W-d.pl-d.pr)*i/(d.n-1);
-  if(g){ g.setAttribute('x1',gx); g.setAttribute('x2',gx); g.style.display=''; }
-  const m=d.all[i], inf=document.getElementById('pred-trend-info');
-  if(inf) inf.innerHTML=`${i+1}. ${wrEsc(officialName(m.protivnik||''))} (${fmtDate(m.datum)}): Luka <b style="color:#60A5FA;">${d.fmt(d.ser.luka[i])}</b> · Lovro <b style="color:#2DD4BF;">${d.fmt(d.ser.lovro[i])}</b>`;
+function predTrendShow(i){
+  const d=window._ptD, sc=document.getElementById('pt-scroll'), tip=document.getElementById('pt-tip'); if(!d||!sc||!tip) return;
+  document.querySelectorAll('#pred-trend .pt-guide').forEach(g=>g.setAttribute('opacity',+g.dataset.idx===i?'0.45':'0'));
+  document.querySelectorAll('#pred-trend .pt-dot').forEach(c=>c.setAttribute('r',+c.dataset.idx===i?'6':'3.5'));
+  const p=d.points[i], m=p.m, pr=w=>m[w].rez||'—';
+  tip.innerHTML=`<div style="font-size:11px;font-weight:700;color:#fff;">${p.idx}. ${wrEsc(officialName(m.protivnik||''))}</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-bottom:4px;">${fmtDate(m.datum)} · rezultat ${wrEsc(m.actual.rez)}</div>
+    <div style="font-size:11px;color:#60A5FA;">Luka: <b>${d.fmt(p.luka)}</b> <span style="color:var(--text-muted);">(tip ${wrEsc(pr('luka'))}, ${p.lukaPts} b)</span></div>
+    <div style="font-size:11px;color:#2DD4BF;">Lovro: <b>${d.fmt(p.lovro)}</b> <span style="color:var(--text-muted);">(tip ${wrEsc(pr('lovro'))}, ${p.lovroPts} b)</span></div>`;
+  tip.style.display='block'; tip.style.top='0px';
+  const box=tip.parentElement, tw=tip.offsetWidth;
+  tip.style.left=Math.max(0,Math.min(d.xFor(i)-sc.scrollLeft-tw/2,box.clientWidth-tw))+'px';
 }
-function predTrendLeave(){ const g=document.getElementById('pt-guide'); if(g) g.style.display='none'; const inf=document.getElementById('pred-trend-info'); if(inf&&window._ptBase) inf.innerHTML=window._ptBase; }
-window.predTrendHover=predTrendHover; window.predTrendLeave=predTrendLeave; window.renderPredTrend=renderPredTrend;
+function predTrendHide(ev){
+  if(ev&&ev.pointerType&&ev.pointerType!=='mouse') return; // na mobitelu ostaje do sljedećeg dodira
+  document.querySelectorAll('#pred-trend .pt-guide').forEach(g=>g.setAttribute('opacity','0'));
+  document.querySelectorAll('#pred-trend .pt-dot').forEach(c=>c.setAttribute('r','3.5'));
+  const tip=document.getElementById('pt-tip'); if(tip) tip.style.display='none';
+}
+if(!window._ptOutside){ window._ptOutside=true; document.addEventListener('pointerdown',e=>{ if(!e.target.closest||!e.target.closest('#pred-trend svg')) predTrendHide(); }); }
+function predTrendScrollEnd(){ setTimeout(()=>{ const sc=document.getElementById('pt-scroll'); if(sc&&sc.scrollWidth>0) sc.scrollLeft=sc.scrollWidth; },0); }
+window.predTrendScrollEnd=predTrendScrollEnd;
+window.predTrendShow=predTrendShow; window.predTrendHide=predTrendHide; window.renderPredTrend=renderPredTrend;
 
 /* ===== RADAR GRAF — LUKA VS LOVRO ===== */
 function renderRadarChart(){
@@ -6013,10 +6307,14 @@ window.setPredChartWindow = function(val){
   _predChartWindow = parseInt(val,10);
   const lbl = document.getElementById('prc-window-label');
   if(lbl) lbl.textContent = _predChartWindow;
-  renderRoundsChart();
+  renderRoundsChart(true);
 };
 
-function renderRoundsChart(){
+function prcSlider(lblId,total,val,min,max,fn){
+  const pct=((val-min)/(max-min)*100).toFixed(1);
+  return `<div class="prc-slider-row"><span class="prc-slider-lbl">🔍 Zadnjih <strong id="${lblId}">${val}</strong> od ${total}</span><input type="range" class="prc-range" min="${min}" max="${max}" step="5" value="${val}" style="--pct:${pct}%" oninput="this.style.setProperty('--pct',((this.value-this.min)/(this.max-this.min)*100)+'%');${fn}(this.value)"></div>`;
+}
+function renderRoundsChart(onlyChart){
   const el=document.getElementById('pred-rounds-chart');
   if(!el) return;
 
@@ -6070,13 +6368,15 @@ function renderRoundsChart(){
   const clampedWindow = Math.min(_predChartWindow, maxWindow, Math.max(5,Math.ceil(allPoints.length/5)*5));
   const points = allPoints.length <= 5 ? allPoints : allPoints.slice(-clampedWindow);
 
-  const sliderHTML = allPoints.length > 5 ? `
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-      <span style="font-size:10px;color:var(--text-muted);white-space:nowrap;">🔍 Zadnjih <strong id="prc-window-label" style="color:#fff;">${clampedWindow}</strong> od ${allPoints.length}</span>
-      <input type="range" min="5" max="${maxWindow}" step="5" value="${clampedWindow}" oninput="setPredChartWindow(this.value)" style="flex:1;accent-color:#60A5FA;height:4px;cursor:pointer;">
-    </div>` : '';
+  const sliderHTML = allPoints.length > 5 ? prcSlider('prc-window-label',allPoints.length,clampedWindow,5,maxWindow,'setPredChartWindow') : '';
 
   _predChartPoints = points; // globalno spremljeno za tooltip klikove
+  // Tijekom povlačenja slidera crtaj samo graf (slider ostaje isti element pa se povlačenje ne prekida)
+  if(onlyChart===true && document.getElementById('pred-chart-inner')){
+    const lb=document.getElementById('prc-window-label'); if(lb) lb.textContent=clampedWindow;
+    if(_predChartMode==='cumulative') renderCumulativeChart(points); else renderPerMatchChart(points);
+    return;
+  }
 
   el.innerHTML = toggleHTML + sliderHTML + `<div id="pred-chart-inner"></div>
     <div id="pred-chart-tooltip" class="prc-tooltip" style="display:none;"></div>
@@ -6612,7 +6912,7 @@ async function confirmAwayResult(){
 window.confirmAwayResult=confirmAwayResult;
 
 async function deleteAwayPred(idx){
-  if(!confirm('Obriši ovu predikciju?'))return;
+  if(!await appConfirm('Obriši ovu predikciju?'))return;
   awayPredictions.splice(idx,1);
   await saveAwayPreds();
   renderAwayPreds();
@@ -7201,7 +7501,7 @@ async function saveKarteManual(){
 window.saveKarteManual = saveKarteManual;
 
 async function deleteKarteManual(key){
-  if(!confirm('Obriši ove podatke?')) return;
+  if(!await appConfirm('Obriši ove podatke?')) return;
   delete _karteManualData[key];
   try{
     await set(ref(db,'karte_manual'), _karteManualData);
@@ -7229,7 +7529,7 @@ async function archiveKarteSeason(){
   const seasonName = (document.getElementById('karte-archive-season-name')||{}).value?.trim();
   if(!seasonName){ showToast('⚠️ Upiši naziv sezone!','#1A0A0A','#F87171'); return; }
   if(Object.keys(_karteManualData).length===0){ showToast('⚠️ Nema podataka za arhiviranje.','#1A0A0A','#F87171'); return; }
-  if(!confirm(`Arhivirati sve trenutne podatke o kartama pod sezonu "${seasonName}"?\n\nForma za unos će se osloboditi za novu sezonu.`)) return;
+  if(!await appConfirm(`Arhivirati sve trenutne podatke o kartama pod sezonu "${seasonName}"?\n\nForma za unos će se osloboditi za novu sezonu.`)) return;
 
   try{
     // 1. Spremi trenutne podatke u arhivu
@@ -7319,9 +7619,13 @@ async function init(){
     if(matchSnap.exists()&&Array.isArray(matchSnap.val())&&matchSnap.val().length>0){
       matches=matchSnap.val();
 
+    }else if(matchSnap.exists()&&matchSnap.val()&&typeof matchSnap.val()==='object'){
+      // Firebase niz s rupama vrati kao objekt — samo pretvori u niz, ništa ne prepisuj
+      matches=Object.values(matchSnap.val()).filter(Boolean);
     }else{
-      matches=INITIAL_MATCHES;
-      await set(ref(db,'matches'),matches);
+      // Prazna/nedostupna baza: NIKAD ne upisuj početni popis preko baze
+      console.warn('Čvor "matches" je prazan — ništa se ne upisuje u bazu.');
+      matches=[];
     }
     const goalSnap=await get(ref(db,'goals'));
     if(goalSnap.exists()&&Array.isArray(goalSnap.val())){goals=goalSnap.val();}
@@ -8484,7 +8788,7 @@ async function schedDelete(id){
   const idx=_schedMatches.findIndex(x=>x.id===id);
   if(idx<0) return;
   const m=_schedMatches[idx];
-  if(!confirm(`Obriši utakmicu ${m.opp} (${m.datum})?`)) return;
+  if(!await appConfirm(`Obriši utakmicu ${m.opp} (${m.datum})?`)) return;
   _schedMatches = _schedMatches.filter(x=>x.id!==id);
   set(ref(db,'raspored_2627'), _schedMatches);
   renderRaspored();
@@ -9367,7 +9671,7 @@ window.tablEditAll = tablEditAll;
 
 async function tablResetTable(type){
   if(!_currentUser) return;
-  if(!confirm(`Resetirati ${type==='hnl'?'HNL':'Europa'} tablicu?`)) return;
+  if(!await appConfirm(`Resetirati ${type==='hnl'?'HNL':'Europa'} tablicu?`)) return;
   if(type==='hnl'){
     _tablHnl = JSON.parse(JSON.stringify(TABL_HNL_DEFAULT));
     await set(ref(db,'tablica_hnl'), _tablHnl);
@@ -9706,9 +10010,9 @@ async function archiveSeason(){
 window.archiveSeason=archiveSeason;
 
 // Potvrda i brisanje arhive (odključavanje sezone)
-function confirmUnarchive(seasonName){
+async function confirmUnarchive(seasonName){
   if(!_currentUser){ showToast('⚠️ Trebaš biti prijavljen!','#1A0A0A','#F87171'); return; }
-  if(!confirm(`Odključati sezonu "${seasonName}"?\n\nPrije arhivirane predikcije vratit će se u aktivnu listu, a arhiva za tu sezonu bit će obrisana.\n\nNastaviti?`)) return;
+  if(!await appConfirm(`Odključati sezonu "${seasonName}"?\n\nPrije arhivirane predikcije vratit će se u aktivnu listu, a arhiva za tu sezonu bit će obrisana.\n\nNastaviti?`)) return;
   unarchiveSeason(seasonName);
 }
 window.confirmUnarchive=confirmUnarchive;
@@ -10874,7 +11178,7 @@ async function qzActivate(){
   renderKviz();
 }
 async function qzClose(key){
-  if(!confirm('Zatvoriti ovaj kviz?')) return;
+  if(!await appConfirm('Zatvoriti ovaj kviz?')) return;
   try{ await remove(ref(db,'quiz/'+key)); }catch(e){ console.warn(e); }
   renderKviz();
 }
@@ -10893,23 +11197,23 @@ async function qzStart(practice,key){
     }
   }
   if(!q||q.length<3){ box.innerHTML='<div class="prc-empty">Nema dovoljno podataka za pitanja. Dodaj još utakmica i golova.</div>'; return; }
-  const st={i:0,n:q.length,score:0,pts:0,fast:0,ms:0,ans:[],dts:[]};
+  const st={i:0,n:q.length,score:0,pts:0,fast:0,ms:0,ans:[],dts:[],run:0};
   const show=()=>{
     if(st.i>=q.length) return qzFinish(st,datum,practice,q);
     const cur=q[st.i], t0=performance.now();
     let done=false;
-    box.innerHTML=`<div class="qz-card"><div class="qz-top"><span>Pitanje ${st.i+1} od ${q.length}</span><b id="qz-sec">${QZ_T/1000}</b></div><div class="qz-timer"><i id="qz-bar"></i></div><div class="qz-q">${wrEsc(cur.t)}</div>${cur.o.map((o,k)=>`<button class="qz-opt" data-k="${k}">${wrEsc(o)}</button>`).join('')}</div>`;
-    const bar=box.querySelector('#qz-bar'), sec=box.querySelector('#qz-sec');
+    box.innerHTML=`<div class="qz-card"><div class="qz-top"><span>Pitanje ${st.i+1} od ${q.length}</span>${st.run>=2?`<span class="qz-chip">🔥 ${st.run} zaredom</span>`:'<span></span>'}</div><div class="qz-ring" id="qz-ringw"><svg viewBox="0 0 44 44"><circle class="qz-ring-bg" cx="22" cy="22" r="19"/><circle id="qz-bar" class="qz-ring-fg" cx="22" cy="22" r="19"/></svg><b id="qz-sec">${QZ_T/1000}</b></div><div class="qz-q">${wrEsc(cur.t)}</div>${cur.o.map((o,k)=>`<button class="qz-opt" data-k="${k}">${wrEsc(o)}</button>`).join('')}</div>`;
+    const bar=box.querySelector('#qz-bar'), sec=box.querySelector('#qz-sec'), ring=box.querySelector('#qz-ringw');
     const end=k=>{
       if(done) return; done=true; clearInterval(iv);
-      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); st.dts.push(Math.round(dt)); if(k===cur.a){ st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; haptic(35); } else haptic([25,60,25]);
+      const dt=Math.min(performance.now()-t0,QZ_T); st.ms+=dt; st.ans.push(k); st.dts.push(Math.round(dt)); if(k===cur.a){ st.run++; st.score++; st.pts+=dt<=QZ_FAST?2:1; if(dt<=QZ_FAST) st.fast++; haptic(35); } else { st.run=0; haptic([25,60,25]); }
       box.querySelectorAll('.qz-opt').forEach((b,j)=>{b.disabled=true; if(j===cur.a) b.classList.add('ok'); else if(j===k) b.classList.add('bad');});
       setTimeout(show,800);
     };
     let lastTick=null;
     const iv=setInterval(()=>{
       const e=performance.now()-t0, left=Math.max(0,Math.ceil((QZ_T-e)/1000));
-      bar.style.width=Math.max(0,100-e/QZ_T*100)+'%'; sec.textContent=left;
+      bar.style.strokeDashoffset=(119.4*Math.min(1,e/QZ_T)).toFixed(2); ring.classList.toggle('warn',left<=3); sec.textContent=left;
       if(left<=3&&left>0&&left!==lastTick){ lastTick=left; haptic(15); }
       if(e>=QZ_T) end(-1);
     },50);
@@ -11124,6 +11428,13 @@ try{
   ['matches','goals'].forEach(pth=>onValue(ref(db,pth),sn=>{ if(sn.exists()&&Array.isArray(sn.val())) _lastServer[pth]=JSON.parse(JSON.stringify(sn.val())); }));
 }catch(e){ console.warn('offline queue listeners',e); }
 async function safeSet(pth,arr){
+  // Zaštita: ne dopusti da spremanje drastično smanji popis (npr. zbog prazne/neučitane lokalne kopije)
+  const _prev=(_lastServer[pth]||[]).length;
+  if(PEND_KEYFN[pth]&&Array.isArray(arr)&&_prev>=5&&arr.length<_prev*0.5){
+    showToast(`⛔ Spremanje zaustavljeno: popis bi se smanjio s ${_prev} na ${arr.length}. Osvježi stranicu.`,'#1A0A0A','#F87171');
+    console.warn('safeSet blokiran',pth,_prev,'->',arr.length);
+    return false;
+  }
   if(_fbOnline){ await set(ref(db,pth),arr); return true; }
   const pend=pendLoad();
   if(!pend[pth]) pend[pth]={base:_lastServer[pth]||[],t:Date.now()};
@@ -11256,7 +11567,7 @@ function rowCtxEdit(idx){
 async function rowCtxDelete(idx){
   closeRowCtxMenu();
   const m=matches[idx]; if(!m) return;
-  if(!confirm(`Obriši utakmicu protiv ${officialName(m.protivnik)} (${fmtDate(m.datum)})?`)) return;
+  if(!await appConfirm(`Obriši utakmicu protiv ${officialName(m.protivnik)} (${fmtDate(m.datum)})?`)) return;
   matches.splice(idx,1);
   safeSet('matches',matches);
   renderTable();
