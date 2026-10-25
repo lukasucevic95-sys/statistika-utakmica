@@ -1364,6 +1364,9 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 .gh-s{font-weight:700;color:var(--text);}
 .gh-c{height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;}
 .gh-t{text-align:center;font-weight:700;color:var(--text-muted);}
+/* Detalji točke na grafu: stalni okvir ISPOD grafa (ne lebdi iznad podataka, nema skakanja) */
+.tip-below{position:static!important;display:block!important;left:auto!important;top:auto!important;width:100%;box-sizing:border-box;margin-top:10px;min-height:70px;box-shadow:none;animation:none;background:rgba(255,255,255,0.04);border:1px solid var(--border);pointer-events:auto;}
+.tip-below:empty::before{content:'👆 Dodirni točku na grafu za detalje';font-size:11px;color:var(--text-muted);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -4231,7 +4234,7 @@ function filterByStadion(name){
   sel.value = name;
   renderActive();
   // Skrolaj do tablice
-  document.getElementById('tbl-scroll-matches')?.scrollIntoView({behavior:'smooth',block:'start'});
+  scrollToEl(document.getElementById('tbl-scroll-matches'));
 }
 
 function normalizeTime(v){
@@ -4350,7 +4353,7 @@ window.selectTermin=function(t){
       }).join('')}
     </div>`;
   detail.style.display='block';
-  setTimeout(()=>detail.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  smartReveal(detail);
 };
 
 window.closeTerminiDetail=function(){
@@ -4891,7 +4894,7 @@ function sparkChart(x,tab,color,pfx){
     return head+`<div style="font-size:12px;color:#fff;">${tab.l}: <b>${tab.fmt(vals[i])}</b>${df!==null?` <span style="color:var(--text-muted);">(${df>=0?'+':''}${df}% vs prosjek)</span>`:''}</div>`;
   };
   window._spDs=window._spDs||{}; window._spDs[pfx]={x,vals,tab,xFor,n,tip};
-  return `${legend}<div class="sp-wrap" style="position:relative;"><div id="${pfx}-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide(null,'${pfx}')"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">${isCat?'':'UTAKMICA →'}</text>${xl}</svg></div><div id="${pfx}-tip" class="prc-tooltip" style="display:none;"></div></div>`;
+  return `${legend}<div class="sp-wrap" style="position:relative;"><div id="${pfx}-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide(null,'${pfx}')"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">${isCat?'':'UTAKMICA →'}</text>${xl}</svg></div><div id="${pfx}-tip" class="prc-tooltip tip-below" style="display:none;"></div></div>`;
 }
 function sparkShow(i,pfx){
   pfx=pfx||'sp';
@@ -4918,8 +4921,13 @@ window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.2.0';
+const APP_VERSION='2.2.1';
 const CHANGELOG=[
+  {v:'2.2.1',d:'2026-10-25',items:[
+    ['👆','Grafovi: detalji dodirnute točke sada se prikazuju u okviru ISPOD grafa, a ne iznad podataka'],
+    ['📍','Forma, toplinska karta i strijelci na vremenskoj crti: kućica s detaljima otvara se ispod dodirnutog mjesta'],
+    ['🧭','Skrolanje: paneli s detaljima (minute, termini) se više ne vuku naglo, stranica se pomakne samo koliko treba da se vidi sve']
+  ]},
   {v:'2.2.0',d:'2026-10-25',items:[
     ['⚽','Golovi: jedan red filtera s oznakama aktivnih filtera i gumbom Poništi; Zabijeni / Primljeni su klizni tabovi'],
     ['📊','Golovi: novi graf minuta (zabijeni gore, primljeni dolje) s karticama najopasnijeg perioda, golova nakon 75. i nadoknade'],
@@ -5235,6 +5243,31 @@ function gRenderH2H(){
 function gRenderAnalysis(){ gRenderHeat(); gRenderCum(); gRenderH2H(); }
 window.gHeatType=gHeatType; window.gCumTab=gCumTab; window.gRenderCum=gRenderCum; window.gRenderH2H=gRenderH2H;
 
+
+/* ===== Detalji ispod / u sredini, blago skrolanje ===== */
+function tipPlaceBelow(tip,wrap,target,tw,forceBelow){
+  tip.style.position='absolute';
+  const w=wrap.getBoundingClientRect(), t=target.getBoundingClientRect();
+  const tipW=tw||tip.offsetWidth||150, tipH=tip.offsetHeight||60;
+  let left=t.left-w.left+wrap.scrollLeft+t.width/2-tipW/2;
+  left=Math.max(4,Math.min(left,Math.max(4,wrap.scrollWidth-tipW-4)));
+  const below=t.bottom-w.top+wrap.scrollTop+8, above=t.top-w.top+wrap.scrollTop-tipH-8;
+  const fits=below+tipH<=wrap.scrollHeight+(forceBelow?9999:0) && t.bottom+8+tipH<=window.innerHeight-8;
+  tip.style.left=left+'px'; tip.style.top=((forceBelow||fits||above<0)?below:above)+'px';
+}
+function smartReveal(el){
+  if(!el) return;
+  setTimeout(()=>{
+    const r=el.getBoundingClientRect(), top=96, bot=window.innerHeight-16; let dy=0;
+    if(r.height>bot-top) dy=r.top-top;
+    else if(r.bottom>bot) dy=r.bottom-bot;
+    else if(r.top<top) dy=r.top-top;
+    if(Math.abs(dy)>4) window.scrollBy({top:dy,behavior:'smooth'});
+  },470);
+}
+function scrollToEl(el,off){ if(!el) return; window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-(off||96)),behavior:'smooth'}); }
+window.tipPlaceBelow=tipPlaceBelow; window.smartReveal=smartReveal; window.scrollToEl=scrollToEl;
+
 const CS_KEY='dinamo_collapse_v1';
 function csLoad(){ try{ return JSON.parse(localStorage.getItem(CS_KEY)||'{}')||{}; }catch(e){ return {}; } }
 function csKey(h){
@@ -5367,13 +5400,7 @@ function showTimelineGoalTip(gi, evt){
     <div style="font-weight:700;font-size:12px;color:#fff;">${isScored?'⚽':'⚽'} ${g.player||'Nepoznato'}</div>
     <div style="font-size:10px;color:${isScored?'#4ADE80':'#F87171'};margin-top:2px;">${minStr}' · ${isScored?'Dinamo':'protivnik'}</div>`;
   tip.style.display='block';
-  const wrapRect = wrap.getBoundingClientRect();
-  const targetRect = evt.currentTarget.getBoundingClientRect();
-  let left = targetRect.left - wrapRect.left + targetRect.width/2 - 70;
-  left = Math.max(4, Math.min(left, wrap.offsetWidth-144));
-  tip.style.left = left+'px';
-  tip.style.top = '-58px';
-  tip.style.position = 'absolute';
+  tipPlaceBelow(tip,wrap,evt.currentTarget,144,true);
 }
 window.showTimelineGoalTip = showTimelineGoalTip;
 function hideTimelineGoalTip(){
@@ -5800,7 +5827,7 @@ function toggleMinuteDetail(bi){
   renderGoalStats();
   _renderMinutePanel(buckets[bi], MIN_BUCKETS[bi].label);
   panel.classList.add('open');
-  setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),80);
+  smartReveal(panel);
 }
 window.toggleMinuteDetail=toggleMinuteDetail;
 
@@ -6796,7 +6823,7 @@ function renderPredTrend(onlyChart){
         ${xl}
       </svg>
     </div>
-    <div id="pt-tip" class="prc-tooltip" style="display:none;"></div>
+    <div id="pt-tip" class="prc-tooltip tip-below" style="display:none;"></div>
   </div>`;
   if(onlyChart===true && document.getElementById('pt-chart')){
     document.getElementById('pt-chart').innerHTML=chart;
@@ -7019,7 +7046,7 @@ function renderRoundsChart(onlyChart){
   }
 
   el.innerHTML = toggleHTML + sliderHTML + `<div id="pred-chart-inner"></div>
-    <div id="pred-chart-tooltip" class="prc-tooltip" style="display:none;"></div>
+    <div id="pred-chart-tooltip" class="prc-tooltip tip-below" style="display:none;"></div>
     <div style="display:flex;justify-content:space-between;margin-top:10px;padding:0 4px;font-size:11px;color:var(--text-muted);">
       <span>Ukupno odigrano: <strong style="color:#fff;">${allPoints.length}</strong></span>
       <span>${personAvatar('luka')} Luka: <strong style="color:#60A5FA;">${lCum}</strong> · ${personAvatar('lovro')} Lovro: <strong style="color:#2DD4BF;">${loCum}</strong></span>
@@ -8755,13 +8782,7 @@ function showFormaDotTip(idx, evt){
     <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px;">${fmtDate(m.datum)}${m.comp?' · '+(m.comp==='hnl'?'HNL':m.comp==='euro'?'Europa':m.comp==='kup'?'Kup':m.comp):''}</div>
     <div style="font-size:14px;font-weight:800;color:#fff;">${m.rezultat}</div>`;
   tip.style.display='block';
-  const cardRect = wrapCard.getBoundingClientRect();
-  const targetRect = evt.currentTarget.getBoundingClientRect();
-  let left = targetRect.left - cardRect.left + targetRect.width/2 - 80;
-  left = Math.max(4, Math.min(left, wrapCard.offsetWidth-164));
-  tip.style.left = left+'px';
-  tip.style.top = (targetRect.top - cardRect.top - 96)+'px';
-  tip.style.position = 'absolute';
+  tipPlaceBelow(tip,wrapCard,evt.currentTarget,164);
 }
 window.showFormaDotTip = showFormaDotTip;
 function hideFormaDotTip(){
@@ -11391,19 +11412,7 @@ function showHeatmapCellTip(evt, label, count){
   if(!count){ tip.style.display='none'; return; }
   tip.innerHTML = `<div style="font-weight:700;font-size:12px;color:#fff;">${label}</div><div style="font-size:11px;color:#60A5FA;margin-top:2px;">${count} ${count===1?'utakmica':'utakmice'}</div>`;
   tip.style.display='block';
-  const wrapRect = wrap.getBoundingClientRect();
-  const targetRect = evt.currentTarget.getBoundingClientRect();
-  let left = targetRect.left - wrapRect.left + wrap.scrollLeft + targetRect.width/2 - 60;
-  left = Math.max(4, left);
-  tip.style.left = left+'px';
-  // Ako nema dovoljno prostora iznad (npr. najgornji redovi - najnovije godine),
-  // prikaži tooltip ISPOD ćelije umjesto iznad, da se ne odreže rubom kontejnera.
-  const spaceAbove = targetRect.top - wrapRect.top;
-  if(spaceAbove >= 60){
-    tip.style.top = (targetRect.top - wrapRect.top - 54)+'px';
-  } else {
-    tip.style.top = (targetRect.bottom - wrapRect.top + 8)+'px';
-  }
+  tipPlaceBelow(tip,wrap,evt.currentTarget,120);
   clearTimeout(window._heatmapTipTimer);
   window._heatmapTipTimer = setTimeout(()=>{ tip.style.display='none'; }, 2500);
 }
