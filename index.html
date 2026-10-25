@@ -1286,6 +1286,84 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 @media(max-width:1000px){.s-main,.g-main{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important;}}
 /* Statistika: sadržaj je sada unutar .s-main (razmak od rubova), bez bočne kolone */
 #page-statistika .s-main{display:block;grid-template-columns:none!important;}
+/* ===== GOLOVI: modernizacija ===== */
+.gfb{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 40px 0;}
+@media(max-width:1000px){.gfb{padding:10px 12px 0;}}
+.seg-auto>button,.gfb .seg>button{background:none;border:none;font-family:'Barlow',sans-serif;font-weight:600;font-size:12px;padding:7px 14px;border-radius:100px;cursor:pointer;}
+.gfb-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:100px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;}
+.gfb-active{display:flex;flex-wrap:wrap;gap:6px;align-items:center;width:100%;}
+.gfb-tag{background:rgba(77,159,255,0.12);border:1px solid rgba(77,159,255,0.35);color:#93C5FD;border-radius:100px;padding:3px 10px;font-size:11px;font-weight:600;}
+.gfb-reset{background:none;border:none;color:#F87171;font-size:11px;font-weight:700;cursor:pointer;padding:3px 6px;}
+#g-type-filter,#g-season-filter{display:none!important;}
+#scorer-controls .sc-extra{display:none;}
+#scorer-controls.sc-open .sc-extra{display:inline-block;}
+/* graf minuta */
+#minute-bars{height:auto!important;display:block!important;padding:0!important;}
+.mb2{display:flex;gap:6px;padding:0 2px;}
+.mb2-col{flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:0;}
+.mb2-half{display:flex;flex-direction:column;align-items:center;width:100%;height:86px;}
+.mb2-up{justify-content:flex-end;}
+.mb2-down{justify-content:flex-start;}
+.mb2-bar{width:78%;border-radius:5px 5px 0 0;transition:height .5s cubic-bezier(.16,1,.3,1);}
+.mb2-down .mb2-bar{border-radius:0 0 5px 5px;}
+.mb2-n{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;line-height:1.15;}
+.mb2-axis{height:1px;width:100%;background:rgba(255,255,255,0.2);}
+.mb2-lbl{font-size:9px;font-weight:600;color:var(--text-muted);margin-top:4px;white-space:nowrap;}
+.mb2-col.sel .mb2-lbl{color:#4D9FFF;}
+.mb2.dim .mb2-col:not(.sel){opacity:.45;}
+/* strijelci */
+.podium{display:flex;gap:8px;align-items:flex-end;padding:6px 0 14px;}
+.pod{flex:1;border-radius:14px 14px 6px 6px;padding:10px 6px 8px;text-align:center;cursor:pointer;border:1px solid var(--border);background:var(--surface2);min-width:0;}
+.pod.p1{order:2;background:linear-gradient(180deg,rgba(251,191,36,0.22),rgba(251,191,36,0.04));border-color:rgba(251,191,36,0.5);padding-top:16px;}
+.pod.p2{order:1;background:linear-gradient(180deg,rgba(203,213,225,0.18),rgba(203,213,225,0.03));border-color:rgba(203,213,225,0.4);}
+.pod.p3{order:3;background:linear-gradient(180deg,rgba(217,119,6,0.2),rgba(217,119,6,0.03));border-color:rgba(217,119,6,0.4);}
+.pod-medal{font-size:22px;line-height:1;}
+.pod-name{font-size:12px;font-weight:700;color:#fff;margin:4px 0 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pod-g{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;}
+.p1 .pod-g{color:#FBBF24;font-size:34px;}.p2 .pod-g{color:#CBD5E1;}.p3 .pod-g{color:#D97706;}
+.sc-rank{width:24px;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text-muted);text-align:center;flex-shrink:0;margin-right:6px;}
+.sc-share{height:4px;border-radius:4px;background:rgba(255,255,255,0.07);margin-top:5px;overflow:hidden;}
+.sc-share>i{display:block;height:100%;border-radius:4px;}
+.sc-spark{width:54px;height:20px;flex-shrink:0;margin:0 8px;}
+.sc-spark svg{display:block;width:100%;height:20px;}
+.pm-form{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 2px;}
+.pm-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:rgba(255,255,255,0.08);color:var(--text-muted);}
+.pm-dot.g{background:rgba(74,222,128,0.25);color:#4ADE80;border:1px solid rgba(74,222,128,0.5);}
+/* brzo dodavanje */
+.ga{display:flex;flex-direction:column;gap:14px;padding:14px 18px 18px;border-top:1px solid var(--border);}
+.ga-row{display:flex;flex-direction:column;gap:6px;}
+.ga-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.ga-chip{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:100px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Barlow',sans-serif;}
+.ga-chip:active{transform:scale(.96);}
+.ga-step{display:flex;gap:8px;align-items:center;}
+.ga-step button{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:#fff;font-size:20px;cursor:pointer;}
+.ga-step input{flex:1;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
+.ga-toggles{flex-direction:row;gap:8px;}
+.ga-tg{flex:1;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer;font-family:'Barlow',sans-serif;}
+.ga-tg.on{background:rgba(251,191,36,0.18);border-color:rgba(251,191,36,0.6);color:#FCD34D;}
+/* popis golova po utakmici */
+.gl-head{display:flex;align-items:center;gap:8px;padding:10px 18px 6px;background:rgba(255,255,255,0.03);border-top:1px solid var(--border);flex-wrap:wrap;}
+.gl-head:first-child{border-top:none;}
+.gl-date{font-size:11px;color:var(--text-muted);font-weight:700;}
+.gl-res{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;padding:0 8px;border-radius:6px;background:rgba(255,255,255,0.08);}
+.gl-res.win{color:#4ADE80;background:rgba(74,222,128,0.15);}.gl-res.loss{color:#F87171;background:rgba(248,113,113,0.15);}
+.gl-comp{font-size:10px;color:var(--text-muted);margin-left:auto;font-weight:700;letter-spacing:.5px;}
+.gl-row{position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.gl-row:last-child{border-bottom:none;}
+.gl-row-in{display:flex;align-items:center;gap:10px;padding:9px 18px;background:var(--surface);position:relative;z-index:1;transition:transform .2s;font-size:13px;}
+.gl-min{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;min-width:38px;}
+.gl-min.scored{color:#4ADE80;}.gl-min.conceded{color:#F87171;}
+.gl-pl{flex:1;min-width:0;}
+.gl-actions{position:absolute;right:0;top:0;bottom:0;display:flex;}
+.gl-actions button{width:70px;border:none;color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+.gl-actions .ed{background:#1D4ED8;}.gl-actions .del{background:#B91C1C;}
+@media(pointer:fine){.gl-row{display:flex;align-items:center;}.gl-row-in{flex:1;}.gl-actions{position:static;}.gl-actions button{width:auto;padding:4px 10px;margin-right:6px;border-radius:6px;font-size:11px;height:26px;}}
+/* analize */
+.gh{display:grid;grid-template-columns:58px repeat(8,minmax(0,1fr)) 36px;gap:3px;align-items:center;font-size:11px;}
+.gh-h{font-size:9px;font-weight:700;color:var(--text-muted);text-align:center;}
+.gh-s{font-weight:700;color:var(--text);}
+.gh-c{height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;}
+.gh-t{text-align:center;font-weight:700;color:var(--text-muted);}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1796,6 +1874,12 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
     <span class="leg-sub" onclick="gFilterUclSub('UCL Play-off',this)">Play-off</span>
   </div>
 
+  <div class="gfb" id="g-filterbar">
+    <div class="seg-auto" id="g-type-seg" style="display:flex;"><button class="active" data-v="all" onclick="gTypeSet('all')">Svi golovi</button><button data-v="scored" onclick="gTypeSet('scored')">Zabijeni</button><button data-v="conceded" onclick="gTypeSet('conceded')">Primljeni</button></div>
+    <button class="gfb-chip" id="g-season-chip" onclick="gSeasonPick()">📅 <span id="g-season-chip-t">Sve sezone</span> ▾</button>
+    <div class="gfb-active" id="g-active-chips"></div>
+  </div>
+
   <div class="g-main">
     <!-- Minute chart -->
     <div class="g-section">
@@ -1815,10 +1899,12 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
       <div class="g-body">
         <div class="minute-bars" id="minute-bars"></div>
         <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--text-muted);flex-wrap:wrap;align-items:center;">
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:linear-gradient(to top,#3B82F6,#93C5FD);border-radius:2px;display:inline-block;"></span>Regularna igra</span>
-          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:linear-gradient(to top,#F59E0B,#FCD34D);border-radius:2px;display:inline-block;"></span>Nadoknada</span>
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:linear-gradient(to top,#059669,#4ADE80);border-radius:2px;display:inline-block;"></span>Zabijeni</span>
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:linear-gradient(to top,#991B1B,#F87171);border-radius:2px;display:inline-block;"></span>Primljeni</span>
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;background:linear-gradient(to top,#B45309,#FBBF24);border-radius:2px;display:inline-block;"></span>Nadoknada</span>
           <span style="margin-left:auto;color:#4D9FFF;font-size:10px;font-weight:600;">↑ Klikni na stupac za strijelce tog perioda</span>
         </div>
+        <div class="sp-chips" id="min-stats" style="margin-top:12px;"></div>
         <!-- Minute detail panel -->
         <div class="min-detail-panel" id="min-detail-panel">
           <div class="min-detail-header">
@@ -1830,11 +1916,42 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
       </div>
     </div>
 
+    <!-- Toplinska karta: minute po sezonama -->
+    <div class="g-section" id="g-heat-sec">
+      <div class="g-section-header" style="flex-wrap:wrap;gap:8px;">
+        <div class="g-section-title">🔥 Toplinska karta: minute po sezonama</div>
+        <div class="seg-auto" id="g-heat-seg" style="display:flex;"><button class="active" onclick="gHeatType('scored')">Zabijeni</button><button onclick="gHeatType('conceded')">Primljeni</button></div>
+      </div>
+      <div class="g-body"><div id="g-heat"></div></div>
+    </div>
+
+    <!-- Kumulativni golovi kroz sezonu -->
+    <div class="g-section" id="g-cum-sec">
+      <div class="g-section-header" style="flex-wrap:wrap;gap:8px;">
+        <div class="g-section-title">📈 Golovi kroz sezonu</div>
+        <select class="form-input" style="width:auto;" id="gc-season" onchange="gRenderCum()"></select>
+      </div>
+      <div class="g-body">
+        <div class="seg-auto" id="g-cum-seg" style="display:flex;margin-bottom:12px;"><button class="active" onclick="gCumTab(0)">Zbroj golova</button><button onclick="gCumTab(1)">Gol-razlika</button></div>
+        <div id="g-cum-chart" style="position:relative;"></div>
+        <div class="sp-chips" id="g-cum-chips"></div>
+      </div>
+    </div>
+
+    <!-- Dinamo protiv ... -->
+    <div class="g-section" id="g-h2h-sec">
+      <div class="g-section-header" style="flex-wrap:wrap;gap:8px;">
+        <div class="g-section-title">⚔️ Dinamo protiv...</div>
+        <select class="form-input" style="width:auto;max-width:220px;" id="gh-opp" onchange="gRenderH2H()"></select>
+      </div>
+      <div class="g-body"><div class="sp-chips" id="gh-chips"></div><div id="gh-list" style="margin-top:12px;"></div></div>
+    </div>
+
     <!-- Strijelci - dva taba: Dinamo / Protivnici -->
     <div class="g-section">
       <div class="g-section-header" style="flex-wrap:wrap;gap:8px;">
         <div class="g-section-title">👟 Strijelci</div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <div id="scorer-controls" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
           <div class="view-tabs" id="scorer-tabs">
             <button class="view-tab active" id="scorer-tab-dinamo" onclick="setScorerTab('dinamo',this)"><span id="scorer-tab-dinamo-emoji">🔵</span> <span id="scorer-tab-dinamo-label">Dinamo</span></button>
             <button class="view-tab" id="scorer-tab-opp" onclick="setScorerTab('opp',this)">🔴 Protivnici</button>
@@ -1846,16 +1963,17 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
             <button class="stat-person-tab" id="scpt-luka" onclick="setScorerPerson('luka')">🔵 Luka</button>
             <button class="stat-person-tab" id="scpt-lovro" onclick="setScorerPerson('lovro')">🔷 Lovro</button>
           </div>
-          <select class="form-input" style="width:auto;font-size:11px;" id="player-sort" onchange="renderPlayerStats()">
+          <button class="gfb-chip" id="sc-more-btn" onclick="scToggleMore()">⚙ Filteri<span id="sc-more-n"></span></button>
+          <select class="form-input sc-extra" style="width:auto;font-size:11px;" id="player-sort" onchange="renderPlayerStats()">
             <option value="goals_desc">Golovi ↓</option>
             <option value="goals_asc">Golovi ↑</option>
             <option value="name_asc">Ime A-Z</option>
             <option value="name_desc">Ime Z-A</option>
           </select>
-          <select class="form-input" style="width:auto;font-size:11px;" id="player-season-filter" onchange="renderPlayerStats()">
+          <select class="form-input sc-extra" style="width:auto;font-size:11px;" id="player-season-filter" onchange="renderPlayerStats()">
             <option value="all">Sve sezone</option>
           </select>
-          <select class="form-input" style="width:auto;font-size:11px;" id="opp-club-filter" onchange="renderPlayerStats()">
+          <select class="form-input sc-extra" style="width:auto;font-size:11px;" id="opp-club-filter" onchange="renderPlayerStats()">
             <option value="all">Svi klubovi</option>
           </select>
           <input class="search-box" type="text" placeholder="🔍 Pretraži..." id="player-search" oninput="renderPlayerStats()" style="width:130px;">
@@ -1883,41 +2001,31 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
     <!-- Add goal -->
     <div class="g-section">
       <div class="g-section-header"><div class="g-section-title">➕ Dodaj gol</div></div>
-      <div class="goal-form">
-        <div class="goal-form-row"><label class="form-label">Utakmica</label>
-          <select class="form-input" id="g-match-select" onchange="_autoFillClub()"></select>
+      <div class="ga">
+        <div class="ga-row"><label class="form-label">Utakmica</label>
+          <select class="form-input" id="g-match-select" onchange="_autoFillClub();gaRefresh()"></select>
         </div>
-        <div class="goal-form-row"><label class="form-label">Igrač / Strijelac</label>
+        <div class="seg-auto" id="ga-type-seg" style="display:flex;"><button class="active" data-v="scored" onclick="gaType('scored')">⚽ Zabijeni</button><button data-v="conceded" onclick="gaType('conceded')">🥅 Primljeni</button></div>
+        <select id="g-type" style="display:none;" onchange="toggleOppClubField();if(this.value==='conceded')_autoFillClub()">
+          <option value="scored">Zabijeni (Dinamo)</option>
+          <option value="conceded">Primljeni (protivnik)</option>
+        </select>
+        <div class="ga-row"><label class="form-label">Igrač / Strijelac</label>
           <input class="form-input" type="text" id="g-player" list="g-player-list" placeholder="Ime igrača" autocomplete="off">
           <datalist id="g-player-list"></datalist>
+          <div class="ga-chips" id="ga-chips"></div>
         </div>
-        <div class="goal-form-row"><label class="form-label">Minuta</label>
-          <input class="form-input" type="text" id="g-minute" placeholder="npr. 23 ili 45+">
-        </div>
-        <div class="goal-form-row"><label class="form-label">Tip gola</label>
-          <select class="form-input" id="g-type" onchange="toggleOppClubField();if(this.value==='conceded')_autoFillClub()">
-            <option value="scored">Zabijeni (Dinamo)</option>
-            <option value="conceded">Primljeni (protivnik)</option>
-          </select>
-        </div>
-        <div class="goal-form-row" id="opp-club-row" style="display:none;"><label class="form-label">Klub strijelca</label>
+        <div class="ga-row" id="opp-club-row" style="display:none;"><label class="form-label">Klub strijelca</label>
           <input class="form-input" type="text" id="g-opp-club" placeholder="Npr. Hajduk">
         </div>
-        <div class="goal-form-row"><label class="form-label">Penal?</label>
-          <select class="form-input" id="g-pen">
-            <option value="no">Ne</option>
-            <option value="yes">Da</option>
-          </select>
+        <div class="ga-row"><label class="form-label">Minuta</label>
+          <div class="ga-step"><button type="button" onclick="gaMin(-1)">−</button><input class="form-input" type="text" inputmode="numeric" id="g-minute" placeholder="npr. 23 ili 45+"><button type="button" onclick="gaMin(1)">+</button></div>
+          <div class="ga-chips"><button type="button" class="ga-chip" onclick="gaSetMin('15')">15</button><button type="button" class="ga-chip" onclick="gaSetMin('30')">30</button><button type="button" class="ga-chip" onclick="gaSetMin('45')">45</button><button type="button" class="ga-chip" onclick="gaSetMin('45+')">45+</button><button type="button" class="ga-chip" onclick="gaSetMin('60')">60</button><button type="button" class="ga-chip" onclick="gaSetMin('75')">75</button><button type="button" class="ga-chip" onclick="gaSetMin('90')">90</button><button type="button" class="ga-chip" onclick="gaSetMin('90+')">90+</button></div>
         </div>
-        <div class="goal-form-row"><label class="form-label">Autogol (OG)?</label>
-          <select class="form-input" id="g-autogol">
-            <option value="no">Ne</option>
-            <option value="yes">Da — OG</option>
-          </select>
-        </div>
-        <div class="goal-form-row" style="align-self:flex-end;">
-          <button class="btn-goal-add" onclick="addGoal()">➕ Dodaj gol</button>
-        </div>
+        <select id="g-pen" style="display:none;"><option value="no">Ne</option><option value="yes">Da</option></select>
+        <select id="g-autogol" style="display:none;"><option value="no">Ne</option><option value="yes">Da — OG</option></select>
+        <div class="ga-row ga-toggles"><button type="button" class="ga-tg" id="ga-pen" onclick="gaToggle('g-pen','ga-pen')">🎯 Penal</button><button type="button" class="ga-tg" id="ga-og" onclick="gaToggle('g-autogol','ga-og')">OG Autogol</button></div>
+        <div class="ga-row"><button class="btn-goal-add" onclick="addGoal()">➕ Dodaj gol</button></div>
       </div>
     </div>
 
@@ -1949,6 +2057,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
       <button class="pm-close" onclick="closePlayerModal()">✕</button>
     </div>
     <div class="pm-stat-grid" id="pm-stats"></div>
+    <div id="pm-extra" style="padding:4px 20px 6px;"></div>
     <div class="pm-section-title" id="pm-seasons-title" style="display:none;">Golovi po sezonama</div>
     <div id="pm-seasons-chart"></div>
     <div class="pm-section-title" id="pm-minutes-title" style="display:none;">⏱ Golovi po minuti</div>
@@ -4557,7 +4666,7 @@ function appConfirm(m){ return appDialog(m,true); }
 window.appAlert=appAlert; window.appConfirm=appConfirm; window.alert=appAlert;
 
 function segApply(){
-  document.querySelectorAll('.sched-filters,#pred-chart-toggle,#pred-trend-tabs,#spark-tabs').forEach(c=>{
+  document.querySelectorAll('.sched-filters,#pred-chart-toggle,#pred-trend-tabs,#spark-tabs,.seg-auto').forEach(c=>{
     if(!c.classList.contains('seg')) c.classList.add('seg');
     let ind=c.querySelector(':scope>.seg-ind');
     const act=c.querySelector(':scope>button.active');
@@ -4727,7 +4836,8 @@ function sparkOpen(id){
   o.classList.add('open'); draw(0); requestAnimationFrame(segApply);
 }
 window.sparkOpen=sparkOpen;
-function sparkChart(x,tab,color){
+function sparkChart(x,tab,color,pfx){
+  pfx=pfx||'sp';
   let vals,series=null,cats=null;
   if(tab.t==='multi'){ series=tab.series(x); vals=series[0].v; }
   else if(tab.t==='cat'){ cats=tab.cats(x); vals=cats.vals; }
@@ -4761,15 +4871,15 @@ function sparkChart(x,tab,color){
     if(tab.avgLine){ const ya=yFor(avg); shape+=`<line x1="${padL}" x2="${W-padR}" y1="${ya.toFixed(1)}" y2="${ya.toFixed(1)}" stroke="#fff" stroke-width="1" stroke-dasharray="4 3" opacity="0.75"/><text x="${W-padR}" y="${(ya-4).toFixed(1)}" text-anchor="end" font-size="9" fill="#fff">prosjek ${tab.fmt(avg)}</text>`; }
     if(tab.markMax) legend=`<div class="sp-legend"><span><i style="background:#FBBF24"></i>rekord</span><span><i style="background:#60A5FA"></i>zadnja utakmica</span><span><i style="background:${color};opacity:.5"></i>ostale</span><span>┄ prosjek</span></div>`;
   }else if(series){
-    shape=series.map(q=>`<polyline fill="none" stroke="${q.c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${q.v.map((v,i)=>xFor(i).toFixed(1)+','+yFor(v).toFixed(1)).join(' ')}"/>`+q.v.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="2.6" fill="${q.c}" pointer-events="none"/>`).join('')).join('');
+    shape=series.map(q=>`<polyline fill="none" stroke="${q.c}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="${q.v.map((v,i)=>xFor(i).toFixed(1)+','+yFor(v).toFixed(1)).join(' ')}"/>`+q.v.map((v,i)=>`<circle class="${pfx}-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="2.6" fill="${q.c}" pointer-events="none"/>`).join('')).join('');
     legend=`<div class="sp-legend">${series.map(q=>`<span><i style="background:${q.c}"></i>${q.n}</span>`).join('')}</div>`;
   }else{
     const lp=smoothPath(vals.map(v=>({v})),xFor,yFor,'v');
-    shape=`<defs><linearGradient id="spG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${lp} L${xFor(n-1).toFixed(1)},${y0.toFixed(1)} L${xFor(0).toFixed(1)},${y0.toFixed(1)} Z" fill="url(#spG)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`+(tab.div?`<line x1="${padL}" x2="${W-padR}" y1="${y0.toFixed(1)}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.3)"/>`:'')+vals.map((v,i)=>`<circle class="sp-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3" fill="${color}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
+    shape=`<defs><linearGradient id="spG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.35"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${lp} L${xFor(n-1).toFixed(1)},${y0.toFixed(1)} L${xFor(0).toFixed(1)},${y0.toFixed(1)} Z" fill="url(#spG)"/><path d="${lp}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`+(tab.div?`<line x1="${padL}" x2="${W-padR}" y1="${y0.toFixed(1)}" y2="${y0.toFixed(1)}" stroke="rgba(255,255,255,0.3)"/>`:'')+vals.map((v,i)=>`<circle class="${pfx}-dot" data-idx="${i}" cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3" fill="${color}" stroke="#0A1A3E" stroke-width="1.5" pointer-events="none"/>`).join('');
   }
   const base=(padT+innerH).toFixed(1);
-  const guides=vals.map((v,i)=>`<line class="sp-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${base}" stroke="#fff" opacity="0" pointer-events="none"/>`).join('');
-  const hits=vals.map((v,i)=>`<rect x="${(xFor(i)-band/2).toFixed(1)}" y="${padT}" width="${band.toFixed(1)}" height="${innerH}" fill="transparent" onpointerenter="sparkShow(${i})" onpointermove="sparkShow(${i})" onpointerdown="sparkShow(${i})" onpointerleave="sparkHide(event)"/>`).join('');
+  const guides=vals.map((v,i)=>`<line class="${pfx}-guide" data-idx="${i}" x1="${xFor(i).toFixed(1)}" y1="${padT}" x2="${xFor(i).toFixed(1)}" y2="${base}" stroke="#fff" opacity="0" pointer-events="none"/>`).join('');
+  const hits=vals.map((v,i)=>`<rect x="${(xFor(i)-band/2).toFixed(1)}" y="${padT}" width="${band.toFixed(1)}" height="${innerH}" fill="transparent" onpointerenter="sparkShow(${i},'${pfx}')" onpointermove="sparkShow(${i},'${pfx}')" onpointerdown="sparkShow(${i},'${pfx}')" onpointerleave="sparkHide(event,'${pfx}')"/>`).join('');
   const step=isCat?1:(n>40?5:n>20?2:1);
   const xl=vals.map((v,i)=>(i%step!==0&&i!==n-1)?'':`<text x="${xFor(i).toFixed(1)}" y="${H-padB+14}" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.45)">${isCat?wrEsc(cats.labels[i]):i+1}</text>`).join('');
   const tip=i=>{
@@ -4780,32 +4890,44 @@ function sparkChart(x,tab,color){
     const df=tab.avgLine&&avg?Math.round((vals[i]-avg)/avg*100):null;
     return head+`<div style="font-size:12px;color:#fff;">${tab.l}: <b>${tab.fmt(vals[i])}</b>${df!==null?` <span style="color:var(--text-muted);">(${df>=0?'+':''}${df}% vs prosjek)</span>`:''}</div>`;
   };
-  window._spD={x,vals,tab,xFor,n,tip};
-  return `${legend}<div style="position:relative;"><div id="sp-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide()"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">${isCat?'':'UTAKMICA →'}</text>${xl}</svg></div><div id="sp-tip" class="prc-tooltip" style="display:none;"></div></div>`;
+  window._spDs=window._spDs||{}; window._spDs[pfx]={x,vals,tab,xFor,n,tip};
+  return `${legend}<div class="sp-wrap" style="position:relative;"><div id="${pfx}-scroll" style="overflow-x:auto;max-width:100%;" onscroll="sparkHide(null,'${pfx}')"><svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="min-width:${W}px;display:block;">${grid}${shape}${guides}${hits}<text x="${padL}" y="${H-6}" font-size="8.5" fill="rgba(255,255,255,0.3)">${isCat?'':'UTAKMICA →'}</text>${xl}</svg></div><div id="${pfx}-tip" class="prc-tooltip" style="display:none;"></div></div>`;
 }
-function sparkShow(i){
-  const d=window._spD, sc=document.getElementById('sp-scroll'), tip=document.getElementById('sp-tip'); if(!d||!sc||!tip) return;
-  document.querySelectorAll('#spark-chart .sp-guide').forEach(g=>g.setAttribute('opacity',+g.dataset.idx===i?'0.45':'0'));
-  document.querySelectorAll('#spark-chart .sp-dot').forEach(c=>c.setAttribute('r',+c.dataset.idx===i?'5.5':'3'));
+function sparkShow(i,pfx){
+  pfx=pfx||'sp';
+  const d=(window._spDs||{})[pfx], sc=document.getElementById(pfx+'-scroll'), tip=document.getElementById(pfx+'-tip'); if(!d||!sc||!tip) return;
+  document.querySelectorAll('.'+pfx+'-guide').forEach(g=>g.setAttribute('opacity',+g.dataset.idx===i?'0.45':'0'));
+  document.querySelectorAll('.'+pfx+'-dot').forEach(c=>c.setAttribute('r',+c.dataset.idx===i?'5.5':'3'));
   tip.innerHTML=d.tip(i);
   tip.style.display='block'; tip.style.top='0px';
   const box=tip.parentElement, tw=tip.offsetWidth;
   tip.style.left=Math.max(0,Math.min(d.xFor(i)-sc.scrollLeft-tw/2,box.clientWidth-tw))+'px';
 }
-function sparkHide(ev){
+function sparkHide(ev,pfx){
   if(ev&&ev.pointerType&&ev.pointerType!=='mouse') return;
-  document.querySelectorAll('#spark-chart .sp-guide').forEach(g=>g.setAttribute('opacity','0'));
-  document.querySelectorAll('#spark-chart .sp-dot').forEach(c=>c.setAttribute('r','3'));
-  const t=document.getElementById('sp-tip'); if(t) t.style.display='none';
+  const list=pfx?[pfx]:['sp','gc'];
+  list.forEach(px=>{
+    document.querySelectorAll('.'+px+'-guide').forEach(g=>g.setAttribute('opacity','0'));
+    document.querySelectorAll('.'+px+'-dot').forEach(c=>c.setAttribute('r','3'));
+    const t=document.getElementById(px+'-tip'); if(t) t.style.display='none';
+  });
 }
-document.addEventListener('pointerdown',e=>{ if(!e.target.closest||!e.target.closest('#spark-chart svg')) sparkHide(); });
+document.addEventListener('pointerdown',e=>{ if(!e.target.closest||!e.target.closest('.sp-wrap')) sparkHide(); });
 window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.1.2';
+const APP_VERSION='2.2.0';
 const CHANGELOG=[
+  {v:'2.2.0',d:'2026-10-25',items:[
+    ['⚽','Golovi: jedan red filtera s oznakama aktivnih filtera i gumbom Poništi; Zabijeni / Primljeni su klizni tabovi'],
+    ['📊','Golovi: novi graf minuta (zabijeni gore, primljeni dolje) s karticama najopasnijeg perioda, golova nakon 75. i nadoknade'],
+    ['🥇','Strijelci: podij za prva tri, rang, traka udjela i mali graf po sezonama; kartica igrača ima formu i dodatnu statistiku'],
+    ['➕','Dodaj gol: zadnja utakmica unaprijed, tipke za najčešće strijelce, minuta s + i −, penal i autogol kao prekidači i poništavanje'],
+    ['🗂️','Upravljanje golovima: golovi grupirani po utakmici, a na mobitelu se povlači ulijevo za uređivanje i brisanje'],
+    ['🔥','Nove analize: toplinska karta minuta po sezonama, golovi kroz sezonu i usporedba Dinama s odabranim protivnikom']
+  ]},
   {v:'2.1.2',d:'2026-10-24',items:[
     ['📐','Statistika: kartice, Sve utakmice i tablica sada imaju isti razmak od rubova kao ostale stranice (uzrok je bio višak oznake u kodu)']
   ]},
@@ -4881,6 +5003,237 @@ function oppShouldOpen(key){
   return true;
 }
 function oppFlushPending(){ [..._oppPending].forEach(oppMarkSeen); }
+
+
+/* ===== GOLOVI: filteri, graf minuta, strijelci, dodavanje, analize ===== */
+function gCompLabel(){
+  if(gCompFilter==='all') return '';
+  if(gCompFilter==='dinamo') return 'Dinamo';
+  if(gCompFilter==='rep') return gRepSub==='rep'?'Hrvatska':(gRepSub==='Reprezentacija'?'Prijateljska':gRepSub);
+  if(gCompFilter==='UCL') return gUclSub==='all'?'UCL':gUclSub;
+  return gCompFilter;
+}
+function gRenderChips(){
+  const box=document.getElementById('g-active-chips'); if(!box) return;
+  const tsel=document.getElementById('g-type-filter'), ssel=document.getElementById('g-season-filter');
+  const tv=tsel?tsel.value:'all', sv=ssel?ssel.value:'all';
+  document.querySelectorAll('#g-type-seg button').forEach(b=>b.classList.toggle('active',b.dataset.v===tv));
+  const ct=document.getElementById('g-season-chip-t'); if(ct) ct.textContent=sv==='all'?'Sve sezone':sv;
+  const tags=[];
+  const cl=gCompLabel(); if(cl) tags.push('🏆 '+cl);
+  if(sv!=='all') tags.push('📅 '+sv);
+  if(tv!=='all') tags.push(tv==='scored'?'⚽ Zabijeni':'🥅 Primljeni');
+  if(scorerPersonFilter!=='sve') tags.push({all:'👥 Zajedno',luka:'🔵 Luka',lovro:'🔷 Lovro'}[scorerPersonFilter]);
+  box.innerHTML=tags.length?tags.map(t=>`<span class="gfb-tag">${t}</span>`).join('')+'<button class="gfb-reset" onclick="gResetFilters()">✕ Poništi</button>':'';
+}
+function gTypeSet(v){ const sel=document.getElementById('g-type-filter'); if(!sel) return; sel.value=v; sel.dispatchEvent(new Event('change',{bubbles:true})); gRenderChips(); }
+function gSeasonPick(){ const sel=document.getElementById('g-season-filter'); if(sel) selSheetOpen(sel); }
+function gResetFilters(){
+  gCompFilter='all'; gRepSub='rep'; gUclSub='all';
+  document.querySelectorAll('#g-legend .legend-item').forEach(e=>e.classList.remove('active'));
+  const f=document.querySelector('#g-legend .legend-item'); if(f) f.classList.add('active');
+  ['rep-subfilter-goals','rep-subfilter-ucl-goals'].forEach(id=>{ const e=document.getElementById(id); if(e) e.classList.remove('open'); });
+  const t=document.getElementById('g-type-filter'); if(t) t.value='all';
+  const sf=document.getElementById('g-season-filter'); if(sf) sf.value='all';
+  _selectedBucket=-1; const pn=document.getElementById('min-detail-panel'); if(pn) pn.classList.remove('open');
+  setScorerPerson('sve'); renderGoalStats(); renderPlayerStats();
+}
+function scToggleMore(){ const c=document.getElementById('scorer-controls'); if(c) c.classList.toggle('sc-open'); }
+function scMoreBadge(){
+  const n=['player-sort','player-season-filter','opp-club-filter'].filter(id=>{ const e=document.getElementById(id); if(!e) return false; return id==='player-sort'?e.value!=='goals_desc':e.value!=='all'; }).length;
+  const b=document.getElementById('sc-more-n'); if(b) b.textContent=n?` (${n})`:'';
+}
+window.gTypeSet=gTypeSet; window.gSeasonPick=gSeasonPick; window.gResetFilters=gResetFilters; window.scToggleMore=scToggleMore;
+
+/* graf minuta: zabijeni gore, primljeni dolje */
+function gRenderMinuteBars(buckets){
+  const el=document.getElementById('minute-bars'); if(!el) return;
+  const tv=(document.getElementById('g-type-filter')||{value:'all'}).value;
+  const sc=buckets.map(b=>b.filter(g=>g.type==='scored').length), cc=buckets.map(b=>b.filter(g=>g.type==='conceded').length);
+  const stop=i=>MIN_BUCKETS[i].plus;
+  const GS=i=>stop(i)?'linear-gradient(to top,#B45309,#FBBF24)':'linear-gradient(to top,#059669,#4ADE80)';
+  const GC=i=>stop(i)?'linear-gradient(to bottom,#C2410C,#FB923C)':'linear-gradient(to bottom,#991B1B,#F87171)';
+  const both=tv==='all', mx=Math.max(...sc,...cc,1), H=both?66:96;
+  const sel=_selectedBucket;
+  el.innerHTML=`<div class="mb2${sel>=0?' dim':''}">`+MIN_BUCKETS.map((b,i)=>{
+    const total=both?sc[i]+cc[i]:(tv==='scored'?sc[i]:cc[i]);
+    let up,down='';
+    if(both){
+      up=`<div class="mb2-half mb2-up"><div class="mb2-n" style="color:${sc[i]?'#4ADE80':'var(--text-muted)'}">${sc[i]||''}</div><div class="mb2-bar" style="height:${sc[i]?Math.max(4,sc[i]/mx*H):0}px;background:${GS(i)};"></div></div><div class="mb2-axis"></div>`;
+      down=`<div class="mb2-half mb2-down"><div class="mb2-bar" style="height:${cc[i]?Math.max(4,cc[i]/mx*H):0}px;background:${GC(i)};"></div><div class="mb2-n" style="color:${cc[i]?'#F87171':'var(--text-muted)'}">${cc[i]||''}</div></div>`;
+    }else{
+      const v=tv==='scored'?sc[i]:cc[i], mm=Math.max(...(tv==='scored'?sc:cc),1);
+      up=`<div class="mb2-half mb2-up" style="height:122px;"><div class="mb2-n" style="color:#fff">${v}</div><div class="mb2-bar" style="height:${v?Math.max(4,v/mm*96):0}px;background:${tv==='scored'?GS(i):GC(i).replace('to bottom','to top')};"></div></div><div class="mb2-axis"></div>`;
+    }
+    return `<div class="mb2-col${sel===i?' sel':''}" onclick="toggleMinuteDetail(${i})" title="${b.label}': ${total} golova">${up}${down}<div class="mb2-lbl">${b.label}'</div></div>`;
+  }).join('')+'</div>';
+}
+function gMinuteStats(buckets){
+  const box=document.getElementById('min-stats'); if(!box) return;
+  const tv=(document.getElementById('g-type-filter')||{value:'all'}).value;
+  const cnt=t=>buckets.map(b=>b.filter(g=>g.type===t).length);
+  const sc=cnt('scored'), cc=cnt('conceded');
+  const peak=arr=>{ let m=0; arr.forEach((v,i)=>{ if(v>arr[m]) m=i; }); const tot=arr.reduce((a,b)=>a+b,0); return [arr[m]?MIN_BUCKETS[m].label+"'":'—',arr[m]?`${arr[m]} golova · ${Math.round(arr[m]/tot*100)}%`:'']; };
+  const sum=(arr,idx)=>idx.reduce((a,i)=>a+arr[i],0);
+  const chips=[];
+  if(tv==='all'){
+    const ps=peak(sc), pc=peak(cc);
+    chips.push(['Najopasniji period',ps[0],'zabijeni · '+ps[1]],['Najranjiviji period',pc[0],'primljeni · '+pc[1]],
+      ['Nakon 75.',`${sum(sc,[6,7])} : ${sum(cc,[6,7])}`,'zabijeni : primljeni'],['Nadoknada',`${sum(sc,[3,7])} : ${sum(cc,[3,7])}`,'zabijeni : primljeni']);
+  }else{
+    const arr=tv==='scored'?sc:cc, pk=peak(arr), w=tv==='scored'?'zabijeni':'primljeni';
+    chips.push([tv==='scored'?'Najopasniji period':'Najranjiviji period',pk[0],pk[1]],
+      ['Poluvremena',`${sum(arr,[0,1,2,3])} : ${sum(arr,[4,5,6,7])}`,'prvo : drugo'],
+      ['Nakon 75.',sum(arr,[6,7]),w],['Nadoknada',sum(arr,[3,7]),w+' (45+ i 90+)']);
+  }
+  box.innerHTML=chips.map(c=>`<div class="sp-chip"><span>${c[0]}</span><b>${c[1]}</b>${c[2]?`<i>${c[2]}</i>`:''}</div>`).join('');
+}
+
+/* strijelci: rang, traka udjela, sparkline po sezonama, podij */
+function scRank(p,list){ let r=1; list.forEach(q=>{ if(q.total>p.total) r++; }); return r; }
+function scShare(p,list,color){ const mx=Math.max(...list.map(q=>q.total),1); return `<div class="sc-share"><i style="width:${(p.total/mx*100).toFixed(0)}%;background:${color};"></i></div>`; }
+function scSpark(p,color){
+  const c={}; p.goalList.forEach(g=>{ const sn=getSeason(g.matchDatum)||'?'; c[sn]=(c[sn]||0)+1; });
+  const v=Object.keys(c).sort().map(k=>c[k]); if(v.length<2) return '<div class="sc-spark"></div>';
+  return `<div class="sc-spark" title="Golovi po sezonama">${sparkSvg(v,color,'bars')}</div>`;
+}
+function _podiumOn(list){
+  const sortV=(document.getElementById('player-sort')||{value:'goals_desc'}).value;
+  const q=(document.getElementById('player-search')||{value:''}).value.trim();
+  return sortV==='goals_desc'&&!q&&dinPage===1&&list.length>=3;
+}
+function gPodiumHtml(list,slice){
+  if(!_podiumOn(list)) return '';
+  const top=slice.slice(0,3), medals=['🥇','🥈','🥉'];
+  return `<div class="podium">`+top.map((p,i)=>`<div class="pod p${i+1}" onclick="openPlayerModal('din',${list.indexOf(p)})"><div class="pod-medal">${medals[i]}</div><div class="pod-name">${p.name}</div><div class="pod-g">${p.total}</div></div>`).join('')+`</div>`;
+}
+function scorerRows(list,slice){ return _podiumOn(list)?slice.slice(3):slice; }
+
+function gPlayerExtra(p,isDin,col){
+  const box=document.getElementById('pm-extra'); if(!box) return;
+  const keys=[...new Set(p.goalList.map(g=>g.matchDatum+'||'+g.matchProtivnik))];
+  const dates=p.goalList.map(g=>g.matchDatum).sort();
+  const chips=[['Utakmica s golom',keys.length,`prosjek ${(p.total/Math.max(1,keys.length)).toFixed(2)} po utakmici`],['Prvi gol',dates.length?fmtDate(dates[0]):'—',''],['Zadnji gol',dates.length?fmtDate(dates[dates.length-1]):'—','']];
+  const vs=Object.entries(p.vsTeams||{}).sort((a,b)=>b[1]-a[1])[0];
+  if(vs) chips.push(['Najčešći protivnik',vs[0],`${vs[1]} golova`]);
+  let form='';
+  if(isDin){
+    const last=[...matches].filter(m=>!REP_COMPS.includes(m.natjecanje)).sort((a,b)=>a.datum<b.datum?1:-1).slice(0,8).reverse();
+    form=`<div style="font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--text-muted);text-transform:uppercase;margin:10px 0 6px;">Zadnjih ${last.length} utakmica Dinama</div><div class="pm-form">`+last.map(m=>{
+      const n=p.goalList.filter(g=>g.matchDatum===m.datum&&g.matchProtivnik===m.protivnik).length;
+      return `<div class="pm-dot${n?' g':''}" title="${fmtDate(m.datum)} · ${officialName(m.protivnik)}">${n?n:'·'}</div>`;
+    }).join('')+'</div>';
+  }
+  box.innerHTML=`<div class="sp-chips">${chips.map(c=>`<div class="sp-chip"><span>${c[0]}</span><b style="font-size:${String(c[1]).length>8?'15':'20'}px;">${c[1]}</b>${c[2]?`<i>${c[2]}</i>`:''}</div>`).join('')}</div>`+form;
+}
+
+/* brzo dodavanje gola */
+function gaType(v){ const sel=document.getElementById('g-type'); if(!sel) return; sel.value=v; sel.dispatchEvent(new Event('change',{bubbles:true})); document.querySelectorAll('#ga-type-seg button').forEach(b=>b.classList.toggle('active',b.dataset.v===v)); gaRefresh(); }
+function gaRefresh(){
+  const box=document.getElementById('ga-chips'); if(!box) return;
+  const type=(document.getElementById('g-type')||{value:'scored'}).value;
+  const c={};
+  if(type==='scored'){ goals.filter(g=>g.type==='scored'&&g.player).forEach(g=>{ c[g.player]=(c[g.player]||0)+1; }); }
+  else{
+    const mv=(document.getElementById('g-match-select')||{value:''}).value.split('||')[1]||'';
+    goals.filter(g=>g.type==='conceded'&&g.player&&(!mv||g.matchProtivnik===mv)).forEach(g=>{ c[g.player]=(c[g.player]||0)+1; });
+  }
+  const names=Object.keys(c).sort((a,b)=>c[b]-c[a]).slice(0,8);
+  box.innerHTML=names.map(n=>`<button type="button" class="ga-chip" data-n="${n.replace(/"/g,'&quot;')}" onclick="gaPick(this.dataset.n)">${n.replace(/</g,'&lt;')}</button>`).join('');
+}
+function gaPick(n){ const i=document.getElementById('g-player'); if(i){ i.value=n; const m=document.getElementById('g-minute'); if(m) m.focus(); } }
+function gaSetMin(v){ const i=document.getElementById('g-minute'); if(i) i.value=v; }
+function gaMin(d){ const i=document.getElementById('g-minute'); if(!i) return; const n=parseInt(i.value); i.value=Math.max(1,Math.min(120,(isNaN(n)?(d>0?0:2):n)+d)); }
+function gaToggle(selId,btnId){ const s=document.getElementById(selId), b=document.getElementById(btnId); if(!s||!b) return; const on=s.value!=='yes'; s.value=on?'yes':'no'; b.classList.toggle('on',on); }
+function gaAfterAdd(){
+  ['g-pen','g-autogol'].forEach(id=>{ const e=document.getElementById(id); if(e) e.value='no'; });
+  ['ga-pen','ga-og'].forEach(id=>{ const e=document.getElementById(id); if(e) e.classList.remove('on'); });
+  gaRefresh(); const i=document.getElementById('g-player'); if(i) i.focus();
+}
+window.gaType=gaType; window.gaRefresh=gaRefresh; window.gaPick=gaPick; window.gaSetMin=gaSetMin; window.gaMin=gaMin; window.gaToggle=gaToggle;
+
+/* swipe za uređivanje/brisanje u popisu golova (dodir) */
+(function(){
+  let row=null,x0=0,y0=0,dx=0,lock=null,base=0; const W=140;
+  document.addEventListener('touchstart',e=>{
+    const r=e.target.closest&&e.target.closest('#goal-list-body .gl-row-in');
+    document.querySelectorAll('#goal-list-body .gl-row-in.open').forEach(o=>{ if(o!==r){ o.classList.remove('open'); o.style.transform=''; } });
+    if(!r||!window.matchMedia('(pointer:coarse)').matches){ row=null; return; }
+    row=r; x0=e.touches[0].clientX; y0=e.touches[0].clientY; dx=0; lock=null; base=r.classList.contains('open')?-W:0; r.style.transition='none';
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!row) return; dx=e.touches[0].clientX-x0; const dy=e.touches[0].clientY-y0;
+    if(lock===null&&(Math.abs(dx)>8||Math.abs(dy)>8)) lock=Math.abs(dx)>Math.abs(dy)?'x':'y';
+    if(lock!=='x') return; row.style.transform=`translateX(${Math.max(-W,Math.min(0,base+dx))}px)`;
+  },{passive:true});
+  document.addEventListener('touchend',()=>{
+    if(!row) return; const r=row; row=null; r.style.transition='transform .2s';
+    const open=lock==='x'?(base+dx)<-W/2:r.classList.contains('open');
+    r.classList.toggle('open',open); r.style.transform=open?`translateX(${-W}px)`:'';
+  });
+})();
+
+/* analize: toplinska karta, golovi kroz sezonu, Dinamo protiv... */
+function gCompOk(m){
+  if(gCompFilter==='all') return true;
+  if(gCompFilter==='dinamo') return !REP_COMPS.includes(m.natjecanje);
+  if(gCompFilter==='rep') return gRepSub==='rep'?REP_COMPS.includes(m.natjecanje):m.natjecanje===gRepSub;
+  if(gCompFilter==='UCL') return gUclSub==='all'?['UCL','UCL Q','UCL Play-off'].includes(m.natjecanje):m.natjecanje===gUclSub;
+  if(gCompFilter==='UEL') return ['UEL','UEL Q'].includes(m.natjecanje);
+  if(gCompFilter==='ECL') return ['ECL','ECL Q'].includes(m.natjecanje);
+  return m.natjecanje===gCompFilter;
+}
+let _gHeatType='scored', _gCumTab=0;
+function gHeatType(t){ _gHeatType=t; gRenderHeat(); document.querySelectorAll('#g-heat-seg button').forEach((b,i)=>b.classList.toggle('active',(i===0)===(t==='scored'))); }
+function gRenderHeat(){
+  const el=document.getElementById('g-heat'); if(!el) return;
+  const rows={};
+  goals.forEach(g=>{
+    if(g.type!==_gHeatType) return;
+    const m=matches.find(x=>x.datum===g.matchDatum&&x.protivnik===g.matchProtivnik); if(!m||!gCompOk(m)) return;
+    const sn=getSeason(m.datum)||'?'; if(!rows[sn]) rows[sn]=MIN_BUCKETS.map(()=>0);
+    rows[sn][goalBucketOf(g)]++;
+  });
+  const seasons=Object.keys(rows).sort().reverse().slice(0,12);
+  if(!seasons.length){ el.innerHTML='<div class="prc-empty">Nema golova za prikaz.</div>'; return; }
+  const mx=Math.max(...seasons.flatMap(sn=>rows[sn]),1), rgb=_gHeatType==='scored'?'74,222,128':'248,113,113';
+  el.innerHTML=`<div class="gh"><div></div>${MIN_BUCKETS.map(b=>`<div class="gh-h">${b.label}'</div>`).join('')}<div class="gh-h">Σ</div>`+seasons.map(sn=>`<div class="gh-s">${sn}</div>`+rows[sn].map(v=>`<div class="gh-c" style="background:${v?`rgba(${rgb},${(0.15+v/mx*0.7).toFixed(2)})`:'rgba(255,255,255,0.04)'};color:${v?'#fff':'var(--text-muted)'};">${v||''}</div>`).join('')+`<div class="gh-t">${rows[sn].reduce((a,b)=>a+b,0)}</div>`).join('')+'</div>';
+}
+function gCumTab(i){ _gCumTab=i; document.querySelectorAll('#g-cum-seg button').forEach((b,j)=>b.classList.toggle('active',j===i)); gRenderCum(); }
+function gRenderCum(){
+  const el=document.getElementById('g-cum-chart'), sel=document.getElementById('gc-season'); if(!el||!sel) return;
+  const all=[...new Set(matches.filter(gCompOk).map(m=>getSeason(m.datum)).filter(Boolean))].sort().reverse();
+  const cur=sel.value;
+  if(sel.dataset.k!==all.join('|')){ sel.innerHTML=all.map(x=>`<option>${x}</option>`).join(''); sel.dataset.k=all.join('|'); }
+  sel.value=all.includes(cur)?cur:(all[0]||'');
+  const list=matches.filter(m=>gCompOk(m)&&getSeason(m.datum)===sel.value&&wrResult(m));
+  const ctx=sparkCtx(list); const chips=document.getElementById('g-cum-chips');
+  if(ctx.f.length<2){ el.innerHTML='<div class="prc-empty">Treba barem 2 utakmice u sezoni.</div>'; if(chips) chips.innerHTML=''; return; }
+  const sc=ctx.res.map(r=>r[0]), cc=ctx.res.map(r=>r[1]);
+  const tabs=[
+    {l:'Zbroj golova',t:'multi',fmt:String,series:x=>[{n:'Zabijeni',c:'#4ADE80',v:_runSum(sc)},{n:'Primljeni',c:'#F87171',v:_runSum(cc)}]},
+    {l:'Gol-razlika',t:'line',div:true,f:x=>_runSum(sc.map((v,i)=>v-cc[i])),fmt:_sg}];
+  el.innerHTML=sparkChart(ctx,tabs[_gCumTab],'#60A5FA','gc');
+  const sc0=document.getElementById('gc-scroll'); if(sc0) sc0.scrollLeft=sc0.scrollWidth;
+  const S=sc.reduce((a,b)=>a+b,0), C=cc.reduce((a,b)=>a+b,0);
+  if(chips) chips.innerHTML=[['Utakmica',ctx.f.length,sel.value],['Zabijeno',S,`${(S/ctx.f.length).toFixed(2)} po utakmici`],['Primljeno',C,`${(C/ctx.f.length).toFixed(2)} po utakmici`],['Gol-razlika',_sg(S-C),'ukupno']].map(c=>`<div class="sp-chip"><span>${c[0]}</span><b>${c[1]}</b><i>${c[2]}</i></div>`).join('');
+}
+function gRenderH2H(){
+  const sel=document.getElementById('gh-opp'), chips=document.getElementById('gh-chips'), list=document.getElementById('gh-list'); if(!sel||!chips||!list) return;
+  const cnt={}; matches.filter(m=>!REP_COMPS.includes(m.natjecanje)).forEach(m=>{ const n=officialName(m.protivnik); cnt[n]=(cnt[n]||0)+1; });
+  const names=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]||a.localeCompare(b)), key=names.join('|'), cur=sel.value;
+  if(sel.dataset.k!==key){ sel.innerHTML=names.map(n=>`<option value="${n.replace(/"/g,'&quot;')}">${n} (${cnt[n]})</option>`).join(''); sel.dataset.k=key; }
+  sel.value=names.includes(cur)?cur:(names[0]||'');
+  const opp=sel.value; if(!opp){ chips.innerHTML=''; list.innerHTML='<div class="prc-empty">Nema podataka.</div>'; return; }
+  const ms=matches.filter(m=>!REP_COMPS.includes(m.natjecanje)&&officialName(m.protivnik)===opp&&wrResult(m)).sort((a,b)=>a.datum<b.datum?1:-1);
+  let w=0,d=0,l=0,gf=0,ga=0;
+  ms.forEach(m=>{ const [a,b]=wrResult(m); gf+=a; ga+=b; let o='draw'; try{ o=getResult(String(m.rezultat),m.penali); }catch(e){} if(o==='win') w++; else if(o==='loss') l++; else d++; });
+  const top=t=>{ const c={}; goals.filter(g=>g.type===t&&officialName(g.matchProtivnik||'')===opp&&g.player).forEach(g=>{ c[g.player]=(c[g.player]||0)+1; }); return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([n,v])=>`${n} (${v})`).join(', ')||'—'; };
+  chips.innerHTML=[['Odigrano',ms.length,''],['P / R / P',`${w}/${d}/${l}`,''],['Golovi',`${gf} : ${ga}`,`${_sg(gf-ga)} razlika`],['Naši strijelci',top('scored'),''],['Njihovi strijelci',top('conceded'),'']].map(c=>`<div class="sp-chip"><span>${c[0]}</span><b style="font-size:${String(c[1]).length>12?'13':'20'}px;">${c[1]}</b>${c[2]?`<i>${c[2]}</i>`:''}</div>`).join('');
+  list.innerHTML=ms.slice(0,12).map(m=>{ let o='draw'; try{ o=getResult(String(m.rezultat),m.penali); }catch(e){} return `<div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;"><span style="color:var(--text-muted);min-width:78px;">${fmtDate(m.datum)}</span><span class="gl-res ${o==='win'?'win':o==='loss'?'loss':''}">${m.rezultat}</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted);font-weight:700;">${m.natjecanje||''}</span></div>`; }).join('');
+}
+function gRenderAnalysis(){ gRenderHeat(); gRenderCum(); gRenderH2H(); }
+window.gHeatType=gHeatType; window.gCumTab=gCumTab; window.gRenderCum=gRenderCum; window.gRenderH2H=gRenderH2H;
 
 const CS_KEY='dinamo_collapse_v1';
 function csLoad(){ try{ return JSON.parse(localStorage.getItem(CS_KEY)||'{}')||{}; }catch(e){ return {}; } }
@@ -5422,17 +5775,12 @@ function renderGoalStats(){
     'linear-gradient(to top,#3B82F6,#93C5FD)',
     'linear-gradient(to top,#F59E0B,#FCD34D)',
   ];
-  document.getElementById('minute-bars').innerHTML=MIN_BUCKETS.map((b,i)=>`
-    <div class="min-col${_selectedBucket===i?' selected':''}" onclick="toggleMinuteDetail(${i})">
-      <div class="min-count" style="color:${counts[i]>0?'#fff':'var(--text-muted)'};font-weight:${_selectedBucket===i?'700':'400'}">${counts[i]}</div>
-      <div class="min-bar-wrap">
-        <div class="min-bar" style="height:${Math.max((counts[i]/maxC*75),counts[i]>0?4:0)}px;background:${bgs[i]};opacity:${_selectedBucket===-1||_selectedBucket===i?1:0.4};" title="${b.label}: ${counts[i]} golova"></div>
-      </div>
-      <div class="min-label" style="color:${_selectedBucket===i?'#4D9FFF':'var(--text-muted)'}">${b.label}'</div>
-    </div>`).join('');
+  gRenderMinuteBars(buckets);
+  gMinuteStats(buckets);
 
   // refresh panel if open
   if(_selectedBucket>=0) _renderMinutePanel(buckets[_selectedBucket], MIN_BUCKETS[_selectedBucket].label);
+  try{ gRenderChips(); gRenderAnalysis(); }catch(e){ console.warn('golovi analiza',e); }
 }
 window.renderGoalStats=renderGoalStats;
 
@@ -5625,7 +5973,7 @@ function renderPlayerStats(){
   if(dinEl){
     dinEl.innerHTML=dinSlice.length===0
       ?'<div style="color:var(--text-muted);font-style:italic;text-align:center;padding:20px">Nema golova. Dodaj golove dolje ↓</div>'
-      :dinSlice.map(p=>{
+      :gPodiumHtml(dinList,dinSlice)+scorerRows(dinList,dinSlice).map(p=>{
         const sm=sortMins(p.minutes).map(m=>m+"'").join(' · ');
         const pIdx=dinList.indexOf(p);
         // Sve unikatne ekipe za koje je igrač zabijao — gledaj natjecanje utakmice
@@ -5646,12 +5994,15 @@ function renderPlayerStats(){
           return`<span style="display:inline-flex;align-items:center;gap:2px;margin-left:4px;background:rgba(255,255,255,0.05);padding:1px 4px 1px 3px;border-radius:4px;" title="${club}">${crest}${cntBadge}</span>`;
         }).join('');
         return`<div class="player-row" style="cursor:pointer;" onclick="openPlayerModal('din',${pIdx})">
+          <span class="sc-rank">${scRank(p,dinList)}</span>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;">
               <span class="player-name">${p.name}</span>${clubBadges}
             </div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:normal;">⏱ ${sm}</div>
+            ${scShare(p,dinList,'#4ADE80')}
           </div>
+          ${scSpark(p,'#4ADE80')}
           <div class="player-goals" style="flex-shrink:0;">
             <span class="goal-badge gb-total">⚽ ${p.total}</span>
             ${p.pen>0?`<span class="goal-badge gb-pen">🎯 ${p.pen}</span>`:''}
@@ -5720,13 +6071,16 @@ function renderPlayerStats(){
         const pIdx=oppList.indexOf(p);
         const crest=p.club?getClubCrest(p.club,16):'';
         return`<div class="player-row" style="cursor:pointer;" onclick="openPlayerModal('opp',${pIdx})">
+          <span class="sc-rank">${scRank(p,oppList)}</span>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;">
               <span class="player-name" style="color:#F87171;">${p.name}</span>
               ${crest?`<span style="display:inline-flex;align-items:center;gap:2px;margin-left:4px;background:rgba(255,255,255,0.05);padding:1px 4px 1px 3px;border-radius:4px;" title="${p.club}">${crest}</span>`:''}
             </div>
             <div style="font-size:10px;color:var(--text-muted);margin-top:2px;white-space:normal;">⏱ ${sm}</div>
+            ${scShare(p,oppList,'#F87171')}
           </div>
+          ${scSpark(p,'#F87171')}
           <div class="player-goals" style="flex-shrink:0;">
             <span class="goal-badge" style="background:rgba(248,113,113,0.2);color:#FCA5A5;border:1px solid rgba(248,113,113,0.3);">⚽ ${p.total}</span>
             ${p.pen>0?`<span class="goal-badge gb-pen">🎯 ${p.pen}</span>`:''}
@@ -5741,6 +6095,7 @@ function renderPlayerStats(){
   // store for modal access
   window._dinPlayerList=dinList;
   window._oppPlayerList=oppList;
+  try{ gRenderChips(); scMoreBadge(); }catch(e){ console.warn('golovi chips',e); }
 }
 window.renderPlayerStats=renderPlayerStats;
 
@@ -5767,6 +6122,7 @@ function openPlayerModal(type, idx){
     <div class="pm-stat"><div class="pm-stat-val" style="color:#FCD34D">${p.pen||0}</div><div class="pm-stat-lbl">Penali</div></div>
     <div class="pm-stat"><div class="pm-stat-val" style="color:#FCA5A5">${p.og||0}</div><div class="pm-stat-lbl">OG</div></div>
   `;
+  try{ gPlayerExtra(p,isDin,col); }catch(e){ console.warn('pm-extra',e); }
   // Golovi po sezonama
   const seasonsTitle=document.getElementById('pm-seasons-title');
   const seasonsChartEl=document.getElementById('pm-seasons-chart');
@@ -5882,6 +6238,7 @@ function populateMatchSelect(){
   // auto-fill club if conceded type is selected
   if(document.getElementById('g-type')?.value==='conceded') _autoFillClub();
   populatePlayerDatalist();
+  try{ gaRefresh(); }catch(e){}
 }
 window.populateMatchSelect=populateMatchSelect;
 
@@ -5936,15 +6293,22 @@ async function addGoal(){
   document.getElementById('g-player').value='';
   document.getElementById('g-minute').value='';
   const oppClubEl=document.getElementById('g-opp-club');if(oppClubEl)oppClubEl.value='';
+  gaAfterAdd();
   const autEl=document.getElementById('g-autogol');if(autEl)autEl.value='no';
   renderGoalStats();renderPlayerStats();renderGoalList();
-  showToast('⚽ Gol dodan!','#0A3A20','#34D399');
+  const _added=goals[goals.length-1];
+  showUndoToast('⚽ Gol dodan','#0A3A20','#34D399',async()=>{
+    const i=goals.lastIndexOf(_added); if(i<0) return;
+    goals.splice(i,1); await safeSet('goals',goals);
+    renderGoalStats();renderPlayerStats();renderGoalList();gaRefresh();
+  });
 }
 window.addGoal=addGoal;
 
 const GL_PER_PAGE=10;
 let glPage=1;
 
+const GL_GROUPS=8;
 function renderGoalList(){
   const typeF=(document.getElementById('gl-type-filter')||{value:'all'}).value;
   const q=(document.getElementById('gl-search')||{value:''}).value.toLowerCase();
@@ -5959,50 +6323,43 @@ function renderGoalList(){
     const club=(g.oppClub||'').toLowerCase();
     return player.includes(q)||opp.includes(q)||club.includes(q);
   });
-  list.sort((a,b)=>a.matchDatum<b.matchDatum?1:-1);
   if(list.length===0){
     el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text-muted);font-style:italic;">Nema golova za prikaz.</div>';
     if(pgEl)pgEl.innerHTML='';
     return;
   }
-  const totalPages=Math.max(1,Math.ceil(list.length/GL_PER_PAGE));
+  const mn=g=>(g.extraFirst?45.5:g.extraSecond?90.5:(parseInt(g.minute)||0))+((parseInt((String(g.minuteRaw||'').split('+')[1])||0)||0)/100);
+  const map=new Map();
+  list.forEach(g=>{ const k=g.matchDatum+'||'+g.matchProtivnik; if(!map.has(k)) map.set(k,[]); map.get(k).push(g); });
+  const groups=[...map.values()].map(arr=>arr.sort((a,b)=>mn(a)-mn(b))).sort((a,b)=>a[0].matchDatum<b[0].matchDatum?1:a[0].matchDatum>b[0].matchDatum?-1:0);
+  const totalPages=Math.max(1,Math.ceil(groups.length/GL_GROUPS));
   if(glPage>totalPages)glPage=totalPages;
-  const slice=list.slice((glPage-1)*GL_PER_PAGE, glPage*GL_PER_PAGE);
-  el.innerHTML=slice.map(g=>{
-    const isScored=g.type==='scored';
-    const iconColor=isScored?'#4ADE80':'#F87171';
-    const typeLabel=isScored?'Zabijen':'Primljen';
-    const minStr=g.minuteRaw||(g.minute+'');
-    const penStr=g.pen==='yes'?' · <b style="color:#FCD34D">PEN</b>':'';
-    const ogStr=g.autogol==='yes'?' · <b style="color:#FCA5A5">OG</b>':'';
-    const clubStr=g.oppClub?` · <span style="opacity:0.7">${g.oppClub}</span>`:'';
-    return`<div class="goal-list-row">
-      <div class="goal-list-info">
-        <div class="goal-list-main"><span style="color:${iconColor}">⚽</span> ${g.player||'Nepoznat'}${clubStr} <span style="font-size:11px;font-weight:400;color:var(--text-muted)">${minStr}'${penStr}${ogStr}</span></div>
-        <div class="goal-list-sub">${fmtDate(g.matchDatum)} vs ${officialName(g.matchProtivnik||"")} · <span style="color:${iconColor}">${typeLabel}</span></div>
-      </div>
-      <div style="display:flex;gap:5px;flex-shrink:0;">
-        <button class="pm-edit-btn" style="padding:4px 9px;font-size:11px;" onclick="openEditGoal(${g._idx})">✏️ Uredi</button>
-        <button class="btn-goal-del" onclick="deleteGoal(${g._idx})">🗑️ Briši</button>
-      </div>
-    </div>`;
+  const slice=groups.slice((glPage-1)*GL_GROUPS, glPage*GL_GROUPS);
+  el.innerHTML=slice.map(arr=>{
+    const g0=arr[0], m=matches.find(x=>x.datum===g0.matchDatum&&x.protivnik===g0.matchProtivnik)||{};
+    let cls=''; try{ if(m.rezultat) cls=getResult(String(m.rezultat),m.penali); }catch(e){}
+    const head=`<div class="gl-head"><span class="gl-date">${fmtDate(g0.matchDatum)}</span>${getClubCrest(officialName(g0.matchProtivnik||''),18)}<b style="font-size:13px;color:#fff;">${officialName(g0.matchProtivnik||'')}</b>${m.rezultat?`<span class="gl-res ${cls==='win'?'win':cls==='loss'?'loss':''}">${m.rezultat}</span>`:''}<span class="gl-comp">${m.natjecanje||''}</span></div>`;
+    const rows=arr.map(g=>{
+      const pen=g.pen==='yes'?' <b style="color:#FCD34D;font-size:10px;">PEN</b>':'';
+      const og=g.autogol==='yes'?' <b style="color:#FCA5A5;font-size:10px;">OG</b>':'';
+      const club=(g.type==='conceded'&&g.oppClub)?` <span style="opacity:.65;font-size:11px;">· ${g.oppClub}</span>`:'';
+      return `<div class="gl-row"><div class="gl-row-in"><span class="gl-min ${g.type}">${g.minuteRaw||g.minute}'</span><div class="gl-pl"><b>${g.player||'Nepoznat'}</b>${pen}${og}${club}</div></div><div class="gl-actions"><button class="ed" onclick="openEditGoal(${g._idx})">✏️ Uredi</button><button class="del" onclick="deleteGoal(${g._idx})">🗑️ Briši</button></div></div>`;
+    }).join('');
+    return head+rows;
   }).join('');
-  // Pagination bar
   if(pgEl){
-    if(totalPages<=1){pgEl.innerHTML='';return;}
+    if(totalPages<=1){pgEl.innerHTML=`<span style="font-size:11px;color:var(--text-muted);">${groups.length} utakmica · ${list.length} golova</span>`;return;}
     const btnStyle=`style="min-width:32px;height:28px;padding:0 8px;border-radius:6px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-primary);font-size:12px;cursor:pointer;"`;
     const activeBtnStyle=`style="min-width:32px;height:28px;padding:0 8px;border-radius:6px;border:1px solid #4D9FFF;background:rgba(77,159,255,0.18);color:#4D9FFF;font-size:12px;cursor:pointer;font-weight:700;"`;
     let html=`<button ${btnStyle} onclick="glGoPage(1)" ${glPage===1?'disabled':''}>«</button>`;
     html+=`<button ${btnStyle} onclick="glGoPage(${glPage-1})" ${glPage===1?'disabled':''}>‹</button>`;
-    // Page numbers — show max 5 around current
     const start=Math.max(1,glPage-2), end=Math.min(totalPages,glPage+2);
     if(start>1) html+=`<span style="color:var(--text-muted);font-size:12px;padding:0 2px;">…</span>`;
-    for(let p=start;p<=end;p++)
-      html+=`<button ${p===glPage?activeBtnStyle:btnStyle} onclick="glGoPage(${p})">${p}</button>`;
+    for(let p=start;p<=end;p++) html+=`<button ${p===glPage?activeBtnStyle:btnStyle} onclick="glGoPage(${p})">${p}</button>`;
     if(end<totalPages) html+=`<span style="color:var(--text-muted);font-size:12px;padding:0 2px;">…</span>`;
     html+=`<button ${btnStyle} onclick="glGoPage(${glPage+1})" ${glPage===totalPages?'disabled':''}>›</button>`;
     html+=`<button ${btnStyle} onclick="glGoPage(${totalPages})" ${glPage===totalPages?'disabled':''}>»</button>`;
-    html+=`<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">${list.length} golova</span>`;
+    html+=`<span style="font-size:11px;color:var(--text-muted);margin-left:4px;">${groups.length} utakmica · ${list.length} golova</span>`;
     pgEl.innerHTML=html;
   }
 }
