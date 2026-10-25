@@ -9,14 +9,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Dinamo">
   <meta name="theme-color" content="#0a1e4a">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>GNK Dinamo Zagreb · Statistika</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0A0F1E;--surface:#111827;--surface2:#1C2439;--text:#F0F4FF;--text-muted:#8899BB;--border:rgba(100,140,220,0.15);}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 button,.nav-btn,.sched-filter-btn,.top5-row,.btn-sm,.karte-refresh-btn{touch-action:manipulation;}
-body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;min-height:100dvh;overflow-x:hidden;}
 
 /* NAV */
 .topnav{display:flex;align-items:center;justify-content:space-between;padding:11px 40px;background:#060C1A;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
@@ -105,14 +109,14 @@ body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-
 .stat-card.clickable{cursor:pointer;transition:border-color 0.2s,transform 0.15s,box-shadow 0.2s;}
 .stat-card.clickable:hover{border-color:rgba(77,159,255,0.5);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
 .stat-card.clickable:hover .stat-label::after{content:' ↗';font-size:9px;opacity:0.5;}
-.top5-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+.top5-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);z-index:9000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
 .top5-overlay.open{opacity:1;pointer-events:all;}
-.top5-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:0;width:calc(100% - 32px);max-width:480px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.6);}
+.top5-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:0;width:calc(100% - 32px);max-width:480px;max-height:85vh;max-height:85dvh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,0.6);}
 .top5-box{transform:scale(0.96) translateY(8px);opacity:0;transition:transform .18s ease,opacity .18s ease;}
 .top5-overlay.open .top5-box{transform:scale(1) translateY(0);opacity:1;}
 @media(max-width:600px){
   .top5-overlay{align-items:flex-end;}
-  .top5-box{width:100%;max-width:100%;max-height:88vh;border-radius:18px 18px 0 0;transform:translateY(100%);opacity:1;padding-bottom:env(safe-area-inset-bottom,0px);}
+  .top5-box{width:100%;max-width:100%;max-height:88vh;max-height:88dvh;border-radius:18px 18px 0 0;transform:translateY(100%);opacity:1;padding-bottom:env(safe-area-inset-bottom,0px);}
   .top5-overlay.open .top5-box{transform:translateY(0);}
   .top5-box::before{content:'';display:block;flex-shrink:0;width:36px;height:4px;background:rgba(255,255,255,0.22);border-radius:3px;margin:9px auto 0;}
 }
@@ -309,9 +313,9 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .spb.active{background:rgba(0,102,204,0.3);border-color:rgba(0,102,204,0.5);color:#7FB5FF;}
 
 /* Player modal */
-.player-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1100;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.player-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1100;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
 .player-modal-overlay.open{display:flex;}
-.player-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0;width:420px;max-width:95vw;max-height:85vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;}
+.player-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:0;width:420px;max-width:95vw;max-height:85vh;max-height:85dvh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);scrollbar-width:thin;scrollbar-color:rgba(100,140,220,0.3) transparent;}
 .pm-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2;}
 .pm-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
 .pm-close{background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text-muted);font-size:14px;cursor:pointer;transition:all 0.2s;}
@@ -340,7 +344,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 
 /* Minute detail panel */
 .min-detail-panel{max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1);border-top:0px solid var(--border);}
-.min-detail-panel.open{max-height:70vh;border-top:1px solid var(--border);}
+.min-detail-panel.open{max-height:70vh;max-height:70dvh;border-top:1px solid var(--border);}
 .min-detail-header{display:flex;align-items:center;justify-content:space-between;padding:10px 18px 8px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;}
 .min-detail-close{background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:7px;padding:3px 10px;color:var(--text-muted);font-size:13px;cursor:pointer;transition:all 0.2s;}
 .min-detail-close:hover{background:rgba(255,255,255,0.15);color:#fff;}
@@ -478,9 +482,9 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 .chip-time{background:rgba(167,139,250,0.15);color:#C4B5FD;}
 
 /* MODALS */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:1000;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:400px;max-width:94vw;max-height:90vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:400px;max-width:94vw;max-height:90vh;max-height:90dvh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(0.16,1,0.3,1);}
 @keyframes mIn{from{transform:scale(0.95) translateY(10px);opacity:0;}to{transform:none;opacity:1;}}
 .modal h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:5px;color:#fff;}
 .modal-sub{font-size:13px;color:var(--text-muted);margin-bottom:14px;}
@@ -1147,7 +1151,7 @@ tr.opp-win{border-left:3px solid #4ADE80;}tr.opp-mix{border-left:3px solid #F0C0
 tr[data-idx]{-webkit-touch-callout:none;}
 
 /* ── Lijepljivi mini-sažetak ── */
-#stat-sticky-bar{position:fixed;top:0;left:0;right:0;z-index:55;background:rgba(10,15,35,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--text);transform:translateY(-100%);transition:transform .2s ease;padding-top:calc(9px + env(safe-area-inset-top,0px));}
+#stat-sticky-bar{position:fixed;top:0;left:0;right:0;z-index:55;background:rgba(10,15,35,0.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--text);transform:translateY(-100%);transition:transform .2s ease;padding-top:calc(9px + env(safe-area-inset-top,0px));}
 #stat-sticky-bar.show{transform:translateY(0);}
 #stat-sticky-bar b{font-family:'Bebas Neue',sans-serif;font-size:16px;font-weight:400;letter-spacing:1px;color:#fff;}
 @media(prefers-reduced-motion:reduce){#stat-sticky-bar{transition:none;}}
@@ -1160,7 +1164,7 @@ tr[data-idx]{-webkit-touch-callout:none;}
 @media(prefers-reduced-motion:reduce){.milestone-banner{transition:none;}}
 
 
-#stat-marquee{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(10,15,35,0.92);backdrop-filter:blur(6px);border-top:1px solid var(--border);overflow:hidden;padding:7px 0;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));}
+#stat-marquee{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(10,15,35,0.92);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-top:1px solid var(--border);overflow:hidden;padding:7px 0;padding-bottom:calc(7px + env(safe-area-inset-bottom,0px));}
 .marquee-track{display:flex;white-space:nowrap;width:max-content;animation:marqueeScroll 34s linear infinite;font-size:11px;color:var(--text-muted);}
 .marquee-track b{color:#93C5FD;font-weight:700;}
 @keyframes marqueeScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
@@ -1196,7 +1200,7 @@ input[type=checkbox]:checked{background:var(--sw,#4D9FFF);}
 input[type=checkbox]:checked::after{transform:translateX(16px);}
 input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 /* Vlastiti dijalog umjesto alert/confirm */
-.app-dlg{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;}
+.app-dlg{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,0.65);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;}
 .app-dlg.open{display:flex;animation:dlgFade .18s ease-out;}
 .app-dlg-box{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px 20px 16px;width:360px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:dlgPop .22s cubic-bezier(.16,1,.3,1);}
 .app-dlg-ic{font-size:30px;text-align:center;margin-bottom:8px;}
@@ -1210,9 +1214,9 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 @keyframes dlgFade{from{opacity:0;}to{opacity:1;}}
 @keyframes dlgPop{from{opacity:0;transform:translateY(12px) scale(.96);}to{opacity:1;transform:none;}}
 /* Izbornik odozdo (mobitel, dugi popisi) */
-.sel-sheet{position:fixed;inset:0;z-index:10040;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;}
+.sel-sheet{position:fixed;inset:0;z-index:10040;background:rgba(0,0,0,0.6);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;}
 .sel-sheet.open{display:flex;animation:dlgFade .18s ease-out;}
-.sel-sheet-box{background:var(--surface);border:1px solid var(--border);border-radius:22px 22px 0 0;width:100%;max-width:520px;max-height:78vh;display:flex;flex-direction:column;padding:8px 14px calc(14px + env(safe-area-inset-bottom,0px));animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
+.sel-sheet-box{background:var(--surface);border:1px solid var(--border);border-radius:22px 22px 0 0;width:100%;max-width:520px;max-height:78vh;max-height:78dvh;display:flex;flex-direction:column;padding:8px 14px calc(14px + env(safe-area-inset-bottom,0px));animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
 .sel-sheet-handle{width:42px;height:4px;border-radius:4px;background:rgba(255,255,255,0.22);margin:4px auto 10px;}
 .sel-sheet-q{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;color:var(--text);font-size:14px;margin-bottom:8px;outline:none;width:100%;box-sizing:border-box;}
 .sel-sheet-list{overflow-y:auto;overscroll-behavior:contain;}
@@ -1224,7 +1228,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 @keyframes sheetIn{from{transform:translateY(100%);}to{transform:none;}}
 @media(max-width:600px){
   .modal-overlay{align-items:flex-end;}
-  .modal{width:100%;max-width:100%;border-radius:22px 22px 0 0;padding:28px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:92vh;position:relative;animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
+  .modal{width:100%;max-width:100%;border-radius:22px 22px 0 0;padding:28px 18px calc(18px + env(safe-area-inset-bottom,0px));max-height:92vh;max-height:92dvh;position:relative;animation:sheetIn .3s cubic-bezier(.16,1,.3,1);}
   .modal::before{content:'';position:absolute;top:9px;left:50%;width:42px;height:4px;margin-left:-21px;border-radius:4px;background:rgba(255,255,255,0.22);}
 }
 /* Sparkline na karticama statistike */
@@ -1283,7 +1287,7 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 .section-header,.header-right,.table-section,.table-wrap,.season-bar{max-width:100%;min-width:0;}
 .header-right>*{min-width:0;}
 .page.active{overflow-x:clip;}
-@media(max-width:1000px){.s-main,.g-main{padding-left:max(12px,env(safe-area-inset-left))!important;padding-right:max(12px,env(safe-area-inset-right))!important;}}
+@media(max-width:1000px){.s-main,.g-main{padding-left:12px!important;padding-right:12px!important;}}
 /* Statistika: sadržaj je sada unutar .s-main (razmak od rubova), bez bočne kolone */
 #page-statistika .s-main{display:block;grid-template-columns:none!important;}
 /* ===== GOLOVI: modernizacija ===== */
@@ -1367,6 +1371,26 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
 /* Detalji točke na grafu: stalni okvir ISPOD grafa (ne lebdi iznad podataka, nema skakanja) */
 .tip-below{position:static!important;display:block!important;left:auto!important;top:auto!important;width:100%;box-sizing:border-box;margin-top:10px;min-height:70px;box-shadow:none;animation:none;background:rgba(255,255,255,0.04);border:1px solid var(--border);pointer-events:auto;}
 .tip-below:empty::before{content:'👆 Dodirni točku na grafu za detalje';font-size:11px;color:var(--text-muted);}
+.ga-chip.on-chip{background:rgba(0,87,184,0.5);border-color:rgba(77,159,255,0.6);color:#fff;}
+:focus-visible{outline:2px solid #60A5FA;outline-offset:2px;border-radius:6px;}
+:focus:not(:focus-visible){outline:none;}
+/* ===== Mobitel (iPhone / Android) ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;touch-action:manipulation;}
+body{min-height:100vh;min-height:100dvh;}
+/* iOS zumira stranicu kad polje ima slova manja od 16px */
+@supports (-webkit-touch-callout:none){input,select,textarea{font-size:16px!important;}}
+/* veći prostor za prst */
+@media(pointer:coarse){.sched-filter-btn,.filter-tab,.legend-item,.pred-type-tab,.ga-chip,.gfb-chip{min-height:36px;}.seg>button{min-height:34px;}}
+/* sigurna područja (djeluju kad se uključi viewport-fit=cover) */
+.toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))!important;}
+#stat-marquee{padding-bottom:env(safe-area-inset-bottom,0px);}
+#stat-sticky-bar{padding-top:calc(9px + env(safe-area-inset-top,0px));}
+/* ===== Ikona na početnom zaslonu (iPhone / Android): sadržaj ispod statusne trake i urezom ===== */
+html{background:var(--bg);}
+nav.topnav,.topnav{border-top:env(safe-area-inset-top,0px) solid #060C1A;}
+#ptr-indicator{top:env(safe-area-inset-top,0px);}
+body{padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+#no-data{padding-top:calc(24px + env(safe-area-inset-top,0px))!important;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -2877,11 +2901,12 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
         <span id="sched-add-icon">➕</span> Dodaj utakmicu <span id="sched-add-arrow" style="opacity:0.5;font-size:10px;">▼</span>
       </button>
       <div id="sched-add-form" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:0 0 12px 12px;border-top:none;padding:14px 16px;margin-top:-1px;">
-        <div class="sched-add-grid">
-          <div class="form-row"><label class="form-label">Datum</label><input class="form-input" type="date" id="sa-datum"></div>
-          <div class="form-row"><label class="form-label">Vrijeme (HH:MM)</label><input class="form-input" type="time" id="sa-time" placeholder="20:30"></div>
-          <div class="form-row"><label class="form-label">Natjecanje</label>
-            <select class="form-select" id="sa-nat">
+        <div class="ga" style="border-top:none;padding:0;">
+          <div class="ga-row"><label class="form-label">Datum i vrijeme</label>
+            <div style="display:flex;gap:8px;"><input class="form-input" type="date" id="sa-datum" style="flex:1;"><input class="form-input" type="time" id="sa-time" style="width:130px;" placeholder="20:30"></div>
+            <div class="ga-chips"><button type="button" class="ga-chip" onclick="saTime('15:00')">15:00</button><button type="button" class="ga-chip" onclick="saTime('16:00')">16:00</button><button type="button" class="ga-chip" onclick="saTime('18:00')">18:00</button><button type="button" class="ga-chip" onclick="saTime('18:45')">18:45</button><button type="button" class="ga-chip" onclick="saTime('20:30')">20:30</button><button type="button" class="ga-chip" onclick="saTime('21:00')">21:00</button></div>
+          </div>
+          <div class="ga-row"><label class="form-label">Natjecanje</label><select class="form-select" id="sa-nat" style="display:none;" onchange="saInit()">
               <option value="hnl" data-label="">HNL</option>
               <option value="euro" data-label="★ Europa">UCL pretkolo</option>
               <option value="euro" data-label="★ Europa">UEL pretkolo</option>
@@ -2891,16 +2916,13 @@ input[type=checkbox]:focus-visible{box-shadow:0 0 0 3px rgba(96,165,250,0.35);}
               <option value="euro" data-label="★ ECL">ECL</option>
               <option value="kup" data-label="">Kup</option>
               <option value="kup" data-label="">Super kup</option>
-            </select>
+            </select><div class="ga-chips" id="sa-nat-chips"></div></div>
+          <div class="ga-row"><label class="form-label">Runda / kolo</label>
+            <div class="ga-step"><button type="button" onclick="saRound(-1)" aria-label="Prethodno kolo">−</button><input class="form-input" type="text" id="sa-label" placeholder="npr. 1. kolo"><button type="button" onclick="saRound(1)" aria-label="Sljedeće kolo">+</button></div>
           </div>
-          <div class="form-row"><label class="form-label">Runda / kolo</label><input class="form-input" type="text" id="sa-label" placeholder="npr. 1. kolo"></div>
-          <div class="form-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="sa-opp" placeholder="Npr. Hajduk"></div>
-          <div class="form-row"><label class="form-label">Domaće / Gostovanje</label>
-            <select class="form-select" id="sa-home">
-              <option value="true">🏟️ Domaće</option>
-              <option value="false">✈️ Gostovanje</option>
-            </select>
-          </div>
+          <div class="ga-row"><label class="form-label">Protivnik</label><input class="form-input" type="text" id="sa-opp" list="sa-opp-list" placeholder="Npr. Hajduk" autocomplete="off"><datalist id="sa-opp-list"></datalist></div>
+          <div class="seg-auto" id="sa-home-seg" style="display:flex;"><button class="active" data-v="true" onclick="saHome(true)">🏟️ Domaće</button><button data-v="false" onclick="saHome(false)">✈️ Gostovanje</button></div>
+          <select class="form-select" id="sa-home" style="display:none;"><option value="true">🏟️ Domaće</option><option value="false">✈️ Gostovanje</option></select>
         </div>
         <button class="btn-add" style="margin-top:10px;width:100%;" onclick="schedAddMatch()">💾 Dodaj utakmicu</button>
       </div>
@@ -4921,8 +4943,25 @@ window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.2.1';
+const APP_VERSION='2.3.2';
 const CHANGELOG=[
+  {v:'2.3.2',d:'2026-10-25',items:[
+    ['📲','Ikona na početnom zaslonu: sadržaj više ne ide ispod statusne trake i ureza, a traka s izbornikom ima prostor iznad sebe'],
+    ['⬅️','Natrag (Android gumb i iPhone gesta s ruba): zatvara otvoreni prozor umjesto da izađe iz aplikacije'],
+    ['🔲','Rubovi: razmak od donje trake i bočnih ureza kad se ekran okrene vodoravno']
+  ]},
+  {v:'2.3.1',d:'2026-10-25',items:[
+    ['📱','Mobitel: iPhone više ne zumira stranicu kad dodirneš polje za unos'],
+    ['📐','Mobitel: visine prozora prate stvarnu visinu ekrana (adresna traka više ne odreže dno)'],
+    ['👆','Mobitel: nakon dodira više ne ostaju „zalijepljeni” efekti prelaska miša, a gumbi i filteri imaju veću površinu za prst'],
+    ['⚡','Brže prvo učitavanje fontova i biblioteka na sporijoj mreži']
+  ]},
+  {v:'2.3.0',d:'2026-10-25',items:[
+    ['⏱️','Kviz uživo: kružni brojač kao i u običnom kvizu'],
+    ['⚡','Kviz: povijest za Ligu se sprema na uređaju i dohvaća se samo ono novo, pa je brže i troši manje podataka'],
+    ['🗓️','Raspored: nova forma Dodaj utakmicu (natjecanje kao tipke, vrijeme jednim dodirom, kolo s + i −, popis protivnika, Domaće / Gostovanje prekidač)'],
+    ['♿','Pristupačnost: svi gumbi i kartice imaju imena za čitače ekrana, rade tipkovnicom (Tab, Enter, razmak, Esc), a prozori drže fokus']
+  ]},
   {v:'2.2.1',d:'2026-10-25',items:[
     ['👆','Grafovi: detalji dodirnute točke sada se prikazuju u okviru ISPOD grafa, a ne iznad podataka'],
     ['📍','Forma, toplinska karta i strijelci na vremenskoj crti: kućica s detaljima otvara se ispod dodirnutog mjesta'],
@@ -5267,6 +5306,139 @@ function smartReveal(el){
 }
 function scrollToEl(el,off){ if(!el) return; window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-(off||96)),behavior:'smooth'}); }
 window.tipPlaceBelow=tipPlaceBelow; window.smartReveal=smartReveal; window.scrollToEl=scrollToEl;
+
+
+/* ===== Raspored: moderna forma za dodavanje utakmice ===== */
+function saInit(){
+  const sel=document.getElementById('sa-nat'), box=document.getElementById('sa-nat-chips'); if(!sel||!box) return;
+  box.innerHTML=[...sel.options].map((o,i)=>`<button type="button" class="ga-chip${sel.selectedIndex===i?' on-chip':''}" onclick="saNat(${i})">${wrEsc(o.text)}</button>`).join('');
+  const dl=document.getElementById('sa-opp-list');
+  if(dl){ const names=new Set(); (matches||[]).forEach(m=>{ if(m.protivnik) names.add(officialName(m.protivnik)); }); (_schedMatches||[]).forEach(m=>{ if(m.opp) names.add(officialName(m.opp)); });
+    dl.innerHTML=[...names].sort().map(n=>`<option value="${String(n).replace(/"/g,'&quot;')}">`).join(''); }
+  const h=document.getElementById('sa-home'); if(h) document.querySelectorAll('#sa-home-seg button').forEach(b=>b.classList.toggle('active',b.dataset.v===h.value));
+  saSuggest();
+}
+function saNat(i){ const sel=document.getElementById('sa-nat'); if(!sel) return; sel.selectedIndex=i; const lab=document.getElementById('sa-label'); if(lab&&/^\d+\.\s*kolo$/i.test(lab.value.trim())) lab.value=''; saInit(); }
+function saSuggest(){
+  const sel=document.getElementById('sa-nat'), lab=document.getElementById('sa-label'); if(!sel||!lab||lab.value.trim()) return;
+  if(!sel.options[sel.selectedIndex]||sel.options[sel.selectedIndex].text!=='HNL') return;
+  const last=(_schedMatches||[]).filter(m=>m.competition==='hnl'&&/^\d+\./.test(m.label||'')).sort((a,b)=>b.sortDate-a.sortDate)[0];
+  if(last) lab.value=(parseInt(last.label)+1)+'. kolo';
+}
+function saTime(t){ const i=document.getElementById('sa-time'); if(i) i.value=t; }
+function saRound(d){ const i=document.getElementById('sa-label'); if(!i) return; const m=i.value.match(/^\s*(\d+)/); const n=m?parseInt(m[1]):0; const v=Math.max(1,n+d); i.value=v+'. kolo'; }
+function saHome(b){ const h=document.getElementById('sa-home'); if(h) h.value=String(b); document.querySelectorAll('#sa-home-seg button').forEach(x=>x.classList.toggle('active',x.dataset.v===String(b))); }
+window.saInit=saInit; window.saNat=saNat; window.saTime=saTime; window.saRound=saRound; window.saHome=saHome;
+
+/* ===== Pristupačnost: tipkovnica, čitači ekrana, fokus ===== */
+const A11Y_NAMES={'✕':'Zatvori','×':'Zatvori','✖':'Zatvori','❌':'Ukloni','‹':'Prethodna stranica','›':'Sljedeća stranica','«':'Prva stranica','»':'Zadnja stranica','+':'Povećaj','−':'Smanji','-':'Smanji','✏️':'Uredi','✏':'Uredi','🗑️':'Obriši','🗑':'Obriši','⚙️':'Postavke','⚙':'Postavke','🔍':'Traži','⤢':'Detalji','▾':'Prikaži ili sakrij','▴':'Prikaži ili sakrij','↻':'Osvježi','⟳':'Osvježi','🔄':'Osvježi','🔔':'Podsjetnik','📤':'Podijeli','📥':'Preuzmi','➕':'Dodaj','💾':'Spremi','📊':'Statistika','🔗':'Poveznica','📋':'Kopiraj','📅':'Kalendar','📷':'Slika','⭐':'Favorit','↑':'Gore','↓':'Dolje','←':'Natrag','→':'Naprijed'};
+const A11Y_OVERLAYS='.modal-overlay,.top5-overlay,.app-dlg,.sel-sheet,.player-modal-overlay,#spark-overlay,#changelog-overlay';
+function a11yText(el){ return (el.textContent||'').replace(/\s+/g,' ').trim(); }
+function a11yEnhance(){
+  // 1) klikabilni elementi koji nisu gumbi
+  document.querySelectorAll('tr[onclick]:not([tabindex])').forEach(r=>{ r.tabIndex=0; });
+  document.querySelectorAll('[onclick]:not(button):not(a):not(input):not(select):not(textarea):not(summary):not(tr):not(td):not(th):not([role]),.spark:not([role])').forEach(el=>{
+    const oc=el.getAttribute('onclick')||'';
+    if(/overlay|backdrop/i.test(el.className)||/event\.target\s*===\s*this/.test(oc)||el.id==='app-dlg') return;
+    el.setAttribute('role','button'); if(!el.hasAttribute('tabindex')) el.tabIndex=0;
+  });
+  // 2) imena za gumbe bez teksta
+  document.querySelectorAll('button,[role=button],a[onclick]').forEach(el=>{
+    if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby')) return;
+    const txt=a11yText(el);
+    if(txt&&/[A-Za-zČčĆćŽžŠšĐđ0-9]{2,}/.test(txt)) return;
+    const name=A11Y_NAMES[txt]||el.getAttribute('title')||(el.querySelector('img[alt]')||{}).alt||(el.classList.contains('spark')?'Detalji grafa':'');
+    if(name) el.setAttribute('aria-label',name);
+  });
+  // 3) sklopive kartice
+  document.querySelectorAll('[onclick*="toggleCollapse"]').forEach(h=>{ const b=h.nextElementSibling; if(b) h.setAttribute('aria-expanded',String(!b.classList.contains('js-collapsed'))); });
+  // 4) tabovi i filteri: aria-pressed
+  document.querySelectorAll('.seg>button,.sched-filter-btn,.prc-toggle-btn,.pred-type-tab,.filter-tab,.stat-person-tab').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('active'))));
+  document.querySelectorAll('.nav-btn').forEach(b=>{ if(b.classList.contains('active')) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  // 5) polja bez oznake
+  document.querySelectorAll('input:not([type=hidden]):not([aria-label]),select:not([aria-label]),textarea:not([aria-label])').forEach(el=>{
+    if(el.id&&document.querySelector(`label[for="${el.id}"]`)) return;
+    const lab=el.closest('.form-row,.ga-row')&&el.closest('.form-row,.ga-row').querySelector('label');
+    const t=(lab&&a11yText(lab))||el.getAttribute('placeholder')||el.getAttribute('title');
+    if(t) el.setAttribute('aria-label',t);
+  });
+  // 6) grafovi
+  document.querySelectorAll('svg[viewBox]:not([role]):not([aria-hidden])').forEach(v=>{
+    if(v.closest('button,.spark,.sc-spark,.qz-ring')) { v.setAttribute('aria-hidden','true'); return; }
+    const card=v.closest('.g-section,.pred-chart-card,.form-card,.qz-card,.stat-card,.top5-box');
+    const h=card&&card.querySelector('.g-section-title,.section-title,.card-header,.top5-title');
+    v.setAttribute('role','img'); v.setAttribute('aria-label','Graf'+(h?': '+a11yText(h):''));
+  });
+  // 7) prozori i obavijesti
+  document.querySelectorAll(A11Y_OVERLAYS).forEach(o=>{ if(!o.hasAttribute('role')){ o.setAttribute('role',o.id==='app-dlg'?'alertdialog':'dialog'); o.setAttribute('aria-modal','true'); } });
+  const t=document.getElementById('toast'); if(t&&!t.hasAttribute('role')){ t.setAttribute('role','status'); t.setAttribute('aria-live','polite'); }
+}
+(function(){
+  let raf=0; const run=()=>{ if(raf) return; raf=setTimeout(()=>{ raf=0; try{ a11yEnhance(); }catch(e){} },150); };
+  const start=()=>{ a11yEnhance(); new MutationObserver(run).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']}); };
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start);
+  // tipkovnica: Enter / razmak na elementima s ulogom gumba
+  document.addEventListener('keydown',e=>{
+    const el=e.target; if(!el||!el.matches||!el.matches('[role=button]:not(button):not(a),tr[onclick]')) return;
+    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); }
+  });
+  // fokus u prozorima: pri otvaranju na prvi element, vrati kamo je bio pri zatvaranju; Tab ostaje unutar prozora; Esc zatvara
+  const lastFocus=new WeakMap();
+  new MutationObserver(ms=>{
+    ms.forEach(m=>{
+      const o=m.target; if(!o.matches||!o.matches(A11Y_OVERLAYS)) return;
+      const open=o.classList.contains('open'), was=o._a11yOpen||false; if(open===was) return; o._a11yOpen=open;
+      if(open) ovOpened(o); else ovClosed(o);
+      if(open){ lastFocus.set(o,document.activeElement); setTimeout(()=>{ const f=o.querySelector('[autofocus],.top5-close,.app-dlg-ok,input,button,[tabindex="0"]'); if(f&&f.focus) f.focus(); },60); }
+      else{ const f=lastFocus.get(o); if(f&&document.contains(f)&&f.focus) f.focus(); }
+    });
+  }).observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});
+  document.addEventListener('keydown',e=>{
+    const open=[...document.querySelectorAll(A11Y_OVERLAYS)].filter(o=>o.classList.contains('open')||(o.classList.contains('modal-overlay')&&getComputedStyle(o).display!=='none'&&o.classList.contains('open')));
+    if(!open.length) return; const top=open[open.length-1];
+    if(e.key==='Tab'){
+      const f=[...top.querySelectorAll('button,input,select,textarea,a[href],[tabindex="0"]')].filter(x=>!x.disabled&&x.offsetParent!==null);
+      if(!f.length) return; const first=f[0], last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+    }else if(e.key==='Escape'&&!e.defaultPrevented&&top.id!=='app-dlg'&&top.id!=='spark-overlay'){
+      const c=top.querySelector('.top5-close,.modal-close,[onclick*="close"]'); if(c) c.click(); else top.classList.remove('open');
+    }
+  });
+})();
+
+
+/* ===== Mobitel: ukloni :hover pravila na uređajima bez miša (inače ostanu "zalijepljena" nakon dodira) ===== */
+(function(){
+  const run=()=>{
+    try{
+      if(!window.matchMedia('(hover:none)').matches) return;
+      const strip=c=>{ const rules=c.cssRules; for(let i=rules.length-1;i>=0;i--){ const r=rules[i];
+        if(r.type===1){ if(r.selectorText&&r.selectorText.indexOf(':hover')>-1){ const keep=r.selectorText.split(',').filter(x=>x.indexOf(':hover')<0); if(keep.length) r.selectorText=keep.join(','); else c.deleteRule(i); } }
+        else if(r.cssRules&&r.deleteRule) strip(r); } };
+      [...document.styleSheets].forEach(sh=>{ try{ strip(sh); }catch(e){} });
+    }catch(e){ console.warn('hover strip',e); }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run); else run();
+})();
+
+
+/* ===== Natrag: gumb/gesta zatvara otvoreni prozor umjesto da izađe iz aplikacije ===== */
+const _ovStack=[]; let _ovSkip=0, _ovByBack=false;
+function ovOpened(o){ if(_ovStack.includes(o)) return; _ovStack.push(o); try{ history.pushState({ov:_ovStack.length},''); }catch(e){} }
+function ovClosed(o){
+  const i=_ovStack.indexOf(o); if(i<0) return; _ovStack.splice(i,1);
+  if(_ovByBack){ _ovByBack=false; return; }
+  try{ if(history.state&&history.state.ov){ _ovSkip++; history.back(); } }catch(e){}
+}
+window.addEventListener('popstate',()=>{
+  if(_ovSkip>0){ _ovSkip--; return; }
+  const top=_ovStack[_ovStack.length-1]; if(!top) return;
+  _ovByBack=true; setTimeout(()=>{ _ovByBack=false; },80);
+  if(top.id==='app-dlg'){ const c=top.querySelector('.app-dlg-cancel'), ok=top.querySelector('.app-dlg-ok'); const b=(c&&c.style.display!=='none')?c:ok; if(b) b.click(); else top.classList.remove('open'); return; }
+  const c=top.querySelector('.top5-close,.modal-close,[onclick*="close"]'); if(c) c.click();
+  if(top.classList.contains('open')) top.classList.remove('open');
+});
 
 const CS_KEY='dinamo_collapse_v1';
 function csLoad(){ try{ return JSON.parse(localStorage.getItem(CS_KEY)||'{}')||{}; }catch(e){ return {}; } }
@@ -9282,7 +9454,7 @@ function schedFilter(type, btn){
 }
 window.schedFilter = schedFilter;
 
-function schedToggleAdd(){
+function schedToggleAdd(){ try{ saInit(); }catch(e){}
   const form = document.getElementById('sched-add-form');
   const arrow = document.getElementById('sched-add-arrow');
   const icon = document.getElementById('sched-add-icon');
@@ -9338,6 +9510,7 @@ async function schedAddMatch(){
   const btn=document.getElementById('sched-add-toggle'); if(btn){ btn.style.borderRadius='8px'; btn.style.borderBottom='1px solid rgba(77,159,255,0.25)'; };
   schedRenderList();
   schedPopulateAddSelect();predPopulateAllSchedSelects();
+  try{ saInit(); }catch(e){}
   const statsEl = document.getElementById('sched-stats');
   if(statsEl){
     const hnlM=_schedMatches.filter(m=>m.competition==='hnl');
@@ -11751,9 +11924,22 @@ function qzStatsHtml(days,todayKey){
     +`</table><div class="qz-p" style="font-size:11px;">Serija = uzastopni kvizovi koje je igrač odigrao. Najbrži odgovor se računa od kvizova odigranih nakon ove nadogradnje.</div></div>`;
 }
 const QZ_LIMIT=50;
+const QZ_CACHE='dinamo_quiz_cache_v1';
+function qzCacheLoad(){ try{ return (JSON.parse(localStorage.getItem(QZ_CACHE)||'{}')||{}).data||{}; }catch(e){ return {}; } }
+function qzCacheSave(d){ try{ const t=JSON.stringify({data:d}); if(t.length<3500000) localStorage.setItem(QZ_CACHE,t); }catch(e){} }
+function qzCacheDrop(key){ const c=qzCacheLoad(); if(key in c){ delete c[key]; qzCacheSave(c); } }
+// Cijela povijest: prvi put cijeli čvor, poslije samo zadnjih 12 kvizova (stariji se ne mijenjaju)
+async function qzFetchAll(){
+  const cache=qzCacheLoad(), has=Object.keys(cache).length>0, r=ref(db,'quiz');
+  const snap=await get(has?query(r,orderByKey(),limitToLast(12)):r);
+  const fresh=snap.exists()?snap.val():{};
+  const merged=Object.assign({},cache,fresh);
+  if(has){ const fk=Object.keys(fresh).sort(); const lo=fk[0]; if(lo) Object.keys(merged).forEach(k=>{ if(k>=lo&&!(k in fresh)) delete merged[k]; }); }
+  qzCacheSave(merged); return merged;
+}
 async function qzFetch(all){
-  const r=ref(db,'quiz');
-  const snap=await get(all?r:query(r,orderByKey(),limitToLast(QZ_LIMIT)));
+  if(all) return qzFetchAll();
+  const snap=await get(query(ref(db,'quiz'),orderByKey(),limitToLast(QZ_LIMIT)));
   return snap.exists()?snap.val():{};
 }
 function qzLoadAll(){ _qz.all=true; renderKviz(); }
@@ -11832,7 +12018,7 @@ async function qzActivate(){
 }
 async function qzClose(key){
   if(!await appConfirm('Zatvoriti ovaj kviz?')) return;
-  try{ await remove(ref(db,'quiz/'+key)); }catch(e){ console.warn(e); }
+  try{ await remove(ref(db,'quiz/'+key)); qzCacheDrop(key); }catch(e){ console.warn(e); }
   renderKviz();
 }
 async function qzStart(practice,key){
@@ -11974,7 +12160,7 @@ function qzLiveTick(){
     box.innerHTML=`<div class="wr-stage" style="margin-bottom:12px;">
       <div class="wr-prog">${q.map((_,i)=>`<i class="wr-pg ${i<idx||(i===idx&&phase==='g')?'on':''}"></i>`).join('')}</div>
       <div class="wr-slide wr-${tone}" style="height:auto;aspect-ratio:auto;min-height:320px;">
-        <div><div class="qz-top" style="color:rgba(240,244,255,0.7);"><span>⚔️ Uživo, pitanje ${idx+1} od ${n}</span><b id="ql-sec" style="color:#fff;"></b></div><div class="qz-timer"><i id="ql-bar"></i></div></div>
+        <div><div class="qz-top" style="color:rgba(240,244,255,0.7);"><span>⚔️ Uživo, pitanje ${idx+1} od ${n}</span><span></span></div><div class="qz-ring" id="ql-ringw"><svg viewBox="0 0 44 44"><circle class="qz-ring-bg" cx="22" cy="22" r="19"/><circle id="ql-bar" class="qz-ring-fg" cx="22" cy="22" r="19"/></svg><b id="ql-sec"></b></div></div>
         <div class="wr-h" style="font-size:22px;">${wrEsc(cur.t)}</div>
         <div class="wr-body">${opts}${score}</div>
         <div class="wr-mark">Kviz uživo</div>
@@ -11983,10 +12169,11 @@ function qzLiveTick(){
     if(phase==='q') box.querySelectorAll('.qz-opt').forEach(b=>{ b.onclick=()=>qzLiveAnswer(d,idx,+b.dataset.k); });
   }
   const bar=document.getElementById('ql-bar'), sec=document.getElementById('ql-sec');
-  if(bar) bar.style.width=(phase==='q'?Math.max(0,100-within/QZ_T*100):0)+'%';
+  if(bar) bar.style.strokeDashoffset=(phase==='q'?119.4*Math.min(1,within/QZ_T):119.4).toFixed(2);
   if(phase==='q'){
     const left=Math.ceil((QZ_T-within)/1000);
     if(sec) sec.textContent=left;
+    const rg=document.getElementById('ql-ringw'); if(rg) rg.classList.toggle('warn',left<=3);
     if(left<=3&&left>0&&left!==_ql.lastTick){ _ql.lastTick=left; haptic(15); }
   } else { if(sec) sec.textContent=''; _ql.lastTick=null; }
 }
@@ -12362,7 +12549,7 @@ function lgLine(P,d0,d1){
 }
 async function lgData(){
   let quiz={};
-  try{ const sn=await get(ref(db,'quiz')); quiz=sn.exists()?sn.val():{}; }catch(e){}
+  try{ quiz=await qzFetchAll(); }catch(e){}
   const ev=[];
   [...(predictions||[]),...(awayPredictions||[])].filter(x=>x.resolved&&x.luka&&x.lovro&&x.luka.score&&x.lovro.score)
     .forEach(x=>ev.push({d:x.datum,l:x.luka.score.pts||0,v:x.lovro.score.pts||0,src:'p'}));

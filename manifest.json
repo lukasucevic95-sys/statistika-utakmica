@@ -1,6 +1,9 @@
 {
   "name": "GNK Dinamo Zagreb",
   "short_name": "Dinamo",
+  "description": "Statistika utakmica, golovi, predikcije, raspored i kviz za Luku i Lovru.",
+  "lang": "hr",
+  "categories": ["sports"],
   "start_url": ".",
   "display": "standalone",
   "background_color": "#060d1f",
@@ -9,13 +12,26 @@
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
+  ],
+  "shortcuts": [
+    { "name": "Kviz", "short_name": "Kviz", "url": "./#kviz" },
+    { "name": "Raspored", "short_name": "Raspored", "url": "./#raspored" },
+    { "name": "Prediktor", "short_name": "Prediktor", "url": "./#prediktor" },
+    { "name": "Statistika", "short_name": "Statistika", "url": "./#statistika" }
   ]
 }
