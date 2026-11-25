@@ -1,5 +1,5 @@
 /* Service worker — Dinamo fan aplikacija: rad bez mreže (app shell + runtime cache) */
-const VER='dinamo-v3';
+const VER='dinamo-v4';   // v4: čisti keš pun kopija index.html?cb=... koje je pravila provjera nove verzije
 const SHELL='shell-'+VER, RUNTIME='run-'+VER, IMGS='img-'+VER;
 const PRECACHE=['./','index.html','manifest.json','assets/img002.png','assets/favicon.png','assets/apple-touch-icon.png','icon-192.png','icon-512.png'];
 // Što smijemo spremati s drugih domena (Firebase podaci i API-ji se NE diraju)
@@ -29,6 +29,8 @@ self.addEventListener('fetch',e=>{
   if(req.method!=='GET') return;
   const url=new URL(req.url);
   const same=url.origin===self.location.origin;
+  // Provjera nove verzije iz aplikacije (index.html?cb=...): uvijek mreža, ništa se ne sprema u keš
+  if(same&&url.searchParams.has('cb')) return;
   // Navigacija: najprije mreža (svježa verzija), a bez mreže spremljena stranica
   if(req.mode==='navigate'){
     e.respondWith((async()=>{
