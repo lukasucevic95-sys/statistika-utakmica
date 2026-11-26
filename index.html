@@ -1433,6 +1433,25 @@ body[data-theme="derby"]::before{background:radial-gradient(ellipse 85% 100% at 
 .ss-cell{width:24px;height:24px;border-radius:var(--r-xs);border:0;border-bottom:3px solid transparent;color:#0A0F1E;font:800 11px 'Barlow',sans-serif;padding:0;cursor:pointer;}
 .ss-cell.on{outline:2px solid #fff;outline-offset:1px;}
 .ss-info{margin-top:8px;font-size:var(--fs-12);color:var(--text-muted);min-height:16px;}
+:root{color-scheme:dark;}
+*{scrollbar-width:thin;scrollbar-color:rgba(130,160,230,.45) transparent;}
+*::-webkit-scrollbar{width:6px;height:6px;}
+*::-webkit-scrollbar-track{background:transparent;}
+*::-webkit-scrollbar-thumb{background:rgba(130,160,230,.45);border-radius:var(--r-pill);}
+*::-webkit-scrollbar-thumb:hover{background:rgba(160,190,255,.75);}
+*::-webkit-scrollbar-corner{background:transparent;}
+[style*="overflow-x:auto"],[style*="overflow-x: auto"]{overscroll-behavior-x:contain;scrollbar-gutter:stable both-edges;}
+input[type=range]:not(.prc-range){-webkit-appearance:none;appearance:none;height:26px;background:transparent;cursor:pointer;accent-color:var(--accent-strong);}
+input[type=range]:not(.prc-range)::-webkit-slider-runnable-track{height:6px;border-radius:var(--r-pill);background:rgba(255,255,255,.14);}
+input[type=range]:not(.prc-range)::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;border:4px solid var(--accent);margin-top:-8px;box-shadow:0 2px 10px rgba(96,165,250,.55);}
+.prc-range::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#fff;border:4px solid var(--accent);box-shadow:0 2px 10px rgba(96,165,250,.55);}
+.prc-range:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 5px rgba(96,165,250,.35),0 2px 10px rgba(96,165,250,.55);}
+.cc-head{position:relative;padding-right:30px!important;cursor:pointer;user-select:none;-webkit-user-select:none;}
+.cc-chev{position:absolute;right:8px;top:50%;width:16px;height:16px;margin-top:-8px;stroke:var(--text-muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s ease;}
+.cc-closed>.cc-head .cc-chev{transform:rotate(-90deg);}
+.cc-closed>*:not(.cc-head){display:none!important;}
+.cc-head:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--r-sm);}
+@media(prefers-reduced-motion:reduce){.cc-chev{transition:none;}}
 .hdr-ic{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;vertical-align:-0.2em;margin-right:6px;flex:0 0 auto;}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -5032,8 +5051,17 @@ window.sparkShow=sparkShow; window.sparkHide=sparkHide;
 
 /* ===== VERZIJA I CHANGELOG ===== */
 // Kod svakog ažuriranja: povećaj APP_VERSION i dodaj novi unos NA VRH popisa CHANGELOG.
-const APP_VERSION='2.5.0';
+const APP_VERSION='2.5.2';
 const CHANGELOG=[
+  {v:'2.5.2',d:'2026-11-27',items:[
+    ['🛠️','Ispravljeno: gumbi dodani u zadnjim verzijama nisu reagirali (traka sezone, Upiši rezultat, Uživo, veličina teksta, daltonizam, vraćanje iz kopije, dijagnostika, provjera verzije). Sada rade'],
+    ['🗂️','Sklapanje kartica ograničeno na prave kartice i sekcije Golova, bez zaglavlja koja imaju vlastito sklapanje']
+  ]},
+  {v:'2.5.1',d:'2026-11-27',items:[
+    ['🟩','Traka sezone: dodir na utakmicu sada otvara detalje (modal utakmice ako smo bili, inače list s podacima)'],
+    ['🗂️','Sve kartice se mogu sklopiti i otvoriti dodirom na naslov, a stanje se pamti. U Postavkama su Sklopi sve i Otvori sve'],
+    ['🎚️','Moderniji klizači: tanke tamne trake za pomicanje grafova i popisa umjesto bijelih, uz uglađene klizače u grafovima']
+  ]},
   {v:'2.5.0',d:'2026-11-27',items:[
     ['🟩','Statistika i Raspored: traka sezone, jedna kartica P/R/I po utakmici, s bojom natjecanja'],
     ['⏱','Uživo zaslon: vremenska crta golova'],
@@ -12811,7 +12839,7 @@ function renderSettings(){
     ${ov?`<button class="btn-sm" style="width:100%;padding:8px;margin-bottom:14px;" onclick="setWhoOverride(null);renderSettings();qzBadge();">Poništi, nagađaj iz prijave</button>`:''}
     <div class="qz-p" style="margin-bottom:6px;">Tvoj avatar</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;">${who?avRow(who):'<div class="qz-p">Prijavi se i odaberi tko si da bi postavio avatar.</div>'}</div>
-    ${backupSection()}${textSizeSection()}${cbSection()}${updSection()}${diagSection()}
+    ${backupSection()}${textSizeSection()}${cbSection()}${ccSection()}${updSection()}${diagSection()}
     <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;"><span class="qz-p">Verzija <b style="color:#fff;">${APP_VERSION}</b> · ${fmtDate(CHANGELOG[0].d)}</span><button class="btn-sm" onclick="closeSettings();openChangelog(true)">🆕 Što je novo</button></div>
   `;
 }
@@ -13591,12 +13619,14 @@ function renderSeasonStrip(hostId,mode){
   const w=all.filter(x=>resPts(x.rez)===3).length, d=all.filter(x=>resPts(x.rez)===1).length, l=all.length-w-d;
   const cells=all.map((x,i)=>{ const p=resPts(x.rez), bg=p===3?'var(--win)':p===1?'var(--draw)':'var(--loss)', c=getNatjecanjeColor(x.nat)||'transparent';
     return `<button class="ss-cell" data-h="${hostId}" data-i="${i}" aria-label="${wrEsc(x.opp)} ${x.rez[0]}:${x.rez[1]}" style="background:${bg};border-bottom-color:${c}" onclick="ssTip(this)">${resLetter(x.rez)}</button>`; }).join('');
-  el.innerHTML=`<div class="ss-wrap"><div class="ss-head"><span>Sezona u nizu${S&&S!=='all'?' '+S:''}</span><span>${w}-${d}-${l}</span></div><div class="ss-row">${cells}</div><div class="ss-info" id="ss-info-${hostId}">Dodirni utakmicu za detalje. Donja crta = natjecanje.</div></div>`;
+  el.innerHTML=`<div class="ss-wrap"><div class="ss-head"><span>Sezona u nizu${S&&S!=='all'?' '+S:''}</span><span>${w}-${d}-${l}</span></div><div class="ss-row">${cells}</div><div class="ss-info" id="ss-info-${hostId}">Dodirni utakmicu za detalje. Donja crta je boja natjecanja.</div></div>`;
 }
 function ssTip(btn){
   const L=_ssList[btn.dataset.h], x=L&&L[Number(btn.dataset.i)], el=document.getElementById('ss-info-'+btn.dataset.h); if(!x||!el) return;
   btn.parentNode.querySelectorAll('.ss-cell.on').forEach(b=>b.classList.remove('on')); btn.classList.add('on');
   el.innerHTML=`${fmtDate(x.datum)}, <b style="color:#fff;">${wrEsc(x.opp)}</b> ${x.rez[0]}:${x.rez[1]}${x.nat?', '+wrEsc(x.nat):''}${x.attended?', bili smo':''}`;
+  if(x.attended){ const ix=(matches||[]).findIndex(m=>m.datum===x.datum); if(ix>=0){ showMatchModal(ix); return; } }
+  ssSheet(x);
 }
 function matchTimelineHTML(events){
   const mx=Math.max(90,...events.map(e=>e.min||0)), pct=m=>Math.min(100,(m/mx)*100);
@@ -13648,6 +13678,64 @@ async function renderStandingsChart(){
   });
   el.innerHTML=parts.join('');
 }
+
+
+/* Traka sezone: dodir otvara detalje (modal utakmice ako smo bili, inače list s podacima) */
+function ssSheetClose(){ const ov=document.getElementById('ss-sheet'); if(ov) ov.style.display='none'; }
+function ssSheet(x){
+  let ov=document.getElementById('ss-sheet');
+  if(!ov){ ov=document.createElement('div'); ov.id='ss-sheet'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Detalji utakmice');
+    ov.style.cssText='position:fixed;inset:0;z-index:10020;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;';
+    ov.onclick=e=>{ if(e.target===ov) ssSheetClose(); }; document.body.appendChild(ov); }
+  const p=resPts(x.rez), col=p===3?'var(--win)':p===1?'var(--draw)':'var(--loss)', b=oppBilans(x.opp);
+  const row=(l,v)=>`<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--border);font-size:var(--fs-13);"><span style="color:var(--text-muted);">${l}</span><span style="color:#fff;font-weight:600;text-align:right;">${v}</span></div>`;
+  ov.innerHTML=`<div style="width:100%;max-width:520px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl) var(--r-xl) 0 0;padding:18px 18px calc(env(safe-area-inset-bottom,0px) + 18px);animation:sheetIn .25s ease;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">${getClubCrest(x.opp,28)}<div style="flex:1;font-size:var(--fs-16);font-weight:700;color:#fff;">Dinamo – ${wrEsc(x.opp)}</div><button class="btn-sm" style="padding:6px 12px;" onclick="ssSheetClose()">Zatvori</button></div>
+    <div style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:var(--fs-72);line-height:1.05;color:${col};margin:4px 0 10px;">${x.rez[0]} : ${x.rez[1]}</div>
+    ${row('Datum',fmtDate(x.datum))}${x.nat?row('Natjecanje',wrEsc(x.nat)):''}${x.home===true?row('Domaće / gostovanje','Domaće'):x.home===false?row('Domaće / gostovanje','Gostovanje'):''}
+    ${row('Na stadionu',x.attended?'Bili smo':'Nismo bili')}${b.total?row('Bilans vs '+wrEsc(x.opp),`${b.wins}-${b.draws}-${b.losses}`):''}
+  </div>`;
+  ov.style.display='flex';
+}
+/* Sklopive kartice: zaglavlje s kvačicom, stanje se pamti na uređaju */
+const CC_HEAD='.side-card-header,.sched-forma-title,.ss-head,.g-section-header';
+const CC_CARD='.side-card,.sched-forma-card,.ss-wrap,.g-section';
+const CC_KEY='dinamo_cc';
+function ccLoad(){ try{ return JSON.parse(localStorage.getItem(CC_KEY)||'{}')||{}; }catch(e){ return {}; } }
+function ccSave(st){ try{ localStorage.setItem(CC_KEY,JSON.stringify(st)); }catch(e){} }
+function ccKey(h){ const pg=h.closest('.page'); return (pg?pg.id:'x')+':'+String(h.textContent||'').replace(/[\d.,:%/\s]+/g,' ').trim().slice(0,40); }
+function ccIsCard(h){
+  const par=h.parentElement; if(!par||!par.matches(CC_CARD)) return false;
+  if(!h.closest('.page')) return false;
+  if(h.matches('[onclick*="toggleCollapse"]')||h.closest('[data-nocc]')) return false;
+  return par.children.length>=2;
+}
+function ccToggle(h,force){
+  const par=h.parentElement, closed=force===undefined?!par.classList.contains('cc-closed'):force;
+  par.classList.toggle('cc-closed',closed); h.setAttribute('aria-expanded',String(!closed));
+  const st=ccLoad(), k=ccKey(h); if(closed) st[k]=1; else delete st[k]; ccSave(st);
+}
+function ccEnhance(root){
+  const st=ccLoad();
+  (root||document).querySelectorAll(CC_HEAD).forEach(h=>{
+    if(h.dataset.cc||!ccIsCard(h)) return;
+    h.dataset.cc='1'; h.classList.add('cc-head'); h.setAttribute('role','button'); h.tabIndex=0;
+    h.insertAdjacentHTML('beforeend','<svg class="cc-chev" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>');
+    const closed=!!st[ccKey(h)]; h.parentElement.classList.toggle('cc-closed',closed); h.setAttribute('aria-expanded',String(!closed));
+    h.addEventListener('click',e=>{ if(e.target.closest('button,a,select,input,textarea,label')) return; ccToggle(h); });
+    h.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); ccToggle(h); } });
+  });
+}
+function ccAll(closed){ document.querySelectorAll('.cc-head').forEach(h=>ccToggle(h,closed)); try{ renderSettings(); }catch(e){} }
+function ccSection(){
+  return `<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
+    <div class="qz-p" style="margin-bottom:8px;"><b style="color:#fff;">Kartice</b><br>Naslov svake kartice sklapa je i otvara. Stanje se pamti.</div>
+    <div style="display:flex;gap:6px;"><button class="sched-filter-btn" style="flex:1;" onclick="ccAll(true)">Sklopi sve</button><button class="sched-filter-btn" style="flex:1;" onclick="ccAll(false)">Otvori sve</button></div></div>`;
+}
+Object.assign(window,{cbSet,ccAll,dgCopy,lvClose,lvFinish,lvGoal,lvH2,lvOpen,lvOther,lvUndo,pmStart,rbPick,rbUndo,ssSheet,ssSheetClose,ssTip,txtSet,updApply,updCheck,ccToggle});
+(function(){ let t=null; const run=()=>{ clearTimeout(t); t=setTimeout(()=>ccEnhance(),150); };
+  const start=()=>{ ccEnhance(); new MutationObserver(run).observe(document.body,{childList:true,subtree:true}); };
+  if(document.body) start(); else document.addEventListener('DOMContentLoaded',start); })();
 
 // ── Dinamo Wrapped: sezonski sažetak u karticama koje se mogu podijeliti ──
 let _wrPerson='luka', _wrSeason=null, _wrIdx=0, _wrSlides=[];
